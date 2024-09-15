@@ -4,7 +4,7 @@ room_h          equ 24
 room_size       equ room_w*room_h
 init_current_room
                 ld  hl,rooms_data
-                ld  de,draw.attrs
+                ld  de,screen_utils.attrs
                 ld  bc,room_size
                 ldir
                 ret

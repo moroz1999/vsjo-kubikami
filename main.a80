@@ -14,7 +14,7 @@ start           equ #8000
                 include "rooms.a80"
                 include "draw.a80"
                 include "game_process.a80"
-                include "screen.a80"
+                include "screen_utils.a80"
 rooms_data
                 incbin  "room1.atr"
 end

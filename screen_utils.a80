@@ -1,0 +1,49 @@
+        module  screen_utils
+screen                          equ     #4000
+attrs                           equ     screen+#1800
+
+get_attrs_address
+                ; Входные данные:
+                ; D = x координата (0..31)
+                ; E = y координата (0..23)
+                ; Выходные данные:
+                ; HL = адрес атрибута
+                                call    get_room_address
+                ; Добавляем базовый адрес атрибутов #5800
+                                ld      de,attrs
+                                add     hl,de      ; HL = HL + #5800
+
+                ; Теперь HL содержит адрес атрибута
+
+                                ret
+get_room_address
+                ; Входные данные:
+                ; D = x координата (0..31)
+                ; E = y координата (0..23)
+                ; Выходные данные:
+                ; HL = адрес атрибута в комнате
+
+                ; Вычисляем HL = y * 32
+                                ld      a,e         ; A = y
+                                ld      h,0
+                                ld      l,a         ; HL = y
+
+                ; Умножаем HL на 32 (сдвиг влево на 5 бит)
+                                sla     l           ; Сдвиг влево на 1 бит
+                                rl      h
+                                sla     l           ; Повторяем 5 раз для умножения на 32
+                                rl      h
+                                sla     l
+                                rl      h
+                                sla     l
+                                rl      h
+                                sla     l
+                                rl      h            ; Теперь HL = y * 32
+
+                ; Добавляем x к HL
+                                ld      a,d         ; A = x
+                                ld      b,0
+                                ld      c,a         ; BC = x
+                                add     hl,bc      ; HL = HL + x
+                                ret
+        endmodule

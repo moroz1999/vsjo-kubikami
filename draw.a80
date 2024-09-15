@@ -1,14 +1,14 @@
     module  draw
-screen          equ #4000
-attrs           equ screen+#1800
 border_color    equ 0
+restore_x       db  255
+restore_y       db  255
 border
                 ld  a,border_color
                 out #fe,a
                 ret
 draw_pattern
-                ld  hl,screen
-                ld  de,screen+1
+                ld  hl,screen_utils.screen
+                ld  de,screen_utils.screen+1
                 exx
                 ld  b,rooms.room_h/2
 
@@ -37,11 +37,35 @@ draw_main_hero
                 ld  d,a
                 ld  a,(game_process.main_hero_y)
                 ld  e,a
-                call    screen.get_attrs_address
+                call    screen_utils.get_attrs_address
                 ld  a,game_process.main_hero_color
                 ld  (hl),a
                 ret
 draw_state
+                call    restore_main_hero
                 call    draw_main_hero
+                ret
+
+restore_main_hero
+                ld  a,(restore_x)
+                cp  255
+                ret z
+                ld  d,a
+                ld  a,(restore_y)
+                ld  e,a
+                call    screen_utils.get_room_address
+                push    hl
+                ld  de,rooms_data
+                add hl,de
+                ld  a,(hl)
+                pop hl                
+                ld  de,screen_utils.attrs
+                add hl,de
+                ld  (hl),a
+
+                ld  a,255
+                ld  (restore_x),a
+                ld  (restore_y),a
+
                 ret
     endmodule
