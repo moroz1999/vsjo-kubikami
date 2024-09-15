@@ -6,6 +6,7 @@ main_hero_x     db  9
 
 loop
                 call    save_restore
+                call    hero_gravity
                 call    keyboard
                 call    draw.draw_state
                 ld  b,2
@@ -129,7 +130,19 @@ check_hero_coords_no
                 pop de
                 xor a
                 ret
+hero_gravity
+                call move_hero_down
+                ret
+                ld  de,(main_hero_coords)
+                inc e
+                call    rooms.get_room_color
+                cp  rooms.room_bg_color1
+                ret nz
+                ld  de,(main_hero_coords)
+                dec e
 
+                ld  (main_hero_coords),de
+                ret
 wait
                 ei
                 halt

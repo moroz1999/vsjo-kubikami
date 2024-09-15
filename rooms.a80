@@ -2,6 +2,7 @@
 room_w          equ 32
 room_h          equ 24
 room_size       equ room_w*room_h
+room_bg_color1   equ 0
 init_current_room
                 ld  hl,rooms_data
                 ld  de,screen_utils.attrs
