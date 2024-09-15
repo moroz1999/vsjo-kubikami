@@ -1,0 +1,20 @@
+                device  zxspectrum128
+
+start           equ #8000
+
+                org start
+
+                di
+                ld  sp,start-1
+                call    draw.border
+                call    draw.draw_pattern
+                call    rooms.init_current_room
+                call    draw.main_hero
+                halt
+                include "rooms.a80"
+                include "draw.a80"
+                include "game_process.a80"
+rooms_data
+                incbin  "room.atr"
+end
+                savesna "qsave1.sna",start

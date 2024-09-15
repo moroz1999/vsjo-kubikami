@@ -1,0 +1,4 @@
+    module  game_process
+main_hero_x     db  3
+main_hero_y     db  20
+    endmodule

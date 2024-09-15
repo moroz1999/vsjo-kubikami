@@ -1,0 +1,80 @@
+    module  draw
+screen          equ #4000
+attrs           equ screen+#1800
+border_color    equ 0
+border
+                ld  a,border_color
+                out #fe,a
+                ret
+draw_pattern
+                ld  hl,screen
+                ld  de,screen+1
+                exx
+                ld  b,rooms.room_h/2
+
+draw_patter_16rows
+                exx
+                ld  a,%01010101
+                ld  bc,rooms.room_w*8-1
+                ld  (hl),a
+                ldir
+                inc hl
+                inc de
+
+                ld  a,%10101010
+
+                ld  (hl),a
+                ld  bc,rooms.room_w*8-1
+                ldir
+
+                inc hl
+                inc de
+                exx
+                djnz    draw_patter_16rows
+                ret
+main_hero
+                ld  a,(game_process.main_hero_x)
+                ld  d,a
+                ld  a,(game_process.main_hero_y)
+                ld  e,a
+                call    get_attrs_address
+                ld  a,%001111111
+                ld  (hl),a
+                ret
+get_attrs_address
+                ; Входные данные:
+                ; D = x координата (0..31)
+                ; E = y координата (0..23)
+                ; Выходные данные:
+                ; HL = адрес атрибута
+
+                ; Вычисляем HL = y * 32
+                ld  a,e         ; A = y
+                ld  h,0
+                ld  l,a         ; HL = y
+
+                ; Умножаем HL на 32 (сдвиг влево на 5 бит)
+                sla l           ; Сдвиг влево на 1 бит
+                rl  h
+                sla l           ; Повторяем 5 раз для умножения на 32
+                rl  h
+                sla l
+                rl  h
+                sla l
+                rl  h
+                sla l
+                rl  h            ; Теперь HL = y * 32
+
+                ; Добавляем x к HL
+                ld  a,d         ; A = x
+                ld  b,0
+                ld  c,a         ; BC = x
+                add hl,bc      ; HL = HL + x
+
+                ; Добавляем базовый адрес атрибутов #5800
+                ld  de,#5800
+                add hl,de      ; HL = HL + #5800
+
+                ; Теперь HL содержит адрес атрибута
+                ret
+    endmodule

@@ -1,0 +1,13 @@
+    module  rooms
+room_w          equ 32
+room_h          equ 24
+room_size       equ room_w*room_h
+init_current_room
+                ld  hl,rooms_data
+                ld  de,draw.attrs
+                ld  bc,room_size
+                ldir
+                ret
+current_room
+                db  0
+    endmodule
