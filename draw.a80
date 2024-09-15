@@ -1,73 +1,73 @@
     module  draw
-border_color    equ 0
-restore         db  255
-restore_x       db  255
-restore_y       db  255
+border_color        equ 0
+restore             db  255
+restore_x           db  255
+restore_y           db  255
 border
-                ld  a,border_color
-                out #fe,a
-                ret
+                    ld  a,border_color
+                    out #fe,a
+                    ret
 draw_pattern
-                ld  hl,screen_utils.screen
-                ld  de,screen_utils.screen+1
-                exx
-                ld  b,rooms.room_h/2
+                    ld  hl,screen_utils.screen
+                    ld  de,screen_utils.screen+1
+                    exx
+                    ld  b,rooms.room_h/2
 
 draw_pattern_16rows
-                exx
-                ld  a,%01010101
-                ld  bc,rooms.room_w*8-1
-                ld  (hl),a
-                ldir
-                inc hl
-                inc de
+                    exx
+                    ld  a,%01010101
+                    ld  bc,rooms.room_w*8-1
+                    ld  (hl),a
+                    ldir
+                    inc hl
+                    inc de
 
-                ld  a,%10101010
+                    ld  a,%10101010
 
-                ld  (hl),a
-                ld  bc,rooms.room_w*8-1
-                ldir
+                    ld  (hl),a
+                    ld  bc,rooms.room_w*8-1
+                    ldir
 
-                inc hl
-                inc de
-                exx
-                djnz    draw_pattern_16rows
-                ret
+                    inc hl
+                    inc de
+                    exx
+                    djnz    draw_pattern_16rows
+                    ret
 draw_main_hero
-                ld  a,(game_process.main_hero_x)
-                ld  d,a
-                ld  a,(game_process.main_hero_y)
-                ld  e,a
-                call    screen_utils.get_attrs_address
-                ld  a,game_process.main_hero_color
-                ld  (hl),a
-                ret
+                    ld  a,(game_process.main_hero_x)
+                    ld  d,a
+                    ld  a,(game_process.main_hero_y)
+                    ld  e,a
+                    call    screen_utils.get_attrs_address
+                    ld  a,(game_process.main_hero_color)
+                    ld  (hl),a
+                    ret
 draw_state
-                call    restore_main_hero
-                call    draw_main_hero
-                ret
+                    call    restore_main_hero
+                    call    draw_main_hero
+                    ret
 
 restore_main_hero
-                ld  a,(restore)
-                cp  255
-                ret z
-                ld  a,(restore_x)
+                    ld  a,(restore)
+                    cp  255
+                    ret z
+                    ld  a,(restore_x)
 
-                ld  d,a
-                ld  a,(restore_y)
-                ld  e,a
-                call    screen_utils.get_texture_address
-                push    hl
-                ld  de,rooms_data
-                add hl,de
-                ld  a,(hl)
-                pop hl
-                ld  de,screen_utils.attrs
-                add hl,de
-                ld  (hl),a
+                    ld  d,a
+                    ld  a,(restore_y)
+                    ld  e,a
+                    call    screen_utils.get_texture_address
+                    push    hl
+                    ld  de,rooms_data
+                    add hl,de
+                    ld  a,(hl)
+                    pop hl
+                    ld  de,screen_utils.attrs
+                    add hl,de
+                    ld  (hl),a
 
-                ld  a,255
-                ld  (restore),a
+                    ld  a,255
+                    ld  (restore),a
 
-                ret
+                    ret
     endmodule

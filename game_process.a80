@@ -1,98 +1,124 @@
     module  game_process
-main_hero_color equ %000111111
+main_hero_color1    equ %01111000
+main_hero_color2    equ %00000101
+main_hero_color     db  %00111000
+
 main_hero_coords
-main_hero_y     db  16
-main_hero_x     db  9
-
+main_hero_y         db  16
+main_hero_x         db  9
+main_hero_timer     db  1
+main_hero_delay     db  4
 loop
-                call    save_restore
-                call    hero_gravity
-                call    keyboard
-                call    draw.draw_state
-                ld  b,2
-                call    wait
-                jr  loop
+                    call    switch_colors
+                    call    save_restore
+                    call    hero_gravity
+                    call    hero_move
+                    call    draw.draw_state
+                    ld  b,1
+                    call    wait
+                    jr  loop
+switch_colors
+                    ld  a,(main_hero_color)
+                    cp  main_hero_color1
+                    jr  z,switch_colors_use2
+                    ld  a,main_hero_color1
+                    ld  (main_hero_color),a
+                    ret
+switch_colors_use2
+                    ld  a,main_hero_color2
+                    ld  (main_hero_color),a
+                    ret
+hero_move
+                    ld  a,(main_hero_timer)
+                    dec a
+                    ld  (main_hero_timer),a
+                    or  a
+                    ret nz
+                    call keyboard
+                    ld  a,(main_hero_delay)
+                    ld  (main_hero_timer),a
+                    ret
 keyboard
-                ld  a,#fb
-                in  a,#fe
+                    ld  a,#fb
+                    in  a,#fe
 
-                bit 0,a			;q
-                call    z,move_hero_up
+                    bit 0,a			;q
+                    call    z,move_hero_up
 
-                ld  a,#fd
-                in  a,#fe
+                    ld  a,#fd
+                    in  a,#fe
 
-                bit 0,a			;a
-                call    z,move_hero_down
-
-
-                ld  a,#df
-                in  a,#fe
-
-                bit 0,a			;p
-                call    z,move_hero_right
+                    bit 0,a			;a
+                    call    z,move_hero_down
 
 
-                ld  a,#df
-                in  a,#fe
+                    ld  a,#df
+                    in  a,#fe
 
-                bit 1,a			;o
-                call    z,move_hero_left
+                    bit 0,a			;p
+                    call    z,move_hero_right
 
-                ret
+
+                    ld  a,#df
+                    in  a,#fe
+
+                    bit 1,a			;o
+                    call    z,move_hero_left
+
+                    ret
 move_hero_up
-                ld  de,(main_hero_coords)
-                dec e
-                call    check_hero_coords
-                or  a
-                ret z
+                    ld  de,(main_hero_coords)
+                    dec e
+                    call    check_hero_coords
+                    or  a
+                    ret z
 
-                ld  (main_hero_coords),de
-                xor a
-                ld  (draw.restore),a
-                ret
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
 move_hero_down
-                ld  de,(main_hero_coords)
-                inc e
+                    ld  de,(main_hero_coords)
+                    inc e
 
-                call    check_hero_coords
-                or  a
-                ret z
+                    call    check_hero_coords
+                    or  a
+                    ret z
 
-                ld  (main_hero_coords),de
-                xor a
-                ld  (draw.restore),a
-                ret
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
 
 move_hero_left
-                ld  de,(main_hero_coords)
-                dec d
-                call    check_hero_coords
-                or  a
-                ret z
+                    ld  de,(main_hero_coords)
+                    dec d
+                    call    check_hero_coords
+                    or  a
+                    ret z
 
-                ld  (main_hero_coords),de
-                xor a
-                ld  (draw.restore),a
-                ret
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
 move_hero_right
-                ld  de,(main_hero_coords)
-                inc d
-                call    check_hero_coords
-                or  a
-                ret z
+                    ld  de,(main_hero_coords)
+                    inc d
+                    call    check_hero_coords
+                    or  a
+                    ret z
 
-                ld  (main_hero_coords),de
-                xor a
-                ld  (draw.restore),a
-                ret
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
 save_restore
-                ld  a,(main_hero_x)
-                ld  (draw.restore_x),a
+                    ld  a,(main_hero_x)
+                    ld  (draw.restore_x),a
 
-                ld  a,(main_hero_y)
-                ld  (draw.restore_y),a
-                ret
+                    ld  a,(main_hero_y)
+                    ld  (draw.restore_y),a
+                    ret
 check_hero_coords
                 ; input:
                 ; d - x 
@@ -100,52 +126,52 @@ check_hero_coords
                 ; output:
                 ; b = 0 (forbidden)
                 ; b = 1 (allowed)
-                push    de
-                ld  b,0
-                ld  a,d
+                    push    de
+                    ld  b,0
+                    ld  a,d
                 ; check screen left 
-                cp  255
-                jr  z,check_hero_coords_no
+                    cp  255
+                    jr  z,check_hero_coords_no
                 ; check screen right
-                cp  rooms.room_w
-                jr  z,check_hero_coords_no
+                    cp  rooms.room_w
+                    jr  z,check_hero_coords_no
 
 
-                ld  a,e
+                    ld  a,e
                 ; check screen top 
-                cp  255
-                jr  z,check_hero_coords_no
+                    cp  255
+                    jr  z,check_hero_coords_no
                 ; check screen bottom
-                cp  rooms.room_h
-                jr  z,check_hero_coords_no
+                    cp  rooms.room_h
+                    jr  z,check_hero_coords_no
 
-                call    rooms.get_room_color
-                cp  rooms.room_bg_color1
-                jr  nz,check_hero_coords_no
+                    call    rooms.get_room_color
+                    cp  rooms.room_bg_color1
+                    jr  nz,check_hero_coords_no
 check_hero_coords_yes
-                pop de
-                ld  a,1
-                ret
+                    pop de
+                    ld  a,1
+                    ret
 check_hero_coords_no
-                pop de
-                xor a
-                ret
+                    pop de
+                    xor a
+                    ret
 hero_gravity
-                call move_hero_down
-                ret
-                ld  de,(main_hero_coords)
-                inc e
-                call    rooms.get_room_color
-                cp  rooms.room_bg_color1
-                ret nz
-                ld  de,(main_hero_coords)
-                dec e
+                    call    move_hero_down
+                    ret
+                    ld  de,(main_hero_coords)
+                    inc e
+                    call    rooms.get_room_color
+                    cp  rooms.room_bg_color1
+                    ret nz
+                    ld  de,(main_hero_coords)
+                    dec e
 
-                ld  (main_hero_coords),de
-                ret
+                    ld  (main_hero_coords),de
+                    ret
 wait
-                ei
-                halt
-                djnz    wait
-                ret
+                    ei
+                    halt
+                    djnz    wait
+                    ret
     endmodule
