@@ -1,46 +1,45 @@
         module  screen_utils
 screen                          equ     #4000
 attrs                           equ     screen+#1800
-
 get_attrs_address
-                ; Входные данные:
-                ; D = x координата (0..31)
-                ; E = y координата (0..23)
-                ; Выходные данные:
-                ; HL = адрес атрибута
-                                call    get_room_address
-                ; Добавляем базовый адрес атрибутов #5800
+                ; Input:
+                ; D = x coordinate (0..31)
+                ; E = y coordinate (0..23)
+                ; Output:
+                ; HL = attribute address
+                                call    get_texture_address
+                ; Add the base attribute address #5800
                                 ld      de,attrs
                                 add     hl,de      ; HL = HL + #5800
 
-                ; Теперь HL содержит адрес атрибута
+                ; Now HL contains the attribute address
 
                                 ret
-get_room_address
-                ; Входные данные:
-                ; D = x координата (0..31)
-                ; E = y координата (0..23)
-                ; Выходные данные:
-                ; HL = адрес атрибута в комнате
+get_texture_address
+                ; Input:
+                ; D = x coordinate (0..31)
+                ; E = y coordinate (0..23)
+                ; Output:
+                ; HL = attribute address within the room
 
-                ; Вычисляем HL = y * 32
+                ; Calculate HL = y * 32
                                 ld      a,e         ; A = y
                                 ld      h,0
                                 ld      l,a         ; HL = y
 
-                ; Умножаем HL на 32 (сдвиг влево на 5 бит)
-                                sla     l           ; Сдвиг влево на 1 бит
+                ; Multiply HL by 32 (shift left by 5 bits)
+                                sla     l           ; Shift left by 1 bit
                                 rl      h
-                                sla     l           ; Повторяем 5 раз для умножения на 32
-                                rl      h
-                                sla     l
+                                sla     l           ; Repeat 5 times to multiply by 32
                                 rl      h
                                 sla     l
                                 rl      h
                                 sla     l
-                                rl      h            ; Теперь HL = y * 32
+                                rl      h
+                                sla     l
+                                rl      h            ; Now HL = y * 32
 
-                ; Добавляем x к HL
+                ; Add x to HL
                                 ld      a,d         ; A = x
                                 ld      b,0
                                 ld      c,a         ; BC = x

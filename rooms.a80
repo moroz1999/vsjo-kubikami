@@ -8,6 +8,23 @@ init_current_room
                 ld  bc,room_size
                 ldir
                 ret
+get_room_address
+                ; input:
+                ; de - coordinates
+                ; output:
+                ; hl - address in memory
+                call    screen_utils.get_texture_address
+                ld  de,rooms_data
+                add hl,de
+                ret
+get_room_color
+                ; input:
+                ; de - coordinates
+                ; output:
+                ; a - color of pixel
+                call    get_room_address
+                ld  a,(hl)
+                ret
 current_room
                 db  0
     endmodule

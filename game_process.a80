@@ -1,9 +1,11 @@
     module  game_process
 main_hero_color equ %000111111
-main_hero_x     db  9
+main_hero_coords
 main_hero_y     db  16
+main_hero_x     db  9
 
 loop
+                call    save_restore
                 call    keyboard
                 call    draw.draw_state
                 ld  b,2
@@ -38,29 +40,50 @@ keyboard
 
                 ret
 move_hero_up
-                call    save_restore
-                ld  a,(main_hero_y)
-                dec a
-                ld  (main_hero_y),a
+                ld  de,(main_hero_coords)
+                dec e
+                call    check_hero_coords
+                or  a
+                ret z
+
+                ld  (main_hero_coords),de
+                xor a
+                ld  (draw.restore),a
                 ret
 move_hero_down
-                call    save_restore
-                ld  a,(main_hero_y)
-                inc a
-                ld  (main_hero_y),a
+                ld  de,(main_hero_coords)
+                inc e
+
+                call    check_hero_coords
+                or  a
+                ret z
+
+                ld  (main_hero_coords),de
+                xor a
+                ld  (draw.restore),a
                 ret
 
 move_hero_left
-                call    save_restore
-                ld  a,(main_hero_x)
-                dec a
-                ld  (main_hero_x),a
+                ld  de,(main_hero_coords)
+                dec d
+                call    check_hero_coords
+                or  a
+                ret z
+
+                ld  (main_hero_coords),de
+                xor a
+                ld  (draw.restore),a
                 ret
 move_hero_right
-                call    save_restore
-                ld  a,(main_hero_x)
-                inc a
-                ld  (main_hero_x),a
+                ld  de,(main_hero_coords)
+                inc d
+                call    check_hero_coords
+                or  a
+                ret z
+
+                ld  (main_hero_coords),de
+                xor a
+                ld  (draw.restore),a
                 ret
 save_restore
                 ld  a,(main_hero_x)
@@ -69,6 +92,44 @@ save_restore
                 ld  a,(main_hero_y)
                 ld  (draw.restore_y),a
                 ret
+check_hero_coords
+                ; input:
+                ; d - x 
+                ; e - y
+                ; output:
+                ; b = 0 (forbidden)
+                ; b = 1 (allowed)
+                push    de
+                ld  b,0
+                ld  a,d
+                ; check screen left 
+                cp  255
+                jr  z,check_hero_coords_no
+                ; check screen right
+                cp  rooms.room_w
+                jr  z,check_hero_coords_no
+
+
+                ld  a,e
+                ; check screen top 
+                cp  255
+                jr  z,check_hero_coords_no
+                ; check screen bottom
+                cp  rooms.room_h
+                jr  z,check_hero_coords_no
+
+                call    rooms.get_room_color
+                cp  rooms.room_bg_color1
+                jr  nz,check_hero_coords_no
+check_hero_coords_yes
+                pop de
+                ld  a,1
+                ret
+check_hero_coords_no
+                pop de
+                xor a
+                ret
+
 wait
                 ei
                 halt
