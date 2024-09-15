@@ -1,4 +1,66 @@
     module  game_process
-main_hero_x     db  3
-main_hero_y     db  20
+main_hero_color equ %000111111
+main_hero_x     db  9
+main_hero_y     db  16
+
+loop
+                call    keyboard
+                call    draw.draw_state
+                ld  b,1
+                call    wait
+                jr  loop
+keyboard
+                ld  a,#fb
+                in  a,#fe
+
+                bit 0,a			;q
+                call    z,move_hero_up
+
+                ld	a,#fd
+				in	a,(#fe)
+
+				bit	0,a			;a
+				call	z,move_hero_down
+
+
+                ld	a,#df
+				in	a,(#fe)
+
+				bit	0,a			;p
+				call	z,move_hero_right
+
+
+                ld	a,#df
+				in	a,(#fe)
+
+				bit	1,a			;o
+				call	z,move_hero_left
+
+                ret
+move_hero_up
+                ld  a,(main_hero_y)
+                dec a
+                ld  (main_hero_y),a
+                ret
+move_hero_down
+                ld  a,(main_hero_y)
+                inc a
+                ld  (main_hero_y),a
+                ret
+
+move_hero_left
+                ld  a,(main_hero_x)
+                dec a
+                ld  (main_hero_x),a
+                ret
+move_hero_right
+                ld  a,(main_hero_x)
+                inc a
+                ld  (main_hero_x),a
+                ret                
+wait
+                ei
+                halt
+                djnz wait
+                ret
     endmodule

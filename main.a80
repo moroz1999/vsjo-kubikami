@@ -9,12 +9,13 @@ start           equ #8000
                 call    draw.border
                 call    draw.draw_pattern
                 call    rooms.init_current_room
-                call    draw.main_hero
+                jp  game_process.loop
                 halt
                 include "rooms.a80"
                 include "draw.a80"
                 include "game_process.a80"
+                include "screen.a80"
 rooms_data
-                incbin  "room.atr"
+                incbin  "room1.atr"
 end
                 savesna "qsave1.sna",start
