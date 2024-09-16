@@ -7,7 +7,7 @@ main_hero_coords
 main_hero_y         db  8
 main_hero_x         db  9
 main_hero_timer     db  0
-main_hero_delay     db  4
+main_hero_delay     db  0
 loop
                     call    switch_colors
                     call    save_restore
@@ -34,9 +34,9 @@ hero_move
                     jr  z,hero_move2
                     dec a
                     ld  (main_hero_timer),a
-                    ret 
-hero_move2                    
-                    call keyboard
+                    ret
+hero_move2
+                    call    keyboard
                     ld  a,(main_hero_delay)
                     ld  (main_hero_timer),a
                     ret
@@ -133,11 +133,10 @@ check_hero_coords
                     ld  a,d
                 ; check screen left 
                     cp  255
-                    jr  z,check_hero_coords_no
+                    jr  z,check_hero_left_room
                 ; check screen right
                     cp  rooms.room_w
-                    jr  z,check_hero_coords_no
-
+                    jr  z,check_hero_right_room
 
                     ld  a,e
                 ; check screen top 
@@ -148,10 +147,10 @@ check_hero_coords
                     jr  z,check_hero_coords_no
 
                     call    rooms.get_room_color
-check_hero_coords_black                    
+check_hero_coords_black
                     cp  rooms.room_bg_color1
                     jr  z,check_hero_coords_yes
-check_hero_coords_blue1                    
+check_hero_coords_blue1
                     cp  rooms.room_bg_color2
                     jr  z,check_hero_coords_yes
 check_hero_coords_no
@@ -160,8 +159,25 @@ check_hero_coords_no
                     ret
 check_hero_coords_yes
                     pop de
+check_hero_coords_yes2
                     ld  a,1
-                    ret                    
+                    ret
+check_hero_left_room
+                    pop af
+                    push    de
+                    call    rooms.set_left_room
+                    pop de
+                    ld  d,rooms.room_w-1
+                    jr  check_hero_coords_yes2
+
+check_hero_right_room
+                    pop af
+                    push    de
+                    call    rooms.set_right_room
+                    pop de
+                    ld  d,0
+                    jr  check_hero_coords_yes2
+
 hero_gravity
                     call    move_hero_down
                     ret

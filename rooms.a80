@@ -1,22 +1,42 @@
     module  rooms
+room_number         db  1
 room_w              equ 32
 room_h              equ 24
 room_size           equ room_w*room_h
 room_bg_color1      equ 0
 room_bg_color2      equ %01000001
 init_current_room
-                    ld  hl,rooms_data
+                    call    get_room_address
                     ld  de,screen_utils.attrs
                     ld  bc,room_size
                     ldir
                     ret
 get_room_address
+                ; output:
+                ; hl - current room address 
+                    ld  hl,rooms_data
+                    ld  a,(room_number)
+                    or  a
+                    jr  z,get_room_address_skip_add
+                    ld  b,a
+                    ld  de,room_size
+get_room_address_add
+                    add hl,de
+                    djnz    get_room_address_add
+get_room_address_skip_add
+                    ret
+
+
+get_room_pixel_address
                 ; input:
                 ; de - coordinates
                 ; output:
                 ; hl - address in memory
                     call    screen_utils.get_texture_address
-                    ld  de,rooms_data
+                    push    hl
+                    call    get_room_address
+                    ex  hl,de
+                    pop hl
                     add hl,de
                     ret
 get_room_color
@@ -24,9 +44,19 @@ get_room_color
                 ; de - coordinates
                 ; output:
                 ; a - color of pixel
-                    call    get_room_address
+                    call    get_room_pixel_address
                     ld  a,(hl)
                     ret
-current_room
-                    db  0
+set_left_room
+                    ld  a,(room_number)
+                    dec a
+                    ld  (room_number),a
+                    call    init_current_room
+                    ret
+set_right_room
+                    ld  a,(room_number)
+                    inc a
+                    ld  (room_number),a
+                    call    init_current_room
+                    ret
     endmodule
