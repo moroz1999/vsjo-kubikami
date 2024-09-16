@@ -4,9 +4,9 @@ main_hero_color2    equ %00000101
 main_hero_color     db  %00111000
 
 main_hero_coords
-main_hero_y         db  16
+main_hero_y         db  8
 main_hero_x         db  9
-main_hero_timer     db  1
+main_hero_timer     db  0
 main_hero_delay     db  4
 loop
                     call    switch_colors
@@ -30,10 +30,12 @@ switch_colors_use2
                     ret
 hero_move
                     ld  a,(main_hero_timer)
+                    or  a
+                    jr  z,hero_move2
                     dec a
                     ld  (main_hero_timer),a
-                    or  a
-                    ret nz
+                    ret 
+hero_move2                    
                     call keyboard
                     ld  a,(main_hero_delay)
                     ld  (main_hero_timer),a
@@ -146,16 +148,20 @@ check_hero_coords
                     jr  z,check_hero_coords_no
 
                     call    rooms.get_room_color
+check_hero_coords_black                    
                     cp  rooms.room_bg_color1
-                    jr  nz,check_hero_coords_no
-check_hero_coords_yes
-                    pop de
-                    ld  a,1
-                    ret
+                    jr  z,check_hero_coords_yes
+check_hero_coords_blue1                    
+                    cp  rooms.room_bg_color2
+                    jr  z,check_hero_coords_yes
 check_hero_coords_no
                     pop de
                     xor a
                     ret
+check_hero_coords_yes
+                    pop de
+                    ld  a,1
+                    ret                    
 hero_gravity
                     call    move_hero_down
                     ret
