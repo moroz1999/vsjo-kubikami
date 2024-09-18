@@ -141,10 +141,10 @@ check_hero_coords
                     ld  a,e
                 ; check screen top 
                     cp  255
-                    jr  z,check_hero_coords_no
+                    jr  z,check_hero_top_room
                 ; check screen bottom
                     cp  rooms.room_h
-                    jr  z,check_hero_coords_no
+                    jr  z,check_hero_bottom_room
 
                     call    rooms.get_room_color
 check_hero_coords_black
@@ -178,6 +178,21 @@ check_hero_right_room
                     ld  d,0
                     jr  check_hero_coords_yes2
 
+check_hero_top_room
+                    pop af
+                    push    de
+                    call    rooms.set_top_room
+                    pop de
+                    ld  e,0
+                    jr  check_hero_coords_yes2
+                    
+check_hero_bottom_room
+                    pop af
+                    push    de
+                    call    rooms.set_bottom_room
+                    pop de
+                    ld  e,0
+                    jr  check_hero_coords_yes2
 hero_gravity
                     call    move_hero_down
                     ret

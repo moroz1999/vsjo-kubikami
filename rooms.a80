@@ -1,5 +1,8 @@
     module  rooms
-room_number         db  1
+room_number_x       db  2
+room_number_y       db  0
+room_amount_x       equ 6
+room_amount_y       equ 4
 room_w              equ 32
 room_h              equ 24
 room_size           equ room_w*room_h
@@ -11,19 +14,36 @@ init_current_room
                     ld  bc,room_size
                     ldir
                     ret
+                    display get_room_address
 get_room_address
                 ; output:
                 ; hl - current room address 
-                    ld  hl,rooms_data
-                    ld  a,(room_number)
+                    ld  a,(room_number_y)
                     or  a
                     jr  z,get_room_address_skip_add
+
                     ld  b,a
-                    ld  de,room_size
-get_room_address_add
-                    add hl,de
-                    djnz    get_room_address_add
+                    xor a
+get_room_address_y
+                    add room_amount_x
+                    djnz    get_room_address_y
 get_room_address_skip_add
+                    ld  b,a
+                    ld  a,(room_number_x)
+                    add b
+                    add a
+                    ; a now contains shift to room pointer
+
+                    ld  l,a
+                    ld  h,0
+                    ld  de,room_pointers
+                    add hl,de
+                    ex  hl,de
+                    ld  a,(de)
+                    ld  l,a
+                    inc de
+                    ld  a,(de)
+                    ld  h,a
                     ret
 
 
@@ -48,15 +68,55 @@ get_room_color
                     ld  a,(hl)
                     ret
 set_left_room
-                    ld  a,(room_number)
+                    ld  a,(room_number_x)
                     dec a
-                    ld  (room_number),a
+                    ld  (room_number_x),a
                     call    init_current_room
                     ret
 set_right_room
-                    ld  a,(room_number)
+                    ld  a,(room_number_x)
                     inc a
-                    ld  (room_number),a
+                    ld  (room_number_x),a
                     call    init_current_room
                     ret
+set_bottom_room
+                    ld  a,(room_number_y)
+                    inc a
+                    ld  (room_number_y),a
+                    call    init_current_room
+                    ret
+set_top_room
+                    ld  a,(room_number_y)
+                    dec a
+                    ld  (room_number_y),a
+                    call    init_current_room
+                    ret
+room_pointers
+                    dw  0
+                    dw  room_1_0
+                    dw  room_2_0
+                    dw  room_3_0
+                    dw  0
+                    dw  0
+
+                    dw  room_0_1
+                    dw  room_1_1
+                    dw  room_2_1
+                    dw  room_3_1
+                    dw  0
+                    dw  0
+
+                    dw  room_0_2
+                    dw  0
+                    dw  room_2_2
+                    dw  0
+                    dw  0
+                    dw  0
+
+                    dw  0
+                    dw  room_1_3
+                    dw  room_2_3
+                    dw  room_3_3
+                    dw  0
+                    dw  0
     endmodule
