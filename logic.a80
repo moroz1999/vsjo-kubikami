@@ -1,0 +1,76 @@
+    module  logic
+game_end_x          equ 6
+game_end_y          equ 20
+room_1_3
+                    ld  a,(game_process.main_hero_x)
+                    cp  game_end_x
+                    ret nz
+                    ld  a,(game_process.main_hero_y)
+                    cp  game_end_y
+                    ret nz
+                    jp  game_process.endgame
+change_logic_pointer
+                    call    get_logic_pointer
+                    ld  (game_process.room_logic_pointer),hl
+                    ret
+get_logic_pointer
+                ; output:
+                ; hl - current room logic callback pointer 
+                    ld  a,(rooms.room_number_y)
+                    or  a
+                    jr  z,get_room_logic_skip_add
+
+                    ld  b,a
+                    xor a
+get_room_logic_y
+                    add rooms.room_amount_x
+                    djnz    get_room_logic_y
+get_room_logic_skip_add
+                    ld  b,a
+                    ld  a,(rooms.room_number_x)
+                    add b
+                    add a
+                    ; a now contains shift to room logic pointer
+
+                    ld  l,a
+                    ld  h,0
+                    ld  de,room_logic_pointers
+                    add hl,de
+                    ex  hl,de
+                    ld  a,(de)
+                    ld  l,a
+                    inc de
+                    ld  a,(de)
+                    ld  h,a
+                    ret
+empty
+                    ret
+room_logic_pointers
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+
+                    dw  empty
+                    dw  room_1_3
+                    dw  empty
+                    dw  empty
+                    dw  empty
+                    dw  empty
+    endmodule

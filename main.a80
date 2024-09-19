@@ -6,6 +6,7 @@ start               equ #8000
 
                     di
                     ld  sp,start-1
+                    ld  a,draw.border_color
                     call    draw.border
                     call    draw.draw_pattern
                     call    rooms.init_current_room
@@ -15,6 +16,7 @@ start               equ #8000
                     include "draw.a80"
                     include "game_process.a80"
                     include "screen_utils.a80"
+                    include "logic.a80"
 rooms_data
 room_1_0            incbin  "rooms/room1,0.atr"
 room_2_0            incbin  "rooms/room2,0.atr"
@@ -23,6 +25,8 @@ room_0_1            incbin  "rooms/room0,1.atr"
 room_1_1            incbin  "rooms/room1,1.atr"
 room_2_1            incbin  "rooms/room2,1.atr"
 room_3_1            incbin  "rooms/room3,1.atr"
+room_4_1            incbin  "rooms/room4,1.atr"
+room_5_1            incbin  "rooms/room5,1.atr"
 room_0_2            incbin  "rooms/room0,2.atr"
 room_2_2            incbin  "rooms/room2,2.atr"
 room_1_3            incbin  "rooms/room1,3.atr"

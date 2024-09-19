@@ -9,12 +9,12 @@ room_size           equ room_w*room_h
 room_bg_color1      equ 0
 room_bg_color2      equ %01000001
 init_current_room
+                    call    logic.change_logic_pointer
                     call    get_room_address
                     ld  de,screen_utils.attrs
                     ld  bc,room_size
                     ldir
                     ret
-                    display get_room_address
 get_room_address
                 ; output:
                 ; hl - current room address 
@@ -103,8 +103,8 @@ room_pointers
                     dw  room_1_1
                     dw  room_2_1
                     dw  room_3_1
-                    dw  0
-                    dw  0
+                    dw  room_4_1
+                    dw  room_5_1
 
                     dw  room_0_2
                     dw  0

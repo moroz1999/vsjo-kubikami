@@ -7,13 +7,20 @@ main_hero_coords
 main_hero_y         db  8
 main_hero_x         db  9
 main_hero_timer     db  0
-main_hero_delay     db  0
+main_hero_delay     db  1
+
 loop
+                    ld  a,1
+                    call    draw.border
                     call    switch_colors
                     call    save_restore
                     call    hero_gravity
                     call    hero_move
+room_logic_pointer  equ $+1
+                    call    logic.empty
                     call    draw.draw_state
+                    xor a
+                    call    draw.border
                     ld  b,1
                     call    wait
                     jr  loop
@@ -185,7 +192,7 @@ check_hero_top_room
                     pop de
                     ld  e,0
                     jr  check_hero_coords_yes2
-                    
+
 check_hero_bottom_room
                     pop af
                     push    de
@@ -211,4 +218,8 @@ wait
                     halt
                     djnz    wait
                     ret
+endgame
+                    call    draw.clear_screen
+                    di
+                    halt
     endmodule

@@ -4,7 +4,6 @@ restore             db  255
 restore_x           db  255
 restore_y           db  255
 border
-                    ld  a,border_color
                     out #fe,a
                     ret
 draw_pattern
@@ -73,4 +72,10 @@ restore_main_hero
                     ld  (restore),a
 
                     ret
+clear_screen
+                    ld hl,screen_utils.attrs
+                    ld de,screen_utils.attrs+1
+                    ld bc,screen_utils.attrs_size-1
+                    ldir
+                    ret                    
     endmodule

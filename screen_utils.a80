@@ -1,6 +1,7 @@
         module  screen_utils
 screen                          equ     #4000
 attrs                           equ     screen+#1800
+attrs_size                      equ     768
 get_attrs_address
                 ; Input:
                 ; D = x coordinate (0..31)
