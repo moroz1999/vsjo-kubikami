@@ -9,6 +9,13 @@ main_hero_x         db  9
 main_hero_timer     db  0
 main_hero_delay     db  1
 
+                ;0 - void
+                ;1 - stands on ground
+                ;2 - jump
+main_hero_state     db  1
+
+main_hero_jump_v    db  0
+
 switch_colors
                     ld  a,(main_hero_color)
                     cp  main_hero_color1
@@ -20,6 +27,23 @@ switch_colors_use2
                     ld  a,main_hero_color2
                     ld  (main_hero_color),a
                     ret
+                    display hero_jump
+hero_jump
+                    ld  a,(main_hero_state)
+                    cp  2
+                    ret nz
+
+                    ld  a,(main_hero_jump_v)
+                    dec a
+                    jr  z,hero_jump_end
+                    ld  (main_hero_jump_v),a
+                    call    move_hero_up
+                    ret
+hero_jump_end
+                    xor a
+                    ld  (main_hero_jump_v),a
+                    ld  (main_hero_state),a
+                    ret
 hero_move
                     ld  a,(main_hero_timer)
                     or  a
@@ -28,9 +52,26 @@ hero_move
                     ld  (main_hero_timer),a
                     ret
 hero_move2
+                ; only move if standing on ground
+                    ld  a,(main_hero_state)
+                    cp  1
+                    ret nz
+
                     call    game_process.keyboard
                     ld  a,(main_hero_delay)
                     ld  (main_hero_timer),a
+                    ret
+hero_jump_top
+                    ld  a,(main_hero_state)
+                    cp  1
+                    ret nz
+
+                    ld  a,4
+                    ld  (main_hero_jump_v),a
+
+                    ld  a,2
+                    ld  (main_hero_state),a
+
                     ret
 move_hero_up
                     ld  de,(main_hero_coords)
@@ -49,13 +90,16 @@ move_hero_down
 
                     call    check_hero_coords
                     or  a
-                    ret z
+                    jr  z,move_hero_down_stand
 
                     ld  (main_hero_coords),de
                     xor a
                     ld  (draw.restore),a
                     ret
-
+move_hero_down_stand
+                    ld  a,1
+                    ld  (main_hero_state),a
+                    ret
 move_hero_left
                     ld  de,(main_hero_coords)
                     dec d
@@ -158,16 +202,9 @@ check_hero_bottom_room
                     ld  e,0
                     jr  check_hero_coords_yes2
 hero_gravity
+                    ld  a,(main_hero_state)
+                    cp  2
+                    ret z
                     call    move_hero_down
-                    ret
-                    ld  de,(main_hero_coords)
-                    inc e
-                    call    rooms.get_room_color
-                    cp  rooms.room_bg_color1
-                    ret nz
-                    ld  de,(main_hero_coords)
-                    dec e
-
-                    ld  (main_hero_coords),de
                     ret
     endmodule

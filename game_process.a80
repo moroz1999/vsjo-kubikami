@@ -6,6 +6,7 @@ loop
                     call    hero.save_restore
                     call    hero.hero_gravity
                     call    hero.hero_move
+                    call    hero.hero_jump
 room_logic_pointer  equ $+1
                     call    logic.empty
                     call    draw.draw_state
@@ -19,14 +20,13 @@ keyboard
                     in  a,#fe
 
                     bit 0,a			;q
-                    call    z,hero.move_hero_up
+                    call    z,hero.hero_jump_top
 
                     ld  a,#fd
                     in  a,#fe
 
                     bit 0,a			;a
                     call    z,hero.move_hero_down
-
 
                     ld  a,#df
                     in  a,#fe
