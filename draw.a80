@@ -33,12 +33,12 @@ draw_pattern_16rows
                     djnz    draw_pattern_16rows
                     ret
 draw_main_hero
-                    ld  a,(game_process.main_hero_x)
+                    ld  a,(hero.main_hero_x)
                     ld  d,a
-                    ld  a,(game_process.main_hero_y)
+                    ld  a,(hero.main_hero_y)
                     ld  e,a
                     call    screen_utils.get_attrs_address
-                    ld  a,(game_process.main_hero_color)
+                    ld  a,(hero.main_hero_color)
                     ld  (hl),a
                     ret
 draw_state

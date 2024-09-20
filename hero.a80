@@ -1,0 +1,173 @@
+    module  hero
+main_hero_color1    equ %00111101
+main_hero_color2    equ %01001111
+main_hero_color     db  %00111000
+
+main_hero_coords
+main_hero_y         db  8
+main_hero_x         db  9
+main_hero_timer     db  0
+main_hero_delay     db  1
+
+switch_colors
+                    ld  a,(main_hero_color)
+                    cp  main_hero_color1
+                    jr  z,switch_colors_use2
+                    ld  a,main_hero_color1
+                    ld  (main_hero_color),a
+                    ret
+switch_colors_use2
+                    ld  a,main_hero_color2
+                    ld  (main_hero_color),a
+                    ret
+hero_move
+                    ld  a,(main_hero_timer)
+                    or  a
+                    jr  z,hero_move2
+                    dec a
+                    ld  (main_hero_timer),a
+                    ret
+hero_move2
+                    call    game_process.keyboard
+                    ld  a,(main_hero_delay)
+                    ld  (main_hero_timer),a
+                    ret
+move_hero_up
+                    ld  de,(main_hero_coords)
+                    dec e
+                    call    check_hero_coords
+                    or  a
+                    ret z
+
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
+move_hero_down
+                    ld  de,(main_hero_coords)
+                    inc e
+
+                    call    check_hero_coords
+                    or  a
+                    ret z
+
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
+
+move_hero_left
+                    ld  de,(main_hero_coords)
+                    dec d
+                    call    check_hero_coords
+                    or  a
+                    ret z
+
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
+move_hero_right
+                    ld  de,(main_hero_coords)
+                    inc d
+                    call    check_hero_coords
+                    or  a
+                    ret z
+
+                    ld  (main_hero_coords),de
+                    xor a
+                    ld  (draw.restore),a
+                    ret
+save_restore
+                    ld  a,(main_hero_x)
+                    ld  (draw.restore_x),a
+
+                    ld  a,(main_hero_y)
+                    ld  (draw.restore_y),a
+                    ret
+check_hero_coords
+                ; input:
+                ; d - x 
+                ; e - y
+                ; output:
+                ; b = 0 (forbidden)
+                ; b = 1 (allowed)
+                    push    de
+                    ld  b,0
+                    ld  a,d
+                ; check screen left 
+                    cp  255
+                    jr  z,check_hero_left_room
+                ; check screen right
+                    cp  rooms.room_w
+                    jr  z,check_hero_right_room
+
+                    ld  a,e
+                ; check screen top 
+                    cp  255
+                    jr  z,check_hero_top_room
+                ; check screen bottom
+                    cp  rooms.room_h
+                    jr  z,check_hero_bottom_room
+
+                    call    rooms.get_room_color
+check_hero_coords_black
+                    cp  rooms.room_bg_color1
+                    jr  z,check_hero_coords_yes
+check_hero_coords_blue1
+                    cp  rooms.room_bg_color2
+                    jr  z,check_hero_coords_yes
+check_hero_coords_no
+                    pop de
+                    xor a
+                    ret
+check_hero_coords_yes
+                    pop de
+check_hero_coords_yes2
+                    ld  a,1
+                    ret
+check_hero_left_room
+                    pop af
+                    push    de
+                    call    rooms.set_left_room
+                    pop de
+                    ld  d,rooms.room_w-1
+                    jr  check_hero_coords_yes2
+
+check_hero_right_room
+                    pop af
+                    push    de
+                    call    rooms.set_right_room
+                    pop de
+                    ld  d,0
+                    jr  check_hero_coords_yes2
+
+check_hero_top_room
+                    pop af
+                    push    de
+                    call    rooms.set_top_room
+                    pop de
+                    ld  e,0
+                    jr  check_hero_coords_yes2
+
+check_hero_bottom_room
+                    pop af
+                    push    de
+                    call    rooms.set_bottom_room
+                    pop de
+                    ld  e,0
+                    jr  check_hero_coords_yes2
+hero_gravity
+                    call    move_hero_down
+                    ret
+                    ld  de,(main_hero_coords)
+                    inc e
+                    call    rooms.get_room_color
+                    cp  rooms.room_bg_color1
+                    ret nz
+                    ld  de,(main_hero_coords)
+                    dec e
+
+                    ld  (main_hero_coords),de
+                    ret
+    endmodule
