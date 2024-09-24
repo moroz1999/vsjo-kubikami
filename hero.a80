@@ -1,132 +1,249 @@
     module  hero
-main_hero_color1    equ %00111101
-main_hero_color2    equ %01001111
-main_hero_color     db  %00111000
+hero_color1         equ %00111101
+hero_color2         equ %01001111
+hero_color          db  %00111000
 
-main_hero_coords
-main_hero_y         db  8
-main_hero_x         db  9
-main_hero_timer     db  0
-main_hero_delay     db  1
+hero_coords
+hero_y              db  8
+hero_x              db  9
+hero_timer          db  0
+hero_delay          db  1
 
-                ;0 - void
-                ;1 - stands on ground
-                ;2 - jump
-main_hero_state     db  1
+state_void          equ 0
+state_ground        equ 1
+state_jump          equ 2
 
-main_hero_jump_v    db  0
+hero_state          db  state_ground
+
+jump_step           db  0
+
+jump_type_top       equ 0
+jump_type_left      equ 1
+jump_type_right     equ 2
+jump_steps          equ 8
+
+jump_type           db  jump_type_top
 
 switch_colors
-                    ld  a,(main_hero_color)
-                    cp  main_hero_color1
+                    ld  a,(hero_color)
+                    cp  hero_color1
                     jr  z,switch_colors_use2
-                    ld  a,main_hero_color1
-                    ld  (main_hero_color),a
+                    ld  a,hero_color1
+                    ld  (hero_color),a
                     ret
 switch_colors_use2
-                    ld  a,main_hero_color2
-                    ld  (main_hero_color),a
+                    ld  a,hero_color2
+                    ld  (hero_color),a
                     ret
                     display hero_jump
 hero_jump
-                    ld  a,(main_hero_state)
-                    cp  2
+                    ld  a,(hero_state)
+                    cp  state_jump
                     ret nz
 
-                    ld  a,(main_hero_jump_v)
-                    dec a
-                    jr  z,hero_jump_end
-                    ld  (main_hero_jump_v),a
+                    ld  a,(jump_type)
+                    cp  jump_type_right
+                    jr  z,jump_process_right
+
+                    cp  jump_type_left
+                    jr  z,jump_process_left
+
+                    jr  jump_process_top
+jump_process_top
+                    ld  a,(jump_step)
+                    cp  6
+                    call    nc,move_hero_up
+                    ld  a,(jump_step)
+                    cp  4
+                    call    c,move_hero_down
+                    jr  jump_process_dec
+jump_process_left
+                    ld  a,(jump_step)
+                    cp  8
+                    jr  z,jump_process_left1
+                    cp  6
+                    jr  nc,jump_process_left2
+                    cp  3
+                    jr  nc,jump_process_left3
+                    cp  1
+                    jr  nc,jump_process_left4
+                    jr  jump_process_left5
+jump_process_left1
                     call    move_hero_up
+                    jr  jump_process_dec
+jump_process_left2
+                    call    move_hero_up
+                    call    move_hero_left
+                    jr  jump_process_dec
+jump_process_left3
+                    call    move_hero_left
+                    jr  jump_process_dec
+jump_process_left4
+                    call    move_hero_down
+                    call    move_hero_left
+                    jr  jump_process_dec
+jump_process_left5
+                    call    move_hero_down
+                    jr  jump_process_dec
+jump_process_right
+                    ld  a,(jump_step)
+                    cp  8
+                    jr  z,jump_process_right1
+                    cp  6
+                    jr  nc,jump_process_right2
+                    cp  3
+                    jr  nc,jump_process_right3
+                    cp  1
+                    jr  nc,jump_process_right4
+                    jr  jump_process_right5
+jump_process_right1
+                    call    move_hero_up
+                    jr  jump_process_dec
+jump_process_right2
+                    call    move_hero_up
+                    call    move_hero_right
+                    jr  jump_process_dec
+jump_process_right3
+                    call    move_hero_right
+                    jr  jump_process_dec
+jump_process_right4
+                    call    move_hero_down
+                    call    move_hero_right
+                    jr  jump_process_dec
+jump_process_right5
+                    call    move_hero_down
+                    jr  jump_process_dec
+
+jump_process_dec
+                    ld  a,(jump_step)
+                    dec a
+                    jr  z,hero_jump_stop
+                    ld  (jump_step),a
                     ret
-hero_jump_end
-                    xor a
-                    ld  (main_hero_jump_v),a
-                    ld  (main_hero_state),a
+hero_jump_stop
+                    xor a ; state_void
+                    ld  (jump_step),a
+                    ld  (hero_state),a
                     ret
 hero_move
-                    ld  a,(main_hero_timer)
+                    ld  a,(hero_timer)
                     or  a
                     jr  z,hero_move2
                     dec a
-                    ld  (main_hero_timer),a
+                    ld  (hero_timer),a
                     ret
 hero_move2
+                    call    hero_jump
+
+
                 ; only move if standing on ground
-                    ld  a,(main_hero_state)
-                    cp  1
+                    ld  a,(hero_state)
+                    cp  state_ground
                     ret nz
 
                     call    game_process.keyboard
-                    ld  a,(main_hero_delay)
-                    ld  (main_hero_timer),a
+                    ld  a,(hero_delay)
+                    ld  (hero_timer),a
                     ret
 hero_jump_top
-                    ld  a,(main_hero_state)
-                    cp  1
+                    ld  a,(hero_state)
+                    cp  state_ground
                     ret nz
 
-                    ld  a,4
-                    ld  (main_hero_jump_v),a
+                    ld  a,jump_type_top
+                    ld  (jump_type),a
 
-                    ld  a,2
-                    ld  (main_hero_state),a
+                    ld  a,jump_steps
+                    ld  (jump_step),a
+
+                    ld  a,state_jump
+                    ld  (hero_state),a
+
+                    ret
+hero_jump_right
+                    ld  a,(hero_state)
+                    cp  state_ground
+                    ret nz
+
+                    ld  a,jump_type_right
+                    ld  (jump_type),a
+
+                    ld  a,jump_steps
+                    ld  (jump_step),a
+
+                    ld  a,state_jump
+                    ld  (hero_state),a
+
+                    ret
+hero_jump_left
+                    ld  a,(hero_state)
+                    cp  state_ground
+                    ret nz
+
+                    ld  a,jump_type_left
+                    ld  (jump_type),a
+
+                    ld  a,jump_steps
+                    ld  (jump_step),a
+
+                    ld  a,state_jump
+                    ld  (hero_state),a
 
                     ret
 move_hero_up
-                    ld  de,(main_hero_coords)
+                    ld  de,(hero_coords)
                     dec e
                     call    check_hero_coords
                     or  a
                     ret z
 
-                    ld  (main_hero_coords),de
+                    ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
                     ret
 move_hero_down
-                    ld  de,(main_hero_coords)
+                    ld  de,(hero_coords)
                     inc e
 
                     call    check_hero_coords
                     or  a
                     jr  z,move_hero_down_stand
 
-                    ld  (main_hero_coords),de
+                    ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
                     ret
 move_hero_down_stand
-                    ld  a,1
-                    ld  (main_hero_state),a
+                    ld  a,state_ground
+                    ld  (hero_state),a
                     ret
 move_hero_left
-                    ld  de,(main_hero_coords)
+                    ld  de,(hero_coords)
                     dec d
                     call    check_hero_coords
                     or  a
                     ret z
 
-                    ld  (main_hero_coords),de
+                    ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
                     ret
 move_hero_right
-                    ld  de,(main_hero_coords)
+                    ld  de,(hero_coords)
                     inc d
                     call    check_hero_coords
                     or  a
                     ret z
 
-                    ld  (main_hero_coords),de
+                    ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
                     ret
 save_restore
-                    ld  a,(main_hero_x)
+                    ld  a,(hero_x)
                     ld  (draw.restore_x),a
 
-                    ld  a,(main_hero_y)
+                    ld  a,(hero_y)
                     ld  (draw.restore_y),a
                     ret
 check_hero_coords
@@ -202,8 +319,8 @@ check_hero_bottom_room
                     ld  e,0
                     jr  check_hero_coords_yes2
 hero_gravity
-                    ld  a,(main_hero_state)
-                    cp  2
+                    ld  a,(hero_state)
+                    cp  state_jump
                     ret z
                     call    move_hero_down
                     ret

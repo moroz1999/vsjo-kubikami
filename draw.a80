@@ -32,21 +32,21 @@ draw_pattern_16rows
                     exx
                     djnz    draw_pattern_16rows
                     ret
-draw_main_hero
-                    ld  a,(hero.main_hero_x)
+draw_hero
+                    ld  a,(hero.hero_x)
                     ld  d,a
-                    ld  a,(hero.main_hero_y)
+                    ld  a,(hero.hero_y)
                     ld  e,a
                     call    screen_utils.get_attrs_address
-                    ld  a,(hero.main_hero_color)
+                    ld  a,(hero.hero_color)
                     ld  (hl),a
                     ret
 draw_state
-                    call    restore_main_hero
-                    call    draw_main_hero
+                    call    restore_hero
+                    call    draw_hero
                     ret
 
-restore_main_hero
+restore_hero
                     ld  a,(restore)
                     cp  255
                     ret z
