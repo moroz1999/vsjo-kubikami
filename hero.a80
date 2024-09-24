@@ -1,6 +1,6 @@
     module  hero
-hero_color1         equ %00111101
-hero_color2         equ %01001111
+hero_color1         equ %01111101
+hero_color2         equ %00000111
 hero_color          db  %00111000
 
 hero_coords
