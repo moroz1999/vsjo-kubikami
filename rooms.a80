@@ -8,8 +8,13 @@ room_h              equ 24
 room_size           equ room_w*room_h
 room_bg_color1      equ 0
 room_bg_color2      equ %01000001
+items_in_room_max   equ 5
+room_item_size      equ 3
+rooms_end_marker    equ 255
 init_current_room
                     call    logic.change_logic_pointer
+                    call    gather_items
+
                     call    get_room_address
                     ld  de,screen_utils.attrs
                     ld  bc,room_size
@@ -119,4 +124,70 @@ room_pointers
                     dw  room_3_3
                     dw  0
                     dw  0
+gather_items
+                    ld  a,(room_number_x)
+                    ld  b,a
+                    ld  a,(room_number_y)
+                    ld  c,a
+
+                    ld  hl,items.all_items
+                    ld  de,room_items_buffer
+gather_items_next
+                    ld  a,(hl)
+                    inc hl
+                    cp  items.items_end_marker
+                    jr  z,gather_items_end
+
+                    ex  af,af'
+
+
+                    ld  a,(hl)
+                    inc hl
+                    cp  b
+                    jr  nz,gather_items_skip3
+
+                    ld  a,(hl)
+                    inc hl
+                    cp  c
+                    jr  nz,gather_items_skip2
+
+                    ex  af,af'
+                    ; put type
+                    ld  (de),a
+                    inc de
+
+                    ld  a,(hl)
+                    inc hl
+                    ; put x position
+                    ld  (de),a
+                    inc de
+
+                    ld  a,(hl)
+                    inc hl
+                    ; put y position
+                    ld  (de),a
+                    inc de
+
+                    jr  gather_items_next
+gather_items_skip3
+                    inc hl
+                    inc hl
+                    inc hl
+                    jr  gather_items_next
+gather_items_skip2
+                    inc hl
+                    inc hl
+                    jr  gather_items_next
+gather_items_end
+                    ld  a,rooms_end_marker
+                    ld  (de),a
+                    ret
+room_items_buffer
+                    ; item structure
+                    ;
+                    ; type id
+                    ; x
+                    ; y
+
+                    ds  room_item_size*items_in_room_max+1
     endmodule

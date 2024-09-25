@@ -44,6 +44,7 @@ draw_hero
 draw_state
                     call    restore_hero
                     call    draw_hero
+                    call    draw_room_items
                     ret
 
 restore_hero
@@ -73,9 +74,33 @@ restore_hero
 
                     ret
 clear_screen
-                    ld hl,screen_utils.attrs
-                    ld de,screen_utils.attrs+1
-                    ld bc,screen_utils.attrs_size-1
+                    ld  hl,screen_utils.attrs
+                    ld  de,screen_utils.attrs+1
+                    ld  bc,screen_utils.attrs_size-1
                     ldir
-                    ret                    
+                    ret
+                    display draw_room_items
+draw_room_items
+                    ld  hl,rooms.room_items_buffer
+draw_room_items_next
+                    ld  a,(hl)
+                    inc hl
+
+                    cp  rooms.rooms_end_marker
+                    ret z
+
+
+                    ld  a,(hl)
+                    inc hl
+                    ld  d,a
+
+                    ld  a,(hl)
+                    inc hl
+                    ld  e,a
+                    push    hl
+                    call    screen_utils.get_attrs_address
+                    ld  a,%01100000
+                    ld  (hl),a
+                    pop hl
+                    jr  draw_room_items_next
     endmodule

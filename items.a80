@@ -1,0 +1,34 @@
+    module  items
+items_end_marker    equ 255
+montirovka          equ 0
+test                equ 1
+test2               equ 2
+all_items
+        ; item structure:
+        ;
+        ; type id
+        ; room number x
+        ; room number y
+        ; position x
+        ; position y
+item_0
+                    db  montirovka
+                    db  2
+                    db  0
+                    db  5
+                    db  14
+item_1
+                    db  test
+                    db  1
+                    db  0
+                    db  1
+                    db  1
+item_2
+                    db  test2
+                    db  2
+                    db  0
+                    db  3
+                    db  5
+items_end
+                    db  items_end_marker
+    endmodule

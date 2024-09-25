@@ -18,6 +18,7 @@ start               equ #8000
                     include "hero.a80"                    
                     include "screen_utils.a80"
                     include "logic.a80"
+                    include "items.a80"
 rooms_data
 room_1_0            incbin  "rooms/room1,0.atr"
 room_2_0            incbin  "rooms/room2,0.atr"

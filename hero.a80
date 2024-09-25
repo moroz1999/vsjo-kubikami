@@ -35,7 +35,6 @@ switch_colors_use2
                     ld  a,hero_color2
                     ld  (hero_color),a
                     ret
-                    display hero_jump
 hero_jump
                     ld  a,(hero_state)
                     cp  state_jump
