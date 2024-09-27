@@ -182,6 +182,46 @@ gather_items_end
                     ld  a,rooms_end_marker
                     ld  (de),a
                     ret
+find_item_by_coord
+                    ; input
+                    ; de - y,x coordinates
+
+                    ; output
+                    ; a - type id or 255
+
+                    ld  hl,room_items_buffer  ; Set HL to the start of the items buffer
+
+check_next_item
+                    ld  a,(hl)               ; Load item type
+                    cp  255                   ; Check for end of the list (255 terminator)
+                    jr  z,not_found           ; If found, item is not present
+
+                    ex  af,af'               ; Save the item type in alternate AF
+
+                    inc hl                   ; Move to X coordinate
+                    ld  a,(hl)               ; Compare X coordinate with input
+                    cp  e
+                    jr  nz,next_item1          ; If X doesn't match, go to next item
+
+                    inc hl                   ; Move to Y coordinate
+                    ld  a,(hl)               ; Compare Y coordinate with input
+                    cp  d
+                    jr  nz,next_item2          ; If Y doesn't match, go to next item
+
+                    ex  af,af'               ; Restore item type from alternate AF
+                    ret                       ; Return item type if found
+
+next_item1
+                    inc hl                   ; Move to the next item (3 bytes per item)
+                    inc hl
+                    jr  check_next_item        ; Repeat the search
+
+next_item2
+                    inc hl                   ; Move to the next item (3 bytes per item)
+                    jr  check_next_item        ; Repeat the search
+not_found
+                    ld  a,255                ; Return 255 if no item found
+                    ret
 room_items_buffer
                     ; item structure
                     ;

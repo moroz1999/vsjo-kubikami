@@ -3,6 +3,20 @@ items_end_marker    equ 255
 montirovka          equ 0
 test                equ 1
 test2               equ 2
+print_item_name
+                    call    get_item_address
+                    ret
+get_item_address
+                    ld  hl,all_items
+                    ld  de,5
+                    ld  b,a
+get_item_address_next
+                    ld  a,(hl)
+                    cp  b
+                    ret z
+                    add hl,de
+                    jr  get_item_address_next
+
 all_items
         ; item structure:
         ;

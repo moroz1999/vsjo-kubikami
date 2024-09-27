@@ -1,0 +1,65 @@
+
+    ifused  down_hl
+down_hl
+                    inc h
+                    ld  a,h
+                    and 7
+                    ret nz
+                    ld  a,l
+                    sub -32
+                    ld  l,a
+                    sbc a,a
+                    and #f8
+                    add a,h
+                    ld  h,a
+                    ret
+    endif
+    ifused  down_de
+down_de
+                    inc d
+                    ld  a,d
+                    and 7
+                    ret nz
+                    ld  a,e
+                    sub -32
+                    ld  e,a
+                    sbc a,a
+                    and #f8
+                    add a,d
+                    ld  d,a
+                    ret
+    endif
+    ifused  get_screen_address
+get_screen_address
+        // bc - koord (b - x, c - y)
+        // vyhod - hl - adres
+                    ld  a,c
+                    and #18
+                    or  #40
+                    ld  h,a
+                    ld  a,c
+                    and 7
+                    rrca
+                    rrca
+                    rrca
+                    add a,b
+                    ld  l,a
+                    ret
+    endif
+    ifused  get_screen_address_de
+get_screen_address_de
+        // bc - koord (b - x, c - y)
+        //  de - adres
+                    ld  a,c
+                    and #18
+                    or  #40
+                    ld  d,a
+                    ld  a,c
+                    and 7
+                    rrca
+                    rrca
+                    rrca
+                    add a,b
+                    ld  e,a
+                    ret
+    endif

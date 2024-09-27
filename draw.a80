@@ -43,8 +43,9 @@ draw_hero
                     ret
 draw_state
                     call    restore_hero
-                    call    draw_hero
                     call    draw_room_items
+                    call    draw_hero
+                    
                     ret
 
 restore_hero
@@ -79,7 +80,6 @@ clear_screen
                     ld  bc,screen_utils.attrs_size-1
                     ldir
                     ret
-                    display draw_room_items
 draw_room_items
                     ld  hl,rooms.room_items_buffer
 draw_room_items_next

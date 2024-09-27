@@ -4,7 +4,7 @@ hero_color2         equ %00000111
 hero_color          db  %00111000
 
 hero_coords
-hero_y              db  8
+hero_y              db  15
 hero_x              db  9
 hero_timer          db  0
 hero_delay          db  1
@@ -23,6 +23,8 @@ jump_type_right     equ 2
 jump_steps          equ 8
 
 jump_type           db  jump_type_top
+
+current_item        db  255
 
 switch_colors
                     ld  a,(hero_color)
@@ -238,6 +240,22 @@ move_hero_right
                     xor a
                     ld  (draw.restore),a
                     ret
+                    display item_pressed
+
+item_pressed
+                    ld  de,(hero_coords)
+                    call    rooms.find_item_by_coord
+                    cp  255
+                    ret z
+
+                    call    pickup_item
+
+                    ret
+pickup_item
+                    ld  (current_item),a
+                    call    items.print_item_name
+                    ret
+
 save_restore
                     ld  a,(hero_x)
                     ld  (draw.restore_x),a
@@ -323,4 +341,5 @@ hero_gravity
                     ret z
                     call    move_hero_down
                     ret
+
     endmodule

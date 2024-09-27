@@ -19,7 +19,7 @@ keyboard
                     in  a,#fe
 
                     bit 0,a			;q
-                    jp  z,keyboard_top
+                    jp  z,keyboard_up
 
                     ld  a,#fd
                     in  a,#fe
@@ -40,8 +40,14 @@ keyboard
                     bit 1,a			;o
                     call    z,hero.move_hero_left
 
+                    ld  a,#7f
+                    in  a,#fe
+
+                    bit 0,a			;space
+                    call    z,hero.item_pressed
+
                     ret
-keyboard_top
+keyboard_up
                     ld  a,#df
                     in  a,#fe
 
