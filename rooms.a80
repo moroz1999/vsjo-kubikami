@@ -124,6 +124,7 @@ room_pointers
                     dw  room_3_3
                     dw  0
                     dw  0
+                    display gather_items,'gather'                    
 gather_items
                     ld  a,(room_number_x)
                     ld  b,a
@@ -167,7 +168,9 @@ gather_items_next
                     ; put y position
                     ld  (de),a
                     inc de
-
+    dup items.item_size-5
+                    inc hl
+    edup
                     jr  gather_items_next
 gather_items_skip3
     dup items.item_size-2

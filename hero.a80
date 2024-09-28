@@ -1,7 +1,7 @@
     module  hero
 hero_color1         equ %01111101
 hero_color2         equ %00000111
-hero_color          db  %00111000
+hero_color          db  hero_color1
 
 hero_coords
 hero_y              db  15
