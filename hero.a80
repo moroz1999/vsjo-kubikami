@@ -251,6 +251,10 @@ item_pressed
                     ret
 pickup_item
                     ld  (current_item),a
+
+                    call rooms.remove_item
+
+                    ld  a,(current_item)
                     call    items.print_item_name
                     ret
 
