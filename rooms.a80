@@ -124,7 +124,6 @@ room_pointers
                     dw  room_3_3
                     dw  0
                     dw  0
-                    display gather_items,'gather'                    
 gather_items
                     ld  a,(room_number_x)
                     ld  b,a

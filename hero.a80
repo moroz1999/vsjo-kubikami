@@ -240,8 +240,6 @@ move_hero_right
                     xor a
                     ld  (draw.restore),a
                     ret
-           display item_pressed
-
 item_pressed
                     ld  de,(hero_coords)
                     call    rooms.find_item_by_coord

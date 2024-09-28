@@ -4,13 +4,24 @@ crowbar             equ 0
 test                equ 1
 test2               equ 2
 item_size           equ item_1-item_0
+item_text_offset    equ item_0_text-item_0
+        display print_item_name,' print_item_name'                    
 print_item_name
+        ;   input
+        ;   a - item type id
                     call    get_item_address
-                    
+                    ld  de,item_text_offset
+                    add hl,de
+
+                    ld e,(hl)
+                    inc hl
+                    ld d,(hl)
+                    ex hl,de
+                    call    game_ui.print_item_name
                     ret
 get_item_address
                     ld  hl,all_items
-                    ld  de,5
+                    ld  de,item_size
                     ld  b,a
 get_item_address_next
                     ld  a,(hl)
@@ -33,6 +44,7 @@ item_0
                     db  0
                     db  5
                     db  14
+item_0_text
                     dw  strings.crowbar
 item_1
                     db  test

@@ -22,6 +22,7 @@ start               equ #8000
                     include "functions.a80"
                     include "rooms.a80"
                     include "strings.a80"
+                    include "game_ui.a80"
 rooms_data
 room_1_0            incbin  "rooms/room1,0.atr"
 room_2_0            incbin  "rooms/room2,0.atr"

@@ -1,0 +1,11 @@
+    module  game_ui
+item_name_x         equ 0
+item_name_y         equ 23
+print_item_name
+        ;   input
+        ;   hl - item name string address
+                    ld  b,item_name_x
+                    ld  c,item_name_y
+                    call    print.print_string
+                    ret
+    endmodule
