@@ -12,15 +12,16 @@ start               equ #8000
                     call    rooms.init_current_room
                     jp  game_process.loop
                     halt
-                    include "game_process.a80"
-                    include "rooms.a80"
+                    include "game_process.a80"                    
                     include "draw.a80"
                     include "hero.a80"
                     include "screen_utils.a80"
                     include "logic.a80"
                     include "items.a80"
-                    include "text.a80"
+                    include "print.a80"
                     include "functions.a80"
+                    include "rooms.a80"
+                    include "strings.a80"
 rooms_data
 room_1_0            incbin  "rooms/room1,0.atr"
 room_2_0            incbin  "rooms/room2,0.atr"

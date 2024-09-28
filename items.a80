@@ -1,10 +1,12 @@
     module  items
 items_end_marker    equ 255
-montirovka          equ 0
+crowbar             equ 0
 test                equ 1
 test2               equ 2
+item_size           equ item_1-item_0
 print_item_name
                     call    get_item_address
+                    
                     ret
 get_item_address
                     ld  hl,all_items
@@ -16,7 +18,6 @@ get_item_address_next
                     ret z
                     add hl,de
                     jr  get_item_address_next
-
 all_items
         ; item structure:
         ;
@@ -25,24 +26,28 @@ all_items
         ; room number y
         ; position x
         ; position y
+        ; address of name string
 item_0
-                    db  montirovka
+                    db  crowbar
                     db  2
                     db  0
                     db  5
                     db  14
+                    dw  strings.crowbar
 item_1
                     db  test
                     db  1
                     db  0
                     db  1
                     db  1
+                    dw  strings.test1
 item_2
                     db  test2
                     db  2
                     db  0
                     db  3
                     db  5
+                    dw  strings.test2
 items_end
                     db  items_end_marker
     endmodule

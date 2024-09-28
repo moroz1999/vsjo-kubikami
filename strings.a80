@@ -1,0 +1,8 @@
+        module strings
+crowbar
+                    db  "montirovka",255
+test1
+                    db  "test",255
+test2
+                    db  "test2",255        
+        endmodule

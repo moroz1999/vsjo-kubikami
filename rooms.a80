@@ -170,13 +170,14 @@ gather_items_next
 
                     jr  gather_items_next
 gather_items_skip3
+    dup items.item_size-2
                     inc hl
-                    inc hl
-                    inc hl
+    edup
                     jr  gather_items_next
 gather_items_skip2
+    dup items.item_size-3
                     inc hl
-                    inc hl
+    edup
                     jr  gather_items_next
 gather_items_end
                     ld  a,rooms_end_marker
@@ -184,7 +185,7 @@ gather_items_end
                     ret
 find_item_by_coord
                     ; input
-                    ; de - y,x coordinates
+                    ; de - x,y coordinates
 
                     ; output
                     ; a - type id or 255
@@ -200,12 +201,12 @@ check_next_item
 
                     inc hl                   ; Move to X coordinate
                     ld  a,(hl)               ; Compare X coordinate with input
-                    cp  e
+                    cp  d
                     jr  nz,next_item1          ; If X doesn't match, go to next item
 
                     inc hl                   ; Move to Y coordinate
                     ld  a,(hl)               ; Compare Y coordinate with input
-                    cp  d
+                    cp  e
                     jr  nz,next_item2          ; If Y doesn't match, go to next item
 
                     ex  af,af'               ; Restore item type from alternate AF
