@@ -66,7 +66,7 @@ keyboard_fire
                     ld  a,(last_action)
                     cp  action_fire
                     ret z
-                    call    hero.item_pressed
+                    call    hero.fire_pressed
                     ld  a,action_fire
                     ld  (last_action),a
                     ret

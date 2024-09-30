@@ -239,21 +239,35 @@ move_hero_right
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
-                    ret                    
-item_pressed
+                    ret
+fire_pressed
                     ld  de,(hero_coords)
                     call    rooms.find_item_by_coord
                     cp  rooms.item_not_found
-                    jr  z,hero.item_pressed_noitem
+                    jr  z,hero.fire_pressed_noitem
+fire_pressed_item
+                    ld  c,a
 
+                    ld  a,(current_item)
+                    ld  b,a
+                    cp  no_item_in_pocket
+                    jr  z,fire_pressed_empty_pick
+                    push bc
+                    ld  a,b
+                    call    drop_item
+                    pop bc
+                    ld  a,c
                     call    pickup_item
-
                     ret
-item_pressed_noitem
+fire_pressed_empty_pick
+                    ld  a,c
+                    call    pickup_item
+                    ret
+fire_pressed_noitem
                     ld  a,(current_item)
                     cp  no_item_in_pocket
                     ret z
-                    call drop_item
+                    call    drop_item
 
                     ret
 pickup_item
@@ -274,7 +288,7 @@ drop_item
 
                     ld  a,no_item_in_pocket
                     ld  (current_item),a
-                    
+
                     call    game_ui.erase_item_name
                     ret
 save_restore
