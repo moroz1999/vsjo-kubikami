@@ -241,6 +241,11 @@ move_hero_right
                     ld  (draw.restore),a
                     ret
 fire_pressed
+                    call    use_current_item
+                    or  a
+                    ; if a is not 0, then item was used, skip pickup/drop
+                    ret nz
+
                     ld  de,(hero_coords)
                     call    rooms.find_item_by_coord
                     cp  rooms.item_not_found
@@ -252,7 +257,7 @@ fire_pressed_item
                     ld  b,a
                     cp  no_item_in_pocket
                     jr  z,fire_pressed_empty_pick
-                    push bc
+                    push    bc
                     ld  a,b
                     call    drop_item
                     pop bc
@@ -269,6 +274,19 @@ fire_pressed_noitem
                     ret z
                     call    drop_item
 
+                    ret
+use_current_item
+            ; output
+            ; a - 0 if no item was used
+            ; a - 255 if item used
+                    ld  a,(current_item)
+                    cp  no_item_in_pocket
+                    jr  nz,use_current_item2
+                ; no item in pocket, return 0
+                    xor a
+                    ret
+use_current_item2
+                    call    items.call_item_logic
                     ret
 pickup_item
                     ld  (current_item),a

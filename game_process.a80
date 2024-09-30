@@ -13,7 +13,7 @@ loop
                     call    hero.hero_gravity
                     call    hero.hero_move
 room_logic_pointer  equ $+1
-                    call    logic.empty
+                    call    logic.empty_room_logic
                     call    draw.draw_state
                     xor a
                     call    draw.border

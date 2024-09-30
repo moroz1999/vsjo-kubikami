@@ -43,34 +43,64 @@ get_room_logic_skip_add
                     ld  a,(de)
                     ld  h,a
                     ret
-empty
+crowbar
+                    ld  a,(rooms.room_number_x)
+                    cp  2
+                    jr  nz,crowbar_false
+                    ld  a,(rooms.room_number_y)
+                    cp  0
+                    jr  nz,crowbar_false
+                    ld  a,(hero.hero_x)
+                    ld  d,a
+                    cp  21
+                    jr  nz,crowbar_false                    
+                    ld  a,(hero.hero_y)
+                    ld  e,a
+                    cp  12
+                    jr  nz,crowbar_false
+
+                    call rooms.get_room_pixel_address
+                    ld de,rooms.room_w
+                    xor a
+                    sbc hl,de
+                    ld  (hl),a
+
+                    ld  a,255
+                    ret
+crowbar_false
+                    xor a
+                    ret
+empty_room_logic
+                    ret
+empty_item_action
+                    xor a
                     ret
 room_logic_pointers
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
 
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
 
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
 
-                    dw  empty
+                    dw  empty_room_logic
                     dw  room_1_3
-                    dw  empty
-                    dw  empty
-                    dw  empty
-                    dw  empty
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
+                    dw  empty_room_logic
     endmodule

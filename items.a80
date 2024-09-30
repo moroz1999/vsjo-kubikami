@@ -5,6 +5,7 @@ test                equ 1
 test2               equ 2
 item_size           equ item_1-item_0
 item_text_offset    equ item_0_text-item_0
+item_logic_offset   equ item_0_logic-item_0
 print_item_name
         ;   input
         ;   a - item type id
@@ -12,11 +13,27 @@ print_item_name
                     ld  de,item_text_offset
                     add hl,de
 
-                    ld e,(hl)
+                    ld  e,(hl)
                     inc hl
-                    ld d,(hl)
-                    ex hl,de
+                    ld  d,(hl)
+                    ex  hl,de
                     call    game_ui.print_item_name
+                    ret
+call_item_logic
+        ;   input
+        ;   a - item type id
+        ;   output
+        ;   a - contains 0 if logic is ignored
+                    call    get_item_address
+                    ld  de,item_logic_offset
+                    add hl,de
+
+                    ld  e,(hl)
+                    inc hl
+                    ld  d,(hl)
+                    ld (call_item_call),de
+call_item_call      equ $+1
+                    call    logic.empty_item_action
                     ret
 get_item_address
         ; input 
@@ -41,6 +58,7 @@ all_items
         ; position x
         ; position y
         ; address of name string
+        ; address of logic procedure
 item_0
                     db  crowbar
                     db  2
@@ -49,6 +67,8 @@ item_0
                     db  14
 item_0_text
                     dw  strings.crowbar
+item_0_logic
+                    dw  logic.crowbar
 item_1
                     db  test
                     db  1
@@ -56,6 +76,8 @@ item_1
                     db  1
                     db  1
                     dw  strings.test1
+                    dw  logic.empty_item_action
+
 item_2
                     db  test2
                     db  2
@@ -63,6 +85,7 @@ item_2
                     db  4
                     db  14
                     dw  strings.test2
+                    dw  logic.empty_item_action
 items_end
                     db  items_end_marker
     endmodule
