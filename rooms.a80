@@ -11,6 +11,7 @@ room_bg_color2      equ %01000001
 items_in_room_max   equ 5
 room_item_size      equ 3
 rooms_end_marker    equ 255
+item_not_found      equ 255
 init_current_room
                     call    logic.change_logic_pointer
                     call    gather_items
@@ -196,7 +197,7 @@ find_item_by_coord
 
 check_next_item
                     ld  a,(hl)               ; Load item type
-                    cp  255                   ; Check for end of the list (255 terminator)
+                    cp  rooms_end_marker                   ; Check for end of the list (255 terminator)
                     jr  z,not_found           ; If found, item is not present
 
                     ex  af,af'               ; Save the item type in alternate AF
@@ -223,17 +224,87 @@ next_item2
                     inc hl                   ; Move to the next item (3 bytes per item)
                     jr  check_next_item        ; Repeat the search
 not_found
-                    ld  a,255                ; Return 255 if no item found
+                    ld  a,item_not_found                ; Return 255 if no item found
+                    ret
+
+spawn_item
+        ;   input
+        ;   a - item type id
+        ;   b - item x position
+        ;   c - item y position
+
+                 ;store item type in af'
+                    ex  af,af'
+                    ld  hl,room_items_buffer
+                    ld  de,room_item_size
+spawn_item_check_end
+                    ld  a,(hl)
+                    cp  rooms_end_marker
+                    jr  z,spawn_item_found_end
+                    add hl,de
+                    jr  spawn_item_check_end
+spawn_item_found_end
+                ; save buffer address
+                    push    hl
+                ; save item destination coords
+                    push    bc
+
+                ; load item type to a
+                    ex  af,af'
+                    call    items.get_item_address
+
+                ; load item destination coords to bc
+                    pop bc
+                ; load buffer address to de
+                    pop de
+
+                    ld  a,(hl)               ; Load item type
+                    ld  (de),a
+                    inc hl
+                    inc de
+
+                    ld  a,(room_number_x)
+                    ld  (hl),a              ; save item's room x in items
+                    inc hl
+
+                    ld  a,(room_number_y)
+                    ld  (hl),a              ; save item's room y in items
+                    inc hl
+
+                    ld  a,b                 ; take item's x position
+                    ld  (hl),a              ; save position in items
+                    ld  (de),a              ; save position in room
+                    inc hl
+                    inc de
+
+                    ld  a,c                 ; take item's y position
+                    ld  (hl),a              ; save position in items
+                    ld  (de),a              ; save position in room
+                    inc hl
+                    inc de
+
+                    ld  a,rooms_end_marker
+                    ld  (de),a
                     ret
 remove_item
         ;   input
         ;   a - item type id
                     ld  hl,room_items_buffer
+                    ld  de,room_item_size
 
+                    ld  b,a
+remove_item_search
                     ld  a,(hl)               ; Load item type
-                    cp  255                   ; Check for end of the list (255 terminator)
+                    cp  rooms_end_marker                   ; Check for end of the list (255 terminator)
                     jr  z,not_found           ; If found, item is not present
 
+                ;   check if it is required type
+                    cp  b
+                    jr  z,remove_item_delete
+                    add hl,de
+                    jr  remove_item_search
+
+remove_item_delete
                     push    hl
 
                     ld  de,room_item_size

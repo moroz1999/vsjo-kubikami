@@ -23,8 +23,8 @@ jump_type_right     equ 2
 jump_steps          equ 8
 
 jump_type           db  jump_type_top
-
-current_item        db  255
+no_item_in_pocket   equ 255
+current_item        db  no_item_in_pocket
 
 switch_colors
                     ld  a,(hero_color)
@@ -239,25 +239,44 @@ move_hero_right
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
-                    ret
+                    ret                    
 item_pressed
                     ld  de,(hero_coords)
                     call    rooms.find_item_by_coord
-                    cp  255
-                    ret z
+                    cp  rooms.item_not_found
+                    jr  z,hero.item_pressed_noitem
 
                     call    pickup_item
 
                     ret
+item_pressed_noitem
+                    ld  a,(current_item)
+                    cp  no_item_in_pocket
+                    ret z
+                    call drop_item
+
+                    ret
 pickup_item
                     ld  (current_item),a
-
-                    call rooms.remove_item
+                    call    rooms.remove_item
 
                     ld  a,(current_item)
                     call    items.print_item_name
                     ret
 
+drop_item
+                    ld  a,(hero_x)
+                    ld  b,a
+                    ld  a,(hero_y)
+                    ld  c,a
+                    ld  a,(current_item)
+                    call    rooms.spawn_item
+
+                    ld  a,no_item_in_pocket
+                    ld  (current_item),a
+                    
+                    call    game_ui.erase_item_name
+                    ret
 save_restore
                     ld  a,(hero_x)
                     ld  (draw.restore_x),a

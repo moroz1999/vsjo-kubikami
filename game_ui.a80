@@ -8,4 +8,12 @@ print_item_name
                     ld  c,item_name_y
                     call    print.print_string
                     ret
+erase_item_name                    
+                    ld  hl,empty_item_name
+                    ld  b,item_name_x
+                    ld  c,item_name_y
+                    call    print.print_string
+                    ret
+empty_item_name
+                    db "          ",255             
     endmodule

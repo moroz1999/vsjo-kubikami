@@ -1,6 +1,6 @@
         module strings
 crowbar
-                    db  "montirovka",255
+                    db  "montirowka",255
 test1
                     db  "test",255
 test2

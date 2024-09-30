@@ -5,7 +5,6 @@ test                equ 1
 test2               equ 2
 item_size           equ item_1-item_0
 item_text_offset    equ item_0_text-item_0
-        display print_item_name,' print_item_name'                    
 print_item_name
         ;   input
         ;   a - item type id
@@ -20,6 +19,10 @@ print_item_name
                     call    game_ui.print_item_name
                     ret
 get_item_address
+        ; input 
+        ; a - item type id
+        ; output
+        ; hl - item address
                     ld  hl,all_items
                     ld  de,item_size
                     ld  b,a
@@ -57,8 +60,8 @@ item_2
                     db  test2
                     db  2
                     db  0
-                    db  3
-                    db  5
+                    db  4
+                    db  14
                     dw  strings.test2
 items_end
                     db  items_end_marker
