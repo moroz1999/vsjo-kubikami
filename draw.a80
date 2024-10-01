@@ -59,7 +59,7 @@ restore_hero
                     ld  e,a
                     call    screen_utils.get_texture_address
                     push    hl
-                    call    rooms.get_room_address
+                    call    rooms.get_current_room_address
                     ex  hl,de
                     pop hl
                     push    hl
@@ -103,4 +103,13 @@ draw_room_items_next
                     ld  (hl),a
                     pop hl
                     jr  draw_room_items_next
+draw_room_sprite
+        ;   input
+        ;   hl - sprite address
+        ;   d - x position in room
+        ;   e - y position in room
+        ;   b - room x number
+        ;   c - room y number
+
+                    ret
     endmodule

@@ -9,6 +9,15 @@ room_1_3
                     cp  game_end_y
                     ret nz
                     jp  game_process.endgame
+room_2_0
+                    ret
+                    ld  hl,0
+                    ld  d,10
+                    ld  e,3
+                    ld  b,2
+                    ld  c,0
+                    call draw.draw_room_sprite
+                    ret
 change_logic_pointer
                     call    get_logic_pointer
                     ld  (game_process.room_logic_pointer),hl
@@ -53,14 +62,14 @@ crowbar
                     ld  a,(hero.hero_x)
                     ld  d,a
                     cp  21
-                    jr  nz,crowbar_false                    
+                    jr  nz,crowbar_false
                     ld  a,(hero.hero_y)
                     ld  e,a
                     cp  12
                     jr  nz,crowbar_false
 
-                    call rooms.get_room_pixel_address
-                    ld de,rooms.room_w
+                    call    rooms.get_current_room_pixel_address
+                    ld  de,rooms.room_w
                     xor a
                     sbc hl,de
                     ld  (hl),a
@@ -78,7 +87,7 @@ empty_item_action
 room_logic_pointers
                     dw  empty_room_logic
                     dw  empty_room_logic
-                    dw  empty_room_logic
+                    dw  room_2_0
                     dw  empty_room_logic
                     dw  empty_room_logic
                     dw  empty_room_logic
