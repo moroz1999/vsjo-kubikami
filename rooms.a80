@@ -8,6 +8,7 @@ room_h              equ 24
 room_size           equ room_w*room_h
 room_bg_color1      equ 0
 room_bg_color2      equ %01000001
+room_bg_color3      equ %00000001
 items_in_room_max   equ 5
 room_item_size      equ 3
 rooms_end_marker    equ 255

@@ -1,0 +1,11 @@
+    module  room_1_3
+logic
+                    ld  a,(hero.hero_x)
+                    cp  logic.game_end_x
+                    ret nz
+                    ld  a,(hero.hero_y)
+                    cp  logic.game_end_y
+                    ret nz
+                    jp  game_process.endgame
+                    ret
+    endmodule

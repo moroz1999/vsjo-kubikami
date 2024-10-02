@@ -77,7 +77,7 @@ item_0_room_x
                     db  2
                     db  0
                     db  5
-item_0_y                    
+item_0_y
                     db  14
 item_0_text
                     dw  strings.crowbar
@@ -98,7 +98,7 @@ item_2
                     db  30
                     db  3
                     dw  strings.stone
-                    dw  logic.empty_item_action
+                    dw  logic.stone
 items_end
                     db  items_end_marker
     endmodule

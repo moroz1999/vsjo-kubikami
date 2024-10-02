@@ -353,6 +353,9 @@ check_hero_coords_black
 check_hero_coords_blue1
                     cp  rooms.room_bg_color2
                     jr  z,check_hero_coords_yes
+check_hero_coords_blue0
+                    cp  rooms.room_bg_color3
+                    jr  z,check_hero_coords_yes                    
 check_hero_coords_no
                     pop de
                     xor a

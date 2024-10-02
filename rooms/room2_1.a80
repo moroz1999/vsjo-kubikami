@@ -1,0 +1,24 @@
+    module  room_2_1
+logic
+                    ld  a,(stone_fallen)
+                    or  a
+                    ret nz
+
+                    ld  a,(hero.hero_x)
+                    cp  12
+                    ret nz
+
+                    ld  a,items.stone
+                    call items.get_item_address
+                    ld  de,items.item_y_offset
+                    add hl,de
+
+                    ld a,21
+                    ld (hl),a
+
+                    ld  a,1
+                    ld  (stone_fallen),a
+
+                    ret
+stone_fallen        db  0
+    endmodule
