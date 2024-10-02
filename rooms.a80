@@ -80,10 +80,10 @@ get_current_room_pixel_address
 get_room_pixel_address
                 ; input:
                 ; de - coordinates
-                ; output:
-                ; hl - address in memory
                 ; b - room x number
                 ; c - room y number
+                ; output:
+                ; hl - address in memory
                     push    bc
                     call    screen_utils.get_texture_address
                     pop bc

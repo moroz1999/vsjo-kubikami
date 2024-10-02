@@ -45,7 +45,7 @@ draw_state
                     call    restore_hero
                     call    draw_room_items
                     call    draw_hero
-                    
+
                     ret
 
 restore_hero
@@ -106,10 +106,28 @@ draw_room_items_next
 draw_room_sprite
         ;   input
         ;   hl - sprite address
-        ;   d - x position in room
-        ;   e - y position in room
-        ;   b - room x number
-        ;   c - room y number
+        ;   de - room address        
+        ;   b - sprite width
+        ;   c - sprite height
+draw_room_sprite_row
+                    push    de
+                    push    bc
+draw_room_sprite_byte
+                    ld  a,(hl)
+                    inc hl
+                    ld  (de),a
+                    inc de
+                    djnz    draw_room_sprite_byte
+                    pop bc
+                    pop de
 
+                    push    hl
+                    ld  hl,rooms.room_w
+                    add hl,de
+                    ex  hl,de
+                    pop hl
+
+                    dec c
+                    jr  nz,draw_room_sprite_row
                     ret
     endmodule
