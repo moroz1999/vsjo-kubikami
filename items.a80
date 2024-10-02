@@ -3,11 +3,12 @@ items_end_marker    equ 255
 item_not_in_room    equ 255
 crowbar             equ 0
 test                equ 1
-test2               equ 2
+stone               equ 2
 item_size           equ item_1-item_0
 item_text_offset    equ item_0_text-item_0
 item_logic_offset   equ item_0_logic-item_0
 item_room_x_offset  equ item_0_room_x-item_0
+item_y_offset       equ item_0_y-item_0
 print_item_name
         ;   input
         ;   a - item type id
@@ -76,6 +77,7 @@ item_0_room_x
                     db  2
                     db  0
                     db  5
+item_0_y                    
                     db  14
 item_0_text
                     dw  strings.crowbar
@@ -89,14 +91,13 @@ item_1
                     db  1
                     dw  strings.test1
                     dw  logic.empty_item_action
-
 item_2
-                    db  test2
+                    db  stone
                     db  2
-                    db  0
-                    db  4
-                    db  14
-                    dw  strings.test2
+                    db  1
+                    db  30
+                    db  3
+                    dw  strings.stone
                     dw  logic.empty_item_action
 items_end
                     db  items_end_marker

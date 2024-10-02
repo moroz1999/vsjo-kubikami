@@ -82,6 +82,7 @@ empty_item_action
                     ret
                     include "rooms/room2_0.a80"
                     include "rooms/room1_3.a80"
+                    include "rooms/room2_1.a80"
 room_logic_pointers
                     dw  empty_room_logic
                     dw  empty_room_logic
@@ -92,7 +93,7 @@ room_logic_pointers
 
                     dw  empty_room_logic
                     dw  empty_room_logic
-                    dw  empty_room_logic
+                    dw  room_2_1.logic
                     dw  empty_room_logic
                     dw  empty_room_logic
                     dw  empty_room_logic
