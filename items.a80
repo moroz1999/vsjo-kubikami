@@ -1,11 +1,13 @@
     module  items
 items_end_marker    equ 255
+item_not_in_room    equ 255
 crowbar             equ 0
 test                equ 1
 test2               equ 2
 item_size           equ item_1-item_0
 item_text_offset    equ item_0_text-item_0
 item_logic_offset   equ item_0_logic-item_0
+item_room_x_offset  equ item_0_room_x-item_0
 print_item_name
         ;   input
         ;   a - item type id
@@ -31,7 +33,7 @@ call_item_logic
                     ld  e,(hl)
                     inc hl
                     ld  d,(hl)
-                    ld (call_item_call),de
+                    ld  (call_item_call),de
 call_item_call      equ $+1
                     call    logic.empty_item_action
                     ret
@@ -49,6 +51,15 @@ get_item_address_next
                     ret z
                     add hl,de
                     jr  get_item_address_next
+remove_item
+        ; input
+        ; a - item type id              
+                    call    get_item_address
+                    ld  de,item_room_x_offset
+                    add hl,de
+                    ld  a,item_not_in_room
+                    ld  (hl),a
+                    ret
 all_items
         ; item structure:
         ;
@@ -61,6 +72,7 @@ all_items
         ; address of logic procedure
 item_0
                     db  crowbar
+item_0_room_x
                     db  2
                     db  0
                     db  5

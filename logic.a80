@@ -2,16 +2,7 @@
 game_end_x          equ 6
 game_end_y          equ 20
 room_1_3
-                    ld  a,(hero.hero_x)
-                    cp  game_end_x
-                    ret nz
-                    ld  a,(hero.hero_y)
-                    cp  game_end_y
-                    ret nz
-                    jp  game_process.endgame
-                    display room_2_0
-room_2_0
-                    ret
+
 change_logic_pointer
                     call    get_logic_pointer
                     ld  (game_process.room_logic_pointer),hl
@@ -72,6 +63,7 @@ crowbar
                     ld  b,5
                     ld  c,3
                     call    draw.draw_room_sprite
+                    call    hero.delete_item_in_pocket
                     call    rooms.init_current_room
 
                     ld  a,255
@@ -88,10 +80,12 @@ empty_room_logic
 empty_item_action
                     xor a
                     ret
+                    include "rooms/room2_0.a80"
+                    include "rooms/room1_3.a80"
 room_logic_pointers
                     dw  empty_room_logic
                     dw  empty_room_logic
-                    dw  room_2_0
+                    dw  room_2_0.logic
                     dw  empty_room_logic
                     dw  empty_room_logic
                     dw  empty_room_logic
@@ -111,7 +105,7 @@ room_logic_pointers
                     dw  empty_room_logic
 
                     dw  empty_room_logic
-                    dw  room_1_3
+                    dw  room_1_3.logic
                     dw  empty_room_logic
                     dw  empty_room_logic
                     dw  empty_room_logic

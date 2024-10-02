@@ -291,11 +291,19 @@ use_current_item2
 pickup_item
                     ld  (current_item),a
                     call    rooms.remove_item
+                    ld  a,(current_item)
+                    call    items.remove_item
 
                     ld  a,(current_item)
                     call    items.print_item_name
                     ret
+delete_item_in_pocket
+                    ld  a,no_item_in_pocket
+                    ld  (current_item),a
 
+                    call    game_ui.erase_item_name
+
+                    ret
 drop_item
                     ld  a,(hero_x)
                     ld  b,a
@@ -304,10 +312,7 @@ drop_item
                     ld  a,(current_item)
                     call    rooms.spawn_item
 
-                    ld  a,no_item_in_pocket
-                    ld  (current_item),a
-
-                    call    game_ui.erase_item_name
+                    call    delete_item_in_pocket
                     ret
 save_restore
                     ld  a,(hero_x)
