@@ -4,7 +4,7 @@ room_number_y       db  0
 room_amount_x       equ 6
 room_amount_y       equ 4
 room_w              equ 32
-room_h              equ 24
+room_h              equ 22
 room_size           equ room_w*room_h
 room_bg_color1      equ 0
 room_bg_color2      equ %01000001

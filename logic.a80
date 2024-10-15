@@ -84,11 +84,11 @@ stone
                     jr  nz,stone_false
                     ld  a,(hero.hero_y)
                     ld  e,a
-                    cp  21
+                    cp  19
                     jr  nz,stone_false
 
                     ld  d,19
-                    ld  e,18
+                    ld  e,16
                     ld  b,1
                     ld  c,1
                     call    rooms.get_room_pixel_address

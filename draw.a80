@@ -10,12 +10,12 @@ draw_pattern
                     ld  hl,screen_utils.screen
                     ld  de,screen_utils.screen+1
                     exx
-                    ld  b,rooms.room_h/2
+                    ld  b,screen_utils.screen_h/2
 
 draw_pattern_16rows
                     exx
                     ld  a,%01010101
-                    ld  bc,rooms.room_w*8-1
+                    ld  bc,screen_utils.screen_w*8-1
                     ld  (hl),a
                     ldir
                     inc hl
@@ -24,7 +24,7 @@ draw_pattern_16rows
                     ld  a,%10101010
 
                     ld  (hl),a
-                    ld  bc,rooms.room_w*8-1
+                    ld  bc,screen_utils.screen_w*8-1
                     ldir
 
                     inc hl

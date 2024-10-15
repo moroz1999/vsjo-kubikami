@@ -13,7 +13,7 @@ logic
                     ld  de,items.item_y_offset
                     add hl,de
 
-                    ld a,21
+                    ld a,19
                     ld (hl),a
 
                     ld  a,1
