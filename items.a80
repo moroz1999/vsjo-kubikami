@@ -82,7 +82,7 @@ item_0_y
 item_0_text
                     dw  strings.crowbar
 item_0_logic
-                    dw  logic.crowbar
+                    dw  logic.crowbar.action
 item_1
                     db  test
                     db  1
@@ -98,7 +98,7 @@ item_2
                     db  30
                     db  3
                     dw  strings.stone
-                    dw  logic.stone
+                    dw  logic.stone.action
 items_end
                     db  items_end_marker
     endmodule
