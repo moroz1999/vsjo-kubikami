@@ -8,6 +8,7 @@ last_action         db  255
 loop
                     ld  a,1
                     call    draw.border
+                    call    animate.check                    
                     call    hero.switch_colors
                     call    hero.save_restore
                     call    hero.hero_gravity

@@ -1,0 +1,119 @@
+
+    struct  animation
+frames              byte
+current             byte
+delay               byte
+room_address        word
+width               byte
+height              byte
+    ends
+
+
+    module  animate
+current_animation
+                    dw  0
+current_delay
+                    db  0
+start
+                    ld  (current_animation),hl
+                    ret
+check
+                    ld  ix,(current_animation)
+                    ld  a,ixh
+                    or  a
+                    ret z
+
+                    ld  a,(current_delay)
+                    or  a
+                    jr  z,draw_frame
+                    dec a
+                    ld  (current_delay),a
+                    ret
+
+draw_frame
+                ;read frames amount
+                    ld  c,(ix+@animation.frames)
+
+                ; read current frame number
+                    ld  a,(ix+@animation.current)
+
+                ; check if animation is ended                    
+                    sub c
+                    jr  z,stop
+
+                    ld  a,(ix+@animation.current)
+
+                ;read room address
+                    ld  d,(ix+@animation.room_address+1)
+                    ld  e,(ix+@animation.room_address)
+
+                ;read width
+                    ld  b,(ix+@animation.width)
+                ;read height
+                    ld  c,(ix+@animation.height)
+
+                    call    find_sprite_address
+draw_frame_sprite
+                    call    draw.draw_room_sprite
+                    call    rooms.init_current_room
+
+                ; increase current frame number
+                    ld  a,(ix+@animation.current)
+                    inc a
+                    ld  (ix+@animation.current),a
+
+                    ld  a,(ix+@animation.delay)
+                    ld  (current_delay),a
+                    ret
+stop
+                ; current frame to 0
+                    xor a
+                    ld  (hl),a
+                ; stop current animation                    
+                    ld  hl,0
+                    ld  (current_animation),hl
+
+                    ret
+find_sprite_address
+    ; input 
+    ; b  - width
+    ; c  - height                
+    ; ix - animation data
+    ; a  - current frame number
+    ;
+    ; output
+    ; hl - address of sprite in memory
+
+                    push    bc            ; Preserve registers we'll use
+                    push    de
+
+                    ld  hl,ix
+                    ld  de,@animation
+                    add hl,de             ; hl = ix + 5 (skip header)
+
+                    ld  e,b               ; e = width (b)
+                    ld  d,0               ; d = 0, so de = width
+
+frame_loop
+                    or  a
+                    jr  z,frame_loop_done   ; If a == 0, we've reached the desired frame
+
+                    ex  af,af'             ; Save the frame counter
+
+                    ld  a,c               ; a = height (number of lines per frame)
+HeightLoop
+                    or  a
+                    jr  z,HeightLoopDone  ; If a == 0, finished one frame
+                    add hl,de             ; hl += width (move to next line)
+                    dec a
+                    jr  HeightLoop
+HeightLoopDone
+                    ex  af,af'             ; Restore the frame counter
+                    dec a                 ; Decrement frame counter (frames left to skip)
+                    jr  frame_loop
+
+frame_loop_done
+                    pop de                ; Restore registers
+                    pop bc
+                    ret                   ; hl points to the current frame's sprite data
+    endmodule

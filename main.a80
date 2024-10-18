@@ -12,10 +12,11 @@ start               equ #8000
                     call    rooms.init_current_room
                     jp  game_process.loop
                     halt
-                    include "game_process.a80"                    
+                    include "game_process.a80"
                     include "draw.a80"
                     include "hero.a80"
                     include "screen_utils.a80"
+                    include "animate.a80"
                     include "logic.a80"
                     include "items.a80"
                     include "print.a80"

@@ -423,7 +423,6 @@ gravity_timer
                     db 0                    
 gravity_delay
                     db 0                    
-                display check_hero_state
 check_hero_state
                     ld  de,(hero_coords)
 

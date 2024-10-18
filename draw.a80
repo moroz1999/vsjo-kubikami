@@ -109,6 +109,9 @@ draw_room_sprite
         ;   de - room address        
         ;   b - sprite width
         ;   c - sprite height
+        ;
+        ;   output
+        ;   hl - sprite address end
 draw_room_sprite_row
                     push    de
                     push    bc
