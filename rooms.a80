@@ -1,14 +1,18 @@
     module  rooms
 room_number_x       db  2
 room_number_y       db  0
+
+;room_number_x       db  0
+;room_number_y       db  1
+
 room_amount_x       equ 6
 room_amount_y       equ 4
 room_w              equ 32
 room_h              equ 22
 room_size           equ room_w*room_h
-room_bg_color1      equ 0
-room_bg_color2      equ %01000001
-room_bg_color3      equ %00000001
+room_bg_color       equ 0
+room_bg_color_sky   equ %01000001
+room_bg_color_wat   equ %00000001
 items_in_room_max   equ 5
 room_item_size      equ 3
 rooms_end_marker    equ 255

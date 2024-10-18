@@ -5,6 +5,7 @@ hero_color          db  hero_color1
 
 hero_coords
 hero_y              db  15
+;hero_x              db  19
 hero_x              db  9
 hero_timer          db  0
 hero_delay          db  1
@@ -12,6 +13,7 @@ hero_delay          db  1
 state_void          equ 0
 state_ground        equ 1
 state_jump          equ 2
+state_swim          equ 3
 
 hero_state          db  state_ground
 
@@ -136,7 +138,6 @@ hero_move
 hero_move2
                     call    hero_jump
 
-
                 ; only move if standing on ground
                     ld  a,(hero_state)
                     cp  state_ground
@@ -213,6 +214,9 @@ move_hero_down
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
+
+                    call check_hero_state
+
                     ret
 move_hero_down_stand
                     ld  a,state_ground
@@ -228,6 +232,8 @@ move_hero_left
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
+
+                    call check_hero_state
                     ret
 move_hero_right
                     ld  de,(hero_coords)
@@ -239,6 +245,7 @@ move_hero_right
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
+                    call check_hero_state
                     ret
 fire_pressed
                     call    use_current_item
@@ -348,13 +355,13 @@ check_hero_coords
 
                     call    rooms.get_room_color
 check_hero_coords_black
-                    cp  rooms.room_bg_color1
+                    cp  rooms.room_bg_color
                     jr  z,check_hero_coords_yes
 check_hero_coords_blue1
-                    cp  rooms.room_bg_color2
+                    cp  rooms.room_bg_color_sky
                     jr  z,check_hero_coords_yes
 check_hero_coords_blue0
-                    cp  rooms.room_bg_color3
+                    cp  rooms.room_bg_color_wat
                     jr  z,check_hero_coords_yes                    
 check_hero_coords_no
                     pop de
@@ -400,7 +407,39 @@ hero_gravity
                     ld  a,(hero_state)
                     cp  state_jump
                     ret z
+
+                    ld a,(gravity_timer)
+                    or a
+                    jr z,hero_gravity_do
+                    dec a
+                    ld (gravity_timer),a
+                    ret
+hero_gravity_do
+                    ld  a,(gravity_delay)
+                    ld (gravity_timer),a
                     call    move_hero_down
                     ret
+gravity_timer
+                    db 0                    
+gravity_delay
+                    db 0                    
+                display check_hero_state
+check_hero_state
+                    ld  de,(hero_coords)
 
+                    call    rooms.get_room_color
+                    cp  rooms.room_bg_color_wat
+                    jr  nz,check_hero_state_stand
+
+                    ld a,state_swim
+                    ld (hero_state),a
+
+                    ld  a,10
+                    ld  (gravity_delay),a
+                    ret
+check_hero_state_stand
+                    ret
+                    ;ld a,state_ground
+check_hero_state_end
+                    ret
     endmodule
