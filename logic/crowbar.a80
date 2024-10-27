@@ -30,15 +30,15 @@ action
 crowbar_false
                     xor a
                     ret
-ground_anim     
-                @animation  {
+ground_anim
+                    @animation  {
                     4
                     0
                     10
                     0
                     7
                     4
-                }                    
+                    }
 sprites
 crowbar_room_sprite1
                     db  %01000111,%01000111,%01000111,%01000111,%01000111,%01000111,%01000111

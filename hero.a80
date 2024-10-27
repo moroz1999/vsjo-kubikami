@@ -5,7 +5,6 @@ hero_color          db  hero_color1
 
 hero_coords
 hero_y              db  15
-;hero_x              db  19
 hero_x              db  9
 hero_timer          db  0
 hero_delay          db  1
@@ -129,7 +128,7 @@ jump_process_dec
                     ld  (jump_step),a
                     ret
 hero_jump_stop
-                    xor a ; state_void
+                    ld  a,state_void
                     ld  (jump_step),a
                     ld  (hero_state),a
                     ret
@@ -151,8 +150,6 @@ hero_move2
                     ld  a,(hero_delay)
                     ld  (hero_timer),a
                     ret
-                                       
-                 display 'hero_jump_top ',hero_jump_top
 
 hero_jump_top
                     ld  a,(hero_state)
@@ -222,11 +219,11 @@ move_hero_down
                     xor a
                     ld  (draw.restore),a
 
-                    call    check_hero_state
+                    ;call    check_hero_state
 
                     ret
 move_hero_down_stand
-                    call    check_hero_state
+                    ;call    check_hero_state
                     ret
 move_hero_left
                     ld  de,(hero_coords)
@@ -239,7 +236,7 @@ move_hero_left
                     xor a
                     ld  (draw.restore),a
 
-                    call    check_hero_state
+                    ;call    check_hero_state
                     ret
 move_hero_right
                     ld  de,(hero_coords)
@@ -251,7 +248,7 @@ move_hero_right
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
-                    call    check_hero_state
+                    ;call    check_hero_state
                     ret
 fire_pressed
                     call    use_current_item
@@ -431,12 +428,17 @@ gravity_timer
 gravity_delay
                     db  0
 check_hero_state
+                ; if hero is jumping, skip checks
+                    ld  a,(hero_state)
+                    cp  state_jump
+                    ret z
+
                     ld  de,(hero_coords)
 
                     call    rooms.get_room_color
                     cp  rooms.room_bg_color_wat
-                    jr  nz,check_hero_state_stand
-
+                    jr  nz,check_hero_state_ground
+                ; hero is swimming
                     ld  a,state_swim
                     ld  (hero_state),a
 
@@ -446,18 +448,20 @@ check_hero_state
                     ld  a,4
                     ld  (hero_delay),a
                     ret
-check_hero_state_stand
-                    cp  rooms.room_bg_color
-                    jr  z,check_hero_state_ground
-
-                    cp  rooms.room_bg_color_sky
-                    jr  nz,check_hero_state_end
-
 check_hero_state_ground
-                    ld  a,(hero_state)
-                    cp  state_jump
-                    ret z
+                ; check whats below hero
+                    ld  de,(hero_coords)
+                    inc e
 
+                    call    rooms.get_room_color
+                ; below is empty room
+                    cp  rooms.room_bg_color
+                    jr  z,check_hero_state_falling
+                ; below is empty sky
+                    cp  rooms.room_bg_color_sky
+                    jr  z,check_hero_state_falling
+                ; if not empty room or sky then hero is standing on ground
+check_hero_state_stand
                     ld  a,state_ground
                     ld  (hero_state),a
 
@@ -466,8 +470,15 @@ check_hero_state_ground
 
                     ld  a,1
                     ld  (hero_delay),a
+                    ret
+check_hero_state_falling
+                    ld  a,state_void
+                    ld  (hero_state),a
+
+                    ld  a,gravity_air
+                    ld  (gravity_delay),a
 
                     ret
-check_hero_state_end
-                    ret
+                    display 'hero_jump_top ',hero_jump_top
+
     endmodule
