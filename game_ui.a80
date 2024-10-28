@@ -15,5 +15,5 @@ erase_item_name
                     call    print.print_string
                     ret
 empty_item_name
-                    db "          ",255             
+                    db "           ",255             
     endmodule

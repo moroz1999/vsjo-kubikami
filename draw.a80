@@ -6,31 +6,48 @@ restore_y           db  255
 border
                     out #fe,a
                     ret
+draw_panel
+                    ld  d,0
+                    ld  e,rooms.room_h
+                    call    screen_utils.get_attrs_address
+                    push    hl
+                    pop de
+                    inc de
+                    ld  a,%01000111
+                    ld  (hl),a
+                    ld  bc,rooms.room_w*2
+                    ldir
+                    ret
 draw_pattern
                     ld  hl,screen_utils.screen
-                    ld  de,screen_utils.screen+1
-                    exx
-                    ld  b,screen_utils.screen_h/2
+                    ld  b,rooms.room_h*8/2
+draw_pattern_2rows
+                    push    bc
+                    push    hl
+                    push    hl
+                    pop de
+                    inc de
 
-draw_pattern_16rows
-                    exx
                     ld  a,%01010101
-                    ld  bc,screen_utils.screen_w*8-1
+                    ld  bc,screen_utils.screen_w-1
                     ld  (hl),a
                     ldir
-                    inc hl
+
+                    pop hl
+                    call    down_hl
+                    push    hl
+                    push    hl
+                    pop de
                     inc de
 
                     ld  a,%10101010
-
                     ld  (hl),a
-                    ld  bc,screen_utils.screen_w*8-1
+                    ld  bc,screen_utils.screen_w-1
                     ldir
-
-                    inc hl
-                    inc de
-                    exx
-                    djnz    draw_pattern_16rows
+                    pop hl
+                    call    down_hl
+                    pop bc
+                    djnz    draw_pattern_2rows
                     ret
 draw_hero
                     ld  a,(hero.hero_x)
@@ -133,4 +150,19 @@ draw_room_sprite_byte
                     dec c
                     jr  nz,draw_room_sprite_row
                     ret
+    ifused  down_hl
+down_hl
+                    inc h
+                    ld  a,h
+                    and 7
+                    ret nz
+                    ld  a,l
+                    sub -32
+                    ld  l,a
+                    sbc a,a
+                    and #f8
+                    add a,h
+                    ld  h,a
+                    ret
+    endif
     endmodule

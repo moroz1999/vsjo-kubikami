@@ -9,6 +9,7 @@ start               equ #8000
                     ld  a,draw.border_color
                     call    draw.border
                     call    draw.draw_pattern
+                    call    draw.draw_panel
                     call    rooms.init_current_room
                     jp  game_process.loop
                     halt
@@ -50,6 +51,6 @@ room_1_3            incbin  "rooms/room1,3.atr"
 room_2_3            incbin  "rooms/room2,3.atr"
 room_3_3            incbin  "rooms/room3,3.atr"
 end
-                    display 'program length ',end-start
-                    display 'remaining room ',#ffff-end
+                    display 'program length ', end-start
+                    display 'remaining room ', #ffff-end
                     savesna "qsave1.sna",start

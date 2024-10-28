@@ -1,19 +1,4 @@
 
-    ifused  down_hl
-down_hl
-                    inc h
-                    ld  a,h
-                    and 7
-                    ret nz
-                    ld  a,l
-                    sub -32
-                    ld  l,a
-                    sbc a,a
-                    and #f8
-                    add a,h
-                    ld  h,a
-                    ret
-    endif
     ifused  down_de
 down_de
                     inc d
