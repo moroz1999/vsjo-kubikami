@@ -1,10 +1,4 @@
     module  game_process
-action_fire         equ 0
-action_left         equ 1
-action_right        equ 2
-action_up           equ 3
-action_down         equ 4
-last_action         db  255
 loop
                     ld  a,1
                     call    draw.border
@@ -22,78 +16,6 @@ room_logic_pointer  equ $+1
                     ld  b,1
                     call    wait
                     jr  loop
-keyboard
-                    ld  a,#fb
-                    in  a,#fe
-
-                    bit 0,a			;q
-                    jp  z,keyboard_up
-
-                    ld  a,#fd
-                    in  a,#fe
-
-                    bit 0,a			;a
-                    call    z,keyboard_down
-
-                    ld  a,#df
-                    in  a,#fe
-
-                    bit 0,a			;p
-                    call    z,keyboard_right
-
-                    ld  a,#df
-                    in  a,#fe
-
-                    bit 1,a			;o
-                    call    z,keyboard_left
-
-                    ld  a,#7f
-                    in  a,#fe
-
-                    bit 0,a			;space
-                    call    z,keyboard_fire
-
-                    ret
-keyboard_left
-                    call    z,hero.move_hero_left
-                    ld  a,action_left
-                    ld  (last_action),a
-                    ret
-keyboard_right
-                    call    z,hero.move_hero_right
-                    ld  a,action_right
-                    ld  (last_action),a
-                    ret
-keyboard_fire
-                    ld  a,(last_action)
-                    cp  action_fire
-                    ret z
-                    call    hero.fire_pressed
-                    ld  a,action_fire
-                    ld  (last_action),a
-                    ret
-keyboard_down
-                    call    z,hero.move_hero_down
-                    ld  a,action_down
-                    ld  (last_action),a
-                    ret
-keyboard_up
-                    ld  a,action_up
-                    ld  (last_action),a
-
-                    ld  a,#df
-                    in  a,#fe
-
-                    bit 0,a			;p
-                    jp  z,hero.hero_jump_right
-
-                    ld  a,#df
-                    in  a,#fe
-
-                    bit 1,a			;o
-                    jp  z,hero.hero_jump_left
-
-                    jp  hero.hero_jump_top
 wait
                     ei
                     halt

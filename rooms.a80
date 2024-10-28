@@ -1,6 +1,6 @@
     module  rooms
-room_number_x       db  2
-room_number_y       db  0
+room_number_x       db  1
+room_number_y       db  2
 
 room_amount_x       equ 6
 room_amount_y       equ 4
@@ -128,7 +128,7 @@ set_top_room
                     call    init_current_room
                     ret
 room_pointers
-                    dw  0
+                    dw  room_0_0
                     dw  room_1_0
                     dw  room_2_0
                     dw  room_3_0
@@ -143,13 +143,13 @@ room_pointers
                     dw  room_5_1
 
                     dw  room_0_2
-                    dw  0
+                    dw  room_1_2
                     dw  room_2_2
-                    dw  0
-                    dw  0
-                    dw  0
+                    dw  room_3_2
+                    dw  room_4_2
+                    dw  room_5_2
 
-                    dw  0
+                    dw  room_0_3
                     dw  room_1_3
                     dw  room_2_3
                     dw  room_3_3

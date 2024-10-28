@@ -146,7 +146,7 @@ hero_move2
                     and state_movable
                     ret z
 
-                    call    game_process.keyboard
+                    call    keyboard.query
                     ld  a,(hero_delay)
                     ld  (hero_timer),a
                     ret

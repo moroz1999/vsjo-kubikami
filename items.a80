@@ -2,7 +2,7 @@
 items_end_marker    equ 255
 item_not_in_room    equ 255
 crowbar             equ 0
-test                equ 1
+toolkit             equ 1
 stone               equ 2
 item_size           equ item_1-item_0
 item_text_offset    equ item_0_text-item_0
@@ -84,12 +84,12 @@ item_0_text
 item_0_logic
                     dw  logic.crowbar.action
 item_1
-                    db  test
-                    db  1
+                    db  toolkit
                     db  0
-                    db  1
-                    db  1
-                    dw  strings.test1
+                    db  2
+                    db  28
+                    db  20
+                    dw  strings.toolkit
                     dw  logic.empty_item_action
 item_2
                     db  stone
