@@ -83,5 +83,24 @@ keyboard_up
 
                     jp  hero.hero_jump_top
 keyboard_swim_up
+                    ld  a,#df
+                    in  a,#fe
+
+                    bit 0,a			;p
+                    jr  z,keyboard_swim_up_right
+
+                    ld  a,#df
+                    in  a,#fe
+
+                    bit 1,a			;o
+                    jr  z,keyboard_swim_up_left
+
+                    
                     jp  hero.move_hero_up
+keyboard_swim_up_left
+                    call hero.move_hero_left
+                    jp  hero.move_hero_up
+keyboard_swim_up_right
+                    call hero.move_hero_right
+                    jp  hero.move_hero_up                    
     endmodule

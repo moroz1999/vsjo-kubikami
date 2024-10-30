@@ -1,6 +1,6 @@
     module  rooms
-room_number_x       db  2
-room_number_y       db  0
+room_number_x       db  4
+room_number_y       db  1
 
 room_amount_x       equ 6
 room_amount_y       equ 4
@@ -12,11 +12,13 @@ room_bg_color_sky   equ %01000001
 room_bg_color_wat   equ %00000001
 items_in_room_max   equ 5
 room_item_size      equ 3
+room_elevators_lim  equ 3
 rooms_end_marker    equ 255
 item_not_found      equ 255
 init_current_room
                     call    logic.change_logic_pointer
                     call    gather_items
+                    call    gather_elevators
 
                     call    get_current_room_address
                     ld  de,screen_utils.attrs
@@ -155,6 +157,20 @@ room_pointers
                     dw  room_3_3
                     dw  0
                     dw  0
+gather_elevators
+                    ld  a,(room_number_x)
+                    ld  b,a
+                    ld  a,(room_number_y)
+                    ld  c,a
+
+                    ld  hl,elevators.elevators_table
+                    ld  de,room_elevators_buf
+gather_elev_next
+                    ld  a,(hl)
+                    inc hl
+                    cp  elevators.end_marker
+                    jr  z,gather_items_end
+                    ret
 gather_items
                     ld  a,(room_number_x)
                     ld  b,a
@@ -362,4 +378,7 @@ room_items_buffer
 
                     ds  room_item_size*items_in_room_max+1
 room_items_end
+room_elevators_buf
+                    ds  room_elevators_lim*2+1
+room_elevators_end
     endmodule
