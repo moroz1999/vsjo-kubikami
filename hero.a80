@@ -479,6 +479,5 @@ check_hero_state_falling
                     ld  (gravity_delay),a
 
                     ret
-                    display 'hero_jump_top ',hero_jump_top
 
     endmodule

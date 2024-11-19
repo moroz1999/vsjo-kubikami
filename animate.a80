@@ -56,6 +56,8 @@ draw_frame_sprite
                     call    draw.draw_room_sprite
                     call    rooms.init_current_room
 
+                    ld  ix,(current_animation)
+
                 ; increase current frame number
                     ld  a,(ix+@animation.current)
                     inc a

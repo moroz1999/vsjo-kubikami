@@ -1,6 +1,6 @@
     module  rooms
-room_number_x       db  4
-room_number_y       db  1
+room_number_x       db  2
+room_number_y       db  0
 
 room_amount_x       equ 6
 room_amount_y       equ 4
@@ -27,7 +27,7 @@ init_current_room
                     ret
 get_current_room_address
                 ; input
-                ; de - coordinates
+                ; de - room coordinates
                 ; output
                 ; hl - address in memory
                     ld  a,(room_number_x)
@@ -134,7 +134,7 @@ room_pointers
                     dw  room_1_0
                     dw  room_2_0
                     dw  room_3_0
-                    dw  0
+                    dw  room_4_0
                     dw  0
 
                     dw  room_0_1
@@ -156,20 +156,53 @@ room_pointers
                     dw  room_2_3
                     dw  room_3_3
                     dw  0
-                    dw  0
+                    dw  0                
 gather_elevators
-                    ld  a,(room_number_x)
-                    ld  b,a
-                    ld  a,(room_number_y)
-                    ld  c,a
+                    ld  b,elevators.amount
+                // return if there is no elevators in game
+                    ld  a,b
+                    or  a
+                    ret z
 
+                    ld  a,(rooms.room_number_x)
+                    ld  d,a
+
+                    ld  a,(rooms.room_number_y)
+                    ld  e,a
+
+
+                    ld  iy,room_elevators_buf
                     ld  hl,elevators.elevators_table
-                    ld  de,room_elevators_buf
+
 gather_elev_next
                     ld  a,(hl)
+                    ld  ixl,a
                     inc hl
-                    cp  elevators.end_marker
-                    jr  z,gather_items_end
+                    ld  a,(hl)
+                    ld  ixh,a
+                    inc hl
+                    push    hl
+
+                    ld  a,(ix)
+                    cp  d
+                    jr  nz,gather_elev_skip
+                    ld  a,(ix+1)
+                    cp  e
+                    jr  nz,gather_elev_skip
+                    ld  a,ixl
+                    ld  (iy),a
+                    inc iy
+
+                    ld  a,ixh
+                    ld  (iy),a
+                    inc iy
+
+gather_elev_skip
+                    pop hl
+                    djnz    gather_elev_next
+                    ld  a,rooms_end_marker
+
+                    ld  (iy),a
                     ret
 gather_items
                     ld  a,(room_number_x)

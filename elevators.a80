@@ -1,0 +1,93 @@
+    module  elevators
+state_stop          equ 0
+state_up            equ 1
+state_down          equ 2
+end_marker          equ #ff
+amount              equ 1
+elevator_top_color  equ %000000111
+    struct  elevator
+room_x              byte
+room_y              byte
+room_pos_x          byte
+room_pos_y          byte
+width               byte
+cur_height          byte
+end_height          byte
+state               byte
+    ends
+                    display "draw_current",draw_current
+
+draw_current
+                    ld  hl,rooms.room_elevators_buf
+draw_next
+                    ld  a,(hl)
+                ; check if there are no elevators
+                    cp  rooms.rooms_end_marker
+                    ret z
+
+                    ld  ixl,a
+                    inc hl
+
+                    ld  a,(hl)
+                    ld  ixh,a
+                    inc hl
+                    push    hl
+                ; ix now has elevator data start
+
+                    ld  a,(ix+elevator.room_pos_x)
+                    ld  d,a
+
+                    ld  a,(ix+elevator.room_pos_y)
+                    ld  e,a
+
+                    ld  a,(ix+elevator.width)
+                    ld  b,a
+
+                    ld  a,(ix+elevator.cur_height)
+                    inc a
+                    ld  (ix+elevator.cur_height),a
+                    ld  c,a
+
+                    push    ix
+                    call    draw_elevator
+                    pop ix
+                    pop hl
+                    jr  draw_next
+                    ret
+draw_elevator
+                ; d - elevator start x
+                ; e - elevator start y
+                ; b - width
+                ; c - height
+
+                ; get left top address of elevator in current room
+                    ld  a,e
+                    sub c
+                    ld  e,a
+
+                    push    bc
+                    call    screen_utils.get_attrs_address
+                    pop bc
+
+                    ld  a,elevator_top_color
+draw_elevator_pixel
+                    ld  (hl),a
+                    inc hl
+                    djnz    draw_elevator_pixel
+                    //call    rooms.init_current_room
+
+                    ret
+elevators_table
+                    dw  elevator_1
+elevator_1
+                    elevator    {
+                    4,
+                    1,
+                    22,
+                    20,
+                    7,
+                    0
+                    13,
+                    state_up
+                    }
+    endmodule

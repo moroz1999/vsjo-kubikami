@@ -3,6 +3,7 @@ loop
                     ld  a,1
                     call    draw.border
                     call    animate.check
+                    call    elevators.draw_current
                     call    hero.check_hero_state
                     call    hero.switch_colors
                     call    hero.save_restore
@@ -17,8 +18,11 @@ room_logic_pointer  equ $+1
                     call    wait
                     jr  loop
 wait
+                    ld iy,0
+                    ld ix,0
                     ei
                     halt
+                    di
                     djnz    wait
                     ret
 endgame
