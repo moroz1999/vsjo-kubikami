@@ -3,7 +3,7 @@ state_stop          equ 0
 state_up            equ 1
 state_down          equ 2
 end_marker          equ #ff
-amount              equ 1
+amount              equ 3
 elevator_top_color  equ %000000111
     struct  elevator
 room_x              byte
@@ -15,15 +15,73 @@ cur_height          byte
 end_height          byte
 state               byte
     ends
-                    display "draw_current",draw_current
+                    display "elevators_update ",elevators_update
+elevators_update
+                    ld  hl,rooms.room_elevators_buf
+elevators_update_next
+                    ld  a,(hl)
+                ; check if there are no elevators
+                    cp  rooms.rooms_end_marker
+                    ret z
+
+                    ld  ixl,a
+                    inc hl
+
+                    ld  a,(hl)
+                    ld  ixh,a
+                    inc hl
+                    push    hl
+                ; ix now has elevator data start
+
+                    ld  a,(ix+elevator.state)
+                    cp  state_down
+                    jr  z,elevator_move_down
+
+                    cp  state_up
+                    jr  nz,elevator_move_end
+elevator_move_up
+                    ld  a,(ix+elevator.end_height)
+                    ld  b,a
+
+                    ld  a,(ix+elevator.cur_height)
+                    cp  b
+
+                    jr  z,elevator_switch_down
+                    inc a
+                    ld  (ix+elevator.cur_height),a
+                    jr  elevator_move_end
+elevator_switch_down
+                    ld  a,state_down
+                    ld  (ix+elevator.state),a
+                    jr  elevator_move_end
+elevator_move_down
+                    ld  a,(ix+elevator.cur_height)
+                    or  a
+
+                    jr  z,elevator_switch_up
+                    dec a
+                    ld  (ix+elevator.cur_height),a
+                    jr  elevator_move_end
+elevator_switch_up
+                    ld  a,state_up
+                    ld  (ix+elevator.state),a
+                    jr  elevator_move_end
+elevator_move_end
+                    pop hl
+                    jr  elevators_update_next
+                    ret
+
 
 draw_current
+                    call    rooms.init_current_room
+
                     ld  hl,rooms.room_elevators_buf
 draw_next
                     ld  a,(hl)
                 ; check if there are no elevators
                     cp  rooms.rooms_end_marker
                     ret z
+                    ld  a,(hl)
 
                     ld  ixl,a
                     inc hl
@@ -44,8 +102,6 @@ draw_next
                     ld  b,a
 
                     ld  a,(ix+elevator.cur_height)
-                    inc a
-                    ld  (ix+elevator.cur_height),a
                     ld  c,a
 
                     push    ix
@@ -74,19 +130,45 @@ draw_elevator_pixel
                     ld  (hl),a
                     inc hl
                     djnz    draw_elevator_pixel
-                    //call    rooms.init_current_room
 
                     ret
+                    display "elevator_4_1_1 ",elevator_4_1_1
+                    display "elevator_4_1_2 ",elevator_4_1_2
+                    display "elevator_4_1_3 ",elevator_4_1_3
 elevators_table
-                    dw  elevator_1
-elevator_1
+                    dw  elevator_4_1_1
+                    dw  elevator_4_1_2
+                    dw  elevator_4_1_3
+elevator_4_1_1
+                    elevator    {
+                    4,
+                    1,
+                    2,
+                    20,
+                    7,
+                    0
+                    13,
+                    state_up
+                    }
+elevator_4_1_2
+                    elevator    {
+                    4,
+                    1,
+                    9,
+                    20,
+                    8,
+                    0
+                    13,
+                    state_up
+                    }
+elevator_4_1_3
                     elevator    {
                     4,
                     1,
                     22,
                     20,
                     7,
-                    0
+                    13
                     13,
                     state_up
                     }

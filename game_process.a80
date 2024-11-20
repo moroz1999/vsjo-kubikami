@@ -3,6 +3,7 @@ loop
                     ld  a,1
                     call    draw.border
                     call    animate.check
+                    call    elevators.elevators_update
                     call    elevators.draw_current
                     call    hero.check_hero_state
                     call    hero.switch_colors

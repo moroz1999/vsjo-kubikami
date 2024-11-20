@@ -52,6 +52,7 @@ room_0_3            incbin  "rooms/room0,3.atr"
 room_1_3            incbin  "rooms/room1,3.atr"
 room_2_3            incbin  "rooms/room2,3.atr"
 room_3_3            incbin  "rooms/room3,3.atr"
+room_4_3            incbin  "rooms/room4,3.atr"
 end
                     display 'program length ', end-start
                     display 'remaining room ', #ffff-end

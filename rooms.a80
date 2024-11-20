@@ -155,7 +155,7 @@ room_pointers
                     dw  room_1_3
                     dw  room_2_3
                     dw  room_3_3
-                    dw  0
+                    dw  room_4_3
                     dw  0                
 gather_elevators
                     ld  b,elevators.amount
