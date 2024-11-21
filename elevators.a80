@@ -4,7 +4,7 @@ state_up            equ 1
 state_down          equ 2
 end_marker          equ #ff
 amount              equ 3
-elevator_top_color  equ %000000111
+elevator_top_color  equ %01000111
     struct  elevator
 room_x              byte
 room_y              byte
@@ -14,6 +14,8 @@ width               byte
 cur_height          byte
 end_height          byte
 state               byte
+delay               byte
+timer               byte
     ends
                     display "elevators_update ",elevators_update
 elevators_update
@@ -32,6 +34,16 @@ elevators_update_next
                     inc hl
                     push    hl
                 ; ix now has elevator data start
+
+                    ld  a,(ix+elevator.timer)
+                    or  a
+                    jr  z,elevator_move_allow
+                    dec a
+                    ld  (ix+elevator.timer),a
+                    jr  elevator_move_end
+elevator_move_allow
+                    ld  a,(ix+elevator.delay)
+                    ld  (ix+elevator.timer),a
 
                     ld  a,(ix+elevator.state)
                     cp  state_down
@@ -73,8 +85,6 @@ elevator_move_end
 
 
 draw_current
-                    call    rooms.init_current_room
-
                     ld  hl,rooms.room_elevators_buf
 draw_next
                     ld  a,(hl)
@@ -148,7 +158,9 @@ elevator_4_1_1
                     7,
                     0
                     13,
-                    state_up
+                    state_up,
+                    2,
+                    0
                     }
 elevator_4_1_2
                     elevator    {
@@ -159,7 +171,9 @@ elevator_4_1_2
                     8,
                     0
                     13,
-                    state_up
+                    state_up,
+                    2,
+                    0
                     }
 elevator_4_1_3
                     elevator    {
@@ -170,6 +184,8 @@ elevator_4_1_3
                     7,
                     13
                     13,
-                    state_up
+                    state_up,
+                    1,
+                    0
                     }
     endmodule

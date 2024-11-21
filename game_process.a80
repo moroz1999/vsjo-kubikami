@@ -2,6 +2,7 @@
 loop
                     ld  a,1
                     call    draw.border
+                    call    rooms.init_current_room
                     call    animate.check
                     call    elevators.elevators_update
                     call    elevators.draw_current
