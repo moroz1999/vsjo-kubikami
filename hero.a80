@@ -208,6 +208,11 @@ move_hero_up
                     ld  (draw.restore),a
                     ret
 move_hero_down
+
+                    ld  a,(hero_elevator)
+                    cp  elevators.item_on_elevator
+                    jr  z,move_hero_down_stand
+
                     ld  de,(hero_coords)
                     inc e
 
@@ -219,11 +224,8 @@ move_hero_down
                     xor a
                     ld  (draw.restore),a
 
-                    ;call    check_hero_state
-
                     ret
 move_hero_down_stand
-                    ;call    check_hero_state
                     ret
 move_hero_left
                     ld  de,(hero_coords)
@@ -236,7 +238,6 @@ move_hero_left
                     xor a
                     ld  (draw.restore),a
 
-                    ;call    check_hero_state
                     ret
 move_hero_right
                     ld  de,(hero_coords)
@@ -248,7 +249,6 @@ move_hero_right
                     ld  (hero_coords),de
                     xor a
                     ld  (draw.restore),a
-                    ;call    check_hero_state
                     ret
 fire_pressed
                     call    use_current_item
@@ -427,6 +427,7 @@ gravity_timer
                     db  0
 gravity_delay
                     db  0
+                    display "check_hero_state ",check_hero_state
 check_hero_state
                 ; if hero is jumping, skip checks
                     ld  a,(hero_state)
@@ -437,7 +438,7 @@ check_hero_state
 
                     call    rooms.get_room_color
                     cp  rooms.room_bg_color_wat
-                    jr  nz,check_hero_state_ground
+                    jr  nz,check_hero_elevator
                 ; hero is swimming
                     ld  a,state_swim
                     ld  (hero_state),a
@@ -448,6 +449,12 @@ check_hero_state
                     ld  a,4
                     ld  (hero_delay),a
                     ret
+check_hero_elevator
+                ; check if hero is on any elevator
+                    ld  a,(hero_elevator)
+                    cp  elevators.item_on_elevator
+                    jr  z,check_hero_state_stand
+
 check_hero_state_ground
                 ; check whats below hero
                     ld  de,(hero_coords)
@@ -479,5 +486,20 @@ check_hero_state_falling
                     ld  (gravity_delay),a
 
                     ret
+check_elevator
+                    ld  a,(hero_x)
+                    ld  d,a
+
+                    ld  a,(hero_y)
+                    ld  e,a
+                    call    elevators.item_elevator_check
+
+                    ld  (hero_elevator),a
+                    ld  (current_elevator),ix
+                    ret
+hero_elevator
+                    db  elevators.item_not_elevator
+current_elevator
+                    dw  0
 
     endmodule
