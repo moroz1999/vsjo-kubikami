@@ -1,6 +1,6 @@
     module  rooms
-room_number_x       db  4
-room_number_y       db  1
+room_number_x       db  2
+room_number_y       db  0
 
 room_amount_x       equ 6
 room_amount_y       equ 4
@@ -8,6 +8,7 @@ room_w              equ 32
 room_h              equ 22
 room_size           equ room_w*room_h
 room_bg_color       equ 0
+room_bg_color_gray  equ %00000111
 room_bg_color_sky   equ %01000001
 room_bg_color_wat   equ %00000001
 items_in_room_max   equ 5
@@ -156,7 +157,7 @@ room_pointers
                     dw  room_2_3
                     dw  room_3_3
                     dw  room_4_3
-                    dw  0                
+                    dw  0
 gather_elevators
                     ld  b,elevators.amount
                 // return if there is no elevators in game

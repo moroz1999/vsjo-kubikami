@@ -7,7 +7,9 @@ hero_coords
 hero_y              db  15
 hero_x              db  9
 hero_timer          db  0
-hero_delay          db  1
+hero_delay          db  2
+hero_delay_ground   equ 2
+hero_delay_swim     equ 4
 
 state_void          equ %00000001
 state_ground        equ %00000010
@@ -208,11 +210,10 @@ move_hero_up
                     ld  (draw.restore),a
                     ret
 move_hero_down
-
                     ld  a,(hero_elevator)
                     cp  elevators.item_on_elevator
                     jr  z,move_hero_down_stand
-
+move_hero_down_force
                     ld  de,(hero_coords)
                     inc e
 
@@ -361,6 +362,9 @@ check_hero_coords
 check_hero_coords_black
                     cp  rooms.room_bg_color
                     jr  z,check_hero_coords_yes
+check_hero_coords_gray
+                    cp  rooms.room_bg_color_gray
+                    jr  z,check_hero_coords_yes
 check_hero_coords_blue1
                     cp  rooms.room_bg_color_sky
                     jr  z,check_hero_coords_yes
@@ -427,7 +431,6 @@ gravity_timer
                     db  0
 gravity_delay
                     db  0
-                    display "check_hero_state ",check_hero_state
 check_hero_state
                 ; if hero is jumping, skip checks
                     ld  a,(hero_state)
@@ -446,7 +449,7 @@ check_hero_state
                     ld  a,gravity_water
                     ld  (gravity_delay),a
 
-                    ld  a,4
+                    ld  a,hero_delay_swim
                     ld  (hero_delay),a
                     ret
 check_hero_elevator
@@ -461,8 +464,11 @@ check_hero_state_ground
                     inc e
 
                     call    rooms.get_room_color
-                ; below is empty room
+                ; below is empty space
                     cp  rooms.room_bg_color
+                    jr  z,check_hero_state_falling
+                ; below is empty gray space
+                    cp  rooms.room_bg_color_gray
                     jr  z,check_hero_state_falling
                 ; below is empty sky
                     cp  rooms.room_bg_color_sky
@@ -475,7 +481,7 @@ check_hero_state_stand
                     ld  a,gravity_air
                     ld  (gravity_delay),a
 
-                    ld  a,1
+                    ld  a,hero_delay_ground
                     ld  (hero_delay),a
                     ret
 check_hero_state_falling

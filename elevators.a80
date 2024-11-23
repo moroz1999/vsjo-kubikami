@@ -7,7 +7,6 @@ item_not_elevator   equ 0
 item_on_elevator    equ 1
 
 end_marker          equ #ff
-amount              equ 3
 elevator_top_color  equ %01000111
     struct  elevator
 room_x              byte
@@ -88,7 +87,7 @@ hero_update_next
                 ; restore stack
                     pop hl
                 ; return true
-                    ld  a,item_on_elevator                
+                    ld  a,item_on_elevator
                     ret
 hero_update_skip
                     pop hl
@@ -139,6 +138,9 @@ elevator_move_up
                     jr  z,elevator_switch_down
                     inc a
                     ld  (ix+elevator.cur_height),a
+
+                    call    elevator_move_items
+
                     jr  elevator_move_end
 elevator_switch_down
                     ld  a,state_down
@@ -151,6 +153,9 @@ elevator_move_down
                     jr  z,elevator_switch_up
                     dec a
                     ld  (ix+elevator.cur_height),a
+
+                    call    elevator_move_items
+
                     jr  elevator_move_end
 elevator_switch_up
                     ld  a,state_up
@@ -160,8 +165,43 @@ elevator_move_end
                     pop hl
                     jr  elevators_update_next
                     ret
+                display 'elevator_move_items ', elevator_move_items                    
+elevator_move_items
+                ; input
+                ; ix points to elevator data
+                    push    hl
+                    push    de
+                    push    bc
+                    push    ix
+                    ld  a,(hero.hero_elevator)
+                    cp  item_on_elevator
+                    jr  nz,elevator_move_items_end
 
+                    ld  hl,(hero.current_elevator)
+                    push    ix
+                    pop de
 
+                    or  a
+                    sbc hl,de
+
+                    ld  a,h
+                    or  l
+                    jr  nz,elevator_move_items_end
+                    
+                    ld  a,(ix+elevator.state)
+                    cp  state_down
+                    jr  z,elevator_move_items_down
+                    call    hero.move_hero_up
+                    jr  elevator_move_items_end
+elevator_move_items_down
+                    call    hero.move_hero_down_force
+
+elevator_move_items_end
+                    pop ix
+                    pop bc
+                    pop de
+                    pop hl
+                    ret
 draw_current
                     ld  hl,rooms.room_elevators_buf
 draw_next
@@ -220,13 +260,40 @@ draw_elevator_pixel
                     djnz    draw_elevator_pixel
 
                     ret
-                    display "elevator_4_1_1 ",elevator_4_1_1
-                    display "elevator_4_1_2 ",elevator_4_1_2
-                    display "elevator_4_1_3 ",elevator_4_1_3
+amount              equ 6
 elevators_table
+                    dw  elevator_3_0
+                    dw  elevator_3_1
                     dw  elevator_4_1_1
                     dw  elevator_4_1_2
                     dw  elevator_4_1_3
+                    dw  elevator_4_3
+elevator_3_0
+                    elevator    {
+                    3,
+                    0,
+                    4,
+                    21,
+                    8,
+                    0
+                    13,
+                    state_up,
+                    2,
+                    0
+                    }                       
+elevator_3_1
+                    elevator    {
+                    3,
+                    1,
+                    4,
+                    20,
+                    8,
+                    0
+                    21,
+                    state_up,
+                    2,
+                    0
+                    }                    
 elevator_4_1_1
                     elevator    {
                     4,
@@ -237,7 +304,7 @@ elevator_4_1_1
                     0
                     13,
                     state_up,
-                    200,
+                    2,
                     0
                     }
 elevator_4_1_2
@@ -266,4 +333,17 @@ elevator_4_1_3
                     1,
                     0
                     }
+elevator_4_3
+                    elevator    {
+                    4,
+                    3,
+                    6,
+                    21,
+                    12,
+                    13
+                    13,
+                    state_down,
+                    3,
+                    0
+                    }                        
     endmodule
