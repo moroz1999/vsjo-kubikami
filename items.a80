@@ -90,7 +90,7 @@ item_1
                     db  28
                     db  20
                     dw  strings.toolkit
-                    dw  logic.empty_item_action
+                    dw  logic.toolkit.action
 item_2
                     db  stone
                     db  2

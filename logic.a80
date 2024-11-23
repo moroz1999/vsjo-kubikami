@@ -1,7 +1,6 @@
     module  logic
 game_end_x          equ 6
-game_end_y          equ 20
-room_1_3
+game_end_y          equ 19
 
 change_logic_pointer
                     call    get_logic_pointer
@@ -39,6 +38,7 @@ get_room_logic_skip_add
                     ret
                     include "./logic/crowbar.a80";
                     include "./logic/stone.a80";
+                    include "./logic/toolkit.a80";
 empty_room_logic
                     ret
 empty_item_action

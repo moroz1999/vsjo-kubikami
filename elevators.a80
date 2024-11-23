@@ -165,7 +165,7 @@ elevator_move_end
                     pop hl
                     jr  elevators_update_next
                     ret
-                display 'elevator_move_items ', elevator_move_items                    
+                    display 'elevator_move_items ',elevator_move_items
 elevator_move_items
                 ; input
                 ; ix points to elevator data
@@ -187,7 +187,7 @@ elevator_move_items
                     ld  a,h
                     or  l
                     jr  nz,elevator_move_items_end
-                    
+
                     ld  a,(ix+elevator.state)
                     cp  state_down
                     jr  z,elevator_move_items_down
@@ -260,14 +260,28 @@ draw_elevator_pixel
                     djnz    draw_elevator_pixel
 
                     ret
-amount              equ 6
+amount              equ 7
 elevators_table
+                    dw  elevator_2_1
                     dw  elevator_3_0
                     dw  elevator_3_1
                     dw  elevator_4_1_1
                     dw  elevator_4_1_2
                     dw  elevator_4_1_3
                     dw  elevator_4_3
+elevator_2_1
+                    elevator    {
+                    2,
+                    1,
+                    8,
+                    22,
+                    12,
+                    2
+                    2,
+                    state_stop,
+                    2,
+                    0
+                    }
 elevator_3_0
                     elevator    {
                     3,
@@ -280,7 +294,7 @@ elevator_3_0
                     state_up,
                     2,
                     0
-                    }                       
+                    }
 elevator_3_1
                     elevator    {
                     3,
@@ -293,7 +307,7 @@ elevator_3_1
                     state_up,
                     2,
                     0
-                    }                    
+                    }
 elevator_4_1_1
                     elevator    {
                     4,
@@ -345,5 +359,5 @@ elevator_4_3
                     state_down,
                     3,
                     0
-                    }                        
+                    }
     endmodule
