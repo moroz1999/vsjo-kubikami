@@ -14,6 +14,7 @@ room_y              byte
 room_pos_x          byte
 room_pos_y          byte
 width               byte
+leg_left            byte
 cur_height          byte
 end_height          byte
 state               byte
@@ -210,7 +211,7 @@ draw_next
                     cp  rooms.rooms_end_marker
                     ret z
                     ld  a,(hl)
-                ; read elevatr address to ix
+                ; read elevator address to ix
                     ld  ixl,a
                     inc hl
 
@@ -233,7 +234,18 @@ draw_next
                     ld  c,a
 
                     push    ix
+
+                    push    de
+                    push    bc
                     call    draw_elevator
+                    pop bc
+                    pop de
+
+                    ld  a,(ix+elevator.leg_left)
+                    add d
+                    ld  d,a
+
+                    call    draw_elevator_leg
                     pop ix
                     pop hl
                     jr  draw_next
@@ -260,6 +272,31 @@ draw_elevator_pixel
                     djnz    draw_elevator_pixel
 
                     ret
+                    display 'draw_elevator_leg ',draw_elevator_leg
+draw_elevator_leg
+                ; d - elevator leg start x
+                ; e - elevator leg start y
+                ; c - current height
+
+                ; if current height is smaller than 1 + 1 then there is nothing to draw
+                    ld  a,c
+                    or  a
+                    ret z                   
+
+                    ld  b,a
+
+                ; get screen address of elevator leg bottom
+                    push    bc
+                    call    screen_utils.get_attrs_address
+                    pop bc
+                    ld  de,rooms.room_w
+                    ld  a,%00000111
+draw_elevator_leg_pix
+                    ld  (hl),a
+                    or  a
+                    sbc hl,de
+                    djnz    draw_elevator_leg_pix
+                    ret
 amount              equ 7
 elevators_table
                     dw  elevator_2_1
@@ -276,6 +313,7 @@ elevator_2_1
                     8,
                     22,
                     12,
+                    6,
                     2
                     2,
                     state_stop,
@@ -289,6 +327,7 @@ elevator_3_0
                     4,
                     21,
                     8,
+                    4,
                     0
                     13,
                     state_up,
@@ -302,6 +341,7 @@ elevator_3_1
                     4,
                     20,
                     8,
+                    4,
                     0
                     21,
                     state_up,
@@ -315,6 +355,7 @@ elevator_4_1_1
                     2,
                     20,
                     7,
+                    3,
                     0
                     13,
                     state_up,
@@ -328,6 +369,7 @@ elevator_4_1_2
                     9,
                     20,
                     8,
+                    3,
                     0
                     13,
                     state_up,
@@ -341,6 +383,7 @@ elevator_4_1_3
                     22,
                     20,
                     7,
+                    3,
                     13
                     13,
                     state_up,
@@ -354,6 +397,7 @@ elevator_4_3
                     6,
                     21,
                     12,
+                    5,
                     13
                     13,
                     state_down,
