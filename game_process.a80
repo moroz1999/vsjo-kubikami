@@ -2,16 +2,18 @@
 loop
                     ld  a,1
                     call    draw.border
-                    call    rooms.init_current_room
+                    //call    rooms.init_current_room
                     call    animate.check
+                    call    elevators.restore
                     call    elevators.elevators_update                    
-                    call    elevators.draw_current
                     call    hero.check_elevator
                     call    hero.check_hero_state
                     call    hero.switch_colors
                     call    hero.save_restore
                     call    hero.hero_gravity
                     call    hero.hero_move
+                    call    teleports.switch_colors
+                    call    teleports.check_hero
                     call    debug.print_hero_state
 room_logic_pointer  equ $+1
                     call    logic.empty_room_logic

@@ -27,6 +27,7 @@ start               equ #8000
                     include "game_ui.a80"
                     include "keyboard.a80"
                     include "elevators.a80"
+                    include "teleports.a80"
                     include "debug.a80"
 rooms_data
 room_0_0            incbin  "rooms/room0,0.atr"

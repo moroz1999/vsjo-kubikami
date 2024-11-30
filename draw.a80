@@ -60,11 +60,59 @@ draw_hero
                     ret
 draw_state
                     call    restore_hero
+                    call    elevators.draw_current
                     call    draw_room_items
+                    call    teleports.draw_current
                     call    draw_hero
 
-                    ret
 
+                    ret
+                    display "restore_rectangle ",restore_rectangle
+restore_rectangle
+                ; input:
+                ; d - x
+                ; e - y
+                ; b - width
+                ; c - height
+                    push    bc
+
+                    push    de
+                    call    rooms.get_current_room_pixel_address
+                    pop de
+                    push    hl
+                    call    screen_utils.get_attrs_address
+                    ex  hl,de
+                ; de now has screen address                    
+                    pop hl
+                ; hl now has room pixel address
+                    pop bc
+restore_row
+                    push    de
+                    push    hl
+                    push    bc
+                ; bc now has restored w/h
+restore_pixel
+                    ld  a,(hl)
+                    ld  (de),a
+                    inc hl
+                    inc de
+                    djnz    restore_pixel
+
+                    pop bc
+                    pop hl
+                    ld  de,rooms.room_w
+                    add hl,de
+
+                    pop de
+                    push    hl
+                    ld  hl,rooms.room_w
+                    add hl,de
+                    ex  hl,de
+                    pop hl
+
+                    dec c
+                    jr  nz,restore_row
+                    ret
 restore_hero
                     ld  a,(restore)
                     cp  255

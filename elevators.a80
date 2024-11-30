@@ -21,7 +21,50 @@ state               byte
 delay               byte
 timer               byte
     ends
+restore
+                ; - restore image under elevators
+                    ld  hl,rooms.room_elevators_buf
+restore_next
+                    ld  a,(hl)
+                ; check if there are no elevators
+                    cp  rooms.rooms_end_marker
+                    ret z
+                    ld  a,(hl)
+                ; read elevator address to ix
+                    ld  ixl,a
+                    inc hl
 
+                    ld  a,(hl)
+                    ld  ixh,a
+                    inc hl
+                    push    hl
+                ; ix now has elevator data start
+
+                    ld  a,(ix+elevator.room_pos_x)
+                    ld  d,a
+
+                    ld  a,(ix+elevator.room_pos_y)
+                    ld  e,a
+
+                    ld  a,(ix+elevator.width)
+                    ld  b,a
+
+                    ld  a,(ix+elevator.cur_height)
+                    ld  c,a
+                    ld  a,e
+                    sub c
+                    ld  e,a
+
+                    ld  c,1
+
+                    push    ix
+
+                    call    draw.restore_rectangle
+
+                    pop ix
+                    pop hl
+                    jr  restore_next
+                    ret
                 ; input:
                 ; d - item x
                 ; e - item y
@@ -166,7 +209,6 @@ elevator_move_end
                     pop hl
                     jr  elevators_update_next
                     ret
-                    display 'elevator_move_items ',elevator_move_items
 elevator_move_items
                 ; input
                 ; ix points to elevator data
@@ -272,7 +314,6 @@ draw_elevator_pixel
                     djnz    draw_elevator_pixel
 
                     ret
-                    display 'draw_elevator_leg ',draw_elevator_leg
 draw_elevator_leg
                 ; d - elevator leg start x
                 ; e - elevator leg start y
@@ -281,7 +322,7 @@ draw_elevator_leg
                 ; if current height is smaller than 1 + 1 then there is nothing to draw
                     ld  a,c
                     or  a
-                    ret z                   
+                    ret z
 
                     ld  b,a
 

@@ -14,19 +14,22 @@ room_bg_color_wat   equ %00000001
 items_in_room_max   equ 5
 room_item_size      equ 3
 room_elevators_lim  equ 3
+room_teleports_lim  equ 3
 rooms_end_marker    equ 255
 item_not_found      equ 255
 init_current_room
                     call    logic.change_logic_pointer
                     call    gather_items
                     call    gather_elevators
-
+                    call    gather_teleports
+                    
                     call    get_current_room_address
                     ld  de,screen_utils.attrs
                     ld  bc,room_size
                     ldir
                     ret
 get_current_room_address
+                ; returns start adress for current room data
                 ; input
                 ; de - room coordinates
                 ; output
@@ -38,6 +41,7 @@ get_current_room_address
                     call    get_room_address
                     ret
 get_room_address
+                ; return start address of room data by its x/y number
                 ; input
                 ; b - room number x
                 ; c - room number y
@@ -158,6 +162,56 @@ room_pointers
                     dw  room_3_3
                     dw  room_4_3
                     dw  0
+gather_teleports
+                    ld  b,teleports.amount
+                // return if there is no teleports in game
+                    ld  a,b
+                    or  a
+                    ret z
+
+                    ld  a,(rooms.room_number_x)
+                    ld  d,a
+
+                    ld  a,(rooms.room_number_y)
+                    ld  e,a
+
+
+                    ld  iy,room_teleports_buf
+                    ld  hl,teleports.teleports_table
+
+gather_tele_next
+                    ld  a,(hl)
+                    ld  ixl,a
+                    inc hl
+                    ld  a,(hl)
+                    ld  ixh,a
+                    inc hl
+                    push    hl
+
+                    ld  a,(ix)
+                    cp  d
+                    jr  nz,gather_tele_skip
+                    ld  a,(ix+1)
+                    cp  e
+                    jr  nz,gather_tele_skip
+                    ld  a,ixl
+                    ld  (iy),a
+                    inc iy
+
+                    ld  a,ixh
+                    ld  (iy),a
+                    inc iy
+
+gather_tele_skip
+                    pop hl
+                    djnz    gather_tele_next
+                    ld  a,rooms_end_marker
+
+                    ld  (iy),a
+                    ret
+
+
+
 gather_elevators
                     ld  b,elevators.amount
                 // return if there is no elevators in game
@@ -415,4 +469,7 @@ room_items_end
 room_elevators_buf
                     ds  room_elevators_lim*2+1
 room_elevators_end
+room_teleports_buf
+                    ds  room_teleports_lim*2+1
+room_teleports_end
     endmodule
