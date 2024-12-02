@@ -21,6 +21,41 @@ state               byte
 delay               byte
 timer               byte
     ends
+mega_elevator3
+                    ld  ix,elevator_3
+                    ld  iy,elevator_3_1
+
+                    ld  a,(ix+elevator.state)
+                    ld  b,a
+
+                    ld  a,(ix+elevator.cur_height)
+
+                    cp  (iy+elevator.end_height)
+                    jr  c,mega_elevator3_1
+mega_elevator3_0
+                    sub (iy+elevator.end_height)
+                    ld  ix,elevator_3_0
+                    ld  (ix+elevator.cur_height),a
+                    xor a
+                    ld  (iy+elevator.cur_height),a
+
+                    ld  a,b
+                    ld  (ix+elevator.state),a
+                    ld  (iy+elevator.state),a
+
+                    ret
+mega_elevator3_1
+                    ld  (iy+elevator.cur_height),a
+
+                    ld  ix,elevator_3_0
+                    xor a
+                    ld  (ix+elevator.cur_height),a
+
+                    ld  a,b
+                    ld  (ix+elevator.state),a
+                    ld  (iy+elevator.state),a
+
+                    ret
 restore
                 ; - restore image under elevators
                     ld  hl,rooms.room_elevators_buf
@@ -72,8 +107,11 @@ restore_next
                 ; output: 
                 ; a - item on elevator or not
                 ; ix - elevator data address
-item_elevator_check
+room_item_elevator_check
                     ld  hl,rooms.room_elevators_buf
+                    call    item_elevator_check
+                    ret
+item_elevator_check
 hero_update_next
                     ld  a,(hl)
                 ; check if there are no elevators
@@ -139,14 +177,21 @@ hero_update_skip
                 ; return false                    
                     ld  a,item_not_elevator
                     ret
-elevators_update
+mega_elevators_update
+                    ld  hl,mega_elevators
+                    call    elevators_update
+                    ret
+room_elevators_update
                     ld  hl,rooms.room_elevators_buf
+                    call    elevators_update
+                    ret
+elevators_update
 elevators_update_next
                     ld  a,(hl)
                 ; check if there are no elevators
                     cp  rooms.rooms_end_marker
                     ret z
-                ; read elevatr address to ix
+                ; read elevator address to ix
                     ld  ixl,a
                     inc hl
 
@@ -347,6 +392,9 @@ elevators_table
                     dw  elevator_4_1_2
                     dw  elevator_4_1_3
                     dw  elevator_4_3
+mega_elevators
+                    dw  elevator_3
+                    db  rooms.rooms_end_marker
 elevator_2_1
                     elevator    {
                     2,
@@ -371,7 +419,7 @@ elevator_3_0
                     4,
                     0
                     13,
-                    state_up,
+                    state_stop,
                     2,
                     0
                     }
@@ -385,6 +433,20 @@ elevator_3_1
                     4,
                     0
                     21,
+                    state_stop,
+                    2,
+                    0
+                    }
+elevator_3
+                    elevator    {
+                    255,
+                    255,
+                    0,
+                    20,
+                    8,
+                    4,
+                    0
+                    32,
                     state_up,
                     2,
                     0

@@ -498,7 +498,7 @@ check_elevator
 
                     ld  a,(hero_y)
                     ld  e,a
-                    call    elevators.item_elevator_check
+                    call    elevators.room_item_elevator_check
 
                     ld  (hero_elevator),a
                     ld  (current_elevator),ix

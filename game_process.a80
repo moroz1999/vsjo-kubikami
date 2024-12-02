@@ -5,7 +5,9 @@ loop
                     //call    rooms.init_current_room
                     call    animate.check
                     call    elevators.restore
-                    call    elevators.elevators_update                    
+                    call    elevators.mega_elevators_update
+                    call    elevators.room_elevators_update
+                    call    elevators.mega_elevator3
                     call    hero.check_elevator
                     call    hero.check_hero_state
                     call    hero.switch_colors
