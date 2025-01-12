@@ -59,7 +59,7 @@ draw_hero
                     ld  (hl),a
                     ret
 draw_state
-                    call    restore_hero
+                    call    restore_pixels
                     call    elevators.draw_current
                     call    draw_room_items
                     call    teleports.draw_current
@@ -67,7 +67,6 @@ draw_state
 
 
                     ret
-                    display "restore_rectangle ",restore_rectangle
 restore_rectangle
                 ; input:
                 ; d - x
@@ -86,17 +85,17 @@ restore_rectangle
                     pop hl
                 ; hl now has room pixel address
                     pop bc
-restore_row
+restore_rec_row
                     push    de
                     push    hl
                     push    bc
                 ; bc now has restored w/h
-restore_pixel
+restore_rec_pixel
                     ld  a,(hl)
                     ld  (de),a
                     inc hl
                     inc de
-                    djnz    restore_pixel
+                    djnz    restore_rec_pixel
 
                     pop bc
                     pop hl
@@ -111,17 +110,66 @@ restore_pixel
                     pop hl
 
                     dec c
-                    jr  nz,restore_row
+                    jr  nz,restore_rec_row
                     ret
-restore_hero
-                    ld  a,(restore)
-                    cp  255
-                    ret z
-                    ld  a,(restore_x)
+add_to_restore
+                ; add point to list of restoration points
+                ; d - x coord
+                ; e - y coord
+                    ld  hl,restore_buffer
+                    ld  a,(restore_length)
+                    add a,a
+                    ld  c,a
+                    ld  b,0
+                    add hl,bc
+                ; hl now points to buffer end
 
-                    ld  d,a
-                    ld  a,(restore_y)
-                    ld  e,a
+                    ld  (hl),d
+                    inc hl
+                    ld  (hl),e
+
+                ; increase buffer length
+                    ld  a,(restore_length)
+                    inc a
+
+                    ld  (restore_length),a
+                    ret
+restore_length      db  0
+restore_buffer      ds  20
+                    display 'add_to_restore ',add_to_restore
+restore_pixels
+                    ld  a,(restore_length)
+                    or  a
+                    ret z
+                    ld  b,a
+
+                    ld  hl,restore_buffer
+
+
+restore_pixels2
+                    push    bc
+                ; read coords of point
+                    ld  d,(hl)
+                    inc hl
+                    ld  e,(hl)
+                    inc hl
+
+                    push    hl
+
+                    call    restore_pixel
+
+                    pop hl
+                    pop bc
+                    djnz    restore_pixels2
+                    ld  a,0
+                    ld  (restore_length),a
+
+                    ret
+restore_pixel
+                ; restores one pixel in screen texture based on current room address
+                ; input
+                ; d - x coord
+                ; e - y coord
                     call    screen_utils.get_texture_address
                     push    hl
                     call    rooms.get_current_room_address
@@ -134,9 +182,6 @@ restore_hero
                     ld  de,screen_utils.attrs
                     add hl,de
                     ld  (hl),a
-
-                    ld  a,255
-                    ld  (restore),a
 
                     ret
 clear_screen

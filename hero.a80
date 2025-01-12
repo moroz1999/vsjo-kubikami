@@ -206,8 +206,8 @@ move_hero_up
                     ret z
 
                     ld  (hero_coords),de
-                    xor a
-                    ld  (draw.restore),a
+                    call    hero.save_restore
+
                     ret
 move_hero_down
                     ld  a,(hero_elevator)
@@ -222,11 +222,12 @@ move_hero_down_force
                     jr  z,move_hero_down_stand
 
                     ld  (hero_coords),de
-                    xor a
-                    ld  (draw.restore),a
+                    call    hero.save_restore
 
                     ret
 move_hero_down_stand
+                    call    hero.save_restore
+
                     ret
 move_hero_left
                     ld  de,(hero_coords)
@@ -236,9 +237,7 @@ move_hero_left
                     ret z
 
                     ld  (hero_coords),de
-                    xor a
-                    ld  (draw.restore),a
-
+                    call    hero.save_restore
                     ret
 move_hero_right
                     ld  de,(hero_coords)
@@ -248,8 +247,7 @@ move_hero_right
                     ret z
 
                     ld  (hero_coords),de
-                    xor a
-                    ld  (draw.restore),a
+                    call    hero.save_restore
                     ret
 fire_pressed
                     call    use_current_item
@@ -327,10 +325,11 @@ drop_item
                     ret
 save_restore
                     ld  a,(hero_x)
-                    ld  (draw.restore_x),a
+                    ld  d,a
 
                     ld  a,(hero_y)
-                    ld  (draw.restore_y),a
+                    ld  e,a
+                    call    draw.add_to_restore
                     ret
 check_hero_coords
                 ; input:

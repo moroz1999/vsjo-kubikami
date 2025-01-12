@@ -5,13 +5,12 @@ loop
                     //call    rooms.init_current_room
                     call    animate.check
                     call    elevators.restore
-                    
+                    call    hero.save_restore
                     call    elevators.room_elevators_update
                     
                     call    hero.check_elevator
                     call    hero.check_hero_state
                     call    hero.switch_colors
-                    call    hero.save_restore
                     call    hero.hero_gravity
                     call    hero.hero_move
                     call    teleports.switch_colors
