@@ -209,9 +209,6 @@ gather_tele_skip
 
                     ld  (iy),a
                     ret
-
-
-
 gather_elevators
                     ld  b,elevators.amount
                 // return if there is no elevators in game

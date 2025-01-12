@@ -2,6 +2,7 @@
 state_stop          equ 0
 state_up            equ 1
 state_down          equ 2
+state_none          equ 3
 
 item_not_elevator   equ 0
 item_on_elevator    equ 1
@@ -21,41 +22,6 @@ state               byte
 delay               byte
 timer               byte
     ends
-mega_elevator3
-                    ld  ix,elevator_3
-                    ld  iy,elevator_3_1
-
-                    ld  a,(ix+elevator.state)
-                    ld  b,a
-
-                    ld  a,(ix+elevator.cur_height)
-
-                    cp  (iy+elevator.end_height)
-                    jr  c,mega_elevator3_1
-mega_elevator3_0
-                    sub (iy+elevator.end_height)
-                    ld  ix,elevator_3_0
-                    ld  (ix+elevator.cur_height),a
-                    xor a
-                    ld  (iy+elevator.cur_height),a
-
-                    ld  a,b
-                    ld  (ix+elevator.state),a
-                    ld  (iy+elevator.state),a
-
-                    ret
-mega_elevator3_1
-                    ld  (iy+elevator.cur_height),a
-
-                    ld  ix,elevator_3_0
-                    xor a
-                    ld  (ix+elevator.cur_height),a
-
-                    ld  a,b
-                    ld  (ix+elevator.state),a
-                    ld  (iy+elevator.state),a
-
-                    ret
 restore
                 ; - restore image under elevators
                     ld  hl,rooms.room_elevators_buf
@@ -100,6 +66,7 @@ restore_next
                     pop hl
                     jr  restore_next
                     ret
+room_item_elevator_check                    
                 ; input:
                 ; d - item x
                 ; e - item y
@@ -107,7 +74,7 @@ restore_next
                 ; output: 
                 ; a - item on elevator or not
                 ; ix - elevator data address
-room_item_elevator_check
+
                     ld  hl,rooms.room_elevators_buf
                     call    item_elevator_check
                     ret
@@ -129,7 +96,6 @@ hero_update_next
 
 
                 ; check item X from d
-
 
                     ld  a,(ix+elevator.room_pos_x)
                     ld  b,a
@@ -177,15 +143,14 @@ hero_update_skip
                 ; return false                    
                     ld  a,item_not_elevator
                     ret
-mega_elevators_update
-                    ld  hl,mega_elevators
-                    call    elevators_update
-                    ret
 room_elevators_update
                     ld  hl,rooms.room_elevators_buf
                     call    elevators_update
                     ret
 elevators_update
+                ; move all elevators up/down from buffer
+                ; input: 
+                ; hl - elevators buffer
 elevators_update_next
                     ld  a,(hl)
                 ; check if there are no elevators
@@ -254,6 +219,7 @@ elevator_move_end
                     pop hl
                     jr  elevators_update_next
                     ret
+                display 'elevator_move_items ', elevator_move_items
 elevator_move_items
                 ; input
                 ; ix points to elevator data
@@ -266,6 +232,7 @@ elevator_move_items
                     jr  nz,elevator_move_items_end
 
                     ld  hl,(hero.current_elevator)
+                ; check if hero is on this elevator from ix
                     push    ix
                     pop de
 
@@ -275,7 +242,7 @@ elevator_move_items
                     ld  a,h
                     or  l
                     jr  nz,elevator_move_items_end
-
+                ; hero is on this elevator
                     ld  a,(ix+elevator.state)
                     cp  state_down
                     jr  z,elevator_move_items_down
@@ -392,8 +359,6 @@ elevators_table
                     dw  elevator_4_1_2
                     dw  elevator_4_1_3
                     dw  elevator_4_3
-mega_elevators
-                    dw  elevator_3
                     db  rooms.rooms_end_marker
 elevator_2_1
                     elevator    {
@@ -432,7 +397,7 @@ elevator_3_1
                     8,
                     4,
                     0
-                    21,
+                    22,
                     state_stop,
                     2,
                     0
