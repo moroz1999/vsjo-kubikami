@@ -13,7 +13,7 @@ room_bg_color_sky   equ %01000001
 room_bg_color_wat   equ %00000001
 items_in_room_max   equ 5
 room_item_size      equ 3
-room_elevators_lim  equ 3
+room_elevators_lim  equ 6
 room_teleports_lim  equ 3
 rooms_end_marker    equ 255
 item_not_found      equ 255
@@ -22,7 +22,7 @@ init_current_room
                     call    gather_items
                     call    gather_elevators
                     call    gather_teleports
-                    
+
                     call    get_current_room_address
                     ld  de,screen_utils.attrs
                     ld  bc,room_size
@@ -216,16 +216,16 @@ gather_elevators
                     or  a
                     ret z
 
+                    ld  iy,room_elevators_buf
+
                     ld  a,(rooms.room_number_x)
                     ld  d,a
 
                     ld  a,(rooms.room_number_y)
                     ld  e,a
-
-
-                    ld  iy,room_elevators_buf
+gather_elev_room
                     ld  hl,elevators.elevators_table
-
+                    push    bc
 gather_elev_next
                     ld  a,(hl)
                     ld  ixl,a
@@ -252,8 +252,17 @@ gather_elev_next
 gather_elev_skip
                     pop hl
                     djnz    gather_elev_next
-                    ld  a,rooms_end_marker
+                ; restore amount of rooms in game to b                    
+                    pop bc
 
+                ; check if there are rooms below                
+                    inc e
+                    ld  a,e
+                    cp room_amount_y
+                    jr nz,gather_elev_room
+
+                ; terminate elevators buffer
+                    ld  a,rooms_end_marker
                     ld  (iy),a
                     ret
 gather_items
