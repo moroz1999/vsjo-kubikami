@@ -353,7 +353,6 @@ draw_elevator_leg_pix
 amount              equ 7
 elevators_table
                     dw  elevator_2_1
-                    dw  elevator_3_0
                     dw  elevator_3_1
                     dw  elevator_4_1_1
                     dw  elevator_4_1_2
@@ -374,20 +373,6 @@ elevator_2_1
                     2,
                     0
                     }
-elevator_3_0
-                    elevator    {
-                    3,
-                    0,
-                    4,
-                    21,
-                    8,
-                    4,
-                    0
-                    13,
-                    state_stop,
-                    2,
-                    0
-                    }
 elevator_3_1
                     elevator    {
                     3,
@@ -398,20 +383,6 @@ elevator_3_1
                     4,
                     0
                     22,
-                    state_stop,
-                    2,
-                    0
-                    }
-elevator_3
-                    elevator    {
-                    255,
-                    255,
-                    0,
-                    20,
-                    8,
-                    4,
-                    0
-                    32,
                     state_up,
                     2,
                     0
