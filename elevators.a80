@@ -257,13 +257,14 @@ elevator_move_items_end
                     pop de
                     pop hl
                     ret
-draw_current
+draw_elevators
                     ld  hl,rooms.room_elevators_buf
 draw_next
                     ld  a,(hl)
                 ; check if there are no elevators
                     cp  rooms.rooms_end_marker
                     ret z
+
                     ld  a,(hl)
                 ; read elevator address to ix
                     ld  ixl,a
@@ -275,6 +276,18 @@ draw_next
                     push    hl
                 ; ix now has elevator data start
 
+                ; check if elevator is below, under or in current room
+                    ld a,(ix+elevator.room_y)
+                    ld b,a
+
+                    ld a,(rooms.room_number_y)
+                    sub b
+
+                    jr z,draw_check_current_screen
+
+draw_check_current_screen
+
+draw_in_room
                     ld  a,(ix+elevator.room_pos_x)
                     ld  d,a
 
@@ -382,7 +395,7 @@ elevator_3_1
                     8,
                     4,
                     0
-                    22,
+                    35,
                     state_up,
                     2,
                     0

@@ -1,6 +1,6 @@
     module  rooms
 room_number_x       db  3
-room_number_y       db  1
+room_number_y       db  0
 
 room_amount_x       equ 6
 room_amount_y       equ 4
@@ -22,6 +22,9 @@ init_current_room
                     call    gather_items
                     call    gather_elevators
                     call    gather_teleports
+
+                    call    calculate_room_top_y
+                    call    calculate_room_bottom_y
 
                     call    get_current_room_address
                     ld  de,screen_utils.attrs
@@ -258,8 +261,8 @@ gather_elev_skip
                 ; check if there are rooms below                
                     inc e
                     ld  a,e
-                    cp room_amount_y
-                    jr nz,gather_elev_room
+                    cp  room_amount_y
+                    jr  nz,gather_elev_room
 
                 ; terminate elevators buffer
                     ld  a,rooms_end_marker
@@ -478,4 +481,30 @@ room_elevators_end
 room_teleports_buf
                     ds  room_teleports_lim*2+1
 room_teleports_end
+
+calculate_room_top_y
+                ; calculates top coordinate of 
+
+                ; $current_room_top_coord_y = ($total_rooms - $current_room_y) * $each_room_height;
+                    ld  a,(room_number_y)
+                    ld  b,a
+                    ld  a,room_amount_y
+
+                    sub b
+
+                    ld  h,a
+                    ld  e,room_h
+
+                    call    math.mul8b
+                    ld  a,l
+                    ld  (room_top_y),a
+                    ret
+calculate_room_bottom_y
+                    ld  a,(room_top_y)
+                    sub room_h
+                    ld  (room_bottom_y),a
+                    ret
+room_top_y          db  0
+room_bottom_y       db  0
+
     endmodule

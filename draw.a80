@@ -60,7 +60,7 @@ draw_hero
                     ret
 draw_state
                     call    restore_pixels
-                    call    elevators.draw_current
+                    call    elevators.draw_elevators
                     call    draw_room_items
                     call    teleports.draw_current
                     call    draw_hero

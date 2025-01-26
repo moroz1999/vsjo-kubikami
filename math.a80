@@ -1,0 +1,18 @@
+    module  math
+mul8b
+            ; this routine performs the operation HL=H*E
+            ; input
+            ; h - number
+            ; e - multiplicator
+
+                    ld  d,0                         ; clearing D and L
+                    ld  l,d
+                    ld  b,8                         ; we have 8 bits
+mul8b_loop
+                    add hl,hl                      ; advancing a bit
+                    jp  nc,mul8b_skip                ; if zero, we skip the addition (jp is used for speed)
+                    add hl,de                      ; adding to the product if necessary
+mul8b_skip
+                    djnz    mul8b_loop
+                    ret
+    endmodule
