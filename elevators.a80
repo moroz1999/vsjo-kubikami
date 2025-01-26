@@ -144,13 +144,8 @@ hero_update_skip
                     ld  a,item_not_elevator
                     ret
 room_elevators_update
-                    ld  hl,rooms.room_elevators_buf
-                    call    elevators_update
-                    ret
-elevators_update
-                ; move all elevators up/down from buffer
-                ; input: 
-                ; hl - elevators buffer
+                ; move all elevators from current room's buffer up/down - calculate state only
+                    ld  hl,rooms.room_elevators_buf                            
 elevators_update_next
                     ld  a,(hl)
                 ; check if there are no elevators
@@ -219,7 +214,6 @@ elevator_move_end
                     pop hl
                     jr  elevators_update_next
                     ret
-                display 'elevator_move_items ', elevator_move_items
 elevator_move_items
                 ; input
                 ; ix points to elevator data
@@ -257,6 +251,7 @@ elevator_move_items_end
                     pop de
                     pop hl
                     ret
+                display 'draw_elevators ',draw_elevators
 draw_elevators
                     ld  hl,rooms.room_elevators_buf
 draw_next
@@ -277,17 +272,40 @@ draw_next
                 ; ix now has elevator data start
 
                 ; check if elevator is below, under or in current room
-                    ld a,(ix+elevator.room_y)
+
+                ; start from calculating global elevator's coordinate
+
+                ; y = (total_rooms - elevator_room_y) * each_room_height - elevator_room_base_coord_y + elevator_current_height
+            
+                    ld a,rooms.room_amount_y
+                    sub (ix+elevator.room_y)
+
+                    ld h,a
+                    ld e,rooms.room_h
+
+                    call math.mul8b
+
+                    ld a,l
+
+                    sub (ix+elevator.room_pos_y)
+                    add (ix+elevator.cur_height)
+
                     ld b,a
+                ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
 
-                    ld a,(rooms.room_number_y)
-                    sub b
 
-                    jr z,draw_check_current_screen
+                
+                    ld a,(rooms.room_top_y)
+                    cp b
+                    jr nc,draw_leg              ; elevator's y > rooms' top y, elevator is above room, draw leg only
 
-draw_check_current_screen
+                    ld a,(rooms.room_bottom_y)
+                    cp b
+                    jr c,draw_skip              ; elevator's y < room's bottom y, elevator is below, skip drawing
 
 draw_in_room
+                ; a already contains top coordinate of room's bottom
+
                     ld  a,(ix+elevator.room_pos_x)
                     ld  d,a
 
@@ -314,8 +332,10 @@ draw_in_room
 
                     call    draw_elevator_leg
                     pop ix
+draw_leg                    
+draw_skip                                        
                     pop hl
-                    jr  draw_next
+                    jr  draw_next                    
                     ret
 draw_elevator
                 ; d - elevator start x

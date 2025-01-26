@@ -4,7 +4,9 @@ mul8b
             ; input
             ; h - number
             ; e - multiplicator
-
+            ; 
+            ; output
+            ; hl - result
                     ld  d,0                         ; clearing D and L
                     ld  l,d
                     ld  b,8                         ; we have 8 bits

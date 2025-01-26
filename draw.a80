@@ -136,7 +136,6 @@ add_to_restore
                     ret
 restore_length      db  0
 restore_buffer      ds  20
-                    display 'add_to_restore ',add_to_restore
 restore_pixels
                     ld  a,(restore_length)
                     or  a
@@ -144,8 +143,6 @@ restore_pixels
                     ld  b,a
 
                     ld  hl,restore_buffer
-
-
 restore_pixels2
                     push    bc
                 ; read coords of point

@@ -340,7 +340,7 @@ find_item_by_coord
 
 check_next_item
                     ld  a,(hl)               ; Load item type
-                    cp  rooms_end_marker                   ; Check for end of the list (255 terminator)
+                    cp  rooms_end_marker     ; Check for end of the list (255 terminator)
                     jr  z,not_found           ; If found, item is not present
 
                     ex  af,af'               ; Save the item type in alternate AF
@@ -483,8 +483,8 @@ room_teleports_buf
 room_teleports_end
 
 calculate_room_top_y
-                ; calculates top coordinate of 
-
+                ; calculate bottom y coordinate of current room
+                ;
                 ; $current_room_top_coord_y = ($total_rooms - $current_room_y) * $each_room_height;
                     ld  a,(room_number_y)
                     ld  b,a
@@ -500,6 +500,9 @@ calculate_room_top_y
                     ld  (room_top_y),a
                     ret
 calculate_room_bottom_y
+                ; calculate bottom y coordinate of current room
+                ;
+                ; $current_room_bottom_coord_y = $current_room_top_coord_y - $each_room_height;
                     ld  a,(room_top_y)
                     sub room_h
                     ld  (room_bottom_y),a
