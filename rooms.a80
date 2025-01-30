@@ -164,7 +164,7 @@ room_pointers
                     dw  room_2_3
                     dw  room_3_3
                     dw  room_4_3
-                    dw  0
+                    dw  room_5_3
 gather_teleports
                     ld  b,teleports.amount
                 // return if there is no teleports in game
