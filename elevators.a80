@@ -1,72 +1,73 @@
-    module  elevators
-state_stop          equ 0
-state_up            equ 1
-state_down          equ 2
-state_none          equ 3
+                        module  elevators
+state_stop                  equ 0
+state_up                    equ 1
+state_down                  equ 2
+state_none                  equ 3
 
-item_not_elevator   equ 0
-item_on_elevator    equ 1
+item_not_elevator           equ 0
+item_on_elevator            equ 1
 
-end_marker          equ #ff
-elevator_top_color  equ %01000111
-    struct  elevator
-room_x              byte
-room_y              byte
-room_pos_x          byte
-room_pos_y          byte
-width               byte
-leg_left            byte
-cur_height          byte
-end_height          byte
-state               byte
-delay               byte
-timer               byte
-    ends
+end_marker                  equ #ff
+elevator_top_color          equ %01000111
+                        struct  elevator
+room_x                      byte
+room_y                      byte
+room_pos_x                  byte
+room_pos_y                  byte
+width                       byte
+leg_left                    byte
+cur_height                  byte
+end_height                  byte
+state                       byte
+delay                       byte
+timer                       byte
+                        ends
+                        
 restore
                 ; - restore image under elevators
-                    ld  hl,rooms.room_elevators_buf
+                            ld  hl,rooms.room_elevators_buf
 restore_next
-                    ld  a,(hl)
+                            ld  a,(hl)
                 ; check if there are no elevators
-                    cp  rooms.rooms_end_marker
-                    ret z
-                    ld  a,(hl)
+                            cp  rooms.elev_end_marker
+                            ret z
+                            ld  a,(hl)
                 ; read elevator address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld  ixl,a
+                            inc hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld  a,(hl)
+                            ld  ixh,a
+                            inc hl
+                            push    hl
                 ; ix now has elevator data start
 
-                    ld  a,(ix+elevator.room_pos_x)
-                    ld  d,a
+                            ld  a,(ix+elevator.room_pos_x)
+                            ld  d,a
 
-                    ld  a,(ix+elevator.room_pos_y)
-                    ld  e,a
+                            ld  a,(ix+elevator.room_pos_y)
+                            ld  e,a
 
-                    ld  a,(ix+elevator.width)
-                    ld  b,a
+                            ld  a,(ix+elevator.width)
+                            ld  b,a
 
-                    ld  a,(ix+elevator.cur_height)
-                    ld  c,a
-                    ld  a,e
-                    sub c
-                    ld  e,a
+                            ld  a,(ix+elevator.cur_height)
+                            ld  c,a
+                            ld  a,e
+                            sub c
+                            ld  e,a
 
-                    ld  c,1
+                            ld  c,1
 
-                    push    ix
+                            push    ix
 
-                    call    draw.restore_rectangle
+                            call    draw.restore_rectangle
 
-                    pop ix
-                    pop hl
-                    jr  restore_next
-                    ret
-room_item_elevator_check                    
+                            pop ix
+                            pop hl
+                            jr  restore_next
+                            ret
+room_item_elevator_check
                 ; input:
                 ; d - item x
                 ; e - item y
@@ -75,268 +76,275 @@ room_item_elevator_check
                 ; a - item on elevator or not
                 ; ix - elevator data address
 
-                    ld  hl,rooms.room_elevators_buf
-                    call    item_elevator_check
-                    ret
+                            ld  hl,rooms.room_elevators_buf
+                            call    item_elevator_check
+                            ret
 item_elevator_check
 hero_update_next
-                    ld  a,(hl)
+                            ld  a,(hl)
                 ; check if there are no elevators
-                    cp  rooms.rooms_end_marker
-                    ret z
+                            cp  rooms.elev_end_marker
+                            ret z
                 ; read elevator address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld  ixl,a
+                            inc hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld  a,(hl)
+                            ld  ixh,a
+                            inc hl
+                            push    hl
                 ; ix now has elevator data start
 
 
                 ; check item X from d
 
-                    ld  a,(ix+elevator.room_pos_x)
-                    ld  b,a
+                            ld  a,(ix+elevator.room_pos_x)
+                            ld  b,a
                 ; b has left edge of elevator
 
                 ; check that hero is left to elevator
-                    ld  a,d
-                    sub b
-                    jr  c,hero_update_skip ;hero is left to elevator
+                            ld  a,d
+                            sub b
+                            jr  c,hero_update_skip ;hero is left to elevator
 
-                    ld  a,(ix+elevator.width)
-                    add b
+                            ld  a,(ix+elevator.width)
+                            add b
                 ; c has right edge of elevator
-                    ld  c,a
+                            ld  c,a
 
                 ; check that hero is right to elevator
-                    ld  a,d
-                    sub c
-                    jr  nc,hero_update_skip ;hero is right to elevator
+                            ld  a,d
+                            sub c
+                            jr  nc,hero_update_skip ;hero is right to elevator
 
                 ; now check item Y from e
 
-                    ld  a,(ix+elevator.cur_height)
-                    ld  b,a
+                            ld  a,(ix+elevator.cur_height)
+                            ld  b,a
                 ; b has current height of elevator
 
-                    ld  a,(ix+elevator.room_pos_y)
-                    sub b
-                    ld  c,a
+                            ld  a,(ix+elevator.room_pos_y)
+                            sub b
+                            ld  c,a
                 ; c has top position of elevator
-                    dec a
+                            dec a
 
                 ; check that hero is on the elevator                
-                    sub e
-                    jr  nz,hero_update_skip ;hero is not above elevator
+                            sub e
+                            jr  nz,hero_update_skip ;hero is not above elevator
 
                 ; restore stack
-                    pop hl
+                            pop hl
                 ; return true
-                    ld  a,item_on_elevator
-                    ret
+                            ld  a,item_on_elevator
+                            ret
 hero_update_skip
-                    pop hl
-                    jr  hero_update_next
+                            pop hl
+                            jr  hero_update_next
                 ; return false                    
-                    ld  a,item_not_elevator
-                    ret
+                            ld  a,item_not_elevator
+                            ret
 room_elevators_update
                 ; move all elevators from current room's buffer up/down - calculate state only
-                    ld  hl,rooms.room_elevators_buf                            
+                            ld  hl,rooms.room_elevators_buf
 elevators_update_next
-                    ld  a,(hl)
+                            ld  a,(hl)
                 ; check if there are no elevators
-                    cp  rooms.rooms_end_marker
-                    ret z
+                            cp  rooms.elev_end_marker
+                            ret z
                 ; read elevator address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld  ixl,a
+                            inc hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld  a,(hl)
+                            ld  ixh,a
+                            inc hl
+                            push    hl
                 ; ix now has elevator data start
 
-                    ld  a,(ix+elevator.timer)
-                    or  a
-                    jr  z,elevator_move_allow
-                    dec a
-                    ld  (ix+elevator.timer),a
-                    jr  elevator_move_end
+                            ld  a,(ix+elevator.timer)
+                            or  a
+                            jr  z,elevator_move_allow
+                            dec a
+                            ld  (ix+elevator.timer),a
+                            jr  elevator_move_end
 elevator_move_allow
-                    ld  a,(ix+elevator.delay)
-                    ld  (ix+elevator.timer),a
+                            ld  a,(ix+elevator.delay)
+                            ld  (ix+elevator.timer),a
 
-                    ld  a,(ix+elevator.state)
-                    cp  state_down
-                    jr  z,elevator_move_down
+                            ld  a,(ix+elevator.state)
+                            cp  state_down
+                            jr  z,elevator_move_down
 
-                    cp  state_up
-                    jr  nz,elevator_move_end
+                            cp  state_up
+                            jr  nz,elevator_move_end
 elevator_move_up
-                    ld  a,(ix+elevator.end_height)
-                    ld  b,a
+                            ld  a,(ix+elevator.end_height)
+                            ld  b,a
 
-                    ld  a,(ix+elevator.cur_height)
-                    cp  b
+                            ld  a,(ix+elevator.cur_height)
+                            cp  b
 
-                    jr  z,elevator_switch_down
-                    inc a
-                    ld  (ix+elevator.cur_height),a
+                            jr  z,elevator_switch_down
+                            inc a
+                            ld  (ix+elevator.cur_height),a
 
-                    call    elevator_move_items
+                            call    elevator_move_items
 
-                    jr  elevator_move_end
+                            jr  elevator_move_end
 elevator_switch_down
-                    ld  a,state_down
-                    ld  (ix+elevator.state),a
-                    jr  elevator_move_end
+                            ld  a,state_down
+                            ld  (ix+elevator.state),a
+                            jr  elevator_move_end
 elevator_move_down
-                    ld  a,(ix+elevator.cur_height)
-                    or  a
+                            ld  a,(ix+elevator.cur_height)
+                            or  a
 
-                    jr  z,elevator_switch_up
-                    dec a
-                    ld  (ix+elevator.cur_height),a
+                            jr  z,elevator_switch_up
+                            dec a
+                            ld  (ix+elevator.cur_height),a
 
-                    call    elevator_move_items
+                            call    elevator_move_items
 
-                    jr  elevator_move_end
+                            jr  elevator_move_end
 elevator_switch_up
-                    ld  a,state_up
-                    ld  (ix+elevator.state),a
-                    jr  elevator_move_end
+                            ld  a,state_up
+                            ld  (ix+elevator.state),a
+                            jr  elevator_move_end
 elevator_move_end
-                    pop hl
-                    jr  elevators_update_next
-                    ret
+                            pop hl
+                            jr  elevators_update_next
+                            ret
 elevator_move_items
                 ; input
                 ; ix points to elevator data
-                    push    hl
-                    push    de
-                    push    bc
-                    push    ix
-                    ld  a,(hero.hero_elevator)
-                    cp  item_on_elevator
-                    jr  nz,elevator_move_items_end
+                            push    hl
+                            push    de
+                            push    bc
+                            push    ix
+                            ld  a,(hero.hero_elevator)
+                            cp  item_on_elevator
+                            jr  nz,elevator_move_items_end
 
-                    ld  hl,(hero.current_elevator)
+                            ld  hl,(hero.current_elevator)
                 ; check if hero is on this elevator from ix
-                    push    ix
-                    pop de
+                            push    ix
+                            pop de
 
-                    or  a
-                    sbc hl,de
+                            or  a
+                            sbc hl,de
 
-                    ld  a,h
-                    or  l
-                    jr  nz,elevator_move_items_end
+                            ld  a,h
+                            or  l
+                            jr  nz,elevator_move_items_end
                 ; hero is on this elevator
-                    ld  a,(ix+elevator.state)
-                    cp  state_down
-                    jr  z,elevator_move_items_down
-                    call    hero.move_hero_up
-                    jr  elevator_move_items_end
+                            ld  a,(ix+elevator.state)
+                            cp  state_down
+                            jr  z,elevator_move_items_down
+                            call    hero.move_hero_up
+                            jr  elevator_move_items_end
 elevator_move_items_down
-                    call    hero.move_hero_down_force
+                            call    hero.move_hero_down_force
 
 elevator_move_items_end
-                    pop ix
-                    pop bc
-                    pop de
-                    pop hl
-                    ret
-                display 'draw_elevators ',draw_elevators
+                            pop ix
+                            pop bc
+                            pop de
+                            pop hl
+                            ret
+
+                ; 1. separate global coords calculation from drawing to use it freely in restoration, drawing, physics at any time
+                ; 2. make global hero coordinates for elevator physics comparison
+                ; 3. start storing elevator's global position in struct, bottom/above/inside room state as well
+                ; 4. modify physics check to global coords
+                ; 5. modify elevator restoration to work with global coords
+
+                            display 'draw_elevators ',draw_elevators
 draw_elevators
-                    ld  hl,rooms.room_elevators_buf
+                            ld  hl,rooms.room_elevators_buf
 draw_next
-                    ld  a,(hl)
+                            ld  a,(hl)
                 ; check if there are no elevators
-                    cp  rooms.rooms_end_marker
-                    ret z
+                            cp  rooms.elev_end_marker
+                            ret z
 
-                    ld  a,(hl)
+                            ld  a,(hl)
                 ; read elevator address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld  xl,a
+                            inc hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld  a,(hl)
+                            ld  xh,a
+                            inc hl
+                            push    hl
                 ; ix now has elevator data start
 
                 ; check if elevator is below, under or in current room
 
                 ; start from calculating global elevator's coordinate
 
-                ; y = (total_rooms - elevator_room_y) * each_room_height - elevator_room_base_coord_y + elevator_current_height
-            
-                    ld a,rooms.room_amount_y
-                    sub (ix+elevator.room_y)
+                ; y = elevator_room_y * each_room_height + elevator_room_base_coord_y - elevator_current_height
 
-                    ld h,a
-                    ld e,rooms.room_h
+                            ld  a,(ix+elevator.room_y)
 
-                    call math.mul8b
+                            ld  h,a
+                            ld  e,rooms.room_h
 
-                    ld a,l
+                            call    math.mul8b
 
-                    sub (ix+elevator.room_pos_y)
-                    add (ix+elevator.cur_height)
+                            ld  a,l
 
-                    ld b,a
+                            add (ix+elevator.room_pos_y)
+                            sub (ix+elevator.cur_height)
+debug
+                            ld  b,a
                 ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
 
+                            ld  a,(rooms.room_bottom_y)
+                            cp  b
+                            jr  c,draw_skip              ; elevator's y > room's bottom y, elevator is below, skip drawing
 
-                
-                    ld a,(rooms.room_top_y)
-                    cp b
-                    jr nc,draw_leg              ; elevator's y > rooms' top y, elevator is above room, draw leg only
+                            ld  a,(rooms.room_top_y)
+                            cp  b
+                            jr  nc,draw_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
 
-                    ld a,(rooms.room_bottom_y)
-                    cp b
-                    jr c,draw_skip              ; elevator's y < room's bottom y, elevator is below, skip drawing
-
+                            display "debug ",debug
 draw_in_room
-                ; a already contains top coordinate of room's bottom
+                ; a already contains y coordinate of room's top y, b has elevator's global y
+                ; elevator draw height = room_top_y + elevator_room_y - elevator global
+                            add (ix+elevator.room_pos_y)
+                            sub b
+                            ld  c,a
 
-                    ld  a,(ix+elevator.room_pos_x)
-                    ld  d,a
 
-                    ld  a,(ix+elevator.room_pos_y)
-                    ld  e,a
+                            ld  a,(ix+elevator.room_pos_x)
+                            ld  d,a
 
-                    ld  a,(ix+elevator.width)
-                    ld  b,a
+                            ld  a,(ix+elevator.room_pos_y)
+                            ld  e,a
 
-                    ld  a,(ix+elevator.cur_height)
-                    ld  c,a
+                            ld  a,(ix+elevator.width)
+                            ld  b,a
 
-                    push    ix
+                            push    ix
 
-                    push    de
-                    push    bc
-                    call    draw_elevator
-                    pop bc
-                    pop de
+                            push    de
+                            push    bc
+                            call    draw_elevator
+                            pop bc
+                            pop de
 
-                    ld  a,(ix+elevator.leg_left)
-                    add d
-                    ld  d,a
+                            ld  a,(ix+elevator.leg_left)
+                            add d
+                            ld  d,a
 
-                    call    draw_elevator_leg
-                    pop ix
-draw_leg                    
-draw_skip                                        
-                    pop hl
-                    jr  draw_next                    
-                    ret
+                            call    draw_elevator_leg
+                            pop ix
+draw_leg
+draw_skip
+                            pop hl
+                            jr  draw_next
+                            ret
 draw_elevator
                 ; d - elevator start x
                 ; e - elevator start y
@@ -344,136 +352,136 @@ draw_elevator
                 ; c - height
 
                 ; get left top address of elevator in current room
-                    ld  a,e
-                    sub c
-                    ld  e,a
+                            ld  a,e
+                            sub c
+                            ld  e,a
 
-                    push    bc
-                    call    screen_utils.get_attrs_address
-                    pop bc
+                            push    bc
+                            call    screen_utils.get_attrs_address
+                            pop bc
 
-                    ld  a,elevator_top_color
+                            ld  a,elevator_top_color
 draw_elevator_pixel
-                    ld  (hl),a
-                    inc hl
-                    djnz    draw_elevator_pixel
+                            ld  (hl),a
+                            inc hl
+                            djnz    draw_elevator_pixel
 
-                    ret
+                            ret
 draw_elevator_leg
                 ; d - elevator leg start x
                 ; e - elevator leg start y
                 ; c - current height
-
+                            ret
                 ; if current height is smaller than 1 + 1 then there is nothing to draw
-                    ld  a,c
-                    or  a
-                    ret z
+                            ld  a,c
+                            or  a
+                            ret z
 
-                    ld  b,a
+                            ld  b,a
 
                 ; get screen address of elevator leg bottom
-                    push    bc
-                    call    screen_utils.get_attrs_address
-                    pop bc
-                    ld  de,rooms.room_w
-                    ld  a,%00000111
+                            push    bc
+                            call    screen_utils.get_attrs_address
+                            pop bc
+                            ld  de,rooms.room_w
+                            ld  a,%00000111
 draw_elevator_leg_pix
-                    ld  (hl),a
-                    or  a
-                    sbc hl,de
-                    djnz    draw_elevator_leg_pix
-                    ret
-amount              equ 7
+                            ld  (hl),a
+                            or  a
+                            sbc hl,de
+                            djnz    draw_elevator_leg_pix
+                            ret
+amount                      equ (elevators_table_end-elevators_table)/2
 elevators_table
-                    dw  elevator_2_1
-                    dw  elevator_3_1
-                    dw  elevator_4_1_1
-                    dw  elevator_4_1_2
-                    dw  elevator_4_1_3
-                    dw  elevator_4_3
-                    db  rooms.rooms_end_marker
+                            dw  elevator_2_1
+                            dw  elevator_3_1
+                            ; dw  elevator_4_1_1
+                            ; dw  elevator_4_1_2
+                            ; dw  elevator_4_1_3
+                            ; dw  elevator_4_3
+elevators_table_end
 elevator_2_1
-                    elevator    {
-                    2,
-                    1,
-                    8,
-                    22,
-                    12,
-                    6,
-                    2
-                    2,
-                    state_stop,
-                    2,
-                    0
-                    }
+                            elevator    {
+                            2,
+                            1,
+                            8,
+                            22,
+                            12,
+                            6,
+                            2
+                            2,
+                            state_stop,
+                            2,
+                            0
+                            }
 elevator_3_1
-                    elevator    {
-                    3,
-                    1,
-                    4,
-                    20,
-                    8,
-                    4,
-                    0
-                    35,
-                    state_up,
-                    2,
-                    0
-                    }
+                            elevator    {
+                            3,
+                            1,
+                            4,
+                            20,
+                            8,
+                            4,
+                            2
+                            35,
+                            state_up,
+                            2,
+                            0
+                            }
 elevator_4_1_1
-                    elevator    {
-                    4,
-                    1,
-                    2,
-                    20,
-                    7,
-                    3,
-                    0
-                    13,
-                    state_up,
-                    2,
-                    0
-                    }
+                            elevator    {
+                            4,
+                            1,
+                            2,
+                            20,
+                            7,
+                            3,
+                            0
+                            13,
+                            state_up,
+                            2,
+                            0
+                            }
 elevator_4_1_2
-                    elevator    {
-                    4,
-                    1,
-                    9,
-                    20,
-                    8,
-                    3,
-                    0
-                    13,
-                    state_up,
-                    2,
-                    0
-                    }
+                            elevator    {
+                            4,
+                            1,
+                            9,
+                            20,
+                            8,
+                            3,
+                            0
+                            13,
+                            state_up,
+                            2,
+                            0
+                            }
 elevator_4_1_3
-                    elevator    {
-                    4,
-                    1,
-                    22,
-                    20,
-                    7,
-                    3,
-                    13
-                    13,
-                    state_up,
-                    1,
-                    0
-                    }
+                            elevator    {
+                            4,
+                            1,
+                            22,
+                            20,
+                            7,
+                            3,
+                            13
+                            13,
+                            state_up,
+                            1,
+                            0
+                            }
 elevator_4_3
-                    elevator    {
-                    4,
-                    3,
-                    6,
-                    21,
-                    12,
-                    5,
-                    13
-                    13,
-                    state_down,
-                    3,
-                    0
-                    }
-    endmodule
+                            elevator    {
+                            4,
+                            3,
+                            6,
+                            21,
+                            12,
+                            5,
+                            13
+                            13,
+                            state_down,
+                            3,
+                            0
+                            }
+                        endmodule
