@@ -5,7 +5,7 @@ elevator_top_color          equ %01000111
                 ; 2. * make global hero coordinates for elevator physics comparison
                 ; 3. * start storing elevator's global position in struct, bottom/above/inside room state as well
                 ; 4. * modify physics check to global coords
-                ; 5. modify elevator restoration to work with global coords
+                ; 5. * modify elevator restoration to work with global coords
 
                             display 'draw_elevators ',draw
 draw
@@ -28,22 +28,21 @@ draw_next
                 ; ix now has elevator data start
 
                 ; check if elevator is below, under or in current room
-
-
-                            ld  a,(ix+elevators.elevator.y)
+                            ld a,(ix+elevators.elevator.y)
                             ld  b,a
                 ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
 
-                            ld  a,(rooms.room_bottom_y)
-                            cp  b
-                            jr  c,draw_skip              ; elevator's y > room's bottom y, elevator is below, skip drawing
+                            ld  a,(ix+elevators.elevator.in_room)
+                            cp  elevators.room_below
+                            jr  z,draw_skip              ; elevator's y > room's bottom y, elevator is below, skip drawing
 
-                            ld  a,(rooms.room_top_y)
-                            cp  b
-                            jr  nc,draw_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
+                            cp  elevators.room_above
+                            jr  z,draw_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
 
 draw_in_room
-                ; a already contains y coordinate of room's top y, b has elevator's global y
+                ; b has elevator's global y
+                            ld  a,(rooms.room_top_y)
+
                 ; elevator draw height = room_top_y + elevator_room_y - elevator global
                             add (ix+elevators.elevator.room_pos_y)
                             sub b

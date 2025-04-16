@@ -34,5 +34,24 @@ coords_next
                             add (ix+elevators.elevator.room_pos_y)
                             sub (ix+elevators.elevator.cur_height)
                             ld  (ix+elevators.elevator.y),a
+
+                ; check if elevator is below, under or in current room
+                            ld  b,a
+                ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
+
+                            ld  a,(rooms.room_bottom_y)
+                            cp  b
+                            jr  c,save_below              ; elevator's y > room's bottom y, elevator is below, skip drawing
+
+                            ld  a,(rooms.room_top_y)
+                            cp  b
+                            jr  nc,save_above              ; elevator's y < rooms' top y, elevator is above room, draw leg only
+                            ld  (ix+elevators.elevator.in_room),elevators.room_inside
+                            jr  coords_next
+save_above
+                            ld  (ix+elevators.elevator.in_room),elevators.room_above
+                            jr  coords_next
+save_below
+                            ld  (ix+elevators.elevator.in_room),elevators.room_below
                             jr  coords_next
                         endmodule

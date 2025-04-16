@@ -239,10 +239,10 @@ gather_elev_next
                             inc hl
                             push    hl
 
-                            ld  a,(ix)
+                            ld  a,(ix+elevators.elevator.room_x)
                             cp  d
                             jr  nz,gather_elev_skip
-                            ld  a,(ix+1)
+                            ld  a,(ix+elevators.elevator.room_y)
                             cp  e
                             jr  nz,gather_elev_skip
                             ld  a,ixl
