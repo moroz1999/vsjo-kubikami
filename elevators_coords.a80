@@ -1,0 +1,39 @@
+                        module  elevators_coords
+                            display 'coords ',coords
+coords
+                            ld  hl,rooms.room_elevators_buf
+coords_next
+                            ld  a,(hl)
+                ; check if there are no elevators
+                            cp  rooms.elev_end_marker
+                            ret z
+
+                            ld  a,(hl)
+                ; read elevator address to ix
+                            ld  xl,a
+                            inc hl
+
+                            ld  a,(hl)
+                            ld  xh,a
+                            inc hl
+                            push    hl
+                ; ix now has elevator data start
+
+                ; calculate global elevator's coordinate
+
+                ; y = elevator_room_y * each_room_height + elevator_room_base_coord_y - elevator_current_height
+
+                            ld  a,(ix+elevators.elevator.room_y)
+
+                            ld  h,a
+                            ld  e,rooms.room_h
+
+                            call    math.mul8b
+
+                            ld  a,l
+
+                            add (ix+elevators.elevator.room_pos_y)
+                            sub (ix+elevators.elevator.cur_height)
+                            ld  (ix+elevators.elevator.y),a
+                            jr  coords_next
+                        endmodule

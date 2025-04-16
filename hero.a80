@@ -1,336 +1,337 @@
-    module  hero
-hero_color1         equ %01111101
-hero_color2         equ %00000111
-hero_color          db  hero_color1
+                        module  hero
+hero_color1                 equ %01111101
+hero_color2                 equ %00000111
+hero_color                  db  hero_color1
 
 hero_coords
-hero_y              db  3
-hero_x              db  1
-hero_timer          db  0
-hero_delay          db  2
-hero_delay_ground   equ 2
-hero_delay_swim     equ 4
+hero_y                      db  3
+hero_x                      db  1
+hero_global_y               db  3
+hero_timer                  db  0
+hero_delay                  db  2
+hero_delay_ground           equ 2
+hero_delay_swim             equ 4
 
-state_void          equ %00000001
-state_ground        equ %00000010
-state_swim          equ %00000100
-state_jump          equ %00001000
+state_void                  equ %00000001
+state_ground                equ %00000010
+state_swim                  equ %00000100
+state_jump                  equ %00001000
 
-gravity_air         equ 1
-gravity_water       equ 10
+gravity_air                 equ 1
+gravity_water               equ 10
 
-state_movable       equ state_swim|state_ground
+state_movable               equ state_swim|state_ground
 
-hero_state          db  state_ground
+hero_state                  db  state_ground
 
-jump_step           db  0
+jump_step                   db  0
 
-jump_type_top       equ 0
-jump_type_left      equ 1
-jump_type_right     equ 2
-jump_steps          equ 8
+jump_type_top               equ 0
+jump_type_left              equ 1
+jump_type_right             equ 2
+jump_steps                  equ 8
 
-jump_type           db  jump_type_top
-no_item_in_pocket   equ 255
-current_item        db  no_item_in_pocket
+jump_type                   db  jump_type_top
+no_item_in_pocket           equ 255
+current_item                db  no_item_in_pocket
 
 switch_colors
-                    ld  a,(hero_color)
-                    cp  hero_color1
-                    jr  z,switch_colors_use2
-                    ld  a,hero_color1
-                    ld  (hero_color),a
-                    ret
+                            ld  a,(hero_color)
+                            cp  hero_color1
+                            jr  z,switch_colors_use2
+                            ld  a,hero_color1
+                            ld  (hero_color),a
+                            ret
 switch_colors_use2
-                    ld  a,hero_color2
-                    ld  (hero_color),a
-                    ret
+                            ld  a,hero_color2
+                            ld  (hero_color),a
+                            ret
 hero_jump
-                    ld  a,(hero_state)
-                    cp  state_jump
-                    ret nz
+                            ld  a,(hero_state)
+                            cp  state_jump
+                            ret nz
 
-                    ld  a,(jump_type)
-                    cp  jump_type_right
-                    jr  z,jump_process_right
+                            ld  a,(jump_type)
+                            cp  jump_type_right
+                            jr  z,jump_process_right
 
-                    cp  jump_type_left
-                    jr  z,jump_process_left
+                            cp  jump_type_left
+                            jr  z,jump_process_left
 
-                    jr  jump_process_top
+                            jr  jump_process_top
 jump_process_top
-                    ld  a,(jump_step)
-                    cp  6
-                    call    nc,move_hero_up
-                    ld  a,(jump_step)
-                    cp  4
-                    call    c,move_hero_down
-                    jr  jump_process_dec
+                            ld  a,(jump_step)
+                            cp  6
+                            call    nc,move_hero_up
+                            ld  a,(jump_step)
+                            cp  4
+                            call    c,move_hero_down
+                            jr  jump_process_dec
 jump_process_left
-                    ld  a,(jump_step)
-                    cp  8
-                    jr  z,jump_process_left1
-                    cp  6
-                    jr  nc,jump_process_left2
-                    cp  3
-                    jr  nc,jump_process_left3
-                    cp  1
-                    jr  nc,jump_process_left4
-                    jr  jump_process_left5
+                            ld  a,(jump_step)
+                            cp  8
+                            jr  z,jump_process_left1
+                            cp  6
+                            jr  nc,jump_process_left2
+                            cp  3
+                            jr  nc,jump_process_left3
+                            cp  1
+                            jr  nc,jump_process_left4
+                            jr  jump_process_left5
 jump_process_left1
-                    call    move_hero_up
-                    jr  jump_process_dec
+                            call    move_hero_up
+                            jr  jump_process_dec
 jump_process_left2
-                    call    move_hero_up
-                    call    move_hero_left
-                    jr  jump_process_dec
+                            call    move_hero_up
+                            call    move_hero_left
+                            jr  jump_process_dec
 jump_process_left3
-                    call    move_hero_left
-                    jr  jump_process_dec
+                            call    move_hero_left
+                            jr  jump_process_dec
 jump_process_left4
-                    call    move_hero_down
-                    call    move_hero_left
-                    jr  jump_process_dec
+                            call    move_hero_down
+                            call    move_hero_left
+                            jr  jump_process_dec
 jump_process_left5
-                    call    move_hero_down
-                    jr  jump_process_dec
+                            call    move_hero_down
+                            jr  jump_process_dec
 jump_process_right
-                    ld  a,(jump_step)
-                    cp  8
-                    jr  z,jump_process_right1
-                    cp  6
-                    jr  nc,jump_process_right2
-                    cp  3
-                    jr  nc,jump_process_right3
-                    cp  1
-                    jr  nc,jump_process_right4
-                    jr  jump_process_right5
+                            ld  a,(jump_step)
+                            cp  8
+                            jr  z,jump_process_right1
+                            cp  6
+                            jr  nc,jump_process_right2
+                            cp  3
+                            jr  nc,jump_process_right3
+                            cp  1
+                            jr  nc,jump_process_right4
+                            jr  jump_process_right5
 jump_process_right1
-                    call    move_hero_up
-                    jr  jump_process_dec
+                            call    move_hero_up
+                            jr  jump_process_dec
 jump_process_right2
-                    call    move_hero_up
-                    call    move_hero_right
-                    jr  jump_process_dec
+                            call    move_hero_up
+                            call    move_hero_right
+                            jr  jump_process_dec
 jump_process_right3
-                    call    move_hero_right
-                    jr  jump_process_dec
+                            call    move_hero_right
+                            jr  jump_process_dec
 jump_process_right4
-                    call    move_hero_down
-                    call    move_hero_right
-                    jr  jump_process_dec
+                            call    move_hero_down
+                            call    move_hero_right
+                            jr  jump_process_dec
 jump_process_right5
-                    call    move_hero_down
-                    jr  jump_process_dec
+                            call    move_hero_down
+                            jr  jump_process_dec
 
 jump_process_dec
-                    ld  a,(jump_step)
-                    dec a
-                    jr  z,hero_jump_stop
-                    ld  (jump_step),a
-                    ret
+                            ld  a,(jump_step)
+                            dec a
+                            jr  z,hero_jump_stop
+                            ld  (jump_step),a
+                            ret
 hero_jump_stop
-                    ld  a,state_void
-                    ld  (jump_step),a
-                    ld  (hero_state),a
-                    ret
+                            ld  a,state_void
+                            ld  (jump_step),a
+                            ld  (hero_state),a
+                            ret
 hero_move
-                    ld  a,(hero_timer)
-                    or  a
-                    jr  z,hero_move2
-                    dec a
-                    ld  (hero_timer),a
-                    ret
+                            ld  a,(hero_timer)
+                            or  a
+                            jr  z,hero_move2
+                            dec a
+                            ld  (hero_timer),a
+                            ret
 hero_move2
-                    call    hero_jump
+                            call    hero_jump
 
-                    ld  a,(hero_state)
-                    and state_movable
-                    ret z
+                            ld  a,(hero_state)
+                            and state_movable
+                            ret z
 
-                    call    keyboard.query
-                    ld  a,(hero_delay)
-                    ld  (hero_timer),a
-                    ret
+                            call    keyboard.query
+                            ld  a,(hero_delay)
+                            ld  (hero_timer),a
+                            ret
 
 hero_jump_top
-                    ld  a,(hero_state)
-                    and state_movable
-                    ret z
+                            ld  a,(hero_state)
+                            and state_movable
+                            ret z
 
-                    ld  a,jump_type_top
-                    ld  (jump_type),a
+                            ld  a,jump_type_top
+                            ld  (jump_type),a
 
-                    ld  a,jump_steps
-                    ld  (jump_step),a
+                            ld  a,jump_steps
+                            ld  (jump_step),a
 
-                    ld  a,state_jump
-                    ld  (hero_state),a
+                            ld  a,state_jump
+                            ld  (hero_state),a
 
-                    ret
+                            ret
 hero_jump_right
-                    ld  a,(hero_state)
-                    and state_movable
-                    ret z
+                            ld  a,(hero_state)
+                            and state_movable
+                            ret z
 
-                    ld  a,jump_type_right
-                    ld  (jump_type),a
+                            ld  a,jump_type_right
+                            ld  (jump_type),a
 
-                    ld  a,jump_steps
-                    ld  (jump_step),a
+                            ld  a,jump_steps
+                            ld  (jump_step),a
 
-                    ld  a,state_jump
-                    ld  (hero_state),a
+                            ld  a,state_jump
+                            ld  (hero_state),a
 
-                    ret
+                            ret
 hero_jump_left
-                    ld  a,(hero_state)
-                    and state_movable
-                    ret z
+                            ld  a,(hero_state)
+                            and state_movable
+                            ret z
 
-                    ld  a,jump_type_left
-                    ld  (jump_type),a
+                            ld  a,jump_type_left
+                            ld  (jump_type),a
 
-                    ld  a,jump_steps
-                    ld  (jump_step),a
+                            ld  a,jump_steps
+                            ld  (jump_step),a
 
-                    ld  a,state_jump
-                    ld  (hero_state),a
+                            ld  a,state_jump
+                            ld  (hero_state),a
 
-                    ret
+                            ret
 move_hero_up
-                    ld  de,(hero_coords)
-                    dec e
-                    call    check_hero_coords
-                    or  a
-                    ret z
+                            ld  de,(hero_coords)
+                            dec e
+                            call    check_hero_coords
+                            or  a
+                            ret z
 
-                    ld  (hero_coords),de
-                    call    hero.save_restore
+                            ld  (hero_coords),de
+                            call    hero.save_restore
 
-                    ret
+                            ret
 move_hero_down
-                    ld  a,(hero_elevator)
-                    cp  elevators.item_on_elevator
-                    jr  z,move_hero_down_stand
+                            ld  a,(hero_elevator)
+                            cp  elevators.item_on_elevator
+                            jr  z,move_hero_down_stand
 move_hero_down_force
-                    ld  de,(hero_coords)
-                    inc e
+                            ld  de,(hero_coords)
+                            inc e
 
-                    call    check_hero_coords
-                    or  a
-                    jr  z,move_hero_down_stand
+                            call    check_hero_coords
+                            or  a
+                            jr  z,move_hero_down_stand
 
-                    ld  (hero_coords),de
-                    call    hero.save_restore
+                            ld  (hero_coords),de
+                            call    hero.save_restore
 
-                    ret
+                            ret
 move_hero_down_stand
-                    call    hero.save_restore
+                            call    hero.save_restore
 
-                    ret
+                            ret
 move_hero_left
-                    ld  de,(hero_coords)
-                    dec d
-                    call    check_hero_coords
-                    or  a
-                    ret z
+                            ld  de,(hero_coords)
+                            dec d
+                            call    check_hero_coords
+                            or  a
+                            ret z
 
-                    ld  (hero_coords),de
-                    call    hero.save_restore
-                    ret
+                            ld  (hero_coords),de
+                            call    hero.save_restore
+                            ret
 move_hero_right
-                    ld  de,(hero_coords)
-                    inc d
-                    call    check_hero_coords
-                    or  a
-                    ret z
+                            ld  de,(hero_coords)
+                            inc d
+                            call    check_hero_coords
+                            or  a
+                            ret z
 
-                    ld  (hero_coords),de
-                    call    hero.save_restore
-                    ret
+                            ld  (hero_coords),de
+                            call    hero.save_restore
+                            ret
 fire_pressed
-                    call    use_current_item
-                    or  a
+                            call    use_current_item
+                            or  a
                     ; if a is not 0, then item was used, skip pickup/drop
-                    ret nz
+                            ret nz
 
-                    ld  de,(hero_coords)
-                    call    rooms.find_item_by_coord
-                    cp  rooms.item_not_found
-                    jr  z,hero.fire_pressed_noitem
+                            ld  de,(hero_coords)
+                            call    rooms.find_item_by_coord
+                            cp  rooms.item_not_found
+                            jr  z,hero.fire_pressed_noitem
 fire_pressed_item
-                    ld  c,a
+                            ld  c,a
 
-                    ld  a,(current_item)
-                    ld  b,a
-                    cp  no_item_in_pocket
-                    jr  z,fire_pressed_empty_pick
-                    push    bc
-                    ld  a,b
-                    call    drop_item
-                    pop bc
-                    ld  a,c
-                    call    pickup_item
-                    ret
+                            ld  a,(current_item)
+                            ld  b,a
+                            cp  no_item_in_pocket
+                            jr  z,fire_pressed_empty_pick
+                            push    bc
+                            ld  a,b
+                            call    drop_item
+                            pop bc
+                            ld  a,c
+                            call    pickup_item
+                            ret
 fire_pressed_empty_pick
-                    ld  a,c
-                    call    pickup_item
-                    ret
+                            ld  a,c
+                            call    pickup_item
+                            ret
 fire_pressed_noitem
-                    ld  a,(current_item)
-                    cp  no_item_in_pocket
-                    ret z
-                    call    drop_item
+                            ld  a,(current_item)
+                            cp  no_item_in_pocket
+                            ret z
+                            call    drop_item
 
-                    ret
+                            ret
 use_current_item
             ; output
             ; a - 0 if no item was used
             ; a - 255 if item used
-                    ld  a,(current_item)
-                    cp  no_item_in_pocket
-                    jr  nz,use_current_item2
+                            ld  a,(current_item)
+                            cp  no_item_in_pocket
+                            jr  nz,use_current_item2
                 ; no item in pocket, return 0
-                    xor a
-                    ret
+                            xor a
+                            ret
 use_current_item2
-                    call    items.call_item_logic
-                    ret
+                            call    items.call_item_logic
+                            ret
 pickup_item
-                    ld  (current_item),a
-                    call    rooms.remove_item
-                    ld  a,(current_item)
-                    call    items.remove_item
+                            ld  (current_item),a
+                            call    rooms.remove_item
+                            ld  a,(current_item)
+                            call    items.remove_item
 
-                    ld  a,(current_item)
-                    call    items.print_item_name
-                    ret
+                            ld  a,(current_item)
+                            call    items.print_item_name
+                            ret
 delete_item_in_pocket
-                    ld  a,no_item_in_pocket
-                    ld  (current_item),a
+                            ld  a,no_item_in_pocket
+                            ld  (current_item),a
 
-                    call    game_ui.erase_item_name
+                            call    game_ui.erase_item_name
 
-                    ret
+                            ret
 drop_item
-                    ld  a,(hero_x)
-                    ld  b,a
-                    ld  a,(hero_y)
-                    ld  c,a
-                    ld  a,(current_item)
-                    call    rooms.spawn_item
+                            ld  a,(hero_x)
+                            ld  b,a
+                            ld  a,(hero_y)
+                            ld  c,a
+                            ld  a,(current_item)
+                            call    rooms.spawn_item
 
-                    call    delete_item_in_pocket
-                    ret
+                            call    delete_item_in_pocket
+                            ret
 save_restore
-                    ld  a,(hero_x)
-                    ld  d,a
+                            ld  a,(hero_x)
+                            ld  d,a
 
-                    ld  a,(hero_y)
-                    ld  e,a
-                    call    draw.add_to_restore
-                    ret
+                            ld  a,(hero_y)
+                            ld  e,a
+                            call    draw.add_to_restore
+                            ret
 check_hero_coords
                 ; input:
                 ; d - x 
@@ -339,172 +340,172 @@ check_hero_coords
                 ; output:
                 ; b = 0 (forbidden)
                 ; b = 1 (allowed)
-                    push    de
-                    ld  b,0
-                    ld  a,d
+                            push    de
+                            ld  b,0
+                            ld  a,d
                 ; check screen left 
-                    cp  255
-                    jr  z,check_hero_left_room
+                            cp  255
+                            jr  z,check_hero_left_room
                 ; check screen right
-                    cp  rooms.room_w
-                    jr  z,check_hero_right_room
+                            cp  rooms.room_w
+                            jr  z,check_hero_right_room
 
-                    ld  a,e
+                            ld  a,e
                 ; check screen top 
-                    cp  255
-                    jr  z,check_hero_top_room
+                            cp  255
+                            jr  z,check_hero_top_room
                 ; check screen bottom
-                    cp  rooms.room_h
-                    jr  z,check_hero_bottom_room
+                            cp  rooms.room_h
+                            jr  z,check_hero_bottom_room
 
-                    call    rooms.get_room_color
+                            call    rooms.get_room_color
 check_hero_coords_black
-                    cp  rooms.room_bg_color
-                    jr  z,check_hero_coords_yes
+                            cp  rooms.room_bg_color
+                            jr  z,check_hero_coords_yes
 check_hero_coords_gray
-                    cp  rooms.room_bg_color_gray
-                    jr  z,check_hero_coords_yes
+                            cp  rooms.room_bg_color_gray
+                            jr  z,check_hero_coords_yes
 check_hero_coords_blue1
-                    cp  rooms.room_bg_color_sky
-                    jr  z,check_hero_coords_yes
+                            cp  rooms.room_bg_color_sky
+                            jr  z,check_hero_coords_yes
 check_hero_coords_blue0
-                    cp  rooms.room_bg_color_wat
-                    jr  z,check_hero_coords_yes
+                            cp  rooms.room_bg_color_wat
+                            jr  z,check_hero_coords_yes
 check_hero_coords_no
-                    pop de
-                    xor a
-                    ret
+                            pop de
+                            xor a
+                            ret
 check_hero_coords_yes
-                    pop de
+                            pop de
 check_hero_coords_yes2
-                    ld  a,1
-                    ret
+                            ld  a,1
+                            ret
 check_hero_left_room
-                    pop af
-                    push    de
-                    call    rooms.set_left_room
-                    pop de
-                    ld  d,rooms.room_w-1
-                    jr  check_hero_coords_yes2
+                            pop af
+                            push    de
+                            call    rooms.set_left_room
+                            pop de
+                            ld  d,rooms.room_w-1
+                            jr  check_hero_coords_yes2
 
 check_hero_right_room
-                    pop af
-                    push    de
-                    call    rooms.set_right_room
-                    pop de
-                    ld  d,0
-                    jr  check_hero_coords_yes2
+                            pop af
+                            push    de
+                            call    rooms.set_right_room
+                            pop de
+                            ld  d,0
+                            jr  check_hero_coords_yes2
 
 check_hero_top_room
-                    pop af
-                    push    de
-                    call    rooms.set_top_room
-                    pop de
-                    ld  e,rooms.room_h-1
-                    jr  check_hero_coords_yes2
+                            pop af
+                            push    de
+                            call    rooms.set_top_room
+                            pop de
+                            ld  e,rooms.room_h-1
+                            jr  check_hero_coords_yes2
 
 check_hero_bottom_room
-                    pop af
-                    push    de
-                    call    rooms.set_bottom_room
-                    pop de
-                    ld  e,0
-                    jr  check_hero_coords_yes2
+                            pop af
+                            push    de
+                            call    rooms.set_bottom_room
+                            pop de
+                            ld  e,0
+                            jr  check_hero_coords_yes2
 hero_gravity
-                    ld  a,(hero_state)
-                    cp  state_jump
-                    ret z
+                            ld  a,(hero_state)
+                            cp  state_jump
+                            ret z
 
-                    ld  a,(gravity_timer)
-                    or  a
-                    jr  z,hero_gravity_do
-                    dec a
-                    ld  (gravity_timer),a
-                    ret
+                            ld  a,(gravity_timer)
+                            or  a
+                            jr  z,hero_gravity_do
+                            dec a
+                            ld  (gravity_timer),a
+                            ret
 hero_gravity_do
-                    ld  a,(gravity_delay)
-                    ld  (gravity_timer),a
-                    call    move_hero_down
-                    ret
+                            ld  a,(gravity_delay)
+                            ld  (gravity_timer),a
+                            call    move_hero_down
+                            ret
 gravity_timer
-                    db  0
+                            db  0
 gravity_delay
-                    db  0
+                            db  0
 check_hero_state
                 ; if hero is jumping, skip checks
-                    ld  a,(hero_state)
-                    cp  state_jump
-                    ret z
+                            ld  a,(hero_state)
+                            cp  state_jump
+                            ret z
 
-                    ld  de,(hero_coords)
+                            ld  de,(hero_coords)
 
-                    call    rooms.get_room_color
-                    cp  rooms.room_bg_color_wat
-                    jr  nz,check_hero_elevator
+                            call    rooms.get_room_color
+                            cp  rooms.room_bg_color_wat
+                            jr  nz,check_hero_elevator
                 ; hero is swimming
-                    ld  a,state_swim
-                    ld  (hero_state),a
+                            ld  a,state_swim
+                            ld  (hero_state),a
 
-                    ld  a,gravity_water
-                    ld  (gravity_delay),a
+                            ld  a,gravity_water
+                            ld  (gravity_delay),a
 
-                    ld  a,hero_delay_swim
-                    ld  (hero_delay),a
-                    ret
+                            ld  a,hero_delay_swim
+                            ld  (hero_delay),a
+                            ret
 check_hero_elevator
                 ; check if hero is on any elevator
-                    ld  a,(hero_elevator)
-                    cp  elevators.item_on_elevator
-                    jr  z,check_hero_state_stand
+                            ld  a,(hero_elevator)
+                            cp  elevators.item_on_elevator
+                            jr  z,check_hero_state_stand
 
 check_hero_state_ground
                 ; check whats below hero
-                    ld  de,(hero_coords)
-                    inc e
+                            ld  de,(hero_coords)
+                            inc e
 
-                    call    rooms.get_room_color
+                            call    rooms.get_room_color
                 ; below is empty space
-                    cp  rooms.room_bg_color
-                    jr  z,check_hero_state_falling
+                            cp  rooms.room_bg_color
+                            jr  z,check_hero_state_falling
                 ; below is empty gray space
-                    cp  rooms.room_bg_color_gray
-                    jr  z,check_hero_state_falling
+                            cp  rooms.room_bg_color_gray
+                            jr  z,check_hero_state_falling
                 ; below is empty sky
-                    cp  rooms.room_bg_color_sky
-                    jr  z,check_hero_state_falling
+                            cp  rooms.room_bg_color_sky
+                            jr  z,check_hero_state_falling
                 ; if not empty room or sky then hero is standing on ground
 check_hero_state_stand
-                    ld  a,state_ground
-                    ld  (hero_state),a
+                            ld  a,state_ground
+                            ld  (hero_state),a
 
-                    ld  a,gravity_air
-                    ld  (gravity_delay),a
+                            ld  a,gravity_air
+                            ld  (gravity_delay),a
 
-                    ld  a,hero_delay_ground
-                    ld  (hero_delay),a
-                    ret
+                            ld  a,hero_delay_ground
+                            ld  (hero_delay),a
+                            ret
 check_hero_state_falling
-                    ld  a,state_void
-                    ld  (hero_state),a
+                            ld  a,state_void
+                            ld  (hero_state),a
 
-                    ld  a,gravity_air
-                    ld  (gravity_delay),a
+                            ld  a,gravity_air
+                            ld  (gravity_delay),a
 
-                    ret
+                            ret
 check_elevator
-                    ld  a,(hero_x)
-                    ld  d,a
+                            ld  a,(hero_x)
+                            ld  d,a
 
-                    ld  a,(hero_y)
-                    ld  e,a
-                    call    elevators.room_item_elevator_check
+                            ld  a,(hero_y)
+                            ld  e,a
+                            call    elevators.room_item_elevator_check
 
-                    ld  (hero_elevator),a
-                    ld  (current_elevator),ix
-                    ret
+                            ld  (hero_elevator),a
+                            ld  (current_elevator),ix
+                            ret
 hero_elevator
-                    db  elevators.item_not_elevator
+                            db  elevators.item_not_elevator
 current_elevator
-                    dw  0
+                            dw  0
 
-    endmodule
+                        endmodule

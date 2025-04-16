@@ -11,6 +11,8 @@ end_marker                  equ #ff
                         struct  elevator
 room_x                      byte
 room_y                      byte
+x                           byte
+y                           byte
 room_pos_x                  byte
 room_pos_y                  byte
 width                       byte
@@ -112,6 +114,8 @@ elevator_2_1
                             elevator    {
                             2,
                             1,
+                            0,
+                            0,
                             8,
                             22,
                             12,
@@ -126,6 +130,8 @@ elevator_3_1
                             elevator    {
                             3,
                             1,
+                            0,
+                            0,
                             4,
                             20,
                             8,
@@ -140,6 +146,8 @@ elevator_4_1_1
                             elevator    {
                             4,
                             1,
+                            0,
+                            0,
                             2,
                             20,
                             7,
@@ -154,6 +162,8 @@ elevator_4_1_2
                             elevator    {
                             4,
                             1,
+                            0,
+                            0,
                             9,
                             20,
                             8,
@@ -168,6 +178,8 @@ elevator_4_1_3
                             elevator    {
                             4,
                             1,
+                            0,
+                            0,
                             22,
                             20,
                             7,
@@ -182,6 +194,8 @@ elevator_4_3
                             elevator    {
                             4,
                             3,
+                            0,
+                            0,
                             6,
                             21,
                             12,
@@ -196,3 +210,4 @@ elevator_4_3
                             include "elevators_restore.a80"
                             include "elevators_update.a80"
                             include "elevators_draw.a80"
+                            include "elevators_coords.a80"

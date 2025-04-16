@@ -1,0 +1,111 @@
+                        module  elevators_update
+update_room
+                ; move all elevators from current room's buffer up/down - calculate state only
+                            ld  hl,rooms.room_elevators_buf
+elevators_update_next
+                            ld  a,(hl)
+                ; check if there are no elevators
+                            cp  rooms.elev_end_marker
+                            ret z
+                ; read elevator address to ix
+                            ld  ixl,a
+                            inc hl
+
+                            ld  a,(hl)
+                            ld  ixh,a
+                            inc hl
+                            push    hl
+                ; ix now has elevator data start
+
+                            ld  a,(ix+elevators.elevator.timer)
+                            or  a
+                            jr  z,elevator_move_allow
+                            dec a
+                            ld  (ix+elevators.elevator.timer),a
+                            jr  elevator_move_end
+elevator_move_allow
+                            ld  a,(ix+elevators.elevator.delay)
+                            ld  (ix+elevators.elevator.timer),a
+
+                            ld  a,(ix+elevators.elevator.state)
+                            cp  elevators.state_down
+                            jr  z,elevator_move_down
+
+                            cp  elevators.state_up
+                            jr  nz,elevator_move_end
+elevator_move_up
+                            ld  a,(ix+elevators.elevator.end_height)
+                            ld  b,a
+
+                            ld  a,(ix+elevators.elevator.cur_height)
+                            cp  b
+
+                            jr  z,elevator_switch_down
+                            inc a
+                            ld  (ix+elevators.elevator.cur_height),a
+
+                            call    elevator_move_items
+
+                            jr  elevator_move_end
+elevator_switch_down
+                            ld  a,elevators.state_down
+                            ld  (ix+elevators.elevator.state),a
+                            jr  elevator_move_end
+elevator_move_down
+                            ld  a,(ix+elevators.elevator.cur_height)
+                            or  a
+
+                            jr  z,elevator_switch_up
+                            dec a
+                            ld  (ix+elevators.elevator.cur_height),a
+
+                            call    elevator_move_items
+
+                            jr  elevator_move_end
+elevator_switch_up
+                            ld  a,elevators.state_up
+                            ld  (ix+elevators.elevator.state),a
+                            jr  elevator_move_end
+elevator_move_end
+                            pop hl
+                            jr  elevators_update_next
+                            ret
+elevator_move_items
+                ; input
+                ; ix points to elevator data
+                            push    hl
+                            push    de
+                            push    bc
+                            push    ix
+                            ld  a,(hero.hero_elevator)
+                            cp  elevators.item_on_elevator
+                            jr  nz,elevator_move_items_end
+
+                            ld  hl,(hero.current_elevator)
+                ; check if hero is on this elevator from ix
+                            push    ix
+                            pop de
+
+                            or  a
+                            sbc hl,de
+
+                            ld  a,h
+                            or  l
+                            jr  nz,elevator_move_items_end
+                ; hero is on this elevator
+                            ld  a,(ix+elevators.elevator.state)
+                            cp  elevators.state_down
+                            jr  z,elevator_move_items_down
+                            call    hero.move_hero_up
+                            jr  elevator_move_items_end
+elevator_move_items_down
+                            call    hero.move_hero_down_force
+
+elevator_move_items_end
+                            pop ix
+                            pop bc
+                            pop de
+                            pop hl
+                            ret
+
+                        endmodule
