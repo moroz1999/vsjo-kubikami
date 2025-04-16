@@ -4,7 +4,7 @@ loop
                     call    draw.border
                     //call    rooms.init_current_room
                     call    animate.check
-                    call    elevators.restore
+                    call    elevators_restore.restore
                     call    hero.save_restore
                     call    elevators.room_elevators_update
                     
