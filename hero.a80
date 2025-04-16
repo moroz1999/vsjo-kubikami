@@ -509,9 +509,9 @@ check_elevator
                             ld  a,(hero_x)
                             ld  d,a
 
-                            ld  a,(hero_y)
+                            ld  a,(hero_global_y)
                             ld  e,a
-                            call    elevators.room_item_elevator_check
+                            call    elevators_itemcheck.check
 
                             ld  (hero_elevator),a
                             ld  (current_elevator),ix

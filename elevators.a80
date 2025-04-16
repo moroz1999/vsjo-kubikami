@@ -23,83 +23,6 @@ state                       byte
 delay                       byte
 timer                       byte
                         ends
-room_item_elevator_check
-                ; input:
-                ; d - item x
-                ; e - item y
-                ;
-                ; output: 
-                ; a - item on elevator or not
-                ; ix - elevator data address
-
-                            ld  hl,rooms.room_elevators_buf
-                            call    item_elevator_check
-                            ret
-item_elevator_check
-hero_update_next
-                            ld  a,(hl)
-                ; check if there are no elevators
-                            cp  rooms.elev_end_marker
-                            ret z
-                ; read elevator address to ix
-                            ld  ixl,a
-                            inc hl
-
-                            ld  a,(hl)
-                            ld  ixh,a
-                            inc hl
-                            push    hl
-                ; ix now has elevator data start
-
-
-                ; check item X from d
-
-                            ld  a,(ix+elevator.room_pos_x)
-                            ld  b,a
-                ; b has left edge of elevator
-
-                ; check that hero is left to elevator
-                            ld  a,d
-                            sub b
-                            jr  c,hero_update_skip ;hero is left to elevator
-
-                            ld  a,(ix+elevator.width)
-                            add b
-                ; c has right edge of elevator
-                            ld  c,a
-
-                ; check that hero is right to elevator
-                            ld  a,d
-                            sub c
-                            jr  nc,hero_update_skip ;hero is right to elevator
-
-                ; now check item Y from e
-
-                            ld  a,(ix+elevator.cur_height)
-                            ld  b,a
-                ; b has current height of elevator
-
-                            ld  a,(ix+elevator.room_pos_y)
-                            sub b
-                            ld  c,a
-                ; c has top position of elevator
-                            dec a
-
-                ; check that hero is on the elevator                
-                            sub e
-                            jr  nz,hero_update_skip ;hero is not above elevator
-
-                ; restore stack
-                            pop hl
-                ; return true
-                            ld  a,item_on_elevator
-                            ret
-hero_update_skip
-                            pop hl
-                            jr  hero_update_next
-                ; return false                    
-                            ld  a,item_not_elevator
-                            ret
 
 amount                      equ (elevators_table_end-elevators_table)/2
 elevators_table
@@ -211,3 +134,4 @@ elevator_4_3
                             include "elevators_update.a80"
                             include "elevators_draw.a80"
                             include "elevators_coords.a80"
+                            include "elevators_itemcheck.a80"

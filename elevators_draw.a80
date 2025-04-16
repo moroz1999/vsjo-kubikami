@@ -2,9 +2,9 @@
 elevator_top_color          equ %01000111
 
                 ; 1. * separate global coords calculation from drawing to use it freely in restoration, drawing, physics at any time
-                ; 2. make global hero coordinates for elevator physics comparison
-                ; 3. start storing elevator's global position in struct, bottom/above/inside room state as well
-                ; 4. modify physics check to global coords
+                ; 2. * make global hero coordinates for elevator physics comparison
+                ; 3. * start storing elevator's global position in struct, bottom/above/inside room state as well
+                ; 4. * modify physics check to global coords
                 ; 5. modify elevator restoration to work with global coords
 
                             display 'draw_elevators ',draw
