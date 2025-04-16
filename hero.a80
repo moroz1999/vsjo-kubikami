@@ -34,7 +34,20 @@ jump_steps                  equ 8
 jump_type                   db  jump_type_top
 no_item_in_pocket           equ 255
 current_item                db  no_item_in_pocket
+update_global_y
+                        ; y = hero_room_y * each_room_height + room y
 
+                            ld  a,(rooms.room_number_y)
+
+                            ld  h,a
+                            ld  e,rooms.room_h
+
+                            call    math.mul8b
+                        ; l now has top rooms offset, now add local y
+                            ld  a,(hero_y)
+                            add l
+                            ld  (hero_global_y),a
+                            ret
 switch_colors
                             ld  a,(hero_color)
                             cp  hero_color1
