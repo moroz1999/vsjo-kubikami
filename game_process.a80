@@ -6,7 +6,7 @@ loop
                     call    animate.check
                     call    elevators_restore.restore
                     call    hero.save_restore
-                    call    elevators.room_elevators_update
+                    call    elevators_update.update_room
                     
                     call    hero.check_elevator
                     call    hero.check_hero_state
