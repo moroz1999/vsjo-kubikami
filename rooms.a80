@@ -484,7 +484,7 @@ room_teleports_buf
 room_teleports_end
 
 calculate_room_top_y
-                ; calculate bottom y coordinate of current room
+                ; calculate top y coordinate of current room
                 ;
                 ; $current_room_top_coord_y = $current_room_y * $each_room_height;
                             ld  a,(room_number_y)

@@ -22,7 +22,7 @@ action
                     jr  nz,toolkit_false
 
                     ld  a,elevators.state_down
-                    ld  (elevators.elevator_2_1+elevators.elevator.state),a
+                    ld  (elevators.elevator_2_3+elevators.elevator.state),a
 
                     call hero.delete_item_in_pocket
 

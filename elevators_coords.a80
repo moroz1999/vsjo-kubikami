@@ -34,7 +34,8 @@ coords_next
                             add (ix+elevators.elevator.room_pos_y)
                             sub (ix+elevators.elevator.cur_height)
                             ld  (ix+elevators.elevator.y),a
-
+                            
+                            pop hl
                 ; check if elevator is below, under or in current room
                             ld  b,a
                 ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates

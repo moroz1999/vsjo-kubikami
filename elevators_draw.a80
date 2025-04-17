@@ -6,8 +6,6 @@ elevator_top_color          equ %01000111
                 ; 3. * start storing elevator's global position in struct, bottom/above/inside room state as well
                 ; 4. * modify physics check to global coords
                 ; 5. * modify elevator restoration to work with global coords
-
-                            display 'draw_elevators ',draw
 draw
                             ld  hl,rooms.room_elevators_buf
 draw_next
@@ -26,8 +24,6 @@ draw_next
                             inc hl
                             push    hl
                 ; ix now has elevator data start
-
-                ; check if elevator is below, under or in current room
                             ld a,(ix+elevators.elevator.y)
                             ld  b,a
                 ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates

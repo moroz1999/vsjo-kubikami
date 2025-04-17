@@ -21,27 +21,23 @@ restore_next
 
 
                 ; only restore elevators from current room
-                            ld  a,(rooms.room_number_y)
-                            ld  d,a
-                            ld  a,(ix+elevators.elevator.room_y)
-                            sub d
-                            jr  nz,restore_skip
-
+                            ld  a,(ix+elevators.elevator.in_room)
+                            cp  elevators.room_inside
+                            jr  nz,restore_skip                            
+                            
+                ; b has elevator's global y
+                            ld  a,(rooms.room_top_y)
+                            ld  b,a
+                ; elevator draw height = elevator global - room_top_y
+                            ld  a,(ix+elevators.elevator.y)
+                            sub b
+                            ld  e,a
 
                             ld  a,(ix+elevators.elevator.room_pos_x)
                             ld  d,a
 
-                            ld  a,(ix+elevators.elevator.room_pos_y)
-                            ld  e,a
-
                             ld  a,(ix+elevators.elevator.width)
                             ld  b,a
-
-                            ld  a,(ix+elevators.elevator.cur_height)
-                            ld  c,a
-                            ld  a,e
-                            sub c
-                            ld  e,a
 
                             ld  c,1
 

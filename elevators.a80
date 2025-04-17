@@ -31,26 +31,26 @@ timer                       byte
 
 amount                      equ (elevators_table_end-elevators_table)/2
 elevators_table
-                            ; dw  elevator_2_1
+                            dw  elevator_2_3
                             dw  elevator_3_1
-                            ; dw  elevator_4_1_1
-                            ; dw  elevator_4_1_2
-                            ; dw  elevator_4_1_3
-                            ; dw  elevator_4_3
+                            dw  elevator_4_1_1
+                            dw  elevator_4_1_2
+                            dw  elevator_4_1_3
+                            dw  elevator_4_3
 elevators_table_end
-elevator_2_1
+elevator_2_3
                             elevator    {
-                            room_below,  ; in_room    
+                            room_inside,  ; in_room    
                             2,           ; room_x     
-                            1,           ; room_y     
+                            3,           ; room_y     
                             0,           ; x          
                             0,           ; y          
                             8,           ; room_pos_x 
-                            22,          ; room_pos_y 
+                            20,          ; room_pos_y 
                             12,          ; width      
                             6,           ; leg_left   
-                            2            ; cur_height 
-                            2,           ; end_height 
+                            44,           ; cur_height 
+                            44,           ; end_height 
                             state_stop,  ; state      
                             2,           ; delay      
                             0            ; timer      
@@ -66,7 +66,7 @@ elevator_3_1
                             20,          ; room_pos_y 
                             8,           ; width      
                             4,           ; leg_left   
-                            2            ; cur_height 
+                            2,            ; cur_height 
                             35,          ; end_height 
                             state_up,    ; state      
                             2,           ; delay      
@@ -83,7 +83,7 @@ elevator_4_1_1
                             20,          ; room_pos_y 
                             7,           ; width      
                             3,           ; leg_left   
-                            0            ; cur_height 
+                            0,            ; cur_height 
                             13,          ; end_height 
                             state_up,    ; state      
                             2,           ; delay      
@@ -100,7 +100,7 @@ elevator_4_1_2
                             20,          ; room_pos_y 
                             8,           ; width      
                             3,           ; leg_left   
-                            0            ; cur_height 
+                            0,            ; cur_height 
                             13,          ; end_height 
                             state_up,    ; state      
                             2,           ; delay      
