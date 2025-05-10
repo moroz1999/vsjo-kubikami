@@ -1,0 +1,61 @@
+                        module	waterdrops
+                        struct	waterdrop
+room_x                      byte
+room_y                      byte
+room_start_x                byte
+room_start_y                byte
+room_pos_x                  byte
+room_pos_y                  byte
+                        ends
+amount                      equ	(waterdrops_table_end-waterdrops_table)/2
+                            display	"draw_room_waterdrops ",draw_room_waterdrops
+draw_room_waterdrops
+                            ld	hl,rooms.room_waterdrops_buf
+draw_room_wds_next
+                            ld	a,(hl)
+
+                            cp	rooms.rooms_end_marker
+                            ret	z
+
+                            inc	hl
+                            ld	ixl,a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixh,a
+
+                            ld	a,(ix+waterdrops.waterdrop.room_pos_x)
+                            ld	d,a
+
+
+                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
+                            ld	e,a
+
+                            push	hl
+                            call	screen_utils.get_attrs_address
+                            ld	a,%01001001
+                            ld	(hl),a
+                            pop	hl
+                            jr	draw_room_wds_next
+
+                            ret
+
+waterdrops_table
+                            dw	waterdrop_2_1_1
+                            dw	waterdrop_2_1_2
+waterdrops_table_end
+waterdrop_2_1_1
+                            waterdrop	{
+                            2,
+                            1,
+                            5,
+                            1
+                            }
+waterdrop_2_1_2
+                            waterdrop	{
+                            2,
+                            1,
+                            13,
+                            1
+                            }
+                        endmodule

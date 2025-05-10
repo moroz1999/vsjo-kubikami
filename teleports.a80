@@ -1,166 +1,166 @@
-    module  teleports
-    struct  teleport
-room_x              byte
-room_y              byte
-room_pos_x          byte
-room_pos_y          byte
-dest_room_x         byte
-dest_room_y         byte
-dest_room_pos_x     byte
-dest_room_pos_y     byte
-    ends
+                        module	teleports
+                        struct	teleport
+room_x                      byte
+room_y                      byte
+room_pos_x                  byte
+room_pos_y                  byte
+dest_room_x                 byte
+dest_room_y                 byte
+dest_room_pos_x             byte
+dest_room_pos_y             byte
+                        ends
 
-teleport_color1     equ %01101100
-teleport_color2     equ %00000100
-teleport_color      db  teleport_color1
+teleport_color1             equ	%01101100
+teleport_color2             equ	%00000100
+teleport_color              db	teleport_color1
 switch_colors
-                    ld  a,(teleport_color)
-                    cp  teleport_color1
-                    jr  z,switch_colors_use2
-                    ld  a,teleport_color1
-                    ld  (teleport_color),a
-                    ret
+                            ld	a,(teleport_color)
+                            cp	teleport_color1
+                            jr	z,switch_colors_use2
+                            ld	a,teleport_color1
+                            ld	(teleport_color),a
+                            ret
 switch_colors_use2
-                    ld  a,teleport_color2
-                    ld  (teleport_color),a
-                    ret
+                            ld	a,teleport_color2
+                            ld	(teleport_color),a
+                            ret
 check_hero
-                    ld  hl,rooms.room_teleports_buf
+                            ld	hl,rooms.room_teleports_buf
 check_hero_next
-                    ld  a,(hl)
+                            ld	a,(hl)
                 ; check if there are no teleports
-                    cp  rooms.rooms_end_marker
-                    jr  z,check_hero_no_teleport
+                            cp	rooms.rooms_end_marker
+                            jr	z,check_hero_no_teleport
                 ; read teleport address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld	ixl,a
+                            inc	hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
                 ; ix now has teleport data start
 
-                    ld  a,(ix+teleport.room_pos_x)
-                    ld  d,a
+                            ld	a,(ix+teleport.room_pos_x)
+                            ld	d,a
 
-                    ld  a,(ix+teleport.room_pos_y)
-                    ld  e,a
+                            ld	a,(ix+teleport.room_pos_y)
+                            ld	e,a
 
-                    ld  a,(hero.hero_x)
-                    sub d
-                    jr  nz,check_hero_skip
+                            ld	a,(hero.hero_x)
+                            sub	d
+                            jr	nz,check_hero_skip
 
-                    ld  a,(hero.hero_y)
-                    sub e
-                    jr  nz,check_hero_skip
+                            ld	a,(hero.hero_y)
+                            sub	e
+                            jr	nz,check_hero_skip
 
-                    ld  a,(just_teleported)
-                    or  a
-                    jr  nz,check_hero_exit
+                            ld	a,(just_teleported)
+                            or	a
+                            jr	nz,check_hero_exit
 
-                    ld  a,(ix+teleport.dest_room_pos_x)
-                    ld  (hero.hero_x),a
+                            ld	a,(ix+teleport.dest_room_pos_x)
+                            ld	(hero.hero_x),a
 
-                    ld  a,(ix+teleport.dest_room_pos_y)
-                    ld  (hero.hero_y),a
+                            ld	a,(ix+teleport.dest_room_pos_y)
+                            ld	(hero.hero_y),a
 
-                    ld  a,(ix+teleport.dest_room_x)
-                    ld  (rooms.room_number_x),a
+                            ld	a,(ix+teleport.dest_room_x)
+                            ld	(rooms.room_number_x),a
 
-                    ld  a,(ix+teleport.dest_room_y)
-                    ld  (rooms.room_number_y),a
+                            ld	a,(ix+teleport.dest_room_y)
+                            ld	(rooms.room_number_y),a
 
-                    call    rooms.init_current_room
+                            call	rooms.init_current_room
 
-                    jr  check_hero_teleported
+                            jr	check_hero_teleported
 check_hero_skip
-                    pop hl
-                    jr  check_hero_next
+                            pop	hl
+                            jr	check_hero_next
 check_hero_no_teleport
-                    xor a
-                    ld  (just_teleported),a
+                            xor	a
+                            ld	(just_teleported),a
 
-                    ret
+                            ret
 check_hero_teleported
-                    ld  a,1
-                    ld  (just_teleported),a
+                            ld	a,1
+                            ld	(just_teleported),a
 check_hero_exit
-                    pop hl
-                    ret
-just_teleported     db  0
+                            pop	hl
+                            ret
+just_teleported             db	0
 
 draw_current
-                    ld  hl,rooms.room_teleports_buf
+                            ld	hl,rooms.room_teleports_buf
 draw_next
-                    ld  a,(hl)
+                            ld	a,(hl)
                 ; check if there are no teleports
-                    cp  rooms.rooms_end_marker
-                    ret z
-                    ld  a,(hl)
+                            cp	rooms.rooms_end_marker
+                            ret	z
+                            ld	a,(hl)
                 ; read teleport address to ix
-                    ld  ixl,a
-                    inc hl
+                            ld	ixl,a
+                            inc	hl
 
-                    ld  a,(hl)
-                    ld  ixh,a
-                    inc hl
-                    push    hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
                 ; ix now has teleport data start
 
-                    ld  a,(ix+teleport.room_pos_x)
-                    ld  d,a
+                            ld	a,(ix+teleport.room_pos_x)
+                            ld	d,a
 
-                    ld  a,(ix+teleport.room_pos_y)
-                    ld  e,a
+                            ld	a,(ix+teleport.room_pos_y)
+                            ld	e,a
 
 
-                    push    ix
-                    push    de
-                    push    bc
-                    call    draw_teleport
-                    pop bc
-                    pop de
-                    pop ix
+                            push	ix
+                            push	de
+                            push	bc
+                            call	draw_teleport
+                            pop	bc
+                            pop	de
+                            pop	ix
 
-                    pop hl
-                    jr  draw_next
-                    ret
+                            pop	hl
+                            jr	draw_next
+                            ret
 draw_teleport
                 ; d - teleport start x
                 ; e - teleport start y                    
-                    call    screen_utils.get_attrs_address
+                            call	screen_utils.get_attrs_address
                 ; draw teleport
-                    ld  a,(teleport_color)
-                    ld  (hl),a
+                            ld	a,(teleport_color)
+                            ld	(hl),a
 
-                    ret
+                            ret
 
-amount              equ 2
+amount                      equ	2
 
 teleports_table
-                    dw  teleport_0_3
-                    dw  teleport_3_2
+                            dw	teleport_0_3
+                            dw	teleport_3_2
 teleport_0_3
-                    teleport    {
-                    0,
-                    3,
-                    30,
-                    20,
-                    3,
-                    2,
-                    17,
-                    11
-                    }
+                            teleport	{
+                            0,
+                            3,
+                            30,
+                            20,
+                            3,
+                            2,
+                            17,
+                            11
+                            }
 teleport_3_2
-                    teleport    {
-                    3,
-                    2,
-                    17,
-                    11,
-                    0,
-                    3,
-                    30,
-                    20
-                    }
-    endmodule
+                            teleport	{
+                            3,
+                            2,
+                            17,
+                            11,
+                            0,
+                            3,
+                            30,
+                            20
+                            }
+                        endmodule

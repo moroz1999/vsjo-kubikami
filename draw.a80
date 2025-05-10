@@ -60,6 +60,7 @@ draw_hero
                     ret
 draw_state
                     call    restore_pixels
+                    call    waterdrops.draw_room_waterdrops
                     call    elevators_draw.draw
                     call    draw_room_items
                     call    teleports.draw_current
