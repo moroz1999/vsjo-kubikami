@@ -37,6 +37,7 @@ room_1_0                    incbin	"rooms/room1,0.atr"
 room_2_0                    incbin	"rooms/room2,0.atr"
 room_3_0                    incbin	"rooms/room3,0.atr"
 room_4_0                    incbin	"rooms/room4,0.atr"
+room_5_0                    incbin	"rooms/room5,0.atr"
 
 room_0_1                    incbin	"rooms/room0,1.atr"
 room_1_1                    incbin	"rooms/room1,1.atr"

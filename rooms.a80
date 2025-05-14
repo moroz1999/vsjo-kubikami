@@ -1,6 +1,6 @@
                         module	rooms
 room_number_x               db	2
-room_number_y               db	1
+room_number_y               db	0
 
 room_amount_x               equ	6
 room_amount_y               equ	4
@@ -146,7 +146,7 @@ room_pointers
                             dw	room_2_0
                             dw	room_3_0
                             dw	room_4_0
-                            dw	0
+                            dw	room_5_0
 
                             dw	room_0_1
                             dw	room_1_1

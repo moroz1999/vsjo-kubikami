@@ -39,6 +39,42 @@ draw_room_wds_next
                             jr	draw_room_wds_next
 
                             ret
+move_waterdrops
+                            ld	hl,rooms.room_waterdrops_buf
+move_next
+                            ld	a,(hl)
+
+                            cp	rooms.rooms_end_marker
+                            ret	z
+
+                            inc	hl
+                            ld	ixl,a
+
+                            ld	a,(hl)
+                            inc	hl
+                            push	hl
+
+                            ld	ixh,a
+
+                            ld	a,(ix+waterdrops.waterdrop.room_pos_x)
+                            ld	d,a
+
+                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
+                            ld	e,a
+                            push	de
+                            call	draw.add_to_restore
+                            pop	de
+
+                            call	hero.check_hero_coords
+                            or	a
+                            jr	z,move_skip
+
+                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
+                            inc	a
+                            ld	(ix+waterdrops.waterdrop.room_pos_y),a
+move_skip
+                            pop	hl
+                            jr	move_next
 
 waterdrops_table
                             dw	waterdrop_2_1_1
@@ -49,12 +85,16 @@ waterdrop_2_1_1
                             2,
                             1,
                             5,
+                            1,
+                            5,
                             1
                             }
 waterdrop_2_1_2
                             waterdrop	{
                             2,
                             1,
+                            13,
+                            2,
                             13,
                             1
                             }

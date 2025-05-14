@@ -1,44 +1,45 @@
-                        module  game_process
+                        module	game_process
 loop
-                            ld  a,1
-                            call    draw.border
+                            ld	a,1
+                            call	draw.border
                     //call    rooms.init_current_room
-                            call    animate.check
-                            call    elevators_restore.restore
-                            call    hero.save_restore
+                            call	animate.check
+                            call	elevators_restore.restore
+                            call	hero.save_restore
 
-                            call    elevators_update.update_room
-                            call    elevators_coords.coords
+                            call	elevators_update.update_room
+                            call	elevators_coords.coords
 
-                            call    hero.update_global_y
-                            call    hero.check_elevator
-                            call    hero.check_hero_state
-                            call    hero.switch_colors
-                            call    hero.hero_gravity
-                            call    hero.hero_move
+                            call	hero.update_global_y
+                            call	hero.check_elevator
+                            call	hero.check_hero_state
+                            call	hero.switch_colors
+                            call	hero.hero_gravity
+                            call	hero.hero_move
 
-                            call    teleports.switch_colors
-                            call    teleports.check_hero
-                            
-                            call    debug.print_hero_state
-room_logic_pointer          equ $+1
-                            call    logic.empty_room_logic
-                            call    draw.draw_state
-                            xor a
-                            call    draw.border
-                            ld  b,1
-                            call    wait
-                            jr  loop
+                            call	waterdrops.move_waterdrops
+                            call	teleports.switch_colors
+                            call	teleports.check_hero
+
+                            call	debug.print_hero_state
+room_logic_pointer          equ	$+1
+                            call	logic.empty_room_logic
+                            call	draw.draw_state
+                            xor	a
+                            call	draw.border
+                            ld	b,1
+                            call	wait
+                            jr	loop
 wait
-                            ld  iy,0
-                            ld  ix,0
+                            ld	iy,0
+                            ld	ix,0
                             ei
                             halt
                             di
-                            djnz    wait
+                            djnz	wait
                             ret
 endgame
-                            call    draw.clear_screen
+                            call	draw.clear_screen
                             di
                             halt
                         endmodule
