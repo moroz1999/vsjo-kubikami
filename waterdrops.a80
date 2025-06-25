@@ -2,11 +2,15 @@
                         struct	waterdrop
 room_x                      byte
 room_y                      byte
-room_start_x                byte
 room_start_y                byte
 room_pos_x                  byte
 room_pos_y                  byte
+delay                       byte
+timer                       byte
+state                       byte
                         ends
+state_drop                  equ 1
+state_delay                 equ 0                        
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
                             display	"draw_room_waterdrops ",draw_room_waterdrops
 draw_room_waterdrops
@@ -24,11 +28,11 @@ draw_room_wds_next
                             inc	hl
                             ld	ixh,a
 
-                            ld	a,(ix+waterdrops.waterdrop.room_pos_x)
+                            ld	a,(ix+waterdrop.room_pos_x)
                             ld	d,a
 
 
-                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
+                            ld	a,(ix+waterdrop.room_pos_y)
                             ld	e,a
 
                             push	hl
@@ -39,6 +43,7 @@ draw_room_wds_next
                             jr	draw_room_wds_next
 
                             ret
+
 move_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
 move_next
@@ -55,24 +60,48 @@ move_next
                             push	hl
 
                             ld	ixh,a
+                            ld a,(ix+waterdrop.state)
+                            cp state_drop
+                            jr z,move_drop
+                            ld a,(ix+waterdrop.timer)
+                            dec a
+                            ld (ix+waterdrop.timer),a
+                            or a
+                            jr nz,move_skip
 
-                            ld	a,(ix+waterdrops.waterdrop.room_pos_x)
+                            ld a,state_drop
+                            ld (ix+waterdrop.state),a
+move_drop                            
+                            ld	a,(ix+waterdrop.room_pos_x)
                             ld	d,a
 
-                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
+                            ld	a,(ix+waterdrop.room_pos_y)
                             ld	e,a
                             push	de
                             call	draw.add_to_restore
                             pop	de
 
+                            inc	e
+                            push	de
                             call	hero.check_hero_coords
+                            pop	de
                             or	a
-                            jr	z,move_skip
-
-                            ld	a,(ix+waterdrops.waterdrop.room_pos_y)
-                            inc	a
-                            ld	(ix+waterdrops.waterdrop.room_pos_y),a
+                            jr	z,move_restore_source
+                            ld	a,e
+                            ld	(ix+waterdrop.room_pos_y),a
 move_skip
+                            pop	hl
+                            jr	move_next
+
+
+move_restore_source
+                            ld a,state_delay
+                            ld (ix+waterdrop.state),a
+                            ld a,(ix+waterdrop.delay)
+                            ld (ix+waterdrop.timer),a
+
+                            ld a,(ix+waterdrop.room_start_y)
+                            ld (ix+waterdrop.room_pos_y),a
                             pop	hl
                             jr	move_next
 
@@ -82,20 +111,24 @@ waterdrops_table
 waterdrops_table_end
 waterdrop_2_1_1
                             waterdrop	{
-                            2,
-                            1,
-                            5,
-                            1,
-                            5,
-                            1
+                            2,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            5,  //room_pos_x
+                            1   //room_pos_y
+                            40  //delay
+                            30  //timer
+                            0   //state_delay
                             }
 waterdrop_2_1_2
                             waterdrop	{
-                            2,
-                            1,
-                            13,
-                            2,
-                            13,
-                            1
+                            2,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            20, //room_pos_x
+                            1   //room_pos_y
+                            100 //delay
+                            80  //timer
+                            0   //state_delay
                             }
                         endmodule
