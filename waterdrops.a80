@@ -9,8 +9,8 @@ delay                       byte
 timer                       byte
 state                       byte
                         ends
-state_drop                  equ 1
-state_delay                 equ 0                        
+state_drop                  equ	1
+state_delay                 equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
                             display	"draw_room_waterdrops ",draw_room_waterdrops
 draw_room_waterdrops
@@ -60,18 +60,18 @@ move_next
                             push	hl
 
                             ld	ixh,a
-                            ld a,(ix+waterdrop.state)
-                            cp state_drop
-                            jr z,move_drop
-                            ld a,(ix+waterdrop.timer)
-                            dec a
-                            ld (ix+waterdrop.timer),a
-                            or a
-                            jr nz,move_skip
+                            ld	a,(ix+waterdrop.state)
+                            cp	state_drop
+                            jr	z,move_drop
+                            ld	a,(ix+waterdrop.timer)
+                            dec	a
+                            ld	(ix+waterdrop.timer),a
+                            or	a
+                            jr	nz,move_skip
 
-                            ld a,state_drop
-                            ld (ix+waterdrop.state),a
-move_drop                            
+                            ld	a,state_drop
+                            ld	(ix+waterdrop.state),a
+move_drop
                             ld	a,(ix+waterdrop.room_pos_x)
                             ld	d,a
 
@@ -83,10 +83,10 @@ move_drop
 
                             inc	e
                             push	de
-                            call	hero.check_hero_coords
+                            call	objects.check_coords
                             pop	de
-                            or	a
-                            jr	z,move_restore_source
+                            cp	1
+                            jr	nz,move_restore_source
                             ld	a,e
                             ld	(ix+waterdrop.room_pos_y),a
 move_skip
@@ -95,19 +95,20 @@ move_skip
 
 
 move_restore_source
-                            ld a,state_delay
-                            ld (ix+waterdrop.state),a
-                            ld a,(ix+waterdrop.delay)
-                            ld (ix+waterdrop.timer),a
+                            ld	a,state_delay
+                            ld	(ix+waterdrop.state),a
+                            ld	a,(ix+waterdrop.delay)
+                            ld	(ix+waterdrop.timer),a
 
-                            ld a,(ix+waterdrop.room_start_y)
-                            ld (ix+waterdrop.room_pos_y),a
+                            ld	a,(ix+waterdrop.room_start_y)
+                            ld	(ix+waterdrop.room_pos_y),a
                             pop	hl
                             jr	move_next
 
 waterdrops_table
                             dw	waterdrop_2_1_1
                             dw	waterdrop_2_1_2
+                            dw	waterdrop_2_1_3
 waterdrops_table_end
 waterdrop_2_1_1
                             waterdrop	{
@@ -121,6 +122,18 @@ waterdrop_2_1_1
                             0   //state_delay
                             }
 waterdrop_2_1_2
+                            waterdrop	{
+                            2,  //room_x
+                            1,  //room_y
+                            2,  //room_start_y
+                            12, //room_pos_x
+                            2,   //room_pos_y
+                            20 //delay
+                            70  //timer
+                            0   //state_delay
+                            }
+
+waterdrop_2_1_3
                             waterdrop	{
                             2,  //room_x
                             1,  //room_y

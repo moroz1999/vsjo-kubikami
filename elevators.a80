@@ -1,18 +1,18 @@
-                        module  elevators
-state_stop                  equ 1
-state_up                    equ 2
-state_down                  equ 3
-state_none                  equ 4
+                        module	elevators
+state_stop                  equ	1
+state_up                    equ	2
+state_down                  equ	3
+state_none                  equ	4
 
-item_not_elevator           equ 1
-item_on_elevator            equ 2
+item_not_elevator           equ	1
+item_on_elevator            equ	2
 
-room_inside                 equ 1
-room_above                  equ 2
-room_below                  equ 3
+room_inside                 equ	1
+room_above                  equ	2
+room_below                  equ	3
 
-end_marker                  equ #ff
-                        struct  elevator
+end_marker                  equ	#ff
+                        struct	elevator
 in_room                     byte
 room_x                      byte
 room_y                      byte
@@ -29,34 +29,34 @@ delay                       byte
 timer                       byte
                         ends
 
-amount                      equ (elevators_table_end-elevators_table)/2
+amount                      equ	(elevators_table_end-elevators_table)/2
 elevators_table
-                            dw  elevator_2_3
-                            dw  elevator_3_1
-                            dw  elevator_4_1_1
-                            dw  elevator_4_1_2
-                            dw  elevator_4_1_3
-                            dw  elevator_4_3
+                            dw	elevator_2_3
+                            dw	elevator_3_1
+                            dw	elevator_4_1_1
+                            dw	elevator_4_1_2
+                            dw	elevator_4_1_3
+                            dw	elevator_4_3
 elevators_table_end
 elevator_2_3
-                            elevator    {
+                            elevator	{
                             room_inside,  ; in_room    
                             2,           ; room_x     
                             3,           ; room_y     
                             0,           ; x          
                             0,           ; y          
                             8,           ; room_pos_x 
-                            21,          ; room_pos_y 
+                            20,          ; room_pos_y 
                             12,          ; width      
                             6,           ; leg_left   
-                            45,           ; cur_height 
-                            45,           ; end_height 
+                            44,           ; cur_height 
+                            44,           ; end_height 
                             state_stop,  ; state      
                             2,           ; delay      
                             0            ; timer      
                             }
 elevator_3_1
-                            elevator    {
+                            elevator	{
                             room_below,  ; in_room    
                             3,           ; room_x     
                             1,           ; room_y     
@@ -73,7 +73,7 @@ elevator_3_1
                             0            ; timer      
                             }
 elevator_4_1_1
-                            elevator    {
+                            elevator	{
                             room_below,  ; in_room    
                             4,           ; room_x     
                             1,           ; room_y     
@@ -90,7 +90,7 @@ elevator_4_1_1
                             0            ; timer      
                             }
 elevator_4_1_2
-                            elevator    {
+                            elevator	{
                             room_below,  ; in_room    
                             4,           ; room_x     
                             1,           ; room_y     
@@ -107,7 +107,7 @@ elevator_4_1_2
                             0            ; timer      
                             }
 elevator_4_1_3
-                            elevator    {
+                            elevator	{
                             room_below,  ; in_room    
                             4,           ; room_x     
                             1,           ; room_y     
@@ -124,7 +124,7 @@ elevator_4_1_3
                             0            ; timer      
                             }
 elevator_4_3
-                            elevator    {
+                            elevator	{
                             room_below,  ; in_room    
                             4,           ; room_x     
                             3,           ; room_y     
@@ -141,8 +141,8 @@ elevator_4_3
                             0            ; timer      
                             }
                         endmodule
-                            include "elevators_restore.a80"
-                            include "elevators_update.a80"
-                            include "elevators_draw.a80"
-                            include "elevators_coords.a80"
-                            include "elevators_itemcheck.a80"
+                            include	"elevators_restore.a80"
+                            include	"elevators_update.a80"
+                            include	"elevators_draw.a80"
+                            include	"elevators_coords.a80"
+                            include	"elevators_itemcheck.a80"

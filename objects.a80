@@ -1,0 +1,83 @@
+                        module	objects
+
+b_occupied                  equ	0
+b_empty                     equ	1
+b_left                      equ	2
+b_right                     equ	3
+b_top                       equ	4
+b_bottom                    equ	5
+check_coords
+                ; check if coords are empty and allowed to move, respecting room boundaries
+                ; input:
+                ; d - x 
+                ; e - y
+                ;
+                ; output:
+                ; a = 0 (allowed)
+                ; a = 1 (occupied)
+                ; a = 2 (went to left room)
+                ; a = 3 (went to right room)
+                ; a = 4 (went to top room)
+                ; a = 5 (went to bottom room)
+                            push	de
+
+                            ld	a,d
+                ; check screen left 
+                            cp	255
+                            jr	z,coords_left
+
+                ; check screen right
+                            cp	rooms.room_w
+                            jr	z,coords_right
+
+                            ld	a,e
+                ; check screen top 
+                            cp	255
+                            jr	z,coords_top
+
+                ; check screen bottom
+                            cp	rooms.room_h
+                            jr	z,coords_bottom
+
+                ; we are still inside room, 
+                ; now check block type by color
+                            call	rooms.get_room_color
+
+                            cp	rooms.room_bg_color
+                            jr	z,coords_empty
+
+                            cp	rooms.room_bg_color_gray
+                            jr	z,coords_empty
+
+                            cp	rooms.room_bg_color_sky
+                            jr	z,coords_empty
+
+                            cp	rooms.room_bg_color_wat
+                            jr	z,coords_empty
+coords_occupied
+                            pop	de
+                            ld	a,b_occupied
+                            ret
+coords_empty
+                            pop	de
+                            ld	a,b_empty
+                            ret
+
+coords_left
+                            pop	de
+                            ld	a,b_left
+                            ret
+coords_right
+                            pop	de
+                            ld	a,b_right
+                            ret
+coords_top
+                            pop	de
+                            ld	a,b_top
+                            ret
+coords_bottom
+                            pop	de
+                            ld	a,b_bottom
+                            ret
+
+                        endmodule
