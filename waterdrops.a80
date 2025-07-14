@@ -127,7 +127,7 @@ waterdrop_2_1_2
                             1,  //room_start_y
                             20, //room_pos_x
                             1   //room_pos_y
-                            100 //delay
+                            60 //delay
                             80  //timer
                             0   //state_delay
                             }
