@@ -6,7 +6,6 @@ loop
                             call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore
-
                             call	elevators_update.update_room
                             call	elevators_coords.coords
 
@@ -17,16 +16,23 @@ loop
                             call	hero.hero_gravity
                             call	hero.hero_move
 
+                            ld	a,2
+                            call	draw.border
+                            //waterdrops are better painted in beginning of frame
                             call	waterdrops.move_waterdrops
+                            ld	a,1
+                            call	draw.border
                             call	teleports.switch_colors
                             call	teleports.check_hero
 
-                            call	debug.print_hero_state
 room_logic_pointer          equ	$+1
                             call	logic.empty_room_logic
                             call	draw.draw_state
                             xor	a
                             call	draw.border
+
+                            call	debug.print_hero_state
+
                             ld	b,1
                             call	wait
                             jr	loop

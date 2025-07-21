@@ -21,7 +21,7 @@ get_attrs_address
 get_texture_address
                 ; Input:
                 ; D = x coordinate (0..31)
-                ; E = y coordinate (0..23)
+                ; E = y coordinate (0..21)
                 ; Output:
                 ; HL = attribute address within the room
 
@@ -42,10 +42,9 @@ get_texture_address
                                 sla     l
                                 rl      h            ; Now HL = y * 32
 
-                ; Add x to HL
-                                ld      a,d         ; A = x
+                ; Add x to HL                                
                                 ld      b,0
-                                ld      c,a         ; BC = x
+                                ld      c,d         ; BC = x
                                 add     hl,bc      ; HL = HL + x
                                 ret
         endmodule

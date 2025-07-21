@@ -1,51 +1,52 @@
-                        module	rooms
-room_number_x               db	2
-room_number_y               db	1
+						module	rooms
+room_number_x				db	1
+room_number_y				db	0
 
-room_amount_x               equ	6
-room_amount_y               equ	4
-room_w                      equ	32
-room_h                      equ	22
-room_size                   equ	room_w*room_h
-room_bg_color               equ	0
-room_bg_color_gray          equ	%00000111
-room_bg_color_sky           equ	%01000001
-room_bg_color_wat           equ	%00000001
-items_in_room_max           equ	5
-room_item_size              equ	3
-room_elevators_lim          equ	6
-room_teleports_lim          equ	3
-room_waterdrops_lim         equ 32
-rooms_end_marker            equ	255
-elev_end_marker             equ	255
-item_not_found              equ	255
+room_amount_x				equ	6
+room_amount_y				equ	4
+room_w						equ	32
+room_h						equ	22
+room_size					equ	room_w*room_h
+room_bg_color				equ	0
+room_bg_color_gray			equ	%00000111
+room_bg_color_sky			equ	%01000001
+room_bg_color_wat			equ	%00000001
+items_in_room_max			equ	5
+room_item_size				equ	3
+room_elevators_lim			equ	6
+room_teleports_lim			equ	3
+room_waterdrops_lim			equ	33
+waterdrops_marker			equ	255
+rooms_end_marker			equ	255
+elev_end_marker				equ	255
+item_not_found				equ	255
+current_room_address		dw	2
 init_current_room
-                            call	logic.change_logic_pointer
-                            call	gather_items
-                            call	gather_elevators
-                            call	gather_teleports
-                            call	gather_waterdrops
+							call	logic.change_logic_pointer
+							call	gather_items
+							call	gather_elevators
+							call	gather_teleports
+							call	gather_waterdrops
 
-                            call	calculate_room_top_y
-                            call	calculate_room_bottom_y
+							call	calculate_room_top_y
+							call	calculate_room_bottom_y
 
-                            call	get_current_room_address
-                            ld	de,screen_utils.attrs
-                            ld	bc,room_size
-                            ldir
-                            ret
+							call	get_current_room_address
+							ld	(current_room_address),hl
+							ld	de,screen_utils.attrs
+							ld	bc,room_size
+							ldir
+							ret
 get_current_room_address
-                ; returns start adress for current room data
-                ; input
-                ; de - room coordinates
+                ; returns start adress for current room data                
                 ; output
                 ; hl - address in memory
-                            ld	a,(room_number_x)
-                            ld	b,a
-                            ld	a,(room_number_y)
-                            ld	c,a
-                            call	get_room_address
-                            ret
+							ld	a,(room_number_x)
+							ld	b,a
+							ld	a,(room_number_y)
+							ld	c,a
+							call	get_room_address
+							ret
 get_room_address
                 ; return start address of room data by its x/y number
                 ; input
@@ -53,45 +54,45 @@ get_room_address
                 ; c - room number y
                 ; output
                 ; hl - current room address 
-                            push	bc
-                            pop	de
-                            ld	a,e
-                            or	a
-                            jr	z,get_room_address_skip_add
-                            ld	b,a
-                            xor	a
+							push	bc
+							pop	de
+							ld	a,e
+							or	a
+							jr	z,get_room_address_skip_add
+							ld	b,a
+							xor	a
 get_room_address_y
-                            add	room_amount_x
-                            djnz	get_room_address_y
+							add	room_amount_x
+							djnz	get_room_address_y
 get_room_address_skip_add
-                            ld	c,a
-                            ld	a,d
-                            add	c
-                            add	a
+							ld	c,a
+							ld	a,d
+							add	c
+							add	a
                     ; a now contains shift to room pointer
 
-                            ld	l,a
-                            ld	h,0
-                            ld	de,room_pointers
-                            add	hl,de
-                            ex	hl,de
-                            ld	a,(de)
-                            ld	l,a
-                            inc	de
-                            ld	a,(de)
-                            ld	h,a
-                            ret
+							ld	l,a
+							ld	h,0
+							ld	de,room_pointers
+							add	hl,de
+							ex	hl,de
+							ld	a,(de)
+							ld	l,a
+							inc	de
+							ld	a,(de)
+							ld	h,a
+							ret
 get_current_room_pixel_address
                 ; input
                 ; de - coordinates
                 ; output
                 ; hl - address in memory
-                            ld	a,(room_number_x)
-                            ld	b,a
-                            ld	a,(room_number_y)
-                            ld	c,a
-                            call	get_room_pixel_address
-                            ret
+							ld	a,(room_number_x)
+							ld	b,a
+							ld	a,(room_number_y)
+							ld	c,a
+							call	get_room_pixel_address
+							ret
 get_room_pixel_address
                 ; input:
                 ; de - coordinates
@@ -99,288 +100,288 @@ get_room_pixel_address
                 ; c - room y number
                 ; output:
                 ; hl - room's pixel address in memory
-                            push	bc
-                            call	screen_utils.get_texture_address
-                            pop	bc
-                            push	hl
-                            call	get_room_address
-                            ex	hl,de
-                            pop	hl
-                            add	hl,de
-                            ret
+							push	bc
+							call	screen_utils.get_texture_address
+							pop	bc
+							push	hl
+							call	get_room_address
+							ex	hl,de
+							pop	hl
+							add	hl,de
+							ret
 get_room_color
                 ; input:
                 ; de - coordinates
                 ; output:
                 ; a - color of pixel
-                            call	get_current_room_pixel_address
-                            ld	a,(hl)
-                            ret
+							call	get_current_room_pixel_address
+							ld	a,(hl)
+							ret
 set_left_room
-                            ld	a,(room_number_x)
-                            dec	a
-                            ld	(room_number_x),a
-                            call	init_current_room
-                            ret
+							ld	a,(room_number_x)
+							dec	a
+							ld	(room_number_x),a
+							call	init_current_room
+							ret
 set_right_room
-                            ld	a,(room_number_x)
-                            inc	a
-                            ld	(room_number_x),a
-                            call	init_current_room
-                            ret
+							ld	a,(room_number_x)
+							inc	a
+							ld	(room_number_x),a
+							call	init_current_room
+							ret
 set_bottom_room
-                            ld	a,(room_number_y)
-                            inc	a
-                            ld	(room_number_y),a
-                            call	init_current_room
-                            ret
+							ld	a,(room_number_y)
+							inc	a
+							ld	(room_number_y),a
+							call	init_current_room
+							ret
 set_top_room
-                            ld	a,(room_number_y)
-                            dec	a
-                            ld	(room_number_y),a
-                            call	init_current_room
-                            ret
+							ld	a,(room_number_y)
+							dec	a
+							ld	(room_number_y),a
+							call	init_current_room
+							ret
 room_pointers
-                            dw	room_0_0
-                            dw	room_1_0
-                            dw	room_2_0
-                            dw	room_3_0
-                            dw	room_4_0
-                            dw	room_5_0
+							dw	room_0_0
+							dw	room_1_0
+							dw	room_2_0
+							dw	room_3_0
+							dw	room_4_0
+							dw	room_5_0
 
-                            dw	room_0_1
-                            dw	room_1_1
-                            dw	room_2_1
-                            dw	room_3_1
-                            dw	room_4_1
-                            dw	room_5_1
+							dw	room_0_1
+							dw	room_1_1
+							dw	room_2_1
+							dw	room_3_1
+							dw	room_4_1
+							dw	room_5_1
 
-                            dw	room_0_2
-                            dw	room_1_2
-                            dw	room_2_2
-                            dw	room_3_2
-                            dw	room_4_2
-                            dw	room_5_2
+							dw	room_0_2
+							dw	room_1_2
+							dw	room_2_2
+							dw	room_3_2
+							dw	room_4_2
+							dw	room_5_2
 
-                            dw	room_0_3
-                            dw	room_1_3
-                            dw	room_2_3
-                            dw	room_3_3
-                            dw	room_4_3
-                            dw	room_5_3
+							dw	room_0_3
+							dw	room_1_3
+							dw	room_2_3
+							dw	room_3_3
+							dw	room_4_3
+							dw	room_5_3
 
 gather_waterdrops
-                            ld	b,waterdrops.amount
+							ld	b,waterdrops.amount
                 // return if there is no waterdrops in game
-                            ld	a,b
-                            or	a
-                            ret	z
+							ld	a,b
+							or	a
+							ret	z
 
-                            ld	a,(rooms.room_number_x)
-                            ld	d,a
+							ld	a,(rooms.room_number_x)
+							ld	d,a
 
-                            ld	a,(rooms.room_number_y)
-                            ld	e,a
+							ld	a,(rooms.room_number_y)
+							ld	e,a
 
 
-                            ld	iy,room_waterdrops_buf
-                            ld	hl,waterdrops.waterdrops_table
+							ld	iy,room_waterdrops_buf
+							ld	hl,waterdrops.waterdrops_table
 
 gather_wd_next
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
+							ld	a,(hl)
+							ld	ixl,a
+							inc	hl
+							ld	a,(hl)
+							ld	ixh,a
+							inc	hl
+							push	hl
 
                 ; ix now has pointer to drop's table
-                            ld	a,(ix)
-                            cp	d
-                            jr	nz,gather_wd_skip
-                            ld	a,(ix+1)
-                            cp	e
-                            jr	nz,gather_wd_skip
-                            ld	a,ixl
-                            ld	(iy),a
-                            inc	iy
+							ld	a,(ix)
+							cp	d
+							jr	nz,gather_wd_skip
+							ld	a,(ix+1)
+							cp	e
+							jr	nz,gather_wd_skip
+							ld	a,ixl
+							ld	(iy),a
+							inc	iy
 
-                            ld	a,ixh
-                            ld	(iy),a
-                            inc	iy
+							ld	a,ixh
+							ld	(iy),a
+							inc	iy
 
 gather_wd_skip
-                            pop	hl
-                            djnz	gather_wd_next
-                            ld	a,rooms_end_marker
-
-                            ld	(iy),a
-                            ret
+							pop	hl
+							djnz	gather_wd_next
+							ld	a,waterdrops_marker
+							ld	(iy),a
+							ld	(iy+1),a
+							ret
 gather_teleports
-                            ld	b,teleports.amount
+							ld	b,teleports.amount
                 // return if there is no teleports in game
-                            ld	a,b
-                            or	a
-                            ret	z
+							ld	a,b
+							or	a
+							ret	z
 
-                            ld	a,(rooms.room_number_x)
-                            ld	d,a
+							ld	a,(rooms.room_number_x)
+							ld	d,a
 
-                            ld	a,(rooms.room_number_y)
-                            ld	e,a
+							ld	a,(rooms.room_number_y)
+							ld	e,a
 
 
-                            ld	iy,room_teleports_buf
-                            ld	hl,teleports.teleports_table
+							ld	iy,room_teleports_buf
+							ld	hl,teleports.teleports_table
 
 gather_tele_next
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
+							ld	a,(hl)
+							ld	ixl,a
+							inc	hl
+							ld	a,(hl)
+							ld	ixh,a
+							inc	hl
+							push	hl
 
-                            ld	a,(ix)
-                            cp	d
-                            jr	nz,gather_tele_skip
-                            ld	a,(ix+1)
-                            cp	e
-                            jr	nz,gather_tele_skip
-                            ld	a,ixl
-                            ld	(iy),a
-                            inc	iy
+							ld	a,(ix)
+							cp	d
+							jr	nz,gather_tele_skip
+							ld	a,(ix+1)
+							cp	e
+							jr	nz,gather_tele_skip
+							ld	a,ixl
+							ld	(iy),a
+							inc	iy
 
-                            ld	a,ixh
-                            ld	(iy),a
-                            inc	iy
+							ld	a,ixh
+							ld	(iy),a
+							inc	iy
 
 gather_tele_skip
-                            pop	hl
-                            djnz	gather_tele_next
-                            ld	a,rooms_end_marker
+							pop	hl
+							djnz	gather_tele_next
+							ld	a,rooms_end_marker
 
-                            ld	(iy),a
-                            ret
+							ld	(iy),a
+							ret
 gather_elevators
-                            ld	b,elevators.amount
+							ld	b,elevators.amount
                 // return if there is no elevators in game
-                            ld	a,b
-                            or	a
-                            ret	z
+							ld	a,b
+							or	a
+							ret	z
 
-                            ld	iy,room_elevators_buf
+							ld	iy,room_elevators_buf
 
-                            ld	a,(rooms.room_number_x)
-                            ld	d,a
+							ld	a,(rooms.room_number_x)
+							ld	d,a
 
-                            ld	a,(rooms.room_number_y)
-                            ld	e,a
+							ld	a,(rooms.room_number_y)
+							ld	e,a
 gather_elev_room
-                            ld	hl,elevators.elevators_table
-                            push	bc
+							ld	hl,elevators.elevators_table
+							push	bc
 gather_elev_next
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
+							ld	a,(hl)
+							ld	ixl,a
+							inc	hl
+							ld	a,(hl)
+							ld	ixh,a
+							inc	hl
+							push	hl
 
-                            ld	a,(ix+elevators.elevator.room_x)
-                            cp	d
-                            jr	nz,gather_elev_skip
-                            ld	a,(ix+elevators.elevator.room_y)
-                            cp	e
-                            jr	nz,gather_elev_skip
-                            ld	a,ixl
-                            ld	(iy),a
-                            inc	iy
+							ld	a,(ix+elevators.elevator.room_x)
+							cp	d
+							jr	nz,gather_elev_skip
+							ld	a,(ix+elevators.elevator.room_y)
+							cp	e
+							jr	nz,gather_elev_skip
+							ld	a,ixl
+							ld	(iy),a
+							inc	iy
 
-                            ld	a,ixh
-                            ld	(iy),a
-                            inc	iy
+							ld	a,ixh
+							ld	(iy),a
+							inc	iy
 
 gather_elev_skip
-                            pop	hl
-                            djnz	gather_elev_next
+							pop	hl
+							djnz	gather_elev_next
                 ; restore amount of rooms in game to b                    
-                            pop	bc
+							pop	bc
 
                 ; check if there are rooms below                
-                            inc	e
-                            ld	a,e
-                            cp	room_amount_y
-                            jr	nz,gather_elev_room
+							inc	e
+							ld	a,e
+							cp	room_amount_y
+							jr	nz,gather_elev_room
 
                 ; terminate elevators buffer
-                            ld	a,elev_end_marker
-                            ld	(iy),a
-                            ret
+							ld	a,elev_end_marker
+							ld	(iy),a
+							ret
 gather_items
-                            ld	a,(room_number_x)
-                            ld	b,a
-                            ld	a,(room_number_y)
-                            ld	c,a
+							ld	a,(room_number_x)
+							ld	b,a
+							ld	a,(room_number_y)
+							ld	c,a
 
-                            ld	hl,items.all_items
-                            ld	de,room_items_buffer
+							ld	hl,items.all_items
+							ld	de,room_items_buffer
 gather_items_next
-                            ld	a,(hl)
-                            inc	hl
-                            cp	items.items_end_marker
-                            jr	z,gather_items_end
+							ld	a,(hl)
+							inc	hl
+							cp	items.items_end_marker
+							jr	z,gather_items_end
 
-                            ex	af,af'
+							ex	af,af'
 
 
-                            ld	a,(hl)
-                            inc	hl
-                            cp	b
-                            jr	nz,gather_items_skip3
+							ld	a,(hl)
+							inc	hl
+							cp	b
+							jr	nz,gather_items_skip3
 
-                            ld	a,(hl)
-                            inc	hl
-                            cp	c
-                            jr	nz,gather_items_skip2
+							ld	a,(hl)
+							inc	hl
+							cp	c
+							jr	nz,gather_items_skip2
 
-                            ex	af,af'
+							ex	af,af'
                     ; put type
-                            ld	(de),a
-                            inc	de
+							ld	(de),a
+							inc	de
 
-                            ld	a,(hl)
-                            inc	hl
+							ld	a,(hl)
+							inc	hl
                     ; put x position
-                            ld	(de),a
-                            inc	de
+							ld	(de),a
+							inc	de
 
-                            ld	a,(hl)
-                            inc	hl
+							ld	a,(hl)
+							inc	hl
                     ; put y position
-                            ld	(de),a
-                            inc	de
-                        dup	items.item_size-5
-                            inc	hl
-                        edup
-                            jr	gather_items_next
+							ld	(de),a
+							inc	de
+						dup	items.item_size-5
+							inc	hl
+						edup
+							jr	gather_items_next
 gather_items_skip3
-                        dup	items.item_size-2
-                            inc	hl
-                        edup
-                            jr	gather_items_next
+						dup	items.item_size-2
+							inc	hl
+						edup
+							jr	gather_items_next
 gather_items_skip2
-                        dup	items.item_size-3
-                            inc	hl
-                        edup
-                            jr	gather_items_next
+						dup	items.item_size-3
+							inc	hl
+						edup
+							jr	gather_items_next
 gather_items_end
-                            ld	a,rooms_end_marker
-                            ld	(de),a
-                            ret
+							ld	a,rooms_end_marker
+							ld	(de),a
+							ret
 find_item_by_coord
                     ; input
                     ; de - x,y coordinates
@@ -388,39 +389,39 @@ find_item_by_coord
                     ; output
                     ; a - type id or 255
 
-                            ld	hl,room_items_buffer  ; Set HL to the start of the items buffer
+							ld	hl,room_items_buffer  ; Set HL to the start of the items buffer
 
 check_next_item
-                            ld	a,(hl)               ; Load item type
-                            cp	rooms_end_marker     ; Check for end of the list (255 terminator)
-                            jr	z,not_found           ; If found, item is not present
+							ld	a,(hl)               ; Load item type
+							cp	rooms_end_marker     ; Check for end of the list (255 terminator)
+							jr	z,not_found           ; If found, item is not present
 
-                            ex	af,af'               ; Save the item type in alternate AF
+							ex	af,af'               ; Save the item type in alternate AF
 
-                            inc	hl                   ; Move to X coordinate
-                            ld	a,(hl)               ; Compare X coordinate with input
-                            cp	d
-                            jr	nz,next_item1          ; If X doesn't match, go to next item
+							inc	hl                   ; Move to X coordinate
+							ld	a,(hl)               ; Compare X coordinate with input
+							cp	d
+							jr	nz,next_item1          ; If X doesn't match, go to next item
 
-                            inc	hl                   ; Move to Y coordinate
-                            ld	a,(hl)               ; Compare Y coordinate with input
-                            cp	e
-                            jr	nz,next_item2          ; If Y doesn't match, go to next item
+							inc	hl                   ; Move to Y coordinate
+							ld	a,(hl)               ; Compare Y coordinate with input
+							cp	e
+							jr	nz,next_item2          ; If Y doesn't match, go to next item
 
-                            ex	af,af'               ; Restore item type from alternate AF
-                            ret                       ; Return item type if found
+							ex	af,af'               ; Restore item type from alternate AF
+							ret                       ; Return item type if found
 
 next_item1
-                            inc	hl                   ; Move to the next item (3 bytes per item)
-                            inc	hl
-                            jr	check_next_item        ; Repeat the search
+							inc	hl                   ; Move to the next item (3 bytes per item)
+							inc	hl
+							jr	check_next_item        ; Repeat the search
 
 next_item2
-                            inc	hl                   ; Move to the next item (3 bytes per item)
-                            jr	check_next_item        ; Repeat the search
+							inc	hl                   ; Move to the next item (3 bytes per item)
+							jr	check_next_item        ; Repeat the search
 not_found
-                            ld	a,item_not_found                ; Return 255 if no item found
-                            ret
+							ld	a,item_not_found                ; Return 255 if no item found
+							ret
 
 spawn_item
         ;   input
@@ -429,95 +430,95 @@ spawn_item
         ;   c - item y position
 
                  ;store item type in af'
-                            ex	af,af'
-                            ld	hl,room_items_buffer
-                            ld	de,room_item_size
+							ex	af,af'
+							ld	hl,room_items_buffer
+							ld	de,room_item_size
 spawn_item_check_end
-                            ld	a,(hl)
-                            cp	rooms_end_marker
-                            jr	z,spawn_item_found_end
-                            add	hl,de
-                            jr	spawn_item_check_end
+							ld	a,(hl)
+							cp	rooms_end_marker
+							jr	z,spawn_item_found_end
+							add	hl,de
+							jr	spawn_item_check_end
 spawn_item_found_end
                 ; save buffer address
-                            push	hl
+							push	hl
                 ; save item destination coords
-                            push	bc
+							push	bc
 
                 ; load item type to a
-                            ex	af,af'
-                            call	items.get_item_address
+							ex	af,af'
+							call	items.get_item_address
 
                 ; load item destination coords to bc
-                            pop	bc
+							pop	bc
                 ; load buffer address to de
-                            pop	de
+							pop	de
 
-                            ld	a,(hl)               ; Load item type
-                            ld	(de),a
-                            inc	hl
-                            inc	de
+							ld	a,(hl)               ; Load item type
+							ld	(de),a
+							inc	hl
+							inc	de
 
-                            ld	a,(room_number_x)
-                            ld	(hl),a              ; save item's room x in items
-                            inc	hl
+							ld	a,(room_number_x)
+							ld	(hl),a              ; save item's room x in items
+							inc	hl
 
-                            ld	a,(room_number_y)
-                            ld	(hl),a              ; save item's room y in items
-                            inc	hl
+							ld	a,(room_number_y)
+							ld	(hl),a              ; save item's room y in items
+							inc	hl
 
-                            ld	a,b                 ; take item's x position
-                            ld	(hl),a              ; save position in items
-                            ld	(de),a              ; save position in room
-                            inc	hl
-                            inc	de
+							ld	a,b                 ; take item's x position
+							ld	(hl),a              ; save position in items
+							ld	(de),a              ; save position in room
+							inc	hl
+							inc	de
 
-                            ld	a,c                 ; take item's y position
-                            ld	(hl),a              ; save position in items
-                            ld	(de),a              ; save position in room
-                            inc	hl
-                            inc	de
+							ld	a,c                 ; take item's y position
+							ld	(hl),a              ; save position in items
+							ld	(de),a              ; save position in room
+							inc	hl
+							inc	de
 
-                            ld	a,rooms_end_marker
-                            ld	(de),a
-                            ret
+							ld	a,rooms_end_marker
+							ld	(de),a
+							ret
 remove_item
         ;   input
         ;   a - item type id
-                            ld	hl,room_items_buffer
-                            ld	de,room_item_size
+							ld	hl,room_items_buffer
+							ld	de,room_item_size
 
-                            ld	b,a
+							ld	b,a
 remove_item_search
-                            ld	a,(hl)               ; Load item type
-                            cp	rooms_end_marker                   ; Check for end of the list (255 terminator)
-                            jr	z,not_found           ; If found, item is not present
+							ld	a,(hl)               ; Load item type
+							cp	rooms_end_marker                   ; Check for end of the list (255 terminator)
+							jr	z,not_found           ; If found, item is not present
 
                 ;   check if it is required type
-                            cp	b
-                            jr	z,remove_item_delete
-                            add	hl,de
-                            jr	remove_item_search
+							cp	b
+							jr	z,remove_item_delete
+							add	hl,de
+							jr	remove_item_search
 
 remove_item_delete
-                            push	hl
+							push	hl
 
-                            ld	de,room_item_size
-                            add	hl,de
+							ld	de,room_item_size
+							add	hl,de
 
-                            push	hl
+							push	hl
 
-                            ex	hl,de
+							ex	hl,de
 
-                            ld	hl,room_items_end
-                            xor	a
-                            sbc	hl,de
-                            push	hl
-                            pop	bc
-                            pop	hl
-                            pop	de
-                            ldir
-                            ret
+							ld	hl,room_items_end
+							xor	a
+							sbc	hl,de
+							push	hl
+							pop	bc
+							pop	hl
+							pop	de
+							ldir
+							ret
 room_items_buffer
                     ; item structure
                     ;
@@ -525,40 +526,40 @@ room_items_buffer
                     ; x
                     ; y
 
-                            ds	room_item_size*items_in_room_max+1
+							ds	room_item_size*items_in_room_max+1
 room_items_end
 room_elevators_buf
-                            ds	room_elevators_lim*2+1
+							ds	room_elevators_lim*2+1
 room_elevators_end
 room_teleports_buf
-                            ds	room_teleports_lim*2+1
+							ds	room_teleports_lim*2+1
 room_teleports_end
 
 room_waterdrops_buf
-                            ds	room_waterdrops_lim*2+1
+							ds	room_waterdrops_lim*2+1
 room_waterdrops_end
 
 calculate_room_top_y
                 ; calculate top y coordinate of current room
                 ;
                 ; $current_room_top_coord_y = $current_room_y * $each_room_height;
-                            ld	a,(room_number_y)
-                            ld	h,a
-                            ld	e,room_h
+							ld	a,(room_number_y)
+							ld	h,a
+							ld	e,room_h
 
-                            call	math.mul8b
-                            ld	a,l
-                            ld	(room_top_y),a
-                            ret
+							call	math.mul8b
+							ld	a,l
+							ld	(room_top_y),a
+							ret
 calculate_room_bottom_y
                 ; calculate bottom y coordinate of current room
                 ;
                 ; $current_room_bottom_coord_y = $current_room_top_coord_y + $each_room_height - 1;
-                            ld	a,(room_top_y)
-                            add	room_h-1
-                            ld	(room_bottom_y),a
-                            ret
-room_top_y                  db	0
-room_bottom_y               db	0
+							ld	a,(room_top_y)
+							add	room_h-1
+							ld	(room_bottom_y),a
+							ret
+room_top_y					db	0
+room_bottom_y				db	0
 
-                        endmodule
+						endmodule

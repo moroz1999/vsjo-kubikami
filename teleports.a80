@@ -143,24 +143,24 @@ teleports_table
                             dw	teleport_3_2
 teleport_0_3
                             teleport	{
-                            0,
-                            3,
-                            30,
-                            20,
-                            3,
-                            2,
-                            17,
-                            11
+                            0,  //room_x
+                            3,  //room_y
+                            30, //room_pos_x
+                            19, //room_pos_y
+                            3,  //dest_room_x
+                            2,  //dest_room_y
+                            17, //dest_room_pos_x
+                            11  //dest_room_pos_y
                             }
 teleport_3_2
                             teleport	{
-                            3,
-                            2,
-                            17,
-                            11,
-                            0,
-                            3,
-                            30,
-                            20
+                            3,  //room_x
+                            2,  //room_y
+                            17, //room_pos_x
+                            11, //room_pos_y
+                            0,  //dest_room_x
+                            3,  //dest_room_y
+                            30, //dest_room_pos_x
+                            19  //dest_room_pos_y
                             }
                         endmodule

@@ -8,9 +8,12 @@ room_pos_y                  byte
 delay                       byte
 timer                       byte
 state                       byte
+type                        byte
                         ends
 state_drop                  equ	1
 state_delay                 equ	0
+type_always                 equ	1
+type_falling                equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
                             display	"draw_room_waterdrops ",draw_room_waterdrops
 draw_room_waterdrops
@@ -18,9 +21,14 @@ draw_room_waterdrops
 draw_room_wds_next
                             ld	a,(hl)
 
-                            cp	rooms.rooms_end_marker
+                            cp	rooms.waterdrops_marker
+                            jr	nz,draw_continue
+                            inc	hl
+                            ld	a,(hl)
+                            cp	rooms.waterdrops_marker
                             ret	z
-
+                            dec hl
+draw_continue
                             inc	hl
                             ld	ixl,a
 
@@ -28,9 +36,13 @@ draw_room_wds_next
                             inc	hl
                             ld	ixh,a
 
+                            ld	a,(ix+waterdrop.type)
+                            or	(ix+waterdrop.state)
+
+                            jr	z,draw_room_wds_skip
+
                             ld	a,(ix+waterdrop.room_pos_x)
                             ld	d,a
-
 
                             ld	a,(ix+waterdrop.room_pos_y)
                             ld	e,a
@@ -39,19 +51,26 @@ draw_room_wds_next
                             call	screen_utils.get_attrs_address
                             ld	a,%01001001
                             ld	(hl),a
+
                             pop	hl
+draw_room_wds_skip
                             jr	draw_room_wds_next
 
                             ret
-
+                            display	'move_waterdrops',move_waterdrops
 move_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
 move_next
                             ld	a,(hl)
 
-                            cp	rooms.rooms_end_marker
+                            cp	rooms.waterdrops_marker
+                            jr	nz,move_continue
+                            inc	hl
+                            ld	a,(hl)
+                            cp	rooms.waterdrops_marker
                             ret	z
-
+                            dec hl
+move_continue
                             inc	hl
                             ld	ixl,a
 
@@ -106,20 +125,497 @@ move_restore_source
                             jr	move_next
 
 waterdrops_table
+                            dw	waterdrop_1_0_1
+                            dw	waterdrop_1_0_2
+                            dw	waterdrop_1_0_3
+                            dw	waterdrop_1_0_4
+                            dw	waterdrop_1_0_5
+                            dw	waterdrop_1_0_6
+                            dw	waterdrop_1_0_7
+                            dw	waterdrop_1_0_8
+                            dw	waterdrop_1_0_9
+                            dw	waterdrop_1_0_10
+                            dw	waterdrop_1_0_11
+                            dw	waterdrop_1_0_12
+                            dw	waterdrop_1_0_13
+                            dw	waterdrop_1_0_14
+                            dw	waterdrop_1_0_15
+                            dw	waterdrop_1_0_16
+                            dw	waterdrop_1_0_17
+                            dw	waterdrop_1_0_18
+                            dw	waterdrop_1_0_19
+                            dw	waterdrop_1_0_20
+                            dw	waterdrop_1_0_21
+                            dw	waterdrop_1_0_22
+                            dw	waterdrop_1_0_23
+                            dw	waterdrop_1_0_24
+                            dw	waterdrop_1_0_25
+                            dw	waterdrop_1_0_26
+                            dw	waterdrop_1_0_27
+                            dw	waterdrop_1_0_28
+                            dw	waterdrop_1_0_29
+                            dw	waterdrop_1_0_30
+                            dw	waterdrop_1_0_31
+                            dw	waterdrop_1_0_32
+
+                            dw	waterdrop_1_1_1
+                            dw	waterdrop_1_1_2
+
                             dw	waterdrop_2_1_1
                             dw	waterdrop_2_1_2
                             dw	waterdrop_2_1_3
 waterdrops_table_end
+
+waterdrop_1_0_1
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            0,  //room_pos_x
+                            0   //room_pos_y
+                            27  //delay
+                            84  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_2
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            1,  //room_pos_x
+                            0   //room_pos_y
+                            14  //delay
+                            33  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_3
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            2,  //room_pos_x
+                            0   //room_pos_y
+                            42  //delay
+                            51  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_4
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            3,  //room_pos_x
+                            0   //room_pos_y
+                            18  //delay
+                            76  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_5
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            4,  //room_pos_x
+                            0   //room_pos_y
+                            36  //delay
+                            65  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_6
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            5,  //room_pos_x
+                            0   //room_pos_y
+                            15  //delay
+                            87  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_7
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            6,  //room_pos_x
+                            0   //room_pos_y
+                            28  //delay
+                            39  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_8
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            7,  //room_pos_x
+                            0   //room_pos_y
+                            33  //delay
+                            55  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_9
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            8,  //room_pos_x
+                            0   //room_pos_y
+                            11  //delay
+                            70  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_10
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            9,  //room_pos_x
+                            0   //room_pos_y
+                            22  //delay
+                            45  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_11
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            10,  //room_pos_x
+                            0   //room_pos_y
+                            39  //delay
+                            60  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_12
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            11,  //room_pos_x
+                            0   //room_pos_y
+                            19  //delay
+                            72  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_13
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            12,  //room_pos_x
+                            0   //room_pos_y
+                            44  //delay
+                            38  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_14
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            13,  //room_pos_x
+                            0   //room_pos_y
+                            30  //delay
+                            58  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_15
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            14,  //room_pos_x
+                            0   //room_pos_y
+                            25  //delay
+                            67  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_16
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            15,  //room_pos_x
+                            0   //room_pos_y
+                            41  //delay
+                            90  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_17
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            16,  //room_pos_x
+                            0   //room_pos_y
+                            23  //delay
+                            37  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_18
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            17,  //room_pos_x
+                            0   //room_pos_y
+                            46  //delay
+                            80  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_19
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            18,  //room_pos_x
+                            0   //room_pos_y
+                            12  //delay
+                            43  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_20
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            19,  //room_pos_x
+                            0   //room_pos_y
+                            35  //delay
+                            59  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_21
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            20,  //room_pos_x
+                            0   //room_pos_y
+                            29  //delay
+                            78  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_22
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            21,  //room_pos_x
+                            0   //room_pos_y
+                            10  //delay
+                            40  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_23
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            22,  //room_pos_x
+                            0   //room_pos_y
+                            38  //delay
+                            48  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_24
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            23,  //room_pos_x
+                            0   //room_pos_y
+                            21  //delay
+                            63  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_25
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            24,  //room_pos_x
+                            0   //room_pos_y
+                            26  //delay
+                            71  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_26
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            25,  //room_pos_x
+                            0   //room_pos_y
+                            50  //delay
+                            44  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_27
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            26,  //room_pos_x
+                            0   //room_pos_y
+                            13  //delay
+                            60  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_28
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            27,  //room_pos_x
+                            0   //room_pos_y
+                            20  //delay
+                            75  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_29
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            28,  //room_pos_x
+                            0   //room_pos_y
+                            17  //delay
+                            30  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_30
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            29,  //room_pos_x
+                            0   //room_pos_y
+                            43  //delay
+                            36  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_31
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            30,  //room_pos_x
+                            0   //room_pos_y
+                            16  //delay
+                            66  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+
+waterdrop_1_0_32
+                            waterdrop	{
+                            1,  //room_x
+                            0,  //room_y
+                            0,  //room_start_y
+                            31,  //room_pos_x
+                            0   //room_pos_y
+                            32  //delay
+                            81  //timer
+                            0   //state_delay
+                            type_falling //type
+                            }
+waterdrop_1_1_1
+                            waterdrop	{
+                            1,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            8,  //room_pos_x
+                            1,   //room_pos_y
+                            40  //delay
+                            30  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
+waterdrop_1_1_2
+                            waterdrop	{
+                            1,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            25,  //room_pos_x
+                            1,   //room_pos_y
+                            30  //delay
+                            80  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
 waterdrop_2_1_1
                             waterdrop	{
                             2,  //room_x
                             1,  //room_y
                             1,  //room_start_y
                             5,  //room_pos_x
-                            1   //room_pos_y
+                            1,   //room_pos_y
                             40  //delay
                             30  //timer
                             0   //state_delay
+                            type_always //type
                             }
 waterdrop_2_1_2
                             waterdrop	{
@@ -131,6 +627,7 @@ waterdrop_2_1_2
                             20 //delay
                             70  //timer
                             0   //state_delay
+                            type_always //type
                             }
 
 waterdrop_2_1_3
@@ -143,5 +640,6 @@ waterdrop_2_1_3
                             60 //delay
                             80  //timer
                             0   //state_delay
+                            type_always //type
                             }
                         endmodule

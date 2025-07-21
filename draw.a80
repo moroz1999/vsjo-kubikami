@@ -1,216 +1,230 @@
-    module  draw
-border_color        equ 0
-restore             db  255
-restore_x           db  255
-restore_y           db  255
+                        module	draw
+border_color                equ	0
+restore                     db	255
+restore_x                   db	255
+restore_y                   db	255
 border
-                    out #fe,a
-                    ret
+                            out	#fe,a
+                            ret
 draw_panel
-                    ld  d,0
-                    ld  e,rooms.room_h
-                    call    screen_utils.get_attrs_address
-                    push    hl
-                    pop de
-                    inc de
-                    ld  a,%01000111
-                    ld  (hl),a
-                    ld  bc,rooms.room_w*2
-                    ldir
-                    ret
+                            ld	d,0
+                            ld	e,rooms.room_h
+                            call	screen_utils.get_attrs_address
+                            push	hl
+                            pop	de
+                            inc	de
+                            ld	a,%01000111
+                            ld	(hl),a
+                            ld	bc,rooms.room_w*2
+                            ldir
+                            ret
 draw_pattern
-                    ld  hl,screen_utils.screen
-                    ld  b,rooms.room_h*8/2
+                            ld	hl,screen_utils.screen
+                            ld	b,rooms.room_h*8/2
 draw_pattern_2rows
-                    push    bc
-                    push    hl
-                    push    hl
-                    pop de
-                    inc de
+                            push	bc
+                            push	hl
+                            push	hl
+                            pop	de
+                            inc	de
 
-                    ld  a,%01010101
-                    ld  bc,screen_utils.screen_w-1
-                    ld  (hl),a
-                    ldir
+                            ld	a,%01010101
+                            ld	bc,screen_utils.screen_w-1
+                            ld	(hl),a
+                            ldir
 
-                    pop hl
-                    call    down_hl
-                    push    hl
-                    push    hl
-                    pop de
-                    inc de
+                            pop	hl
+                            call	down_hl
+                            push	hl
+                            push	hl
+                            pop	de
+                            inc	de
 
-                    ld  a,%10101010
-                    ld  (hl),a
-                    ld  bc,screen_utils.screen_w-1
-                    ldir
-                    pop hl
-                    call    down_hl
-                    pop bc
-                    djnz    draw_pattern_2rows
-                    ret
+                            ld	a,%10101010
+                            ld	(hl),a
+                            ld	bc,screen_utils.screen_w-1
+                            ldir
+                            pop	hl
+                            call	down_hl
+                            pop	bc
+                            djnz	draw_pattern_2rows
+                            ret
 draw_hero
-                    ld  a,(hero.hero_x)
-                    ld  d,a
-                    ld  a,(hero.hero_y)
-                    ld  e,a
-                    call    screen_utils.get_attrs_address
-                    ld  a,(hero.hero_color)
-                    ld  (hl),a
-                    ret
+                            ld	a,(hero.hero_x)
+                            ld	d,a
+                            ld	a,(hero.hero_y)
+                            ld	e,a
+                            call	screen_utils.get_attrs_address
+                            ld	a,(hero.hero_color)
+                            ld	(hl),a
+                            ret
 draw_state
-                    call    restore_pixels
-                    call    waterdrops.draw_room_waterdrops
-                    call    elevators_draw.draw
-                    call    draw_room_items
-                    call    teleports.draw_current
-                    call    draw_hero
+                            ld	a,4
+                            call	draw.border
+                            call	restore_pixels
+
+                            ld	a,3
+                            call	draw.border
+                            call	waterdrops.draw_room_waterdrops
+
+                            ld	a,5
+                            call	draw.border
+                            call	elevators_draw.draw
+                            ld	a,6
+                            call	draw.border
+                            call	draw_room_items
+                            ld	a,7
+                            call	draw.border
+                            call	teleports.draw_current
+                            ld	a,1
+                            call	draw.border
+                            call	draw_hero
 
 
-                    ret
+                            ret
 restore_rectangle
                 ; input:
                 ; d - x
                 ; e - y
                 ; b - width
                 ; c - height
-                    push    bc
+                            push	bc
 
-                    push    de
-                    call    rooms.get_current_room_pixel_address
-                    pop de
-                    push    hl
-                    call    screen_utils.get_attrs_address
-                    ex  hl,de
+                            push	de
+                            call	rooms.get_current_room_pixel_address
+                            pop	de
+                            push	hl
+                            call	screen_utils.get_attrs_address
+                            ex	hl,de
                 ; de now has screen address                    
-                    pop hl
+                            pop	hl
                 ; hl now has room pixel address
-                    pop bc
+                            pop	bc
 restore_rec_row
-                    push    de
-                    push    hl
-                    push    bc
+                            push	de
+                            push	hl
+                            push	bc
                 ; bc now has restored w/h
 restore_rec_pixel
-                    ld  a,(hl)
-                    ld  (de),a
-                    inc hl
-                    inc de
-                    djnz    restore_rec_pixel
+                            ld	a,(hl)
+                            ld	(de),a
+                            inc	hl
+                            inc	de
+                            djnz	restore_rec_pixel
 
-                    pop bc
-                    pop hl
-                    ld  de,rooms.room_w
-                    add hl,de
+                            pop	bc
+                            pop	hl
+                            ld	de,rooms.room_w
+                            add	hl,de
 
-                    pop de
-                    push    hl
-                    ld  hl,rooms.room_w
-                    add hl,de
-                    ex  hl,de
-                    pop hl
+                            pop	de
+                            push	hl
+                            ld	hl,rooms.room_w
+                            add	hl,de
+                            ex	hl,de
+                            pop	hl
 
-                    dec c
-                    jr  nz,restore_rec_row
-                    ret
+                            dec	c
+                            jr	nz,restore_rec_row
+                            ret
 add_to_restore
                 ; add point to list of restoration points
                 ; d - x coord
                 ; e - y coord
-                    ld  hl,restore_buffer
-                    ld  a,(restore_length)
-                    add a,a
-                    ld  c,a
-                    ld  b,0
-                    add hl,bc
+                            ld	hl,restore_buffer
+                            ld	a,(restore_length)
+                            add	a,a
+                            ld	c,a
+                            ld	b,0
+                            add	hl,bc
                 ; hl now points to buffer end
 
-                    ld  (hl),d
-                    inc hl
-                    ld  (hl),e
+                            ld	(hl),d
+                            inc	hl
+                            ld	(hl),e
 
                 ; increase buffer length
-                    ld  a,(restore_length)
-                    inc a
+                            ld	a,(restore_length)
+                            inc	a
 
-                    ld  (restore_length),a
-                    ret
-restore_length      db  0
-restore_buffer      ds  20
+                            ld	(restore_length),a
+                            ret
+restore_length              db	0
+restore_buffer              ds	80
 restore_pixels
-                    ld  a,(restore_length)
-                    or  a
-                    ret z
-                    ld  b,a
+                            ld	a,(restore_length)
+                            or	a
+                            ret	z
+                            ld	b,a
 
-                    ld  hl,restore_buffer
+                            ld	hl,restore_buffer
 restore_pixels2
-                    push    bc
+                            push	bc
                 ; read coords of point
-                    ld  d,(hl)
-                    inc hl
-                    ld  e,(hl)
-                    inc hl
+                            ld	d,(hl)
+                            inc	hl
+                            ld	e,(hl)
+                            inc	hl
 
-                    push    hl
+                            push	hl
 
-                    call    restore_pixel
+                            call	restore_pixel
 
-                    pop hl
-                    pop bc
-                    djnz    restore_pixels2
-                    ld  a,0
-                    ld  (restore_length),a
+                            pop	hl
+                            pop	bc
+                            djnz	restore_pixels2
+                            ld	a,0
+                            ld	(restore_length),a
 
-                    ret
+                            ret
 restore_pixel
                 ; restores one pixel in screen texture based on current room address
                 ; input
                 ; d - x coord
                 ; e - y coord
-                    call    screen_utils.get_texture_address
-                    push    hl
-                    call    rooms.get_current_room_address
-                    ex  hl,de
-                    pop hl
-                    push    hl
-                    add hl,de
-                    ld  a,(hl)
-                    pop hl
-                    ld  de,screen_utils.attrs
-                    add hl,de
-                    ld  (hl),a
+                            call	screen_utils.get_texture_address
+                            push	hl
+                            ld	hl,(rooms.current_room_address)
+                            ex	hl,de
+                            pop	hl
+                            push	hl
+                            add	hl,de
+                            ld	a,(hl)
+                            pop	hl
+                            ld	de,screen_utils.attrs
+                            add	hl,de
+                            ld	(hl),a
 
-                    ret
+                            ret
 clear_screen
-                    ld  hl,screen_utils.attrs
-                    ld  de,screen_utils.attrs+1
-                    ld  bc,screen_utils.attrs_size-1
-                    ldir
-                    ret
+                            ld	hl,screen_utils.attrs
+                            ld	de,screen_utils.attrs+1
+                            ld	bc,screen_utils.attrs_size-1
+                            ldir
+                            ret
 draw_room_items
-                    ld  hl,rooms.room_items_buffer
+                            ld	hl,rooms.room_items_buffer
 draw_room_items_next
-                    ld  a,(hl)
-                    inc hl
+                            ld	a,(hl)
+                            inc	hl
 
-                    cp  rooms.rooms_end_marker
-                    ret z
+                            cp	rooms.rooms_end_marker
+                            ret	z
 
 
-                    ld  a,(hl)
-                    inc hl
-                    ld  d,a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	d,a
 
-                    ld  a,(hl)
-                    inc hl
-                    ld  e,a
-                    push    hl
-                    call    screen_utils.get_attrs_address
-                    ld  a,%01100000
-                    ld  (hl),a
-                    pop hl
-                    jr  draw_room_items_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	e,a
+                            push	hl
+                            call	screen_utils.get_attrs_address
+                            ld	a,%01100000
+                            ld	(hl),a
+                            pop	hl
+                            jr	draw_room_items_next
 draw_room_sprite
         ;   input
         ;   hl - sprite address
@@ -221,39 +235,39 @@ draw_room_sprite
         ;   output
         ;   hl - sprite address end
 draw_room_sprite_row
-                    push    de
-                    push    bc
+                            push	de
+                            push	bc
 draw_room_sprite_byte
-                    ld  a,(hl)
-                    inc hl
-                    ld  (de),a
-                    inc de
-                    djnz    draw_room_sprite_byte
-                    pop bc
-                    pop de
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(de),a
+                            inc	de
+                            djnz	draw_room_sprite_byte
+                            pop	bc
+                            pop	de
 
-                    push    hl
-                    ld  hl,rooms.room_w
-                    add hl,de
-                    ex  hl,de
-                    pop hl
+                            push	hl
+                            ld	hl,rooms.room_w
+                            add	hl,de
+                            ex	hl,de
+                            pop	hl
 
-                    dec c
-                    jr  nz,draw_room_sprite_row
-                    ret
-    ifused  down_hl
+                            dec	c
+                            jr	nz,draw_room_sprite_row
+                            ret
+                        ifused	down_hl
 down_hl
-                    inc h
-                    ld  a,h
-                    and 7
-                    ret nz
-                    ld  a,l
-                    sub -32
-                    ld  l,a
-                    sbc a,a
-                    and #f8
-                    add a,h
-                    ld  h,a
-                    ret
-    endif
-    endmodule
+                            inc	h
+                            ld	a,h
+                            and	7
+                            ret	nz
+                            ld	a,l
+                            sub	-32
+                            ld	l,a
+                            sbc	a,a
+                            and	#f8
+                            add	a,h
+                            ld	h,a
+                            ret
+                        endif
+                        endmodule
