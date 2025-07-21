@@ -18,7 +18,9 @@ amount                      equ	(waterdrops_table_end-waterdrops_table)/2
                             display	"draw_room_waterdrops ",draw_room_waterdrops
 draw_room_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
+                            exx
 draw_room_wds_next
+                            exx
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
@@ -26,9 +28,11 @@ draw_room_wds_next
                             ld	a,e
                             or	d
                             ret	z
-draw_continue
+
                             push	de
                             pop	ix
+
+                            exx
 
                             ld	a,(ix+waterdrop.type)
                             or	(ix+waterdrop.state)
@@ -38,15 +42,13 @@ draw_continue
                             ld	d,(ix+waterdrop.room_pos_x)
                             ld	e,(ix+waterdrop.room_pos_y)
 
-                            push	hl
                             call	screen_utils.get_attrs_address
+                            
                             ld	a,%01001001
                             ld	(hl),a
-
-                            pop	hl
+                            
                             jr	draw_room_wds_next
 
-                            ret
                             display	'move_waterdrops',move_waterdrops
 move_waterdrops
                             ld	hl,rooms.room_waterdrops_buf

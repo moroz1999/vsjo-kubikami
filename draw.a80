@@ -74,11 +74,11 @@ draw_state
                             ld	a,6
                             call	draw.border
                             call	draw_room_items
-                            
+
                             ld	a,7
                             call	draw.border
                             call	teleports.draw_current
-                            
+
                             ld	a,1
                             call	draw.border
                             call	draw_hero
@@ -136,26 +136,21 @@ add_to_restore
                 ; e - y coord
                 ; output:
                 ; de - original values
-                            ld	hl,restore_buffer
-                            ld	a,(restore_length)
-                            add	a,a
-                            ld	c,a
-                            ld	b,0
-                            add	hl,bc
+                            ld	hl,(restore_buffer_cur)
                 ; hl now points to buffer end
 
                             ld	(hl),d
                             inc	hl
                             ld	(hl),e
-
+                            inc	hl
+                            ld	(restore_buffer_cur),hl
                 ; increase buffer length
-                            ld	a,(restore_length)
-                            inc	a
-
-                            ld	(restore_length),a
+                            ld	hl,restore_length
+                            inc	(hl)
                             ret
 restore_length              db	0
 restore_buffer              ds	80
+restore_buffer_cur          dw	restore_buffer
 restore_pixels
                             ld	a,(restore_length)
                             or	a
@@ -163,6 +158,7 @@ restore_pixels
                             ld	b,a
 
                             ld	hl,restore_buffer
+                            ld	(restore_buffer_cur),hl
 restore_pixels2
                             push	bc
                 ; read coords of point
@@ -187,15 +183,15 @@ restore_pixel
                 ; input
                 ; d - x coord
                 ; e - y coord
-                            call    screen_utils.get_texture_address
-                            ld      b,h
-                            ld      c,l
-                            ld      hl,(rooms.current_room_address)
-                            add     hl,bc
-                            ld      a,(hl)
-                            ld      hl,screen_utils.attrs
-                            add     hl,bc
-                            ld      (hl),a
+                            call	screen_utils.get_texture_address
+                            ld	b,h
+                            ld	c,l
+                            ld	hl,(rooms.current_room_address)
+                            add	hl,bc
+                            ld	a,(hl)
+                            ld	hl,screen_utils.attrs
+                            add	hl,bc
+                            ld	(hl),a
                             ret
 clear_screen
                             ld	hl,screen_utils.attrs

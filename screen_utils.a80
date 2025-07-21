@@ -1,23 +1,23 @@
-        module  screen_utils
-screen                          equ     #4000
-attrs                           equ     screen+#1800
-screen_w                        equ     32
-screen_h                        equ     24
-attrs_size                      equ     screen_h*screen_w
+                        module	screen_utils
+screen                      equ	#4000
+attrs                       equ	screen+#1800
+screen_w                    equ	32
+screen_h                    equ	24
+attrs_size                  equ	screen_h*screen_w
 get_attrs_address
                 ; Input:
                 ; D = x coordinate (0..31)
                 ; E = y coordinate (0..23)
                 ; Output:
                 ; HL = attribute address
-                                call    get_texture_address
+                            call	get_texture_address
                 ; Add the base attribute address #5800
-                                ld      de,attrs
-                                add     hl,de      ; HL = HL + #5800
+                            ld	de,attrs
+                            add	hl,de      ; HL = HL + #5800
 
                 ; Now HL contains the attribute address
 
-                                ret
+                            ret
 get_texture_address
                 ; Input:
                 ; D = x coordinate (0..31)
@@ -26,25 +26,18 @@ get_texture_address
                 ; HL = attribute address within the room
 
                 ; Calculate HL = y * 32
-                                ld      a,e         ; A = y
-                                ld      h,0
-                                ld      l,a         ; HL = y
+                            ld	a,e         ; A = y
+                            ld	h,0
+                            ld	l,a         ; HL = y
 
-                ; Multiply HL by 32 (shift left by 5 bits)
-                                sla     l           ; Shift left by 1 bit
-                                rl      h
-                                sla     l           ; Repeat 5 times to multiply by 32
-                                rl      h
-                                sla     l
-                                rl      h
-                                sla     l
-                                rl      h
-                                sla     l
-                                rl      h            ; Now HL = y * 32
+                ; Multiply HL by 32 
+                        dup	5
+                            add	hl,hl
+                        edup
 
                 ; Add x to HL                                
-                                ld      b,0
-                                ld      c,d         ; BC = x
-                                add     hl,bc      ; HL = HL + x
-                                ret
-        endmodule
+                            ld	b,0
+                            ld	c,d         ; BC = x
+                            add	hl,bc      ; HL = HL + x
+                            ret
+                        endmodule

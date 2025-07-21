@@ -1,6 +1,6 @@
 						module	rooms
-room_number_x				db	1
-room_number_y				db	0
+room_number_x				db	2
+room_number_y				db	1
 
 room_amount_x				equ	6
 room_amount_y				equ	4
@@ -16,7 +16,7 @@ room_item_size				equ	3
 room_elevators_lim			equ	6
 room_teleports_lim			equ	3
 room_waterdrops_lim			equ	33
-waterdrops_marker			equ	255
+waterdrops_marker			equ	0
 rooms_end_marker			equ	255
 elev_end_marker				equ	255
 item_not_found				equ	255
