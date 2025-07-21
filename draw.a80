@@ -70,12 +70,15 @@ draw_state
                             ld	a,5
                             call	draw.border
                             call	elevators_draw.draw
+
                             ld	a,6
                             call	draw.border
                             call	draw_room_items
+                            
                             ld	a,7
                             call	draw.border
                             call	teleports.draw_current
+                            
                             ld	a,1
                             call	draw.border
                             call	draw_hero
@@ -131,6 +134,8 @@ add_to_restore
                 ; add point to list of restoration points
                 ; d - x coord
                 ; e - y coord
+                ; output:
+                ; de - original values
                             ld	hl,restore_buffer
                             ld	a,(restore_length)
                             add	a,a
@@ -182,19 +187,15 @@ restore_pixel
                 ; input
                 ; d - x coord
                 ; e - y coord
-                            call	screen_utils.get_texture_address
-                            push	hl
-                            ld	hl,(rooms.current_room_address)
-                            ex	hl,de
-                            pop	hl
-                            push	hl
-                            add	hl,de
-                            ld	a,(hl)
-                            pop	hl
-                            ld	de,screen_utils.attrs
-                            add	hl,de
-                            ld	(hl),a
-
+                            call    screen_utils.get_texture_address
+                            ld      b,h
+                            ld      c,l
+                            ld      hl,(rooms.current_room_address)
+                            add     hl,bc
+                            ld      a,(hl)
+                            ld      hl,screen_utils.attrs
+                            add     hl,bc
+                            ld      (hl),a
                             ret
 clear_screen
                             ld	hl,screen_utils.attrs

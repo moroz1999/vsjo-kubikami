@@ -13,6 +13,7 @@ check_coords
                 ; e - y
                 ;
                 ; output:
+                ; de - original values
                 ; a = 0 (allowed)
                 ; a = 1 (occupied)
                 ; a = 2 (went to left room)
