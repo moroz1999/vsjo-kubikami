@@ -38,7 +38,7 @@ print_char
     edup
                     ret
 font_address                
-                    incbin "./fonts_RUS/1942_RUS.SpecCHR"                    
+                    incbin "./font/1942_RUS.SpecCHR"                    
     endmodule
 
                     

@@ -4,5 +4,5 @@ crowbar
 toolkit
                     db  "instrumenty",255
 stone
-                    db  "kamen",255
+                    db  "kamenx",255
     endmodule
