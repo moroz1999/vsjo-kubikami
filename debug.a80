@@ -1,42 +1,41 @@
-    module  debug
+                        module	debug
 print_hero_state
-                    ld  a,(hero.hero_state)
-                    cp  hero.state_void
-                    jr  z,print_void
+                            ld	a,(hero.hero_state)
+                            cp	hero.state_void
+                            jr	z,print_void
 
-                    cp  hero.state_jump
-                    jr  z,print_jump
+                            cp	hero.state_jump
+                            jr	z,print_jump
 
-                    cp  hero.state_swim
-                    jr  z,print_swim
+                            cp	hero.state_swim
+                            jr	z,print_swim
 
-
-                    cp  hero.state_ground
-                    jr  z,print_ground
-                    ret
+                            cp	hero.state_ground
+                            jr	z,print_ground
+                            ret
 print_jump
-                    ld  hl,text_jump
-                    jr  print_state
+                            ld	hl,text_jump
+                            jr	print_state
 print_void
-                    ld  hl,text_void
-                    jr  print_state
+                            ld	hl,text_void
+                            jr	print_state
 print_ground
-                    ld  hl,text_ground
-                    jr  print_state
+                            ld	hl,text_ground
+                            jr	print_state
 print_swim
-                    ld  hl,text_swim
-                    jr  print_state
+                            ld	hl,text_swim
+                            jr	print_state
 print_state
-                    ld  b,25
-                    ld  c,23
-                    call    print.print_string
-                    ret
+                            ld	b,25
+                            ld	c,23
+                            call	print.print_string
+                            ret
 text_void
-                    db  "net   ",255
+                            db	"net   ",255
 text_jump
-                    db  "pryvok",255
+                            db	"pryvok",255
 text_swim
-                    db  "woda  ",255
+                            db	"woda  ",255
 text_ground
-                    db  "zemlq ",255
-    endmodule
+                            db	"zemlq ",255
+                        endmodule

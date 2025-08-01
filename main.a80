@@ -1,6 +1,6 @@
                             device	zxspectrum128
 
-start                       equ	#8000
+start                       equ	#7000
 
                             org	start
 

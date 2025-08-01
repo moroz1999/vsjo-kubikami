@@ -1,5 +1,5 @@
 						module	rooms
-room_number_x				db	2
+room_number_x				db	3
 room_number_y				db	1
 
 room_amount_x				equ	6
@@ -32,10 +32,15 @@ init_current_room
 							call	calculate_room_bottom_y
 
 							call	get_current_room_address
+
 							ld	(current_room_address),hl
 							ld	de,screen_utils.attrs
 							ld	bc,room_size
 							ldir
+							
+							// update state instantly
+							call	game_process.calculate_state
+
 							ret
 get_current_room_address
                 ; returns start adress for current room data                

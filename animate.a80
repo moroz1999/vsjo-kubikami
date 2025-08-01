@@ -69,7 +69,7 @@ draw_frame_sprite
 stop
                 ; current frame to 0
                     xor a
-                    ld  (hl),a
+                    ld  (ix+@animation.current),a
                 ; stop current animation                    
                     ld  hl,0
                     ld  (current_animation),hl

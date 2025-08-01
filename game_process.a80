@@ -6,12 +6,13 @@ loop
                             call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore
-                            call	elevators_update.update_room
-                            call	elevators_coords.coords
-
+                            
+                            call    calculate_state
+                            
                             call	hero.update_global_y
                             call	hero.check_elevator
                             call	hero.check_hero_state
+
                             call	hero.switch_colors
                             call	hero.hero_gravity
                             call	hero.hero_move
@@ -36,6 +37,12 @@ room_logic_pointer          equ	$+1
                             ld	b,1
                             call	wait
                             jr	loop
+calculate_state
+                            call	elevators_update.update_room
+                            call	elevators_coords.coords
+
+
+                            ret
 wait
                             ld	iy,0
                             ld	ix,0
