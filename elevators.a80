@@ -33,7 +33,7 @@ amount                      equ	(elevators_table_end-elevators_table)/2
 elevators_table
                             dw	elevator_1_1
                             dw	elevator_2_3
-                            ;dw	elevator_3_1
+                            dw	elevator_3_1
                             dw	elevator_4_1_1
                             dw	elevator_4_1_2
                             dw	elevator_4_1_3

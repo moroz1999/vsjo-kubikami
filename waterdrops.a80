@@ -15,7 +15,6 @@ state_delay                 equ	0
 type_always                 equ	1
 type_falling                equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
-                            display	"draw_room_waterdrops ",draw_room_waterdrops
 draw_room_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
                             exx
@@ -49,7 +48,6 @@ draw_room_wds_next
                             
                             jr	draw_room_wds_next
 
-                            display	'move_waterdrops',move_waterdrops
 move_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
 move_next

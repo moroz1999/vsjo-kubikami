@@ -459,7 +459,6 @@ check_hero_state_falling
                             ld	(gravity_delay),a
 
                             ret
-                        display "check ",check_elevator                            
 check_elevator
                             ld	a,(hero_x)
                             ld	d,a

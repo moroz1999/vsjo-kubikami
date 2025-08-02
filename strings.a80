@@ -1,8 +1,8 @@
-    module  strings
+                        module	strings
 crowbar
-                    db  "montirowka",255
+                            db	"montirowka",255
 toolkit
-                    db  "instrumenty",255
+                            db	"instrumenty",255
 stone
-                    db  "kamenx",255
-    endmodule
+                            db	"kamenx",255
+                        endmodule

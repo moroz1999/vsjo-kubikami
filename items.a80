@@ -1,66 +1,66 @@
-    module  items
-items_end_marker    equ 255
-item_not_in_room    equ 255
-crowbar             equ 0
-toolkit             equ 1
-stone               equ 2
-item_size           equ item_1-item_0
-item_text_offset    equ item_0_text-item_0
-item_logic_offset   equ item_0_logic-item_0
-item_room_x_offset  equ item_0_room_x-item_0
-item_y_offset       equ item_0_y-item_0
+                        module	items
+items_end_marker            equ	255
+item_not_in_room            equ	255
+crowbar                     equ	0
+toolkit                     equ	1
+stone                       equ	2
+item_size                   equ	item_1-item_0
+item_text_offset            equ	item_0_text-item_0
+item_logic_offset           equ	item_0_logic-item_0
+item_room_x_offset          equ	item_0_room_x-item_0
+item_y_offset               equ	item_0_y-item_0
 print_item_name
         ;   input
         ;   a - item type id
-                    call    get_item_address
-                    ld  de,item_text_offset
-                    add hl,de
+                            call	get_item_address
+                            ld	de,item_text_offset
+                            add	hl,de
 
-                    ld  e,(hl)
-                    inc hl
-                    ld  d,(hl)
-                    ex  hl,de
-                    call    game_ui.print_item_name
-                    ret
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            ex	hl,de
+                            call	game_ui.print_item_name
+                            ret
 call_item_logic
         ;   input
         ;   a - item type id
         ;   output
         ;   a - contains 0 if logic is ignored
-                    call    get_item_address
-                    ld  de,item_logic_offset
-                    add hl,de
+                            call	get_item_address
+                            ld	de,item_logic_offset
+                            add	hl,de
 
-                    ld  e,(hl)
-                    inc hl
-                    ld  d,(hl)
-                    ld  (call_item_call),de
-call_item_call      equ $+1
-                    call    logic.empty_item_action
-                    ret
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            ld	(call_item_call),de
+call_item_call              equ	$+1
+                            call	logic.empty_item_action
+                            ret
 get_item_address
         ; input 
         ; a - item type id
         ; output
         ; hl - item address
-                    ld  hl,all_items
-                    ld  de,item_size
-                    ld  b,a
+                            ld	hl,all_items
+                            ld	de,item_size
+                            ld	b,a
 get_item_address_next
-                    ld  a,(hl)
-                    cp  b
-                    ret z
-                    add hl,de
-                    jr  get_item_address_next
+                            ld	a,(hl)
+                            cp	b
+                            ret	z
+                            add	hl,de
+                            jr	get_item_address_next
 remove_item
         ; input
         ; a - item type id              
-                    call    get_item_address
-                    ld  de,item_room_x_offset
-                    add hl,de
-                    ld  a,item_not_in_room
-                    ld  (hl),a
-                    ret
+                            call	get_item_address
+                            ld	de,item_room_x_offset
+                            add	hl,de
+                            ld	a,item_not_in_room
+                            ld	(hl),a
+                            ret
 all_items
         ; item structure:
         ;
@@ -72,33 +72,33 @@ all_items
         ; address of name string
         ; address of logic procedure
 item_0
-                    db  crowbar
+                            db	crowbar
 item_0_room_x
-                    db  2
-                    db  0
-                    db  5
+                            db	2
+                            db	0
+                            db	5
 item_0_y
-                    db  14
+                            db	14
 item_0_text
-                    dw  strings.crowbar
+                            dw	strings.crowbar
 item_0_logic
-                    dw  logic.crowbar.action
+                            dw	logic.crowbar.action
 item_1
-                    db  toolkit
-                    db  0
-                    db  2
-                    db  28
-                    db  20
-                    dw  strings.toolkit
-                    dw  logic.toolkit.action
+                            db	toolkit
+                            db	0
+                            db	2
+                            db	28
+                            db	20
+                            dw	strings.toolkit
+                            dw	logic.toolkit.action
 item_2
-                    db  stone
-                    db  2
-                    db  1
-                    db  30
-                    db  3
-                    dw  strings.stone
-                    dw  logic.stone.action
+                            db	stone
+                            db	2
+                            db	1
+                            db	30
+                            db	3
+                            dw	strings.stone
+                            dw	logic.stone.action
 items_end
-                    db  items_end_marker
-    endmodule
+                            db	items_end_marker
+                        endmodule

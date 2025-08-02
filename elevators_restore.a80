@@ -1,5 +1,4 @@
                         module  elevators_restore
-                            display 'restore ',restore
 restore
                 ; - restore image under elevators
                             ld  hl,rooms.room_elevators_buf

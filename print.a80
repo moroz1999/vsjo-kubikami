@@ -1,44 +1,43 @@
-    module  print
+                        module	print
 
 print_string
                 ; input
                 ; b - x coord
                 ; c - y coord
                 ; hl - string address in memory
-                    call    @get_screen_address_de
+                            call	@get_screen_address_de
 print_string_char
-                    ld  a,(hl)
-                    cp  255
-                    ret z
-                    inc hl
-                    push    hl
-                    push    de
-                    call    print_char
-                    pop de
-                    pop hl
+                            ld	a,(hl)
+                            cp	255
+                            ret	z
+                            inc	hl
+                            push	hl
+                            push	de
+                            call	print_char
+                            pop	de
+                            pop	hl
 
-                    inc e
+                            inc	e
 
-                    jr  print_string_char
+                            jr	print_string_char
 
 print_char
-                    sub 32
-                    ld  l,a
-                    ld  h,0
-                    add hl,hl
-                    add hl,hl
-                    add hl,hl
-                    ld  bc,font_address
-                    add hl,bc
-    dup 8
-                    ld  a,(hl)
-                    ld  (de),a
-                    inc hl
-                    inc d
-    edup
-                    ret
-font_address                
-                    incbin "./font/1942_RUS.SpecCHR"                    
-    endmodule
+                            sub	32
+                            ld	l,a
+                            ld	h,0
+                            add	hl,hl
+                            add	hl,hl
+                            add	hl,hl
+                            ld	bc,font_address
+                            add	hl,bc
+                        dup	8
+                            ld	a,(hl)
+                            ld	(de),a
+                            inc	hl
+                            inc	d
+                        edup
+                            ret
+font_address
+                            incbin	"./font/1942_RUS.SpecCHR"
+                        endmodule
 
-                    
