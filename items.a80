@@ -9,6 +9,7 @@ item_text_offset            equ	item_0_text-item_0
 item_logic_offset           equ	item_0_logic-item_0
 item_room_x_offset          equ	item_0_room_x-item_0
 item_y_offset               equ	item_0_y-item_0
+item_color                  db %01100000, %01000110
 print_item_name
         ;   input
         ;   a - item type id

@@ -15,6 +15,7 @@ state_delay                 equ	0
 type_always                 equ	1
 type_falling                equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
+waterdrop_color             db	%01001001,%01111000
 draw_room_waterdrops
                             ld	hl,rooms.room_waterdrops_buf
                             exx
@@ -40,11 +41,8 @@ draw_room_wds_next
 
                             ld	d,(ix+waterdrop.room_pos_x)
                             ld	e,(ix+waterdrop.room_pos_y)
-
-                            call	screen_utils.get_attrs_address
-
-                            ld	a,%01001001
-                            ld	(hl),a
+                            ld	hl,waterdrop_color
+                            call	draw.draw_gigapoint
 
                             jr	draw_room_wds_next
 

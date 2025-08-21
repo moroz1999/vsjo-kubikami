@@ -232,9 +232,9 @@ draw_room_items_next
                             inc	hl
                             ld	e,a
                             push	hl
-                            call	screen_utils.get_attrs_address
-                            ld	a,%01100000
-                            ld	(hl),a
+                            ld	hl,items.item_color
+                            call	draw.draw_gigapoint
+
                             pop	hl
                             jr	draw_room_items_next
 draw_room_sprite
