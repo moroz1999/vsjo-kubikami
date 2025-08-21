@@ -1,7 +1,7 @@
                         module	hero
 hero_color1                 equ	%01111101
 hero_color2                 equ	%00000111
-hero_color                  db	hero_color1
+hero_color                  db	hero_color1,hero_color2
 
 hero_coords
 hero_y                      db	16
@@ -11,6 +11,7 @@ hero_timer                  db	0
 hero_delay                  db	2
 hero_delay_ground           equ	2
 hero_delay_swim             equ	4
+swam_up                     db	0
 
 state_void                  equ	%00000001
 state_ground                equ	%00000010
@@ -34,6 +35,14 @@ jump_steps                  equ	8
 jump_type                   db	jump_type_top
 no_item_in_pocket           equ	255
 current_item                db	no_item_in_pocket
+draw_hero
+                            ld	a,(hero_x)
+                            ld  d,a
+                            ld	a,(hero_y)
+                            ld  e,a
+                            ld	hl,hero_color
+                            call	draw.draw_gigapoint
+                            ret
 update_global_y
                         ; y = hero_room_y * each_room_height + room y
 
@@ -47,17 +56,6 @@ update_global_y
                             ld	a,(hero_y)
                             add	l
                             ld	(hero_global_y),a
-                            ret
-switch_colors
-                            ld	a,(hero_color)
-                            cp	hero_color1
-                            jr	z,switch_colors_use2
-                            ld	a,hero_color1
-                            ld	(hero_color),a
-                            ret
-switch_colors_use2
-                            ld	a,hero_color2
-                            ld	(hero_color),a
                             ret
 hero_jump
                             ld	a,(hero_state)
@@ -228,7 +226,7 @@ move_hero_up
 move_hero_down
                             ld	a,(hero_elevator)
                             cp	elevators.item_on_elevator
-                            jr  z,move_hero_down_stand
+                            jr	z,move_hero_down_stand
 move_hero_down_force
                             ld	de,(hero_coords)
                             inc	e
@@ -383,6 +381,15 @@ hero_gravity
                             cp	state_jump
                             ret	z
 
+                            ld	a,(swam_up)
+                            or	a
+                            jr	z,hero_gravity2
+                            xor	a
+                            ld	(swam_up),a
+                            ld	a,(gravity_delay)
+                            ld	(gravity_timer),a
+                            ret
+hero_gravity2
                             ld	a,(gravity_timer)
                             or	a
                             jr	z,hero_gravity_do

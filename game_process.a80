@@ -6,16 +6,15 @@ loop
                             call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore
-                            
-                            call    calculate_state
-                            
+
+                            call	calculate_state
+
                             call	hero.update_global_y
                             call	hero.check_elevator
                             call	hero.check_hero_state
-
-                            call	hero.switch_colors
-                            call	hero.hero_gravity
+                            
                             call	hero.hero_move
+                            call	hero.hero_gravity
 
                             ld	a,2
                             call	draw.border
@@ -23,11 +22,11 @@ loop
                             call	waterdrops.move_waterdrops
                             ld	a,1
                             call	draw.border
-                            call	teleports.switch_colors
                             call	teleports.check_hero
 
 room_logic_pointer          equ	$+1
                             call	logic.empty_room_logic
+                            call	draw.switch_colors
                             call	draw.draw_state
                             xor	a
                             call	draw.border

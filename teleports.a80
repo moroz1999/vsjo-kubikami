@@ -12,18 +12,7 @@ dest_room_pos_y             byte
 
 teleport_color1             equ	%01101100
 teleport_color2             equ	%00000100
-teleport_color              db	teleport_color1
-switch_colors
-                            ld	a,(teleport_color)
-                            cp	teleport_color1
-                            jr	z,switch_colors_use2
-                            ld	a,teleport_color1
-                            ld	(teleport_color),a
-                            ret
-switch_colors_use2
-                            ld	a,teleport_color2
-                            ld	(teleport_color),a
-                            ret
+teleport_color              db	teleport_color1,teleport_color2
 check_hero
                             ld	hl,rooms.room_teleports_buf
 check_hero_next
@@ -118,22 +107,16 @@ draw_next
                             push	ix
                             push	de
                             push	bc
-                            call	draw_teleport
+                            
+                            ld	hl,teleport_color
+                            call draw.draw_gigapoint
+
                             pop	bc
                             pop	de
                             pop	ix
 
                             pop	hl
                             jr	draw_next
-                            ret
-draw_teleport
-                ; d - teleport start x
-                ; e - teleport start y                    
-                            call	screen_utils.get_attrs_address
-                ; draw teleport
-                            ld	a,(teleport_color)
-                            ld	(hl),a
-
                             ret
 
 amount                      equ	2

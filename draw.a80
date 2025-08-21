@@ -49,14 +49,29 @@ draw_pattern_2rows
                             pop	bc
                             djnz	draw_pattern_2rows
                             ret
-draw_hero
-                            ld	a,(hero.hero_x)
-                            ld	d,a
-                            ld	a,(hero.hero_y)
-                            ld	e,a
+
+                            display	'draw_gigapoint,',draw_gigapoint
+draw_gigapoint
+                        ; input 
+                        ; d - x
+                        ; e - y
+                        ; hl - points to first color of two
+                            ld	a,(color_shift)
+                            ld	c,a
+                            ld	b,0
+                            add	hl,bc
+                            push	hl
                             call	screen_utils.get_attrs_address
-                            ld	a,(hero.hero_color)
+                            pop	de
+                            ld	a,(de)
                             ld	(hl),a
+
+                            ret
+color_shift                 db	0
+switch_colors
+                            ld	a,(color_shift)
+                            xor	1
+                            ld	(color_shift),a
                             ret
 draw_state
                             ld	a,4
@@ -81,7 +96,7 @@ draw_state
 
                             ld	a,1
                             call	draw.border
-                            call	draw_hero
+                            call	hero.draw_hero
 
 
                             ret

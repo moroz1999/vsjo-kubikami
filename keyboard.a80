@@ -83,6 +83,9 @@ keyboard_up
 
                             jp	hero.hero_jump_top
 keyboard_swim_up
+                            ld	a,1
+                            ld	(hero.swam_up),a
+
                             ld	a,#df
                             in	a,#fe
 
