@@ -42,10 +42,10 @@ draw_room_wds_next
                             ld	e,(ix+waterdrop.room_pos_y)
 
                             call	screen_utils.get_attrs_address
-                            
+
                             ld	a,%01001001
                             ld	(hl),a
-                            
+
                             jr	draw_room_wds_next
 
 move_waterdrops
@@ -129,6 +129,10 @@ waterdrops_table
                             dw	waterdrop_1_0_30
                             dw	waterdrop_1_0_31
                             dw	waterdrop_1_0_32
+
+                            dw	waterdrop_0_1_1
+                            dw	waterdrop_0_1_2
+                            dw	waterdrop_0_1_3
 
                             dw	waterdrop_1_1_1
                             dw	waterdrop_1_1_2
@@ -552,6 +556,43 @@ waterdrop_1_0_32
                             81  //timer
                             0   //state_delay
                             type_falling //type
+                            }
+
+waterdrop_0_1_1
+                            waterdrop	{
+                            0,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            6,  //room_pos_x
+                            1,   //room_pos_y
+                            30  //delay
+                            30  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
+waterdrop_0_1_2
+                            waterdrop	{
+                            0,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            20,  //room_pos_x
+                            1,   //room_pos_y
+                            80  //delay
+                            30  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
+waterdrop_0_1_3
+                            waterdrop	{
+                            0,  //room_x
+                            1,  //room_y
+                            1,  //room_start_y
+                            28,  //room_pos_x
+                            1,   //room_pos_y
+                            40  //delay
+                            10  //timer
+                            0   //state_delay
+                            type_always //type
                             }
 waterdrop_1_1_1
                             waterdrop	{
