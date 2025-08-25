@@ -4,17 +4,13 @@ item_not_in_room            equ	255
 crowbar                     equ	0
 toolkit                     equ	1
 stone                       equ	2
-item_size                   equ	item_1-item_0
-item_text_offset            equ	item_0_text-item_0
-item_logic_offset           equ	item_0_logic-item_0
-item_room_x_offset          equ	item_0_room_x-item_0
-item_y_offset               equ	item_0_y-item_0
-item_color                  db %01100000, %01000110
+item_size                   equ	item
+item_color                  db	%01100000,%01000110
 print_item_name
         ;   input
         ;   a - item type id
                             call	get_item_address
-                            ld	de,item_text_offset
+                            ld	de,item.name
                             add	hl,de
 
                             ld	e,(hl)
@@ -29,7 +25,7 @@ call_item_logic
         ;   output
         ;   a - contains 0 if logic is ignored
                             call	get_item_address
-                            ld	de,item_logic_offset
+                            ld	de,item.logic
                             add	hl,de
 
                             ld	e,(hl)
@@ -57,49 +53,59 @@ remove_item
         ; input
         ; a - item type id              
                             call	get_item_address
-                            ld	de,item_room_x_offset
+                            ld	de,item.room_x
                             add	hl,de
                             ld	a,item_not_in_room
                             ld	(hl),a
                             ret
 all_items
-        ; item structure:
-        ;
-        ; type id
-        ; room number x
-        ; room number y
-        ; position x
-        ; position y
-        ; address of name string
-        ; address of logic procedure
+                        struct	item
+type_id                     byte            ; type id
+room_x                      byte            ; room number x
+room_y                      byte            ; room number y
+room_pos_x                  byte            ; position x
+room_pos_y                  byte            ; position y
+name                        word            ; address of name string
+logic                       word            ; address of logic procedure
+color1                      byte            ; gigacolor 1
+color2                      byte            ; gigacolor 2
+                        ends
 item_0
-                            db	crowbar
-item_0_room_x
-                            db	2
-                            db	0
-                            db	5
-item_0_y
-                            db	14
-item_0_text
-                            dw	strings.crowbar
-item_0_logic
-                            dw	logic.crowbar.action
+                            item	{
+                            crowbar                 // type_id
+                            2                       // room_x
+                            0                       // room_y
+                            5                       // room_pos_x
+                            14                      // room_pos_y
+                            strings.crowbar         // name
+                            logic.crowbar.action    // logic
+                            %01010101               // color1
+                            %10101010               // color2
+                            }
 item_1
-                            db	toolkit
-                            db	0
-                            db	2
-                            db	28
-                            db	20
-                            dw	strings.toolkit
-                            dw	logic.toolkit.action
+                            item	{
+                            toolkit                 // type_id
+                            0                       // room_x
+                            2                       // room_y
+                            28                      // room_pos_x
+                            20                      // room_pos_y
+                            strings.toolkit         // name
+                            logic.toolkit.action    // logic
+                            %01010101               // color1
+                            %10101010               // color2
+                            }
 item_2
-                            db	stone
-                            db	2
-                            db	1
-                            db	30
-                            db	3
-                            dw	strings.stone
-                            dw	logic.stone.action
+                            item	{
+                            stone                   // type_id
+                            2                       // room_x
+                            1                       // room_y
+                            30                      // room_pos_x
+                            3                       // room_pos_y
+                            strings.stone           // name
+                            logic.stone.action      // logic
+                            %01010101               // color1
+                            %10101010               // color2
+                            }
 items_end
                             db	items_end_marker
                         endmodule

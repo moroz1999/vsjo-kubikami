@@ -12,7 +12,7 @@ room_bg_color_gray			equ	%00000111
 room_bg_color_sky			equ	%01000001
 room_bg_color_wat			equ	%00000001
 items_in_room_max			equ	5
-room_item_size				equ	3
+room_item_size				equ	5
 room_elevators_lim			equ	6
 room_teleports_lim			equ	3
 room_waterdrops_lim			equ	33
@@ -530,6 +530,8 @@ room_items_buffer
                     ; type id
                     ; x
                     ; y
+					; color1
+					; color2
 
 							ds	room_item_size*items_in_room_max+1
 room_items_end
