@@ -214,29 +214,37 @@ clear_screen
                             ld	bc,screen_utils.attrs_size-1
                             ldir
                             ret
+                            display	"draw_room_items ",draw_room_items
 draw_room_items
-                            ld	hl,rooms.room_items_buffer
-draw_room_items_next
+                            ld	hl,rooms.room_items_ptr_buf
+.dri_next
                             ld	a,(hl)
-                            inc	hl
-
                             cp	rooms.rooms_end_marker
                             ret	z
-
-
-                            ld	a,(hl)
+                            
+                        ; DE = pointer
+                            ld	e,(hl)
                             inc	hl
-                            ld	d,a
-
-                            ld	a,(hl)
+                            ld	d,(hl)
                             inc	hl
-                            ld	e,a
-                            push	hl
-                            ld	hl,items.item_color
-                            call	draw.draw_gigapoint
+                            push hl
+                        ; IX := DE
+                            push	de
+                            pop	ix
 
+                        ; D,E = item coordinates
+                            ld	d,(ix+items.item.room_pos_x)
+                            ld	e,(ix+items.item.room_pos_y)
+
+                        ; HL = color1 inside item
+                            push	ix
                             pop	hl
-                            jr	draw_room_items_next
+                            ld	bc,items.item.color1
+                            add	hl,bc
+
+                            call	draw.draw_gigapoint
+                            pop	hl
+                            jr	.dri_next
 draw_room_sprite
         ;   input
         ;   hl - sprite address

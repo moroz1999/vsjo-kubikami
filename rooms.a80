@@ -1,6 +1,6 @@
 						module	rooms
-room_number_x				db	3
-room_number_y				db	1
+room_number_x				db	2
+room_number_y				db	0
 
 room_amount_x				equ	6
 room_amount_y				equ	4
@@ -12,7 +12,14 @@ room_bg_color_gray			equ	%00000111
 room_bg_color_sky			equ	%01000001
 room_bg_color_wat			equ	%00000001
 items_in_room_max			equ	5
-room_item_size				equ	5
+
+room_item_ptr_size			equ	2
+room_items_ptr_lim			equ	items_in_room_max
+
+room_items_ptr_buf
+							ds	room_items_ptr_lim*2+1
+room_items_ptr_end
+
 room_elevators_lim			equ	6
 room_teleports_lim			equ	3
 room_waterdrops_lim			equ	33
@@ -23,7 +30,7 @@ item_not_found				equ	255
 current_room_address		dw	2
 init_current_room
 							call	logic.change_logic_pointer
-							call	gather_items
+							call	gather_room_items
 							call	gather_elevators
 							call	gather_teleports
 							call	gather_waterdrops
@@ -37,7 +44,7 @@ init_current_room
 							ld	de,screen_utils.attrs
 							ld	bc,room_size
 							ldir
-							
+
 							// update state instantly
 							call	game_process.calculate_state
 
@@ -326,196 +333,208 @@ gather_elev_skip
 							ld	a,elev_end_marker
 							ld	(iy),a
 							ret
-gather_items
-							ld	a,(room_number_x)
-							ld	b,a
-							ld	a,(room_number_y)
-							ld	c,a
+						display "gather_room_items,",gather_room_items
+gather_room_items
+                        ; Build room_items_ptr_buf with pointers to items.item
+							ld	a,(rooms.room_number_x)
+							ld	d,a
+							ld	a,(rooms.room_number_y)
+							ld	e,a
 
+							ld	iy,room_items_ptr_buf
 							ld	hl,items.all_items
-							ld	de,room_items_buffer
-gather_items_next
+							ld	bc,items.item_size
+
+.gr_next
 							ld	a,(hl)
-							inc	hl
 							cp	items.items_end_marker
-							jr	z,gather_items_end
+							jr	z,.gr_end
 
-							ex	af,af'
+                        ; IX := current item
+							push	hl
+							pop	ix
 
-
-							ld	a,(hl)
-							inc	hl
-							cp	b
-							jr	nz,gather_items_skip3
-
-							ld	a,(hl)
-							inc	hl
-							cp	c
-							jr	nz,gather_items_skip2
-
-							ex	af,af'
-                    ; put type
-							ld	(de),a
-							inc	de
-
-							ld	a,(hl)
-							inc	hl
-                    ; put x position
-							ld	(de),a
-							inc	de
-
-							ld	a,(hl)
-							inc	hl
-                    ; put y position
-							ld	(de),a
-							inc	de
-						dup	items.item_size-5
-							inc	hl
-						edup
-							jr	gather_items_next
-gather_items_skip3
-						dup	items.item_size-2
-							inc	hl
-						edup
-							jr	gather_items_next
-gather_items_skip2
-						dup	items.item_size-3
-							inc	hl
-						edup
-							jr	gather_items_next
-gather_items_end
-							ld	a,rooms_end_marker
-							ld	(de),a
-							ret
-find_item_by_coord
-                    ; input
-                    ; de - x,y coordinates
-
-                    ; output
-                    ; a - type id or 255
-
-							ld	hl,room_items_buffer  ; Set HL to the start of the items buffer
-
-check_next_item
-							ld	a,(hl)               ; Load item type
-							cp	rooms_end_marker     ; Check for end of the list (255 terminator)
-							jr	z,not_found           ; If found, item is not present
-
-							ex	af,af'               ; Save the item type in alternate AF
-
-							inc	hl                   ; Move to X coordinate
-							ld	a,(hl)               ; Compare X coordinate with input
+							ld	a,(ix+items.item.room_x)
 							cp	d
-							jr	nz,next_item1          ; If X doesn't match, go to next item
-
-							inc	hl                   ; Move to Y coordinate
-							ld	a,(hl)               ; Compare Y coordinate with input
+							jr	nz,.gr_skip
+							ld	a,(ix+items.item.room_y)
 							cp	e
-							jr	nz,next_item2          ; If Y doesn't match, go to next item
+							jr	nz,.gr_skip
 
-							ex	af,af'               ; Restore item type from alternate AF
-							ret                       ; Return item type if found
+                        ; append pointer (IX) into buffer
+							push	ix
+							pop	de
+							ld	(iy),e
+							inc	iy
+							ld	(iy),d
+							inc	iy
 
-next_item1
-							inc	hl                   ; Move to the next item (3 bytes per item)
-							inc	hl
-							jr	check_next_item        ; Repeat the search
+.gr_skip					add	hl,bc
+							jr	.gr_next
 
-next_item2
-							inc	hl                   ; Move to the next item (3 bytes per item)
-							jr	check_next_item        ; Repeat the search
-not_found
-							ld	a,item_not_found                ; Return 255 if no item found
+.gr_end						ld	a,rooms.rooms_end_marker
+							ld	(iy),a
 							ret
-
-spawn_item
-        ;   input
-        ;   a - item type id
-        ;   b - item x position
-        ;   c - item y position
-
-                 ;store item type in af'
-							ex	af,af'
-							ld	hl,room_items_buffer
-							ld	de,room_item_size
-spawn_item_check_end
+; find_item_ptr_by_coord
+; input : DE = (x,y)
+; output: Carry=1 if found, IX -> items.item,  A = type_id
+;         Carry=0 if not found, A untouched
+find_item_ptr_by_coord
+							ld	hl,room_items_ptr_buf
+.fipc_next
 							ld	a,(hl)
 							cp	rooms_end_marker
-							jr	z,spawn_item_found_end
-							add	hl,de
-							jr	spawn_item_check_end
-spawn_item_found_end
-                ; save buffer address
-							push	hl
-                ; save item destination coords
-							push	bc
+							jr	z,.fipc_not_found
 
-                ; load item type to a
-							ex	af,af'
-							call	items.get_item_address
-
-                ; load item destination coords to bc
-							pop	bc
-                ; load buffer address to de
-							pop	de
-
-							ld	a,(hl)               ; Load item type
-							ld	(de),a
+                            ; load pointer -> IX
+							ld	ixl,a
 							inc	hl
-							inc	de
-
-							ld	a,(room_number_x)
-							ld	(hl),a              ; save item's room x in items
+							ld	a,(hl)
+							ld	ixh,a
 							inc	hl
 
-							ld	a,(room_number_y)
-							ld	(hl),a              ; save item's room y in items
-							inc	hl
+							ld	a,(ix+items.item.room_pos_x)
+							cp	d
+							jr	nz,.fipc_next
+							ld	a,(ix+items.item.room_pos_y)
+							cp	e
+							jr	nz,.fipc_next
 
-							ld	a,b                 ; take item's x position
-							ld	(hl),a              ; save position in items
-							ld	(de),a              ; save position in room
-							inc	hl
-							inc	de
-
-							ld	a,c                 ; take item's y position
-							ld	(hl),a              ; save position in items
-							ld	(de),a              ; save position in room
-							inc	hl
-							inc	de
-
-							ld	a,rooms_end_marker
-							ld	(de),a
+                            ; found
+							ld	a,(ix+items.item.type_id)
+							scf
 							ret
+.fipc_not_found
+							or	a              ; clear carry
+							ret
+
+; Backward-compatible wrapper: returns type id or 255
+find_item_by_coord
+							call	find_item_ptr_by_coord
+							jr	c,.fibc_found
+							ld	a,item_not_found
+							ret
+.fibc_found
+                            ; A already has type_id
+							ret
+; spawn_item
+; input : A = type_id, B = x, C = y
+; spawn_item
+; input : A = type_id, B = x, C = y
+spawn_item
+                        ; find end of pointer buffer							
+							ld	hl,rooms.room_items_ptr_buf
+.si_seek_end				ld	a,(hl)
+							cp	rooms.rooms_end_marker
+							jr	z,.si_end_found
+							inc	hl
+							inc	hl
+							jr	.si_seek_end
+.si_end_found				push	hl                      ; save write position
+
+                        ; IX := item base
+							call	items.get_item_address  ; HL = base
+							push	hl
+							pop	ix
+
+                        ; set room and position fields
+							ld	a,(rooms.room_number_x)
+							ld	(ix+items.item.room_x),a
+							ld	a,(rooms.room_number_y)
+							ld	(ix+items.item.room_y),a
+							ld	a,b
+							ld	(ix+items.item.room_pos_x),a
+							ld	a,c
+							ld	(ix+items.item.room_pos_y),a
+
+                        ; write pointer to buffer and terminate
+							pop	hl                      ; HL = write pos
+							push	ix
+							pop	de
+							ld	(hl),e
+							inc	hl
+							ld	(hl),d
+							inc	hl
+							ld	a,rooms.rooms_end_marker
+							ld	(hl),a
+							ret
+
 remove_item
-        ;   input
-        ;   a - item type id
-							ld	hl,room_items_buffer
-							ld	de,room_item_size
-
-							ld	b,a
+						; input:
+						; A = type_id							
+							ld	hl,rooms.room_items_ptr_buf
+							ld	b,a                        ; B = type_id
 remove_item_search
-							ld	a,(hl)               ; Load item type
-							cp	rooms_end_marker                   ; Check for end of the list (255 terminator)
-							jr	z,not_found           ; If found, item is not present
+							ld	a,(hl)
+							cp	rooms.rooms_end_marker
+							ret	z
+                        
+							ld	e,(hl)
+							inc	hl
+							ld	d,(hl)
+							inc	hl
+							push	de
+							pop	ix
 
-                ;   check if it is required type
+							ld	a,(ix+items.item.type_id)
 							cp	b
-							jr	z,remove_item_delete
-							add	hl,de
-							jr	remove_item_search
+							jr	nz,remove_item_search
 
-remove_item_delete
+                        ; HL currently points AFTER the entry -> back 2 bytes
+							dec hl
+							dec hl
+							
 							push	hl
-
-							ld	de,room_item_size
-							add	hl,de
-
+							ld	de,2
+							add	hl,de                      ; HL = src (next entry)
 							push	hl
+							ex	hl,de                      ; DE = src, HL = dst
 
+							ld	hl,rooms.room_items_ptr_end
+							xor	a
+							sbc	hl,de                      ; HL = bytes to move
+							push	hl
+							pop	bc
+							pop	hl                          ; HL = src
+							pop	de                          ; DE = dst
+							ldir
+
+							ld	a,b
+							call	items.remove_item       ; mark item "not in room"
+							ret
+
+						; remove_item_by_ptr
+						; input : IX -> items.item
+remove_item_by_ptr
+							ld	hl,rooms.room_items_ptr_buf
+.rip_next
+							ld	a,(hl)
+							cp	rooms.rooms_end_marker
+							jr	z,.rip_done
+
+							ld	e,(hl)
+							inc	hl
+							ld	d,(hl)
+							inc	hl                         ; HL -> next entry
+
+                        ; compare with IX
+							ld	a,ixl
+							cp	e
+							jr	nz,.rip_next
+							ld	a,ixh
+							cp	d
+							jr	nz,.rip_next
+
+                        ; delete entry (HL is after it)
+							or	a
+							ld	de,2
+							sbc	hl,de
+							push	hl
+							ld	de,2
+							add	hl,de
+							push	hl
 							ex	hl,de
-
-							ld	hl,room_items_end
+							ld	hl,rooms.room_items_ptr_end
 							xor	a
 							sbc	hl,de
 							push	hl
@@ -523,17 +542,14 @@ remove_item_delete
 							pop	hl
 							pop	de
 							ldir
-							ret
-room_items_buffer
-                    ; item structure
-                    ;
-                    ; type id
-                    ; x
-                    ; y
-					; color1
-					; color2
 
-							ds	room_item_size*items_in_room_max+1
+							ld	a,(ix+items.item.type_id)
+							call	items.remove_item
+.rip_done					ret
+
+room_items_buffer
+
+							ds	items.item*items_in_room_max+1
 room_items_end
 room_elevators_buf
 							ds	room_elevators_lim*2+1

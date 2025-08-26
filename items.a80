@@ -51,14 +51,13 @@ get_item_address_next
                             jr	get_item_address_next
 remove_item
         ; input
-        ; a - item type id              
+        ; a - item type id
                             call	get_item_address
                             ld	de,item.room_x
                             add	hl,de
                             ld	a,item_not_in_room
                             ld	(hl),a
                             ret
-all_items
                         struct	item
 type_id                     byte            ; type id
 room_x                      byte            ; room number x
@@ -70,6 +69,7 @@ logic                       word            ; address of logic procedure
 color1                      byte            ; gigacolor 1
 color2                      byte            ; gigacolor 2
                         ends
+all_items                        
 item_0
                             item	{
                             crowbar                 // type_id
