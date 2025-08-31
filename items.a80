@@ -79,8 +79,8 @@ item_0
                             14                      // room_pos_y
                             strings.crowbar         // name
                             logic.crowbar.action    // logic
-                            %01010101               // color1
-                            %10101010               // color2
+                            %00000111               // color1
+                            %01010000               // color2
                             }
 item_1
                             item	{
@@ -91,8 +91,8 @@ item_1
                             20                      // room_pos_y
                             strings.toolkit         // name
                             logic.toolkit.action    // logic
-                            %01010101               // color1
-                            %10101010               // color2
+                            %01000011               // color1
+                            %00011000               // color2
                             }
 item_2
                             item	{
@@ -103,8 +103,8 @@ item_2
                             3                       // room_pos_y
                             strings.stone           // name
                             logic.stone.action      // logic
-                            %01010101               // color1
-                            %10101010               // color2
+                            %01000010               // color1
+                            %00010000               // color2
                             }
 items_end
                             db	items_end_marker

@@ -2,7 +2,6 @@
 loop
                             ld	a,1
                             call	draw.border
-                    //call    rooms.init_current_room
                             call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore

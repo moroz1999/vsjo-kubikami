@@ -35,6 +35,7 @@ draw_room_items_next
                             pop	bc
                             djnz	draw_room_items_next
                             ret
+                            display	'gather_room_items,',gather_room_items
 
 gather_room_items
                         ; Build room_items_buffer with pointers to items.item

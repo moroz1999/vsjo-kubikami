@@ -50,7 +50,6 @@ draw_pattern_2rows
                             djnz	draw_pattern_2rows
                             ret
 
-                            display	'draw_gigapoint,',draw_gigapoint
 draw_gigapoint
                         ; input 
                         ; d - x
