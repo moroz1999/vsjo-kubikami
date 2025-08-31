@@ -28,7 +28,6 @@ check
                             dec	a
                             ld	(current_delay),a
                             ret
-                            display 'draw_frame ', draw_frame
 draw_frame
                 ;read frames amount
                             ld	c,(ix+@animation.frames)
@@ -54,7 +53,7 @@ draw_frame
                             call	find_sprite_address
 draw_frame_sprite
                             call	draw.draw_room_sprite
-                            call	rooms.init_current_room
+                            call	rooms.redraw_current_room
 
                             ld	ix,(current_animation)
 

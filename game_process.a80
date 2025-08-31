@@ -40,7 +40,6 @@ calculate_state
                             call	elevators_update.update_room
                             call	elevators_coords.coords
 
-
                             ret
 wait
                             ld	iy,0

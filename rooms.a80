@@ -24,20 +24,24 @@ init_current_room
 							call	calculate_room_top_y
 							call	calculate_room_bottom_y
 
+							call	redraw_current_room
+
+							// update state instantly
+							call	game_process.calculate_state
+
+							ret
+redraw_current_room
 							call	get_current_room_address
 
 							ld	(current_room_address),hl
 							ld	de,screen_utils.attrs
 							ld	bc,room_size
 							ldir
-
-							// update state instantly
-							call	game_process.calculate_state
-
 							ret
 get_current_room_address
                 ; returns start adress for current room data                
-                ; output
+				;
+                ; output:
                 ; hl - address in memory
 							ld	a,(room_number_x)
 							ld	b,a

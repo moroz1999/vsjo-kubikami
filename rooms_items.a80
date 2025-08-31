@@ -3,6 +3,8 @@ draw_room_items
 
                             ld	hl,room_items_buffer
                             ld	a,(room_items_count)
+                            or	a
+                            ret	z
                             ld	b,a
 
 draw_room_items_next
