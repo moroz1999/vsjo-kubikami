@@ -1,0 +1,54 @@
+room_waterdrops_lim         equ	33
+waterdrops_marker           equ	0
+
+gather_waterdrops
+                            ld	b,waterdrops.amount
+                // return if there is no waterdrops in game
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                            ld	a,(rooms.room_number_x)
+                            ld	d,a
+
+                            ld	a,(rooms.room_number_y)
+                            ld	e,a
+
+
+                            ld	iy,room_waterdrops_buf
+                            ld	hl,waterdrops.waterdrops_table
+
+gather_wd_next
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; ix now has pointer to drop's table
+                            ld	a,(ix)
+                            cp	d
+                            jr	nz,gather_wd_skip
+                            ld	a,(ix+1)
+                            cp	e
+                            jr	nz,gather_wd_skip
+                            ld	a,ixl
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,ixh
+                            ld	(iy),a
+                            inc	iy
+
+gather_wd_skip
+                            pop	hl
+                            djnz	gather_wd_next
+                            ld	a,waterdrops_marker
+                            ld	(iy),a
+                            ld	(iy+1),a
+                            ret
+room_waterdrops_buf
+                            ds	room_waterdrops_lim*2+1
+room_waterdrops_end

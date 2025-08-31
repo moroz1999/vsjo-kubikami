@@ -19,7 +19,7 @@ state_swim                  equ	%00000100
 state_jump                  equ	%00001000
 
 gravity_air                 equ	1
-gravity_water               equ	10
+gravity_water               equ	15
 
 state_movable               equ	state_swim|state_ground
 
