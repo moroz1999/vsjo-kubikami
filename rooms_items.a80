@@ -8,17 +8,15 @@ draw_room_items
 draw_room_items_next
                             push	bc
 
-                        ; DE = pointer
-                            ld	e,(hl)
+                        ; read item pointer to IX
+                            ld	a,(hl)
                             inc	hl
-                            ld	d,(hl)
+                            ld	ixl,a
+                            ld	a,(hl)
                             inc	hl
+                            ld	ixh,a
 
                             push	hl
-
-                        ; IX := DE
-                            push	de
-                            pop	ix
 
                         ; D,E = item coordinates
                             ld	d,(ix+items.item.room_pos_x)
@@ -36,7 +34,7 @@ draw_room_items_next
                             djnz	draw_room_items_next
                             ret
 
-gather_room_items                            
+gather_room_items
                         ; Build room_items_buffer with pointers to items.item
                             xor	a
                             ld	(room_items_count),a
@@ -62,11 +60,11 @@ gather_room_next
                             jr	nz,gather_room_skip
 
                         ; append pointer (IX) into buffer
-                            push	ix
-                            pop	de
-                            ld	(hl),e
+                            ld	a,ixl
+                            ld	(hl),a
                             inc	hl
-                            ld	(hl),d
+                            ld	a,ixh
+                            ld	(hl),a
                             inc	hl
 
 						; increase items counter in room
@@ -82,19 +80,27 @@ gather_room_skip
 gather_room_end             ld	a,rooms_end_marker
                             ld	(iy),a
                             ret
-find_item_ptr_by_coord
-                            or	a
-                            ret
+item_not_found              equ	255
+
+find_item_by_coord
 						; input : DE = (x,y)
 						; output: Carry=1 if found, IX -> items.item,  A = type_id
 						;         Carry=0 if not found, A untouched
                             ld	hl,room_items_buffer
-.fipc_next
-                            ld	a,(hl)
-                            cp	rooms_end_marker
-                            jr	z,.fipc_not_found
+                            ld	a,(room_items_count)
+                        ; are there items in room?                            
+                            or	a
+                            jr	z,find_item_not_found
+
+                            ld	b,a
+find_item_next
+                            xor	a
+                            or	b
+                            jr	z,find_item_not_found
+                            dec	b
 
                             ; load pointer -> IX
+                            ld	a,(hl)
                             ld	ixl,a
                             inc	hl
                             ld	a,(hl)
@@ -103,27 +109,16 @@ find_item_ptr_by_coord
 
                             ld	a,(ix+items.item.room_pos_x)
                             cp	d
-                            jr	nz,.fipc_next
+                            jr	nz,find_item_next
                             ld	a,(ix+items.item.room_pos_y)
                             cp	e
-                            jr	nz,.fipc_next
+                            jr	nz,find_item_next
 
                             ; found
                             ld	a,(ix+items.item.type_id)
-                            scf
                             ret
-.fipc_not_found
-                            or	a              ; clear carry
-                            ret
-
-; Backward-compatible wrapper: returns type id or 255
-find_item_by_coord
-                            call	find_item_ptr_by_coord
-                            jr	c,.fibc_found
+find_item_not_found
                             ld	a,item_not_found
-                            ret
-.fibc_found
-                            ; A already has type_id
                             ret
 
 spawn_item
