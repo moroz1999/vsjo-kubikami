@@ -50,6 +50,7 @@ get_item_address_next
                             add	hl,de
                             jr	get_item_address_next
 remove_item
+        ; marks required item property as not currently located in room
         ; input
         ; a - item type id
                             call	get_item_address
@@ -91,8 +92,8 @@ item_1
                             20                      // room_pos_y
                             strings.toolkit         // name
                             logic.toolkit.action    // logic
-                            %01000011               // color1
-                            %00011000               // color2
+                            %01000010               // color1
+                            %00000111               // color2
                             }
 item_2
                             item	{
@@ -103,7 +104,7 @@ item_2
                             3                       // room_pos_y
                             strings.stone           // name
                             logic.stone.action      // logic
-                            %01000010               // color1
+                            %01000110               // color1
                             %00010000               // color2
                             }
 items_end

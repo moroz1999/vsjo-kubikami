@@ -30,7 +30,6 @@ action
 crowbar_false
                             xor	a
                             ret
-                            display	'ground_anim ',ground_anim
 ground_anim
                             @animation	{
                             4

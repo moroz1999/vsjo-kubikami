@@ -12,7 +12,6 @@ start                       equ	#7000
                             call	draw.draw_panel
                             call	rooms.init_current_room
                             jp	game_process.loop
-                            halt
                             include	"math.a80"
                             include	"game_process.a80"
                             include	"draw.a80"
