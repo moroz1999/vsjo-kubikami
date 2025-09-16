@@ -5,7 +5,7 @@ hero_color                  db	hero_color1,hero_color2
 
 hero_coords
 hero_y                      db	16
-hero_x                      db	10
+hero_x                      db	1
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2

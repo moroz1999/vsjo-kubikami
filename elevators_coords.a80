@@ -1,4 +1,5 @@
                         module  elevators_coords
+                        display "coords,",coords
 coords
                             ld  hl,rooms.room_elevators_buf
 coords_next
@@ -45,6 +46,7 @@ coords_next
                             jr  c,save_below              ; elevator's y > room's bottom y, elevator is below, skip drawing
 
                             ld  a,(rooms.room_top_y)
+                            inc b
                             cp  b
                             jr  nc,save_above              ; elevator's y < rooms' top y, elevator is above room, draw leg only
                             ld  (ix+elevators.elevator.in_room),elevators.room_inside

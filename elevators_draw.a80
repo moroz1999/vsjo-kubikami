@@ -1,122 +1,159 @@
-                        module  elevators_draw
-elevator_top_color          equ %01000111
+                        module	elevators_draw
+elevator_top_color          equ	%01000111
+elevator_leg_color          equ	%00000111
 
                 ; 1. * separate global coords calculation from drawing to use it freely in restoration, drawing, physics at any time
                 ; 2. * make global hero coordinates for elevator physics comparison
                 ; 3. * start storing elevator's global position in struct, bottom/above/inside room state as well
                 ; 4. * modify physics check to global coords
                 ; 5. * modify elevator restoration to work with global coords
+                            display	"draw,",draw
 draw
-                            ld  hl,rooms.room_elevators_buf
+                            ld	hl,rooms.room_elevators_buf
 draw_next
-                            ld  a,(hl)
+                            ld	a,(hl)
                 ; check if there are no elevators
-                            cp  rooms.elev_end_marker
-                            ret z
+                            cp	rooms.elev_end_marker
+                            ret	z
 
-                            ld  a,(hl)
+                            ld	a,(hl)
                 ; read elevator address to ix
-                            ld  xl,a
-                            inc hl
+                            ld	xl,a
+                            inc	hl
 
-                            ld  a,(hl)
-                            ld  xh,a
-                            inc hl
-                            push    hl
+                            ld	a,(hl)
+                            ld	xh,a
+                            inc	hl
+                            push	hl
                 ; ix now has elevator data start
-                            ld a,(ix+elevators.elevator.y)
-                            ld  b,a
+                            ld	a,(ix+elevators.elevator.y)
+                            ld	b,a
                 ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
 
-                            ld  a,(ix+elevators.elevator.in_room)
-                            cp  elevators.room_below
-                            jr  z,draw_skip              ; elevator's y > room's bottom y, elevator is below, skip drawing
+                            ld	a,(ix+elevators.elevator.in_room)
+                            cp	elevators.room_below
+                            jr	z,draw_end              ; elevator's y > room's bottom y, elevator is below, skip drawing
 
-                            cp  elevators.room_above
-                            jr  z,draw_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
-
+                            cp	elevators.room_above
+                            jr	z,draw_only_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
+                            display	'draw_in_room,',draw_in_room
 draw_in_room
                 ; b has elevator's global y
-                            ld  a,(rooms.room_top_y)
+                            ld	a,(rooms.room_top_y)
+                            ld	c,a
 
-                ; elevator draw height = room_top_y + elevator_room_y - elevator global
-                            add (ix+elevators.elevator.room_pos_y)
-                            sub b
-                            ld  c,a
+                ; elevator draw topheight = elevator global - room_top_y
+                            ld	a,b
+                            sub	c
+                            ld	e,a
 
+                            ld	a,(ix+elevators.elevator.room_pos_x)
+                            ld	d,a
 
-                            ld  a,(ix+elevators.elevator.room_pos_x)
-                            ld  d,a
+                ; save elevator global in c
+                            ld	c,b
 
-                            ld  a,(ix+elevators.elevator.room_pos_y)
-                            ld  e,a
+                            ld	a,(ix+elevators.elevator.width)
+                            ld	b,a
 
-                            ld  a,(ix+elevators.elevator.width)
-                            ld  b,a
+                            push	ix
 
-                            push    ix
+                            push	de
+                            push	bc
+                            call	draw_elevator
+                            pop	bc
+                            pop	de
 
-                            push    de
-                            push    bc
-                            call    draw_elevator
-                            pop bc
-                            pop de
+                ; restored de:
+                ; d = elevator x
+                ; e = elevator y
+                            ld	a,(ix+elevators.elevator.leg_left)
+                            add	d
+                            ld	d,a
 
-                            ld  a,(ix+elevators.elevator.leg_left)
-                            add d
-                            ld  d,a
+                ; elevator leg draw top = elevator top + elevator thickness (1)
+                            inc	e
 
-                            call    draw_elevator_leg
-                            pop ix
-draw_leg
-draw_skip
-                            pop hl
-                            jr  draw_next
+                            ld	a,rooms.room_h
+                            sub	e
+                            ld	b,a
+
+                            call	draw_elevator_leg
+                            pop	ix
+                            jr	draw_end
+draw_only_leg
+                ; b has elevator's global y
+                ; elevator is above room, so only leg is visible
+                ; if elevator is based in same room, then draw leg from elevator y+1 to elevator base
+                ; if elevator is based in some room below, just draw full leg from top to bottom of room
+
+                            ld	a,(rooms.room_number_y)
+                            ld	b,a
+                            cp	(ix+elevators.elevator.room_y)
+                            jr	nz,draw_full_leg
+
+                ; elevator leg h top = elevator_room_y
+                            ld a,(ix+elevators.elevator.room_pos_y)                            
+                            ld	b,a
+                            jr	draw_only_leg_draw
+draw_full_leg
+                            ld	b,rooms.room_h
+
+draw_only_leg_draw
+                            ld	a,(ix+elevators.elevator.room_pos_x)
+                            ld	d,a
+
+                            ld	a,(ix+elevators.elevator.leg_left)
+                            add	d
+                            ld	d,a
+
+                            xor a
+                            ld	e,a
+
+                            call	draw_elevator_leg
+
+draw_end
+                            pop	hl
+                            jr	draw_next
                             ret
 draw_elevator
                 ; d - elevator start x
                 ; e - elevator start y
                 ; b - width
-                ; c - height
 
                 ; get left top address of elevator in current room
-                            ld  a,e
-                            sub c
-                            ld  e,a
+                            push	bc
+                            call	screen_utils.get_attrs_address
+                            pop	bc
 
-                            push    bc
-                            call    screen_utils.get_attrs_address
-                            pop bc
-
-                            ld  a,elevator_top_color
+                            ld	a,elevator_top_color
 draw_elevator_pixel
-                            ld  (hl),a
-                            inc hl
-                            djnz    draw_elevator_pixel
+                            ld	(hl),a
+                            inc	hl
+                            djnz	draw_elevator_pixel
 
                             ret
 draw_elevator_leg
-                ; d - elevator leg start x
-                ; e - elevator leg start y
-                ; c - current height
-                            ret
-                ; if current height is smaller than 1 + 1 then there is nothing to draw
-                            ld  a,c
-                            or  a
-                            ret z
+                ; d - elevator leg top x
+                ; e - elevator leg top y
+                ; b - leg height on screen
 
-                            ld  b,a
+                ; if current height is smaller than elevator thickness + 1 then there is nothing to draw
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                            ld	b,a
 
                 ; get screen address of elevator leg bottom
-                            push    bc
-                            call    screen_utils.get_attrs_address
-                            pop bc
-                            ld  de,rooms.room_w
-                            ld  a,%00000111
+                            push	bc
+                            call	screen_utils.get_attrs_address
+                            pop	bc
+                            ld	de,rooms.room_w
+                            ld	a,elevator_leg_color
 draw_elevator_leg_pix
-                            ld  (hl),a
-                            or  a
-                            sbc hl,de
-                            djnz    draw_elevator_leg_pix
+                            ld	(hl),a                            
+                            add	hl,de
+                            djnz	draw_elevator_leg_pix
                             ret
                         endmodule
