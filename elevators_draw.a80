@@ -63,7 +63,8 @@ draw_in_room
                             call	draw_elevator
                             pop	bc
                             pop	de
-
+                            display	"draw_in_room_leg",draw_in_room_leg
+draw_in_room_leg
                 ; restored de:
                 ; d = elevator x
                 ; e = elevator y
@@ -74,11 +75,29 @@ draw_in_room
                 ; elevator leg draw top = elevator top + elevator thickness (1)
                             inc	e
 
+                            ld	a,(rooms.room_number_y)
+                            ld	b,a
+                            ld	a,(ix+elevators.elevator.room_y)
+                            cp	b
+                            jr	nz,draw_leg_to_bottom
+                ; elevator base is on the same screen. draw leg to the base Y
+                            ld	a,(ix+elevators.elevator.room_pos_y)
+                            inc a
+                            sub	e
+                ; if elevator is on base position, leg length is negative, skip it
+                            jr	c,draw_in_room_leg_dont
+                ; leg length is zero or positive     
+                            ld	b,a
+                            jr	draw_in_room_leg_do
+
+draw_leg_to_bottom
+                ; elevator base is below screen, draw leg to the bottom of the screen
                             ld	a,rooms.room_h
                             sub	e
                             ld	b,a
-
+draw_in_room_leg_do
                             call	draw_elevator_leg
+draw_in_room_leg_dont
                             pop	ix
                             jr	draw_end
 draw_only_leg
@@ -93,7 +112,7 @@ draw_only_leg
                             jr	nz,draw_full_leg
 
                 ; elevator leg h top = elevator_room_y
-                            ld a,(ix+elevators.elevator.room_pos_y)                            
+                            ld	a,(ix+elevators.elevator.room_pos_y)
                             ld	b,a
                             jr	draw_only_leg_draw
 draw_full_leg
@@ -107,7 +126,7 @@ draw_only_leg_draw
                             add	d
                             ld	d,a
 
-                            xor a
+                            xor	a
                             ld	e,a
 
                             call	draw_elevator_leg
@@ -152,7 +171,7 @@ draw_elevator_leg
                             ld	de,rooms.room_w
                             ld	a,elevator_leg_color
 draw_elevator_leg_pix
-                            ld	(hl),a                            
+                            ld	(hl),a
                             add	hl,de
                             djnz	draw_elevator_leg_pix
                             ret
