@@ -54,6 +54,7 @@ room_logic_pointers
                             dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic
+                            dw	empty_room_logic
 
                             dw	empty_room_logic
                             dw	empty_room_logic
@@ -61,7 +62,9 @@ room_logic_pointers
                             dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic
+                            dw	empty_room_logic
 
+                            dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic
@@ -71,6 +74,7 @@ room_logic_pointers
 
                             dw	empty_room_logic
                             dw	room_1_3.logic
+                            dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic
                             dw	empty_room_logic

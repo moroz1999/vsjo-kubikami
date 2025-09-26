@@ -1,5 +1,4 @@
                         module  elevators_coords
-                        display "coords,",coords
 coords
                             ld  hl,rooms.room_elevators_buf
 coords_next

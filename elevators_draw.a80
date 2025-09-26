@@ -7,7 +7,6 @@ elevator_leg_color          equ	%00000111
                 ; 3. * start storing elevator's global position in struct, bottom/above/inside room state as well
                 ; 4. * modify physics check to global coords
                 ; 5. * modify elevator restoration to work with global coords
-                            display	"draw,",draw
 draw
                             ld	hl,rooms.room_elevators_buf
 draw_next
@@ -36,7 +35,6 @@ draw_next
 
                             cp	elevators.room_above
                             jr	z,draw_only_leg              ; elevator's y < rooms' top y, elevator is above room, draw leg only
-                            display	'draw_in_room,',draw_in_room
 draw_in_room
                 ; b has elevator's global y
                             ld	a,(rooms.room_top_y)
@@ -63,7 +61,6 @@ draw_in_room
                             call	draw_elevator
                             pop	bc
                             pop	de
-                            display	"draw_in_room_leg",draw_in_room_leg
 draw_in_room_leg
                 ; restored de:
                 ; d = elevator x

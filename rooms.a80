@@ -2,7 +2,7 @@
 room_number_x				db	3
 room_number_y				db	1
 
-room_amount_x				equ	6
+room_amount_x				equ	7
 room_amount_y				equ	4
 room_w						equ	32
 room_h						equ	22
@@ -13,7 +13,7 @@ room_bg_color_sky			equ	%01000001
 room_bg_color_wat			equ	%00000001
 
 rooms_end_marker			equ	255
-current_room_address		dw	2
+current_room_address		dw	0
 init_current_room
 							call	logic.change_logic_pointer
 							call	gather_room_items
@@ -150,6 +150,7 @@ room_pointers
 							dw	room_3_0
 							dw	room_4_0
 							dw	room_5_0
+							dw	room_6_0
 
 							dw	room_0_1
 							dw	room_1_1
@@ -157,6 +158,7 @@ room_pointers
 							dw	room_3_1
 							dw	room_4_1
 							dw	room_5_1
+							dw	room_6_1
 
 							dw	room_0_2
 							dw	room_1_2
@@ -164,6 +166,7 @@ room_pointers
 							dw	room_3_2
 							dw	room_4_2
 							dw	room_5_2
+							dw	room_6_2
 
 							dw	room_0_3
 							dw	room_1_3
@@ -171,6 +174,7 @@ room_pointers
 							dw	room_3_3
 							dw	room_4_3
 							dw	room_5_3
+							dw	room_6_3
 
 							include	"rooms_elevators.a80"
 							include	"rooms_items.a80"
