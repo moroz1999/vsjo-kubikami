@@ -8,10 +8,8 @@ loop
 
                             call	calculate_state
 
-                            call	hero.update_global_y
-                            call	hero.check_elevator
-                            call	hero.check_hero_state
-                            
+                            call    hero.recalculate
+
                             call	hero.hero_move
                             call	hero.hero_gravity
 

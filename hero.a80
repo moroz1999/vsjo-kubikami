@@ -5,7 +5,7 @@ hero_color                  db	hero_color1,hero_color2
 
 hero_coords
 hero_y                      db	16
-hero_x                      db	1
+hero_x                      db	5
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2
@@ -37,12 +37,17 @@ no_item_in_pocket           equ	255
 current_item                db	no_item_in_pocket
 draw_hero
                             ld	a,(hero_x)
-                            ld  d,a
+                            ld	d,a
                             ld	a,(hero_y)
-                            ld  e,a
+                            ld	e,a
                             ld	hl,hero_color
                             call	draw.draw_gigapoint
                             ret
+recalculate
+                            call	update_global_y
+                            call	check_elevator
+                            call	check_hero_state
+                            ret                            
 update_global_y
                         ; y = hero_room_y * each_room_height + room y
 
@@ -138,13 +143,12 @@ jump_process_right5
 jump_process_dec
                             ld	a,(jump_step)
                             dec	a
-                            jr	z,hero_jump_stop
                             ld	(jump_step),a
+                            jr	z,hero_jump_stop
                             ret
 hero_jump_stop
                             ld	a,state_void
-                            ld	(jump_step),a
-                            ld	(hero_state),a
+                            ld	(hero_state),a                            
                             ret
 hero_move
                             ld	a,(hero_timer)
@@ -152,17 +156,19 @@ hero_move
                             jr	z,hero_move2
                             dec	a
                             ld	(hero_timer),a
-                            ret
+                            jr hero_move_end
 hero_move2
                             call	hero_jump
 
                             ld	a,(hero_state)
                             and	state_movable
-                            ret	z
+                            jr z,hero_move_end
 
                             call	keyboard.query
                             ld	a,(hero_delay)
-                            ld	(hero_timer),a
+                            ld	(hero_timer),a                            
+hero_move_end
+                            call    hero.recalculate                            
                             ret
 
 hero_jump_top
@@ -380,10 +386,11 @@ hero_gravity
                             ld	a,(hero_state)
                             cp	state_jump
                             ret	z
-
+                    ; if hero was swimming up, then skip gravity
                             ld	a,(swam_up)
                             or	a
                             jr	z,hero_gravity2
+                    ; reset swim up flag, so gravity would work next time                            
                             xor	a
                             ld	(swam_up),a
                             ld	a,(gravity_delay)

@@ -86,9 +86,9 @@ elevator_3_1
                             20,          ; room_pos_y 
                             8,           ; width      
                             4,           ; leg_left  
-                            22,            ; cur_height 
+                            2,            ; cur_height 
                             35,          ; end_height 
-                            state_up,    ; state      
+                            state_stop,    ; state      
                             2,           ; delay      
                             0            ; timer      
                             }

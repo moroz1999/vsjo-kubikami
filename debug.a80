@@ -1,5 +1,9 @@
                         module	debug
 print_hero_state
+                            ld	a,(hero.hero_elevator)
+                            cp	elevators.item_on_elevator
+                            jr	z,print_elev
+
                             ld	a,(hero.hero_state)
                             cp	hero.state_void
                             jr	z,print_void
@@ -13,6 +17,10 @@ print_hero_state
                             cp	hero.state_ground
                             jr	z,print_ground
                             ret
+
+print_elev
+                            ld	hl,text_elev
+                            jr	print_state
 print_jump
                             ld	hl,text_jump
                             jr	print_state
@@ -38,4 +46,6 @@ text_swim
                             db	"woda  ",255
 text_ground
                             db	"zemlq ",255
+text_elev
+                            db	"lift  ",255
                         endmodule

@@ -46,9 +46,7 @@ item_update_next
                             jr	nc,item_update_skip ;item is right to elevator
 
                 ;
-                ;
                 ; now check item global Y from e
-                ;
                 ;
 
                             ld	a,(ix+elevators.elevator.y)
