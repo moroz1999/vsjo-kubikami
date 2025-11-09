@@ -39,6 +39,7 @@ elevators_table
                             dw	elevator_4_1_3
                             dw	elevator_4_2
                             dw	elevator_4_3
+                            dw	elevator_6_3
 elevators_table_end
 
 elevator_1_1
@@ -86,9 +87,9 @@ elevator_3_1
                             20,          ; room_pos_y 
                             8,           ; width      
                             4,           ; leg_left  
-                            2,            ; cur_height 
+                            22,            ; cur_height 
                             35,          ; end_height 
-                            state_stop,    ; state      
+                            state_up,    ; state      
                             2,           ; delay      
                             0            ; timer      
                             }
@@ -175,6 +176,23 @@ elevator_4_3
                             13,          ; end_height 
                             state_down,  ; state      
                             3,           ; delay      
+                            0            ; timer      
+                            }
+elevator_6_3
+                            elevator	{
+                            room_below,  ; in_room    
+                            6,           ; room_x     
+                            3,           ; room_y     
+                            0,           ; x          
+                            0,           ; y          
+                            15,          ; room_pos_x 
+                            13,          ; room_pos_y 
+                            5,          ; width      
+                            2,           ; leg_left   
+                            13           ; cur_height 
+                            59,          ; end_height 
+                            state_down,  ; state      
+                            2,           ; delay      
                             0            ; timer      
                             }
                         endmodule
