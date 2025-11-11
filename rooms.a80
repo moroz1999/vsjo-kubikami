@@ -1,6 +1,6 @@
 						module	rooms
-room_number_x				db	3
-room_number_y				db	1
+room_number_x				db	5
+room_number_y				db	2
 
 room_amount_x				equ	7
 room_amount_y				equ	4

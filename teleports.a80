@@ -119,11 +119,14 @@ draw_next
                             jr	draw_next
                             ret
 
-amount                      equ	2
+amount                      equ	(teleports_table_end-teleports_table)/2
 
 teleports_table
                             dw	teleport_0_3
+                            dw	teleport_1_2
                             dw	teleport_3_2
+                            dw	teleport_5_2
+teleports_table_end
 teleport_0_3
                             teleport	{
                             0,  //room_x
@@ -135,6 +138,17 @@ teleport_0_3
                             17, //dest_room_pos_x
                             11  //dest_room_pos_y
                             }
+teleport_1_2
+                            teleport	{
+                            1,  //room_x
+                            2,  //room_y
+                            29, //room_pos_x
+                            9, //room_pos_y
+                            5,  //dest_room_x
+                            2,  //dest_room_y
+                            23, //dest_room_pos_x
+                            17  //dest_room_pos_y
+                            }                            
 teleport_3_2
                             teleport	{
                             3,  //room_x
@@ -145,5 +159,16 @@ teleport_3_2
                             3,  //dest_room_y
                             30, //dest_room_pos_x
                             19  //dest_room_pos_y
+                            }
+teleport_5_2
+                            teleport	{
+                            5,  //room_x
+                            2,  //room_y
+                            23, //room_pos_x
+                            17, //room_pos_y
+                            1,  //dest_room_x
+                            2,  //dest_room_y
+                            29, //dest_room_pos_x
+                            9  //dest_room_pos_y
                             }
                         endmodule

@@ -151,7 +151,7 @@ elevator_4_2
                             2,           ; room_y     
                             0,           ; x          
                             0,           ; y          
-                            15,           ; room_pos_x 
+                            18,           ; room_pos_x 
                             5,          ; room_pos_y 
                             3,          ; width      
                             1,           ; leg_left   

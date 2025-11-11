@@ -1,0 +1,137 @@
+                            ld	a,%01000111
+                            ld	b,0
+                            ld	c,0
+                            ld	e,31
+                            ld	d,23
+                            call	LineAttr
+
+
+                            LineAttr
+                            ld	(attrv),a
+                            ld	a,e
+                            sub	b
+                            jr	nc,x_is_inc
+                            ld	a,b
+                            sub	e
+                            ld	h,a
+                            xor	a
+                            ld	(xinc),a
+                            jr	calc_dy
+x_is_inc:
+                            ld	h,a
+                            ld	a,1
+                            ld	(xinc),a
+calc_dy:
+                            ld	a,d
+                            sub	c
+                            jr	nc,y_is_inc
+                            ld	a,c
+                            sub	d
+                            ld	l,a
+                            xor	a
+                            ld	(yinc),a
+                            jr	major_sel
+y_is_inc:
+                            ld	l,a
+                            ld	a,1
+                            ld	(yinc),a
+major_sel:
+                            ld	a,h
+                            cp	l
+                            jr	nc,major_x
+major_y:
+                            ld	a,l
+                            srl	a
+                            ld	e,a
+                            ld	d,l
+                            inc	d
+ly_loop:
+                            call	PlotAttr
+                            ld	a,(yinc)
+                            or	a
+                            jr	z,ly_dec
+                            inc	c
+                            jr	ly_yok
+ly_dec:
+                            dec	c
+ly_yok:
+                            ld	a,e
+                            sub	h
+                            ld	e,a
+                            jr	nc,ly_no_x
+                            ld	a,e
+                            add	a,l
+                            ld	e,a
+                            ld	a,(xinc)
+                            or	a
+                            jr	z,ly_decx
+                            inc	b
+                            jr	ly_xok
+ly_decx:
+                            dec	b
+ly_xok:
+ly_no_x:
+                            dec	d
+                            jr	nz,ly_loop
+                            ret
+major_x:
+                            ld	a,h
+                            srl	a
+                            ld	e,a
+                            ld	d,h
+                            inc	d
+lx_loop:
+                            call	PlotAttr
+                            ld	a,(xinc)
+                            or	a
+                            jr	z,lx_dec
+                            inc	b
+                            jr	lx_xok
+lx_dec:
+                            dec	b
+lx_xok:
+                            ld	a,e
+                            sub	l
+                            ld	e,a
+                            jr	nc,lx_no_y
+                            ld	a,e
+                            add	a,h
+                            ld	e,a
+                            ld	a,(yinc)
+                            or	a
+                            jr	z,lx_decy
+                            inc	c
+                            jr	lx_yok
+lx_decy:
+                            dec	c
+lx_yok:
+lx_no_y:
+                            dec	d
+                            jr	nz,lx_loop
+                            ret
+
+PlotAttr:
+                            push	hl
+                            push	de
+                            ld	h,0
+                            ld	l,c
+                            add	hl,hl
+                            add	hl,hl
+                            add	hl,hl
+                            add	hl,hl
+                            add	hl,hl
+                            ld	de,#5800
+                            add	hl,de
+                            ld	d,0
+                            ld	e,b
+                            add	hl,de
+                            ld	a,(attrv)
+                            ld	(hl),a
+                            pop	de
+                            pop	hl
+                            ret
+
+attrv:                      defb	0
+xinc:                       defb	0
+yinc:                       defb	0
+
