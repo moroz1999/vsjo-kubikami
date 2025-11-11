@@ -1,0 +1,53 @@
+                        module	swimming
+                            display	'swim_up ',swim_up
+swim_up
+                            ld	a,1
+                            ld	(hero.swam_up),a
+
+                            ld	de,(hero.hero_coords)
+                            dec	e
+                            call	objects.check_coords
+
+                            ld	a,(objects.current_bg_color)
+                            cp	rooms.room_bg_color
+                            jp	z,hero.hero_jump_top
+
+                            jp	hero.move_hero_up
+
+swim_up_left
+                            ld	a,1
+                            ld	(hero.swam_up),a
+
+                            ld	de,(hero.hero_coords)
+                            dec	d
+                            dec	e
+                            
+                            call	objects.check_coords
+
+                            ld	a,(objects.current_bg_color)
+                            cp	rooms.room_bg_color
+
+                            jp	z,hero.hero_jump_left
+
+                            call	hero.move_hero_left
+                            jp	hero.move_hero_up
+
+swim_up_right
+                            ld	a,1
+                            ld	(hero.swam_up),a
+
+                            ld	de,(hero.hero_coords)
+                            inc	d
+                            dec	e
+
+                            call	objects.check_coords
+
+                            ld	a,(objects.current_bg_color)
+                            cp	rooms.room_bg_color
+
+                            jp	z,hero.hero_jump_right
+
+                            call	hero.move_hero_right
+                            jp	hero.move_hero_up
+
+                        endmodule

@@ -61,6 +61,7 @@ keyboard_down
                             ld	a,action_down
                             ld	(last_action),a
                             ret
+                        display "keyboard_up ",keyboard_upd
 keyboard_up
                             ld	a,action_up
                             ld	(last_action),a
@@ -80,30 +81,20 @@ keyboard_up
 
                             bit	1,a			;o
                             jp	z,hero.hero_jump_left
-
+keyboard_upd
                             jp	hero.hero_jump_top
 keyboard_swim_up
-                            ld	a,1
-                            ld	(hero.swam_up),a
-
                             ld	a,#df
                             in	a,#fe
 
                             bit	0,a			;p
-                            jr	z,keyboard_swim_up_right
+                            jp	z,swimming.swim_up_right
 
                             ld	a,#df
                             in	a,#fe
 
                             bit	1,a			;o
-                            jr	z,keyboard_swim_up_left
+                            jp	z,swimming.swim_up_left
 
-
-                            jp	hero.move_hero_up
-keyboard_swim_up_left
-                            call	hero.move_hero_left
-                            jp	hero.move_hero_up
-keyboard_swim_up_right
-                            call	hero.move_hero_right
-                            jp	hero.move_hero_up
+                            jp swimming.swim_up
                         endmodule

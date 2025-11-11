@@ -107,9 +107,9 @@ draw_next
                             push	ix
                             push	de
                             push	bc
-                            
+
                             ld	hl,teleport_color
-                            call draw.draw_gigapoint
+                            call	draw.draw_gigapoint
 
                             pop	bc
                             pop	de
@@ -122,11 +122,25 @@ draw_next
 amount                      equ	(teleports_table_end-teleports_table)/2
 
 teleports_table
+                            dw	teleport_0_1
                             dw	teleport_0_3
-                            dw	teleport_1_2
+                            dw	teleport_1_2_1
+                            dw	teleport_1_2_2
                             dw	teleport_3_2
                             dw	teleport_5_2
 teleports_table_end
+
+teleport_0_1
+                            teleport	{
+                            0,  //room_x
+                            1,  //room_y
+                            17, //room_pos_x
+                            9, //room_pos_y
+                            1,  //dest_room_x
+                            2,  //dest_room_y
+                            2, //dest_room_pos_x
+                            9  //dest_room_pos_y
+                            }
 teleport_0_3
                             teleport	{
                             0,  //room_x
@@ -138,7 +152,19 @@ teleport_0_3
                             17, //dest_room_pos_x
                             11  //dest_room_pos_y
                             }
-teleport_1_2
+
+teleport_1_2_1
+                            teleport	{
+                            1,  //room_x
+                            2,  //room_y
+                            2, //room_pos_x
+                            9, //room_pos_y
+                            0,  //dest_room_x
+                            1,  //dest_room_y
+                            17, //dest_room_pos_x
+                            9  //dest_room_pos_y
+                            }
+teleport_1_2_2
                             teleport	{
                             1,  //room_x
                             2,  //room_y
@@ -148,7 +174,7 @@ teleport_1_2
                             2,  //dest_room_y
                             23, //dest_room_pos_x
                             17  //dest_room_pos_y
-                            }                            
+                            }
 teleport_3_2
                             teleport	{
                             3,  //room_x

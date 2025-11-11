@@ -4,8 +4,8 @@ hero_color2                 equ	%01001111
 hero_color                  db	hero_color1,hero_color2
 
 hero_coords
-hero_y                      db	5
-hero_x                      db	5
+hero_y                      db	15
+hero_x                      db	16
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2

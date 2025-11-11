@@ -6,6 +6,9 @@ b_left                      equ	2
 b_right                     equ	3
 b_top                       equ	4
 b_bottom                    equ	5
+
+current_bg_color            db	0
+
 check_coords
                 ; check if coords are empty and allowed to move, respecting room boundaries
                 ; input:
@@ -25,24 +28,26 @@ check_coords
                             ld	a,d
                 ; check screen left 
                             cp	255
-                            jr	z,coords_left
+                            jr	z,coords_left_room_edge
 
                 ; check screen right
                             cp	rooms.room_w
-                            jr	z,coords_right
+                            jr	z,coords_right_room_edge
 
                             ld	a,e
                 ; check screen top 
                             cp	255
-                            jr	z,coords_top
+                            jr	z,coords_top_room_edge
 
                 ; check screen bottom
                             cp	rooms.room_h
-                            jr	z,coords_bottom
+                            jr	z,coords_bottom_room_edge
 
                 ; we are still inside room, 
                 ; now check block type by color
                             call	rooms.get_room_color
+
+                            ld	(current_bg_color),a
 
                             cp	rooms.room_bg_color
                             jr	z,coords_empty
@@ -63,20 +68,19 @@ coords_empty
                             pop	de
                             ld	a,b_empty
                             ret
-
-coords_left
+coords_left_room_edge
                             pop	de
                             ld	a,b_left
                             ret
-coords_right
+coords_right_room_edge
                             pop	de
                             ld	a,b_right
                             ret
-coords_top
+coords_top_room_edge
                             pop	de
                             ld	a,b_top
                             ret
-coords_bottom
+coords_bottom_room_edge
                             pop	de
                             ld	a,b_bottom
                             ret
