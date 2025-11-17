@@ -39,14 +39,15 @@ get_room_logic_skip_add
                             include	"./logic/crowbar.a80";
                             include	"./logic/stone.a80";
                             include	"./logic/toolkit.a80";
+                            include	"./logic/stairs.a80";
 empty_room_logic
                             ret
 empty_item_action
                             xor	a
                             ret
-                            include	"rooms/room2_0.a80"
-                            include	"rooms/room1_3.a80"
-                            include	"rooms/room2_1.a80"
+                            include	"logic/room2_0.a80"
+                            include	"logic/room1_3.a80"
+                            include	"logic/room2_1.a80"
 room_logic_pointers
                             dw	empty_room_logic
                             dw	empty_room_logic

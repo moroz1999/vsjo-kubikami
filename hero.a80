@@ -4,8 +4,11 @@ hero_color2                 equ	%01001111
 hero_color                  db	hero_color1,hero_color2
 
 hero_coords
-hero_y                      db	15
-hero_x                      db	16
+; original coords
+;hero_y                      db	15
+;hero_x                      db	16
+hero_y                      db	8
+hero_x                      db	20
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2
@@ -47,7 +50,7 @@ recalculate
                             call	update_global_y
                             call	check_elevator
                             call	check_hero_state
-                            ret                            
+                            ret
 update_global_y
                         ; y = hero_room_y * each_room_height + room y
 
@@ -148,7 +151,7 @@ jump_process_dec
                             ret
 hero_jump_stop
                             ld	a,state_void
-                            ld	(hero_state),a                            
+                            ld	(hero_state),a
                             ret
 hero_move
                             ld	a,(hero_timer)
@@ -156,19 +159,19 @@ hero_move
                             jr	z,hero_move2
                             dec	a
                             ld	(hero_timer),a
-                            jr hero_move_end
+                            jr	hero_move_end
 hero_move2
                             call	hero_jump
 
                             ld	a,(hero_state)
                             and	state_movable
-                            jr z,hero_move_end
+                            jr	z,hero_move_end
 
                             call	keyboard.query
                             ld	a,(hero_delay)
-                            ld	(hero_timer),a                            
+                            ld	(hero_timer),a
 hero_move_end
-                            call    hero.recalculate                            
+                            call	hero.recalculate
                             ret
 
 hero_jump_top

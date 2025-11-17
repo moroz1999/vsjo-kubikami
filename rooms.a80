@@ -1,4 +1,8 @@
 						module	rooms
+; original start room 						
+; room_number_x				db	2
+; room_number_y				db	0
+
 room_number_x				db	2
 room_number_y				db	0
 

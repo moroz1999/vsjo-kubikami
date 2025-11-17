@@ -32,12 +32,12 @@ crowbar_false
                             ret
 ground_anim
                             @animation	{
-                            4
-                            0
-                            1
-                            0
-                            7
-                            4
+                            4       ;frames
+                            0       ;current
+                            1       ;delay
+                            0       ;room_address
+                            7       ;width
+                            4       ;height
                             }
 sprites
 crowbar_room_sprite1

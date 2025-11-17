@@ -5,4 +5,6 @@ toolkit
                             db	"instrumenty",255
 stone
                             db	"kamenx",255
+stairs
+                            db	"lestnica",255
                         endmodule

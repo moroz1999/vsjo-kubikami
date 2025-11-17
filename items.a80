@@ -1,9 +1,7 @@
                         module	items
 items_end_marker            equ	255
 item_not_in_room            equ	255
-crowbar                     equ	0
-toolkit                     equ	1
-stone                       equ	2
+
 item_size                   equ	item
 item_color                  db	%01100000,%01000110
 print_item_name
@@ -70,7 +68,19 @@ logic                       word            ; address of logic procedure
 color1                      byte            ; gigacolor 1
 color2                      byte            ; gigacolor 2
                         ends
-all_items                        
+
+                ; types
+crowbar                     equ	0
+toolkit                     equ	1
+stone                       equ	2
+stairs                      equ	3
+redcard                     equ	4
+key                         equ	5
+dynamite                    equ	6
+handle                      equ	7
+seeds                       equ	8
+
+all_items
 item_0
                             item	{
                             crowbar                 // type_id
@@ -104,6 +114,22 @@ item_2
                             3                       // room_pos_y
                             strings.stone           // name
                             logic.stone.action      // logic
+                            %01000110               // color1
+                            %00010000               // color2
+                            }
+item_3
+                            item	{
+                            stairs                  // type_id
+                            ; 0                       // room_x
+                            ; 1                       // room_y
+                            ; 19                     // room_pos_x
+                            ; 9                       // room_pos_y
+                            1                       // room_x
+                            0                       // room_y
+                            20                     // room_pos_x
+                            13                       // room_pos_y
+                            strings.stairs          // name
+                            logic.stairs.action     // logic
                             %01000110               // color1
                             %00010000               // color2
                             }

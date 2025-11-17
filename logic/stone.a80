@@ -27,18 +27,17 @@ action
 
                             ld	a,255
                             ret
-                            ret
 stone_false
                             xor	a
                             ret
 stone_anim
                             @animation	{
-                            2
-                            0
-                            20
-                            0
-                            8
-                            8
+                            2       ;frames
+                            0       ;current
+                            20      ;delay
+                            0       ;room_address
+                            8       ;width
+                            8       ;height
                             }
 sprites
 animation_frame0

@@ -1,34 +1,34 @@
-    module  toolkit
+                        module	toolkit
 action
                 ; check room
-                    ld  a,(rooms.room_number_x)
-                    cp  2
-                    jr  nz,toolkit_false
-                    ld  a,(rooms.room_number_y)
-                    cp  1
-                    jr  nz,toolkit_false
+                            ld	a,(rooms.room_number_x)
+                            cp	2
+                            jr	nz,toolkit_false
+                            ld	a,(rooms.room_number_y)
+                            cp	1
+                            jr	nz,toolkit_false
 
                 ; hero must be between 8 and 20                    
-                    ld  a,(hero.hero_x)
-                    sub 8
-                    jr  c,toolkit_false
-                    ld  a,(hero.hero_x)
-                    sub 20
-                    jr  nc,toolkit_false
+                            ld	a,(hero.hero_x)
+                            sub	8
+                            jr	c,toolkit_false
+                            ld	a,(hero.hero_x)
+                            sub	20
+                            jr	nc,toolkit_false
 
                 ; hero must be on 19 line
-                    ld  a,(hero.hero_y)
-                    cp  19
-                    jr  nz,toolkit_false
+                            ld	a,(hero.hero_y)
+                            cp	19
+                            jr	nz,toolkit_false
 
-                    ld  a,elevators.state_down
-                    ld  (elevators.elevator_2_3+elevators.elevator.state),a
+                            ld	a,elevators.state_down
+                            ld	(elevators.elevator_2_3+elevators.elevator.state),a
 
-                    call hero.delete_item_in_pocket
+                            call	hero.delete_item_in_pocket
 
-                    ld  a,255
-                    ret
+                            ld	a,255
+                            ret
 toolkit_false
-                    xor a
-                    ret
-    endmodule
+                            xor	a
+                            ret
+                        endmodule
