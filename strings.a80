@@ -7,4 +7,6 @@ stone
                             db	"kamenx",255
 stairs
                             db	"lestnica",255
+redcard
+                            db	"krasnaq karta",255
                         endmodule

@@ -1,0 +1,76 @@
+                        module	redcard
+action
+                            ld	a,(rooms.room_number_x)
+                            cp	6
+                            jr	nz,redcard_false
+                            ld	a,(rooms.room_number_y)
+                            cp	1
+                            jr	nz,redcard_false
+
+                ; hero must be between 9 and 13
+                            ld	a,(hero.hero_x)
+                            sub	8
+                            jr	c,redcard_false
+                            ld	a,(hero.hero_x)
+                            sub	13
+                            jr	nc,redcard_false
+
+                ; hero must be on 11 line
+                            ld	a,(hero.hero_y)
+                            cp	11
+                            jr	nz,redcard_false
+
+                            ld	d,11
+                            ld	e,5
+                            ld	b,6
+                            ld	c,1
+                            call	rooms.get_room_pixel_address
+                            ld	(item_animation + @animation.room_address),hl
+                            ld	hl,item_animation
+                            call	animate.start
+                            call	hero.delete_item_in_pocket
+
+                            ld	a,255
+                            ret
+redcard_false
+                            xor	a
+                            ret
+item_animation
+                            @animation	{
+                            3       ;frames
+                            0       ;current
+                            25      ;delay
+                            0       ;room_address
+                            2       ;width
+                            7       ;height
+                            }
+red_color                   equ	%01010010
+re2_color                   equ	%00000010
+gra_color                   equ	rooms.room_bg_color_gray
+
+animation_frame0
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+animation_frame1
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	red_color,re2_color
+animation_frame2
+                            db	red_color,re2_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                        endmodule

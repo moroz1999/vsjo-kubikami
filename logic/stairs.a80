@@ -45,8 +45,8 @@ item_animation
                             8       ;width
                             4       ;height
                             }
-sky_color                   equ rooms.room_bg_color_sky         
-gra_color                   equ rooms.room_bg_color_gray                   
+sky_color                   equ	rooms.room_bg_color_sky
+gra_color                   equ	rooms.room_bg_color_gray
 
 animation_frame0
                             db	sky_color,sky_color,sky_color,sky_color,sky_color,sky_color,sky_color,sky_color
