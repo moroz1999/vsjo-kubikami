@@ -8,9 +8,9 @@ action
                             jr	nz,stairs_false
 
 
-                ; hero must be between 13 and 18
+                ; hero must be between 12 and 18
                             ld	a,(hero.hero_x)
-                            sub	13
+                            sub	12
                             jr	c,stairs_false
                             ld	a,(hero.hero_x)
                             sub	18

@@ -9,4 +9,6 @@ stairs
                             db	"lestnica",255
 redcard
                             db	"krasnaq karta",255
+key
+                            db	"kl@^",255                            
                         endmodule

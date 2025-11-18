@@ -3,7 +3,7 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	6
+room_number_x				db	4
 room_number_y				db	1
 
 room_amount_x				equ	7

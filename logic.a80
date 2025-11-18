@@ -41,6 +41,7 @@ get_room_logic_skip_add
                             include	"./logic/toolkit.a80";
                             include	"./logic/stairs.a80";
                             include	"./logic/redcard.a80";
+                            include	"./logic/key.a80";
 empty_room_logic
                             ret
 empty_item_action

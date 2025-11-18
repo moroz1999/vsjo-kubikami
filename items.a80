@@ -149,6 +149,22 @@ item_4
                             %00000010               // color1
                             %00010010               // color2
                             }
+item_5
+                            item	{
+                            key                  // type_id
+                        ;     0                       // room_x
+                        ;     0                       // room_y
+                        ;     5                     // room_pos_x
+                        ;     9                       // room_pos_y
+                            4                       // room_x
+                            1                       // room_y
+                            11                     // room_pos_x
+                            19                       // room_pos_y
+                            strings.key          // name
+                            logic.key.action     // logic
+                            %00000111               // color1
+                            %00010010               // color2
+                            }
 items_end
                             db	items_end_marker
                         endmodule
