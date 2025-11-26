@@ -104,9 +104,9 @@ elevator_4_1_1
                             20,          ; room_pos_y 
                             7,           ; width      
                             3,           ; leg_left   
-                            0,            ; cur_height 
+                            13,            ; cur_height 
                             13,          ; end_height 
-                            state_up,    ; state      
+                            state_stop,    ; state      
                             2,           ; delay      
                             0            ; timer      
                             }
@@ -121,9 +121,9 @@ elevator_4_1_2
                             20,          ; room_pos_y 
                             8,           ; width      
                             3,           ; leg_left   
-                            0,            ; cur_height 
+                            13,            ; cur_height 
                             13,          ; end_height 
-                            state_up,    ; state      
+                            state_stop,    ; state      
                             2,           ; delay      
                             0            ; timer      
                             }
@@ -140,7 +140,7 @@ elevator_4_1_3
                             3,           ; leg_left   
                             13           ; cur_height 
                             13,          ; end_height 
-                            state_up,    ; state      
+                            state_stop,    ; state      
                             1,           ; delay      
                             0            ; timer      
                             }
@@ -152,11 +152,11 @@ elevator_4_2
                             0,           ; x          
                             0,           ; y          
                             18,           ; room_pos_x 
-                            5,          ; room_pos_y 
+                            8,          ; room_pos_y 
                             3,          ; width      
                             1,           ; leg_left   
                             7,           ; cur_height 
-                            7,           ; end_height 
+                            10,           ; end_height 
                             state_up,    ; state      
                             3,           ; delay      
                             0            ; timer      
@@ -186,12 +186,12 @@ elevator_6_3
                             0,           ; x          
                             0,           ; y          
                             15,          ; room_pos_x 
-                            13,          ; room_pos_y 
+                            6,          ; room_pos_y 
                             5,          ; width      
                             2,           ; leg_left   
                             13           ; cur_height 
-                            59,          ; end_height 
-                            state_down,  ; state      
+                            52,          ; end_height 
+                            state_stop,  ; state      
                             2,           ; delay      
                             0            ; timer      
                             }

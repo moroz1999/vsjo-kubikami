@@ -21,7 +21,7 @@ action
                             jr	nz,redcard_false
 
                             ld	d,11
-                            ld	e,5
+                            ld	e,3
                             ld	b,6
                             ld	c,1
                             call	rooms.get_room_pixel_address
@@ -37,36 +37,72 @@ redcard_false
                             ret
 item_animation
                             @animation	{
-                            3       ;frames
+                            6       ;frames
                             0       ;current
-                            25      ;delay
+                            15      ;delay
                             0       ;room_address
                             2       ;width
-                            7       ;height
+                            9       ;height
                             }
 red_color                   equ	%01010010
 re2_color                   equ	%00000010
 gra_color                   equ	rooms.room_bg_color_gray
+gr2_color                   equ	%01000111
 
 animation_frame0
+                            db	gr2_color,gr2_color
+                            db	gr2_color,gr2_color
+                            db	gr2_color,gra_color
+                            db	red_color,gra_color
+                            db	red_color,gra_color
                             db	red_color,re2_color
-                            db	red_color,re2_color
-                            db	red_color,re2_color
+                            db	gra_color,re2_color
+                            db	gra_color,re2_color
                             db	gra_color,gra_color
-                            db	gra_color,gra_color
-                            db	red_color,re2_color
-                            db	red_color,re2_color
 animation_frame1
+                            db	gr2_color,gr2_color
+                            db	gr2_color,gr2_color
+                            db	red_color,gra_color
+                            db	red_color,gra_color
                             db	red_color,re2_color
-                            db	red_color,re2_color
+                            db	gra_color,re2_color
+                            db	gra_color,re2_color
                             db	gra_color,gra_color
                             db	gra_color,gra_color
-                            db	gra_color,gra_color
-                            db	gra_color,gra_color
-                            db	red_color,re2_color
 animation_frame2
+                            db	gr2_color,gr2_color
+                            db	gr2_color,gr2_color
+                            db	red_color,gra_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	gra_color,re2_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+animation_frame3
+                            db	gr2_color,gr2_color
+                            db	red_color,gr2_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	gra_color,re2_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+animation_frame4
+                            db	gr2_color,gr2_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
                             db	red_color,re2_color
                             db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+                            db	gra_color,gra_color
+animation_frame5
+                            db	red_color,re2_color
+                            db	red_color,re2_color
+                            db	red_color,re2_color
                             db	gra_color,gra_color
                             db	gra_color,gra_color
                             db	gra_color,gra_color

@@ -40,25 +40,21 @@ key_false
                             ret
 item_animation
                             @animation	{
-                            3       ;frames
+                            2       ;frames
                             0       ;current
-                            20      ;delay
+                            25      ;delay
                             0       ;room_address
                             5       ;width
                             2       ;height
                             }
 sky_color                   equ	rooms.room_bg_color_sky
-blu_color                   equ	%00101101
-bl2_color                   equ	%01000101
+blu_color                   equ	%01001101
 bla_color                   equ	rooms.room_bg_color
 
 animation_frame0
-                            db	sky_color,blu_color,sky_color,bl2_color,sky_color
-                            db	blu_color,bla_color,sky_color,bla_color,bl2_color
+                            db	sky_color,blu_color,sky_color,blu_color,sky_color
+                            db	blu_color,bla_color,bla_color,bla_color,blu_color
 animation_frame1
                             db	sky_color,sky_color,sky_color,sky_color,sky_color
-                            db	blu_color,sky_color,sky_color,sky_color,bl2_color
-animation_frame2
-                            db	sky_color,sky_color,sky_color,sky_color,sky_color
-                            db	sky_color,sky_color,sky_color,sky_color,sky_color
+                            db	blu_color,bla_color,bla_color,bla_color,blu_color
                         endmodule

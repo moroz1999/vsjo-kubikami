@@ -79,6 +79,7 @@ key                         equ	5
 dynamite                    equ	6
 handle                      equ	7
 seeds                       equ	8
+screwdriver                 equ 9
 
 all_items
 item_0
@@ -162,9 +163,22 @@ item_5
                             19                       // room_pos_y
                             strings.key          // name
                             logic.key.action     // logic
-                            %00000111               // color1
-                            %00010010               // color2
+                            %00000110               // color1
+                            %01110000               // color2
                             }
+
+item_9
+                            item	{
+                            screwdriver                  // type_id
+                            1                       // room_x
+                            0                       // room_y
+                            2                     // room_pos_x
+                            18                       // room_pos_y
+                            strings.screwdriver          // name
+                            logic.screwdriver.action     // logic
+                            %00000101               // color1
+                            %00111000               // color2
+                            }                            
 items_end
                             db	items_end_marker
                         endmodule

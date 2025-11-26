@@ -11,4 +11,6 @@ redcard
                             db	"krasnaq karta",255
 key
                             db	"kl@^",255                            
+screwdriver
+                            db	"otwertka",255                     
                         endmodule
