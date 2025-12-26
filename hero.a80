@@ -7,8 +7,8 @@ hero_coords
 ; original coords
 ;hero_y                      db	15
 ;hero_x                      db	16
-hero_y                      db	11
-hero_x                      db	9
+hero_y                      db	3
+hero_x                      db	31
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2
@@ -225,12 +225,14 @@ move_hero_up
                             call	objects.check_coords
                             or	a
                             ret	z
-                            cp	objects.b_top
+                            cp	objects.roomedge_top
                             call	z,hero_top
+                            cp	rooms.room_change_abort
+                            jr	z,move_hero_up_skip
 
                             ld	(hero_coords),de
+move_hero_up_skip
                             call	hero.save_restore
-
                             ret
 move_hero_down
                             ld	a,(hero_elevator)
@@ -244,12 +246,13 @@ move_hero_down_force
                             or	a
                             jr	z,move_hero_down_stand
 
-                            cp	objects.b_bottom
+                            cp	objects.roomedge_bottom
                             call	z,hero_bottom
-
+                            cp	rooms.room_change_abort
+                            jr	z,move_hero_down_stand
+                            
                             ld	(hero_coords),de
                             call	hero.save_restore
-
                             ret
 move_hero_down_stand
                             call	hero.save_restore
@@ -260,47 +263,63 @@ move_hero_left
                             call	objects.check_coords
                             or	a
                             ret	z
-                            cp	objects.b_left
+                            cp	objects.roomedge_left
 
                             call	z,hero_left
-move_hero_left2
+                            cp	rooms.room_change_abort
+                            jr	z,move_hero_left_skip
+
                             ld	(hero_coords),de
+move_hero_left_skip
                             call	hero.save_restore
                             ret
+                            display move_hero_right
 move_hero_right
                             ld	de,(hero_coords)
                             inc	d
                             call	objects.check_coords
                             or	a
                             ret	z
-                            cp	objects.b_right
+                            cp	objects.roomedge_right
                             call	z,hero_right
 
+                            cp	rooms.room_change_abort
+                            jr	z,move_hero_right_skip
+
                             ld	(hero_coords),de
+move_hero_right_skip
                             call	hero.save_restore
                             ret
 hero_left
                             push	de
-                            call	rooms.set_left_room
+                            call	rooms.goto_left_room
                             pop	de
+                            cp	rooms.room_change_abort
+                            ret	z
                             ld	d,rooms.room_w-1
                             ret
 hero_right
                             push	de
-                            call	rooms.set_right_room
+                            call	rooms.goto_right_room
                             pop	de
+                            cp	rooms.room_change_abort
+                            ret	z
                             ld	d,0
                             ret
 hero_top
                             push	de
-                            call	rooms.set_top_room
+                            call	rooms.goto_top_room
                             pop	de
+                            cp	rooms.room_change_abort
+                            ret	z
                             ld	e,rooms.room_h-1
                             ret
 hero_bottom
                             push	de
-                            call	rooms.set_bottom_room
+                            call	rooms.goto_bottom_room
                             pop	de
+                            cp	rooms.room_change_abort
+                            ret	z
                             ld	e,0
                             ret
 fire_pressed

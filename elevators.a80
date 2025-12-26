@@ -189,7 +189,7 @@ elevator_6_3
                             6,          ; room_pos_y 
                             5,          ; width      
                             2,           ; leg_left   
-                            13           ; cur_height 
+                            38           ; cur_height 
                             52,          ; end_height 
                             state_stop,  ; state      
                             2,           ; delay      

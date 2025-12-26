@@ -70,10 +70,9 @@ elevator_move_end
                             pop	hl
                             jr	elevators_update_next
                             ret
-                        display "elevator_move_items,",elevator_move_items
 elevator_move_items
                 ; input
-                ; ix points to elevator data                            
+                ; ix points to elevator data
                             push	hl
                             push	de
                             push	bc
@@ -108,5 +107,4 @@ elevator_move_items_end
                             pop	de
                             pop	hl
                             ret
-
                         endmodule

@@ -61,7 +61,6 @@ keyboard_down
                             ld	a,action_down
                             ld	(last_action),a
                             ret
-                        display "keyboard_up ",keyboard_upd
 keyboard_up
                             ld	a,action_up
                             ld	(last_action),a

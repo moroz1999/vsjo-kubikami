@@ -2,10 +2,10 @@
 
 b_occupied                  equ	0
 b_empty                     equ	1
-b_left                      equ	2
-b_right                     equ	3
-b_top                       equ	4
-b_bottom                    equ	5
+roomedge_left               equ	2
+roomedge_right              equ	3
+roomedge_top                equ	4
+roomedge_bottom             equ	5
 
 current_bg_color            db	0
 
@@ -17,12 +17,12 @@ check_coords
                 ;
                 ; output:
                 ; de - original values
-                ; a = 0 (allowed)
-                ; a = 1 (occupied)
-                ; a = 2 (went to left room)
-                ; a = 3 (went to right room)
-                ; a = 4 (went to top room)
-                ; a = 5 (went to bottom room)
+                ; a = 0 (b_occupied, occupied)
+                ; a = 1 (b_empty, allowed)
+                ; a = 2 (roomedge_left, went to left room)
+                ; a = 3 (roomedge_right, went to right room)
+                ; a = 4 (roomedge_top, went to top room)
+                ; a = 5 (roomedge_bottom, went to bottom room)
                             push	de
 
                             ld	a,d
@@ -70,19 +70,19 @@ coords_empty
                             ret
 coords_left_room_edge
                             pop	de
-                            ld	a,b_left
+                            ld	a,roomedge_left
                             ret
 coords_right_room_edge
                             pop	de
-                            ld	a,b_right
+                            ld	a,roomedge_right
                             ret
 coords_top_room_edge
                             pop	de
-                            ld	a,b_top
+                            ld	a,roomedge_top
                             ret
 coords_bottom_room_edge
                             pop	de
-                            ld	a,b_bottom
+                            ld	a,roomedge_bottom
                             ret
 
                         endmodule

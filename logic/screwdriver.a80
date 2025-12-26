@@ -1,0 +1,60 @@
+                        module	screwdriver
+action
+                ;             ld	a,(rooms.room_number_x)
+                ;             cp	4
+                ;             jr	nz,key_false
+                ;             ld	a,(rooms.room_number_y)
+                ;             cp	1
+                ;             jr	nz,key_false
+
+                ; ; hero must be between 17 and 23 x
+                ;             ld	a,(hero.hero_x)
+                ;             sub	16
+                ;             jr	c,key_false
+                ;             ld	a,(hero.hero_x)
+                ;             sub	23
+                ;             jr	nc,key_false
+                
+                ; ; hero must be between 17 and 19 y
+                ;             ld	a,(hero.hero_y)
+                ;             sub	16
+                ;             jr	c,key_false
+                ;             ld	a,(hero.hero_y)
+                ;             sub	20
+                ;             jr	nc,key_false
+
+                ;             ld	d,17
+                ;             ld	e,18
+                ;             ld	b,4
+                ;             ld	c,1
+                ;             call	rooms.get_room_pixel_address
+                ;             ld	(item_animation + @animation.room_address),hl
+                ;             ld	hl,item_animation
+                ;             call	animate.start
+                ;             call	hero.delete_item_in_pocket
+
+                ;             ld	a,255
+                ;             ret
+key_false
+                            xor	a
+                            ret
+; item_animation
+;                             @animation	{
+;                             2       ;frames
+;                             0       ;current
+;                             25      ;delay
+;                             0       ;room_address
+;                             5       ;width
+;                             2       ;height
+;                             }
+; sky_color                   equ	rooms.room_bg_color_sky
+; blu_color                   equ	%01001101
+; bla_color                   equ	rooms.room_bg_color
+
+; animation_frame0
+;                             db	sky_color,blu_color,sky_color,blu_color,sky_color
+;                             db	blu_color,bla_color,bla_color,bla_color,blu_color
+; animation_frame1
+;                             db	sky_color,sky_color,sky_color,sky_color,sky_color
+;                             db	blu_color,bla_color,bla_color,bla_color,blu_color
+                        endmodule

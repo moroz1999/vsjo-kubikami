@@ -1,5 +1,4 @@
                         module	swimming
-                            display	'swim_up ',swim_up
 swim_up
                             ld	a,1
                             ld	(hero.swam_up),a

@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
+            "label": "compile",
             "type": "shell",
-            "command": "echo Hello",
+            "command": "./compile.bat",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

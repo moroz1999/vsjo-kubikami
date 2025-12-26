@@ -3,7 +3,7 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	1
+room_number_x				db	2
 room_number_y				db	0
 
 room_amount_x				equ	7
@@ -15,6 +15,8 @@ room_bg_color				equ	0
 room_bg_color_gray			equ	%00000111
 room_bg_color_sky			equ	%01000001
 room_bg_color_wat			equ	%00000001
+
+room_change_abort  			equ 255
 
 rooms_end_marker			equ	255
 current_room_address		dw	0
@@ -123,30 +125,56 @@ get_room_color
 							call	get_current_room_pixel_address
 							ld	a,(hl)
 							ret
-set_left_room
+				; output
+				; a=255 (room_change_abort) - no room change happened
+				; a=0 - room changed
+goto_left_room
 							ld	a,(room_number_x)
 							dec	a
+							jr	c,goto_abort
 							ld	(room_number_x),a
 							call	init_current_room
+							xor a
 							ret
-set_right_room
+				; output
+				; a=255 (room_change_abort) - no room change happened	
+				; a=0 - room changed	
+goto_right_room
 							ld	a,(room_number_x)
 							inc	a
+							cp	room_amount_x
+							jr	z,goto_abort
 							ld	(room_number_x),a
 							call	init_current_room
+							xor a
 							ret
-set_bottom_room
+				; output
+				; a=255 (room_change_abort) - no room change happened
+				; a=0 - room changed
+goto_bottom_room
 							ld	a,(room_number_y)
 							inc	a
+							cp	room_amount_y
+							jr	z,goto_abort
 							ld	(room_number_y),a
 							call	init_current_room
+							xor a
 							ret
-set_top_room
+				; output
+				; a=255 (room_change_abort) - no room change happened							
+				; a=0 - room changed
+goto_top_room
 							ld	a,(room_number_y)
 							dec	a
+							cp	255
+							jr	z,goto_abort
 							ld	(room_number_y),a
 							call	init_current_room
+							xor a
 							ret
+goto_abort
+							ld	a,room_change_abort
+							ret							
 room_pointers
 							dw	room_0_0
 							dw	room_1_0
