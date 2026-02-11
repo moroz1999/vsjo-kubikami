@@ -7,8 +7,8 @@ hero_coords
 ; original coords
 ;hero_y                      db	15
 ;hero_x                      db	16
-hero_y                      db	3
-hero_x                      db	31
+hero_y                      db	15
+hero_x                      db	16
 hero_global_y               db	3
 hero_timer                  db	0
 hero_delay                  db	2
@@ -273,7 +273,6 @@ move_hero_left
 move_hero_left_skip
                             call	hero.save_restore
                             ret
-                            display move_hero_right
 move_hero_right
                             ld	de,(hero_coords)
                             inc	d
