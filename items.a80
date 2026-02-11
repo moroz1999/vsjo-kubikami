@@ -170,10 +170,14 @@ item_5
 item_9
                             item	{
                             screwdriver                  // type_id
-                            1                       // room_x
-                            0                       // room_y
+                            ; 1                       // room_x
+                            ; 0                       // room_y                            
+                            6                       // room_x
+                            3                       // room_y
+                            ; 2                     // room_pos_x
+                            ; 18                       // room_pos_y
                             2                     // room_pos_x
-                            18                       // room_pos_y
+                            20                    // room_pos_y
                             strings.screwdriver          // name
                             logic.screwdriver.action     // logic
                             %00000101               // color1

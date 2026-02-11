@@ -192,7 +192,7 @@ elevator_6_3
                             38           ; cur_height 
                             52,          ; end_height 
                             state_stop,  ; state      
-                            2,           ; delay      
+                            4,           ; delay      
                             0            ; timer      
                             }
                         endmodule
