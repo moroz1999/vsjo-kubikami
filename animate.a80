@@ -1,119 +1,286 @@
+                        struct	animation                ; структура one-shot анимации
+frames                      byte                        ; количество кадров
+current                     byte                        ; текущий кадр
+delay                       byte                        ; задержка между кадрами
+room_address                word                        ; адрес рисунка в буфере комнаты
+width                       byte                        ; ширина кадра
+height                      byte                        ; высота кадра
+                        ends                            ; конец структуры one-shot анимации
+                        struct	room_animation          ; структура циклической room-анимации
+room_x                      byte    ; номер комнаты по X
+room_y                      byte    ; номер комнаты по Y
+x                           byte    ; X-позиция анимации внутри комнаты
+y                           byte    ; Y-позиция анимации внутри комнаты
+width                       byte    ; ширина одного кадра
+height                      byte    ; высота одного кадра
+frames                      byte    ; количество кадров в цикле
+current                     byte    ; индекс текущего кадра
+delay                       byte    ; задержка между сменой кадров
+timer                       byte    ; runtime-таймер до смены кадра
+state                       byte    ; флаг включения анимации
+frames_ptr                  word    ; указатель на данные первого кадра
+                        ends                            ; конец структуры циклической анимации
+                        module	animate                 ; модуль всех анимаций
+state_off                   equ	0                       ; состояние анимации выключено
+state_on                    equ	1                       ; состояние анимации включено
+current_animation                                        ; указатель на активную one-shot анимацию
+                            dw	0                       ; по умолчанию one-shot анимации нет
+current_delay                                            ; текущий таймер one-shot анимации
+                            db	0                       ; по умолчанию кадр можно рисовать сразу
+start                                                   ; запустить one-shot анимацию
+                            ld	(current_animation),hl ; сохранить адрес структуры анимации
+                            ret                         ; выйти
+check                                                   ; обновить и нарисовать one-shot анимацию
+                            ld	ix,(current_animation) ; взять адрес активной анимации
+                            ld	a,ixh                   ; прочитать старший байт адреса
+                            or	a                       ; проверить, есть ли анимация
+                            ret	z                       ; выйти, если анимации нет
 
-                        struct	animation
-frames                      byte
-current                     byte
-delay                       byte
-room_address                word
-width                       byte
-height                      byte
-                        ends
-
-                        module	animate
-current_animation
-                            dw	0
-current_delay
-                            db	0
-start
-                            ld	(current_animation),hl
-                            ret
-check
-                            ld	ix,(current_animation)
-                            ld	a,ixh
-                            or	a
-                            ret	z
-
-                            ld	a,(current_delay)
-                            or	a
-                            jr	z,draw_frame
-                            dec	a
-                            ld	(current_delay),a
-                            ret
-draw_frame
+                            ld	a,(current_delay)       ; прочитать текущую задержку
+                            or	a                       ; проверить, можно ли рисовать кадр
+                            jr	z,draw_frame            ; перейти к отрисовке, если таймер нулевой
+                            dec	a                       ; уменьшить таймер задержки
+                            ld	(current_delay),a       ; сохранить уменьшенный таймер
+                            ret                         ; выйти до следующего тика
+draw_frame                                              ; отрисовать очередной one-shot кадр
                 ;read frames amount
-                            ld	c,(ix+@animation.frames)
+                            ld	c,(ix+@animation.frames) ; взять количество кадров
 
                 ; read current frame number
-                            ld	a,(ix+@animation.current)
+                            ld	a,(ix+@animation.current) ; взять индекс текущего кадра
 
-                ; check if animation is ended                    
-                            sub	c
-                            jr	z,stop
+                ; check if animation is ended
+                            sub	c                       ; сравнить текущий кадр с количеством кадров
+                            jr	z,stop                   ; остановить анимацию на последнем кадре
 
-                            ld	a,(ix+@animation.current)
+                            ld	a,(ix+@animation.current) ; снова взять индекс кадра для поиска спрайта
 
                 ;read room address
-                            ld	d,(ix+@animation.room_address+1)
-                            ld	e,(ix+@animation.room_address)
+                            ld	d,(ix+@animation.room_address+1) ; взять старший байт адреса комнаты
+                            ld	e,(ix+@animation.room_address) ; взять младший байт адреса комнаты
 
                 ;read width
-                            ld	b,(ix+@animation.width)
+                            ld	b,(ix+@animation.width) ; взять ширину кадра
                 ;read height
-                            ld	c,(ix+@animation.height)
+                            ld	c,(ix+@animation.height) ; взять высоту кадра
 
-                            call	find_sprite_address
-draw_frame_sprite
-                            call	draw.draw_room_sprite
-                            call	rooms.redraw_current_room
+                            call	find_sprite_address   ; найти адрес данных текущего кадра
+draw_frame_sprite                                        ; точка отрисовки one-shot кадра
+                            call	draw.draw_room_sprite ; записать кадр в буфер комнаты
+                            call	rooms.redraw_current_room ; обновить экран из буфера комнаты
 
-                            ld	ix,(current_animation)
+                            ld	ix,(current_animation) ; заново взять адрес активной анимации
 
                 ; increase current frame number
-                            ld	a,(ix+@animation.current)
-                            inc	a
-                            ld	(ix+@animation.current),a
+                            ld	a,(ix+@animation.current) ; прочитать текущий индекс кадра
+                            inc	a                       ; перейти к следующему кадру
+                            ld	(ix+@animation.current),a ; сохранить новый индекс кадра
 
-                            ld	a,(ix+@animation.delay)
-                            ld	(current_delay),a
-                            ret
-stop
+                            ld	a,(ix+@animation.delay) ; взять базовую задержку анимации
+                            ld	(current_delay),a       ; перезагрузить таймер задержки
+                            ret                         ; выйти
+stop                                                    ; остановить one-shot анимацию
                 ; current frame to 0
-                            xor	a
-                            ld	(ix+@animation.current),a
-                ; stop current animation                    
-                            ld	hl,0
-                            ld	(current_animation),hl
+                            xor	a                       ; подготовить ноль
+                            ld	(ix+@animation.current),a ; сбросить текущий кадр в начало
+                ; stop current animation
+                            ld	hl,0                     ; подготовить нулевой указатель
+                            ld	(current_animation),hl   ; убрать ссылку на активную анимацию
 
-                            ret
-find_sprite_address
-    ; input 
+                            ret                         ; выйти
+find_sprite_address                                     ; найти адрес кадра one-shot анимации
+    ; input
     ; b  - width
-    ; c  - height                
+    ; c  - height
     ; ix - animation struct pointer
     ; a  - current frame number
     ;
     ; output
     ; hl - address of sprite in memory
-
-                            push	bc            ; Preserve registers we'll use
-                            push	de
-
-                            ld	hl,ix
-                            ld	de,@animation
+                            push	bc                    ; сохранить размеры кадра
+                            push	de                    ; сохранить рабочий адрес
+                            ld	hl,ix                   ; взять базовый адрес структуры
+                            ld	de,@animation           ; взять смещение до данных кадров
                             add	hl,de             ; hl = ix + 5 (skip header)
 
                             ld	e,b               ; e = width (b)
                             ld	d,0               ; d = 0, so de = width
 
-frame_loop
-                            or	a
+frame_loop                                               ; цикл пропуска предыдущих кадров
+                            or	a                       ; проверить, нужно ли ещё пропускать кадры
                             jr	z,frame_loop_done   ; If a == 0, we've reached the desired frame
 
                             ex	af,af'             ; Save the frame counter
 
                             ld	a,c               ; a = height (number of lines per frame)
-height_loop
-                            or	a
+height_loop                                              ; цикл прохода по строкам одного кадра
+                            or	a                       ; проверить, остались ли строки в кадре
                             jr	z,height_loop_done  ; If a == 0, finished one frame
                             add	hl,de             ; hl += width (move to next line)
-                            dec	a
-                            jr	height_loop
-height_loop_done
+                            dec	a                       ; уменьшить число оставшихся строк
+                            jr	height_loop             ; перейти к следующей строке
+height_loop_done                                         ; закончили пропуск одного кадра
                             ex	af,af'             ; Restore the frame counter
                             dec	a                 ; Decrement frame counter (frames left to skip)
-                            jr	frame_loop
+                            jr	frame_loop              ; перейти к следующему кадру
 
-frame_loop_done
+frame_loop_done                                          ; адрес нужного кадра найден
                             pop	de                ; Restore registers
-                            pop	bc
+                            pop	bc                    ; восстановить размеры кадра
                             ret                   ; hl points to the current frame's sprite data
-                        endmodule
+                            
+
+update_room                                             ; обновить циклические анимации комнаты
+                            ld	hl,rooms.room_animations_buf ; взять буфер указателей анимаций
+update_room_next                                          ; обработка следующей анимации
+                            ld	a,(hl)                    ; прочитать младший байт указателя
+                            cp	rooms.anim_end_marker    ; проверить конец буфера
+                            ret	z                       ; выйти, если анимаций больше нет
+                            ld	ixl,a                     ; сохранить младший байт указателя
+                            inc	hl                       ; перейти к старшему байту указателя
+                            ld	a,(hl)                    ; прочитать старший байт указателя
+                            ld	ixh,a                     ; сохранить старший байт указателя
+                            inc	hl                       ; перейти к следующей записи буфера
+                            push	hl                      ; сохранить позицию в буфере
+                            ld	a,(ix+@room_animation.state) ; взять состояние анимации
+                            cp	state_on                  ; проверить, что анимация включена
+                            jr	nz,update_room_end        ; пропустить выключенную анимацию
+                            ld	a,(ix+@room_animation.timer) ; взять runtime-таймер
+                            or	a                       ; проверить, пора ли менять кадр
+                            jr	z,update_room_advance    ; перейти к смене кадра при нуле
+                            dec	a                       ; уменьшить runtime-таймер
+                            ld	(ix+@room_animation.timer),a ; сохранить уменьшенный таймер
+                            jr	update_room_end          ; закончить обработку этой анимации
+update_room_advance                                     ; сменить кадр циклической анимации
+                            ld	a,(ix+@room_animation.current) ; взять текущий кадр
+                            inc	a                       ; перейти к следующему кадру
+                            ld	b,a                       ; временно сохранить новый кадр
+                            ld	a,(ix+@room_animation.frames) ; взять общее число кадров
+                            cp	b                       ; сравнить новый кадр с концом цикла
+                            jr	z,update_room_wrap       ; перейти к зацикливанию при переполнении
+                            ld	a,b                       ; восстановить новый кадр
+                            jr	update_room_store        ; перейти к сохранению кадра
+update_room_wrap                                        ; зациклить анимацию на нулевой кадр
+                            xor	a                       ; подготовить нулевой кадр
+update_room_store                                       ; сохранить новый кадр и таймер
+                            ld	(ix+@room_animation.current),a ; записать текущий кадр
+                            ld	a,(ix+@room_animation.delay) ; взять базовую задержку
+                            ld	(ix+@room_animation.timer),a ; перезагрузить runtime-таймер
+update_room_end                                         ; завершить обработку одной анимации
+                            pop	hl                      ; восстановить позицию в буфере
+                            jr	update_room_next         ; перейти к следующей анимации
+draw_room                                               ; нарисовать циклические анимации комнаты
+                            ld	hl,rooms.room_animations_buf ; взять буфер указателей анимаций
+draw_room_next                                            ; отрисовать следующую анимацию
+                            ld	a,(hl)                    ; прочитать младший байт указателя
+                            cp	rooms.anim_end_marker    ; проверить конец буфера
+                            ret	z                       ; выйти, если анимаций больше нет
+                            ld	ixl,a                     ; сохранить младший байт указателя
+                            inc	hl                       ; перейти к старшему байту указателя
+                            ld	a,(hl)                    ; прочитать старший байт указателя
+                            ld	ixh,a                     ; сохранить старший байт указателя
+                            inc	hl                       ; перейти к следующей записи буфера
+                            push	hl                      ; сохранить позицию в буфере
+                            ld	a,(ix+@room_animation.state) ; взять состояние анимации
+                            cp	state_on                  ; проверить, что анимация включена
+                            jr	nz,draw_room_end          ; пропустить выключенную анимацию
+                            ld	d,(ix+@room_animation.x)  ; взять X-координату анимации
+                            ld	e,(ix+@room_animation.y)  ; взять Y-координату анимации
+                            call	screen_utils.get_attrs_address ; получить адрес на экране
+                            ex	hl,de                     ; передать адрес экрана в DE
+                            ld	b,(ix+@room_animation.width) ; взять ширину кадра
+                            ld	c,(ix+@room_animation.height) ; взять высоту кадра
+                            ld	a,(ix+@room_animation.current) ; взять текущий кадр
+                            call	find_room_animation_frame_address ; найти адрес данных кадра
+                            call	draw.draw_room_sprite   ; нарисовать кадр прямо на экран
+draw_room_end                                           ; завершить отрисовку одной анимации
+                            pop	hl                      ; восстановить позицию в буфере
+                            jr	draw_room_next           ; перейти к следующей анимации
+
+find_room_animation_frame_address                       ; найти адрес кадра циклической анимации
+    ; input
+    ; b  - width
+    ; c  - height
+    ; ix - room animation struct pointer
+    ; a  - current frame number
+    ;
+    ; output
+    ; hl - address of sprite in memory
+                            push	bc                    ; сохранить размеры кадра
+                            push	de                    ; сохранить рабочий адрес
+                            ld	l,(ix+@room_animation.frames_ptr) ; взять младший байт указателя на кадры
+                            ld	h,(ix+@room_animation.frames_ptr+1) ; взять старший байт указателя на кадры
+                            ld	e,b                       ; положить ширину в младший байт смещения
+                            ld	d,0                       ; обнулить старший байт смещения
+room_frame_loop                                          ; цикл пропуска предыдущих кадров loop-анимации
+                            or	a                       ; проверить, нужно ли ещё пропускать кадры
+                            jr	z,room_frame_loop_done   ; закончить, если нужный кадр уже найден
+                            ex	af,af'                   ; временно сохранить счётчик кадров
+                            ld	a,c                       ; взять высоту кадра в строках
+room_height_loop                                         ; цикл прохода по строкам одного loop-кадра
+                            or	a                       ; проверить, остались ли строки
+                            jr	z,room_height_loop_done  ; закончить кадр, если строки кончились
+                            add	hl,de                    ; перейти к следующей строке кадра
+                            dec	a                       ; уменьшить число оставшихся строк
+                            jr	room_height_loop         ; перейти к следующей строке
+room_height_loop_done                                    ; закончили пропуск одного loop-кадра
+                            ex	af,af'                   ; восстановить счётчик кадров
+                            dec	a                       ; уменьшить число кадров до цели
+                            jr	room_frame_loop          ; перейти к следующему кадру
+room_frame_loop_done                                     ; адрес нужного loop-кадра найден
+                            pop	de                    ; восстановить рабочий адрес
+                            pop	bc                    ; восстановить размеры кадра
+                            ret                         ; вернуть адрес данных кадра
+                            
+room_animations_amount      equ	(animations_table_end-animations_table)/2 ; количество room-анимаций в таблице
+animations_table                                          ; таблица указателей на room-анимации
+                            dw	room_animation_left      ; первая тестовая room-анимация
+                            dw	room_animation_right     ; вторая тестовая room-анимация
+animations_table_end                                      ; конец таблицы room-анимаций
+sky_color                   equ	rooms.room_bg_color_sky ; цвет неба для тестовых кадров
+gray_color                  equ	rooms.room_bg_color_gray ; серый цвет для тестовых кадров
+blink_color                 equ	%01000111               ; яркий цвет для мигания
+water_color                 equ	rooms.room_bg_color_wat ; водяной цвет для тестовых кадров
+room_animation_left                                      ; левая тестовая room-анимация
+                            @room_animation	{           ; описание левой анимации
+                            2,                              ; room_x
+                            0,                              ; room_y
+                            3,                              ; x
+                            5,                              ; y
+                            4,                              ; width
+                            2,                              ; height
+                            3,                              ; frames
+                            0,                              ; current
+                            1,                              ; delay
+                            5,                              ; timer
+                            state_on,                       ; state
+                            room_animation_left_frames      ; frames_ptr
+                            }                             ; конец описания левой анимации
+room_animation_left_frames                                ; данные кадров левой анимации
+                            db	sky_color,blink_color,sky_color,blink_color ; кадр 0 строка 0
+                            db	sky_color,gray_color,gray_color,sky_color ; кадр 0 строка 1
+                            db	blink_color,sky_color,blink_color,sky_color ; кадр 1 строка 0
+                            db	sky_color,gray_color,gray_color,sky_color ; кадр 1 строка 1
+                            db	sky_color,sky_color,sky_color,sky_color ; кадр 2 строка 0
+                            db	gray_color,blink_color,blink_color,gray_color ; кадр 2 строка 1
+room_animation_right                                     ; правая тестовая room-анимация
+                            @room_animation	{           ; описание правой анимации
+                            2,                              ; room_x
+                            0,                              ; room_y
+                            24,                             ; x
+                            2,                              ; y
+                            4,                              ; width
+                            2,                              ; height
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            8,                              ; timer
+                            state_on,                       ; state
+                            room_animation_right_frames     ; frames_ptr
+                            }                             ; конец описания правой анимации
+room_animation_right_frames                               ; данные кадров правой анимации
+                            db	sky_color,water_color,water_color,sky_color ; кадр 0 строка 0
+                            db	sky_color,sky_color,gray_color,sky_color ; кадр 0 строка 1
+                            db	sky_color,gray_color,sky_color,sky_color ; кадр 1 строка 0
+                            db	sky_color,water_color,water_color,sky_color ; кадр 1 строка 1
+                        endmodule                         ; конец модуля анимаций

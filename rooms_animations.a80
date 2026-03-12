@@ -1,0 +1,43 @@
+room_animations_lim         equ	8
+anim_end_marker             equ	255
+gather_room_animations
+                            ld	b,animate.room_animations_amount
+                ; return if there are no room animations in game
+                            ld	a,b
+                            or	a
+                            ret	z
+                            ld	iy,room_animations_buf
+                            ld	a,(rooms.room_number_x)
+                            ld	d,a
+                            ld	a,(rooms.room_number_y)
+                            ld	e,a
+                            ld	hl,animate.animations_table
+gather_room_animation_next
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+                            ld	a,(ix+@room_animation.room_x)
+                            cp	d
+                            jr	nz,gather_room_animation_skip
+                            ld	a,(ix+@room_animation.room_y)
+                            cp	e
+                            jr	nz,gather_room_animation_skip
+                            ld	a,ixl
+                            ld	(iy),a
+                            inc	iy
+                            ld	a,ixh
+                            ld	(iy),a
+                            inc	iy
+gather_room_animation_skip
+                            pop	hl
+                            djnz	gather_room_animation_next
+                            ld	a,anim_end_marker
+                            ld	(iy),a
+                            ret
+room_animations_buf
+                            ds	room_animations_lim*2+1
+room_animations_end

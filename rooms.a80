@@ -24,6 +24,7 @@ init_current_room
 							call	logic.change_logic_pointer
 							call	gather_room_items
 							call	gather_elevators
+							call	gather_room_animations
 							call	gather_teleports
 							call	gather_waterdrops
 
@@ -207,8 +208,8 @@ room_pointers
 							dw	room_4_3
 							dw	room_5_3
 							dw	room_6_3
-
 							include	"rooms_elevators.a80"
+							include	"rooms_animations.a80"
 							include	"rooms_items.a80"
 							include	"rooms_teleports.a80"
 							include	"rooms_waterdrops.a80"
@@ -237,3 +238,5 @@ room_top_y					db	0
 room_bottom_y				db	0
 
 						endmodule
+
+

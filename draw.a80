@@ -77,6 +77,10 @@ draw_state
                             call	draw.border
                             call	restore_pixels
 
+                            ld	a,2
+                            call	draw.border
+                            call	animate.draw_room
+
                             ld	a,3
                             call	draw.border
                             call	waterdrops.draw_room_waterdrops

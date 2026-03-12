@@ -34,6 +34,7 @@ room_logic_pointer          equ	$+1
                             call	wait
                             jr	loop
 calculate_state
+                            call	animate.update_room
                             call	elevators_update.update_room
                             call	elevators_coords.coords
 
