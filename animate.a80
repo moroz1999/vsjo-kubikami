@@ -267,7 +267,7 @@ room_frame_loop_done
 room_animations_amount      equ	(animations_table_end-animations_table)/2
 
 animations_table
-                            dw	room_animation_left
+                            dw	room_animation_5_1
                             dw	room_animation_right
 animations_table_end
 
@@ -276,37 +276,78 @@ gray_color                  equ	rooms.room_bg_color_gray
 blink_color                 equ	%01000111
 water_color                 equ	rooms.room_bg_color_wat
 
-room_animation_left
+room_animation_5_1
                             @room_animation	{
-                            2,                              ; room_x
-                            0,                              ; room_y
+                            5,                              ; room_x
+                            1,                              ; room_y
 
-                            3,                              ; x
-                            5,                              ; y
-                            4,                              ; width
-                            2,                              ; height
+                            11,                              ; x
+                            8,                              ; y
+                            15,                              ; width
+                            5,                              ; height
 
-                            3,                              ; frames
+                            8,                              ; frames
                             0,                              ; current
-                            1,                              ; delay
-                            5,                              ; timer
+                            20,                              ; delay
+                            50,                              ; timer
                             state_on,                       ; state
-                            room_animation_left_frames      ; frames_ptr
+                            room_animation_5_1_frames      ; frames_ptr
                             }
+green                       equ %00100100
+gree2                       equ %01100000
+yello                       equ %01110000
+purpl                       equ %01011010
+gree3                       equ %00100101
 
-room_animation_left_frames
+room_animation_5_1_frames
                 ; кадр 0
-                            db	sky_color,blink_color,sky_color,blink_color
-                            db	sky_color,gray_color,gray_color,sky_color
-
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
                 ; кадр 1
-                            db	blink_color,sky_color,blink_color,sky_color
-                            db	sky_color,gray_color,gray_color,sky_color
-
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
                 ; кадр 2
-                            db	sky_color,sky_color,sky_color,sky_color
-                            db	gray_color,blink_color,blink_color,gray_color
-
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,yello, yello,yello,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                ; кадр 3
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green       
+                ; кадр 4
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                ; кадр 5
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,yello,yello, yello,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                ; кадр 6
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,yello,yello,yello,yello, yello,green,gree2,purpl,yello, yello,yello,yello,yello,green
+                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                ; кадр 7
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3                       
 room_animation_right
                             @room_animation	{
                             2,                              ; room_x
