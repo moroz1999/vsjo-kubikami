@@ -18,7 +18,6 @@ room_bg_color_wat			equ	%00000001
 
 room_change_abort  			equ 255
 
-rooms_end_marker			equ	255
 current_room_address		dw	0
 init_current_room
 							call	logic.change_logic_pointer

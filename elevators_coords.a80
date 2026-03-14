@@ -1,14 +1,17 @@
                         module  elevators_coords
 coords
-                            ld  hl,rooms.room_elevators_buf
-coords_next
-                            ld  a,(hl)
-                ; check if there are no elevators
-                            cp  rooms.elev_end_marker
+                ; Update global Y and room-relative state for each elevator
+                            ld  a,(rooms.room_elevators_count)
+                            or  a
                             ret z
 
+                            ld  b,a
+                            ld  hl,rooms.room_elevators_buf
+coords_next
+                            push    bc
+
                             ld  a,(hl)
-                ; read elevator address to ix
+                ; Read elevator address into ix
                             ld  xl,a
                             inc hl
 
@@ -16,11 +19,9 @@ coords_next
                             ld  xh,a
                             inc hl
                             push    hl
-                ; ix now has elevator data start
+                ; ix now points to elevator data
 
-                ; calculate global elevator's coordinate
-
-                ; y = elevator_room_y * each_room_height + elevator_room_base_coord_y - elevator_current_height
+                ; Compute global elevator Y from room, base and current height
 
                             ld  a,(ix+elevators.elevator.room_y)
 
@@ -36,9 +37,9 @@ coords_next
                             ld  (ix+elevators.elevator.y),a
                             
                             pop hl
-                ; check if elevator is below, under or in current room
+                ; Save room-relative elevator state
                             ld  b,a
-                ; b now has a global y coordinate of elevator, now compare it to current room's top/bottom coordinates
+                ; Compare elevator global Y with room bounds
 
                             ld  a,(rooms.room_bottom_y)
                             cp  b
@@ -49,11 +50,14 @@ coords_next
                             cp  b
                             jr  nc,save_above              ; elevator's y < rooms' top y, elevator is above room, draw leg only
                             ld  (ix+elevators.elevator.in_room),elevators.room_inside
-                            jr  coords_next
+                            jr  coords_next_end
 save_above
                             ld  (ix+elevators.elevator.in_room),elevators.room_above
-                            jr  coords_next
+                            jr  coords_next_end
 save_below
                             ld  (ix+elevators.elevator.in_room),elevators.room_below
-                            jr  coords_next
+coords_next_end
+                            pop bc
+                            djnz  coords_next
+                            ret
                         endmodule

@@ -17,49 +17,57 @@ type_falling                equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
 waterdrop_color             db	%01001001,%01111000
 draw_room_waterdrops
+                            ld	a,(rooms.room_waterdrops_count)
+                            or	a
+                            ret	z
+
+                // walk current room buffer
+                            ld	b,a
                             ld	hl,rooms.room_waterdrops_buf
-                            exx
 draw_room_wds_next
-                            exx
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
                             inc	hl
-                            ld	a,e
-                            or	d
-                            ret	z
+                            push	bc
+                            push	hl
 
                             push	de
                             pop	ix
 
-                            exx
-
                             ld	a,(ix+waterdrop.type)
                             or	(ix+waterdrop.state)
 
-                            jr	z,draw_room_wds_next
+                            jr	z,draw_room_wds_restore
 
                             ld	d,(ix+waterdrop.room_pos_x)
                             ld	e,(ix+waterdrop.room_pos_y)
                             ld	hl,waterdrop_color
                             call	draw.draw_gigapoint
 
-                            jr	draw_room_wds_next
+draw_room_wds_restore
+                            pop	hl
+                            pop	bc
+                            djnz	draw_room_wds_next
+                            ret
 
 move_waterdrops
+                            ld	a,(rooms.room_waterdrops_count)
+                            or	a
+                            ret	z
+
+                // update current room drops
+                            ld	b,a
                             ld	hl,rooms.room_waterdrops_buf
 move_next
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
                             inc	hl
-                            ld	a,e
-                            or	d
-                            ret	z
+                            push	bc
+                            push	hl
                             push	de
                             pop	ix
-
-                            exx
 
                             ld	a,(ix+waterdrop.state)
                             cp	state_drop
@@ -80,8 +88,10 @@ move_drop
                             jr	nz,move_restore_source
                             ld	(ix+waterdrop.room_pos_y),e
 move_skip
-                            exx
-                            jr	move_next
+                            pop	hl
+                            pop	bc
+                            djnz	move_next
+                            ret
 
 
 move_restore_source
@@ -91,8 +101,10 @@ move_restore_source
 
                             ld	a,(ix+waterdrop.room_start_y)
                             ld	(ix+waterdrop.room_pos_y),a
-                            exx
-                            jr	move_next
+                            pop	hl
+                            pop	bc
+                            djnz	move_next
+                            ret
 
 waterdrops_table
                             dw	waterdrop_1_0_1

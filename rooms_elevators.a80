@@ -1,7 +1,11 @@
 room_elevators_lim          equ	6
-elev_end_marker				equ	255
+room_elevators_count        db	0
 
 gather_elevators
+                ; Clear current room elevator count
+                            xor	a
+                            ld	(room_elevators_count),a
+
                             ld	b,elevators.amount
                 // return if there is no elevators in game
                             ld	a,b
@@ -41,22 +45,23 @@ gather_elev_next
                             ld	(iy),a
                             inc	iy
 
+                            ld	a,(room_elevators_count)
+                            inc	a
+                            ld	(room_elevators_count),a
+
 gather_elev_skip
                             pop	hl
                             djnz	gather_elev_next
-                ; restore amount of rooms in game to b                    
+                ; Restore original room scan counter
                             pop	bc
 
-                ; check if there are rooms below                
+                ; Continue scanning rooms below
                             inc	e
                             ld	a,e
                             cp	room_amount_y
                             jr	nz,gather_elev_room
 
-                ; terminate elevators buffer
-                            ld	a,elev_end_marker
-                            ld	(iy),a
                             ret
 room_elevators_buf
-                            ds	room_elevators_lim*2+1
+                            ds	room_elevators_lim*2
 room_elevators_end

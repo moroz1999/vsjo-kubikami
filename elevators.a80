@@ -11,7 +11,6 @@ room_inside                 equ	1
 room_above                  equ	2
 room_below                  equ	3
 
-end_marker                  equ	#ff
                         struct	elevator
 in_room                     byte
 room_x                      byte

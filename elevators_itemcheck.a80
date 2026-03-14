@@ -9,13 +9,17 @@ check
                 ; a - item on elevator or not
                 ; ix - elevator data address
 
+                            ld	a,(rooms.room_elevators_count)
+                            or	a
+                            jr	z,item_update_not_found
+
+                            ld	b,a
                             ld	hl,rooms.room_elevators_buf
 item_update_next
+                            push	bc
+
                             ld	a,(hl)
-                ; check if there are no elevators
-                            cp	rooms.elev_end_marker
-                            ret	z
-                ; read elevator address to ix
+                ; Read elevator address into ix
                             ld	ixl,a
                             inc	hl
 
@@ -23,50 +27,46 @@ item_update_next
                             ld	ixh,a
                             inc	hl
                             push	hl
-                ; ix now has elevator data start
+                ; ix now points to elevator data
 
-                ; check item X from d
+                ; Check horizontal overlap with the elevator
                             ld	a,(ix+elevators.elevator.room_pos_x)
                             ld	b,a
-                ; b has left edge of elevator
 
-                ; check that item is left to elevator
+                ; Reject item left from the platform
                             ld	a,d
                             sub	b
                             jr	c,item_update_skip ;item is left to elevator
 
                             ld	a,(ix+elevators.elevator.width)
                             add	b
-                ; c has right edge of elevator
                             ld	c,a
 
-                ; check that item is right to elevator
+                ; Reject item right from the platform
                             ld	a,d
                             sub	c
                             jr	nc,item_update_skip ;item is right to elevator
 
-                ;
-                ; now check item global Y from e
-                ;
-
+                ; Check vertical match against elevator top
                             ld	a,(ix+elevators.elevator.y)
                             ld	c,a
-                ; c has global y position of elevator                            
-                ; check that item is on the elevator - item's global y should be elevator's global y - 1
+                ; Item must stand exactly one cell above elevator top
                             dec	a
 
                             sub	e
                             jr	nz,item_update_skip ;item is not above elevator
 
-                ; restore stack
+                ; Restore stack and report success
                             pop	hl
-                ; return true
+                            pop	bc
                             ld	a,elevators.item_on_elevator
                             ret
 item_update_skip
                             pop	hl
-                            jr	item_update_next
-                ; return false                    
+                            pop	bc
+                            djnz	item_update_next
+item_update_not_found
+                ; Report failure after the full scan
                             ld	a,elevators.item_not_elevator
                             ret
                         endmodule

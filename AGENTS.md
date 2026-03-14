@@ -27,6 +27,12 @@
 - Для инициализаторов структур хорошая практика: ставить справа краткие комментарии с именами полей (`; room_x`, `; delay`, `; frames_ptr`), чтобы порядок параметров читался без сверки со `struct`.
 - Новые комментарии в asm писать по-русски, чтобы не смешивать стили внутри файла.
 
+## Comment Language
+
+- New block comments in asm should be brief and in English.
+- Prefer one short comment per semantic block, not per instruction.
+- Right-side comments should be used only for non-obvious code.
+
 ## Platform
 
 - Целевая платформа проекта: `ZX Spectrum 128`.

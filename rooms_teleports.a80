@@ -1,5 +1,11 @@
 room_teleports_lim          equ	3
+room_teleports_count        db	0
+
 gather_teleports
+                ; Clear current room teleport count
+                            xor	a
+                            ld	(room_teleports_count),a
+
                             ld	b,teleports.amount
                 // return if there is no teleports in game
                             ld	a,b
@@ -39,14 +45,15 @@ gather_tele_next
                             ld	(iy),a
                             inc	iy
 
+                            ld	a,(room_teleports_count)
+                            inc	a
+                            ld	(room_teleports_count),a
+
 gather_tele_skip
                             pop	hl
                             djnz	gather_tele_next
-                            ld	a,rooms_end_marker
-
-                            ld	(iy),a
                             ret
 
 room_teleports_buf
-                            ds	room_teleports_lim*2+1
+                            ds	room_teleports_lim*2
 room_teleports_end

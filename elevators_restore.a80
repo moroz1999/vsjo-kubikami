@@ -1,12 +1,15 @@
                         module  elevators_restore
 restore
-                ; - restore image under elevators
+                ; Restore image under elevators
+                            ld  a,(rooms.room_elevators_count)
+                            or  a
+                            ret z
+
+                            ld  b,a
                             ld  hl,rooms.room_elevators_buf
 restore_next
-                            ld  a,(hl)
-                ; check if there are no elevators
-                            cp  rooms.elev_end_marker
-                            ret z
+                            push    bc
+
                             ld  a,(hl)
                 ; read elevator address to ix
                             ld  ixl,a
@@ -19,15 +22,15 @@ restore_next
                 ; ix now has elevator data start
 
 
-                ; only restore elevators from current room
+                ; Restore only elevators visible inside the room
                             ld  a,(ix+elevators.elevator.in_room)
                             cp  elevators.room_inside
                             jr  nz,restore_skip                            
                             
-                ; b has elevator's global y
+                ; Load elevator global Y
                             ld  a,(rooms.room_top_y)
                             ld  b,a
-                ; elevator draw height = elevator global - room_top_y
+                ; Convert global Y to room-local Y
                             ld  a,(ix+elevators.elevator.y)
                             sub b
                             ld  e,a
@@ -47,7 +50,8 @@ restore_next
                             pop ix
 restore_skip
                             pop hl
-                            jr  restore_next
+                            pop bc
+                            djnz  restore_next
                             ret
 
                         endmodule

@@ -14,13 +14,18 @@ teleport_color1             equ	%01101100
 teleport_color2             equ	%00000100
 teleport_color              db	teleport_color1,teleport_color2
 check_hero
+                ; Load current room teleports and exit on empty buffer
+                            ld	a,(rooms.room_teleports_count)
+                            or	a
+                            jr	z,check_hero_no_teleport
+
+                            ld	b,a
                             ld	hl,rooms.room_teleports_buf
 check_hero_next
+                            push	bc
+
+                ; Read teleport address into ix
                             ld	a,(hl)
-                ; check if there are no teleports
-                            cp	rooms.rooms_end_marker
-                            jr	z,check_hero_no_teleport
-                ; read teleport address to ix
                             ld	ixl,a
                             inc	hl
 
@@ -28,7 +33,7 @@ check_hero_next
                             ld	ixh,a
                             inc	hl
                             push	hl
-                ; ix now has teleport data start
+                ; ix now points to teleport data
 
                             ld	a,(ix+teleport.room_pos_x)
                             ld	d,a
@@ -65,7 +70,8 @@ check_hero_next
                             jr	check_hero_teleported
 check_hero_skip
                             pop	hl
-                            jr	check_hero_next
+                            pop	bc
+                            djnz	check_hero_next
 check_hero_no_teleport
                             xor	a
                             ld	(just_teleported),a
@@ -76,18 +82,23 @@ check_hero_teleported
                             ld	(just_teleported),a
 check_hero_exit
                             pop	hl
+                            pop	bc
                             ret
 just_teleported             db	0
 
 draw_current
+                ; Load current room teleports and exit on empty buffer
+                            ld	a,(rooms.room_teleports_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
                             ld	hl,rooms.room_teleports_buf
 draw_next
+                            push	bc
+
+                ; Read teleport address into ix
                             ld	a,(hl)
-                ; check if there are no teleports
-                            cp	rooms.rooms_end_marker
-                            ret	z
-                            ld	a,(hl)
-                ; read teleport address to ix
                             ld	ixl,a
                             inc	hl
 
@@ -95,7 +106,7 @@ draw_next
                             ld	ixh,a
                             inc	hl
                             push	hl
-                ; ix now has teleport data start
+                ; ix now points to teleport data
 
                             ld	a,(ix+teleport.room_pos_x)
                             ld	d,a
@@ -116,7 +127,8 @@ draw_next
                             pop	ix
 
                             pop	hl
-                            jr	draw_next
+                            pop	bc
+                            djnz	draw_next
                             ret
 
 amount                      equ	(teleports_table_end-teleports_table)/2

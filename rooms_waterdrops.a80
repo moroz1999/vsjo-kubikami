@@ -1,5 +1,5 @@
 room_waterdrops_lim         equ	33
-waterdrops_marker           equ	0
+room_waterdrops_count       db	0
 
 gather_waterdrops
                             ld	b,waterdrops.amount
@@ -17,6 +17,8 @@ gather_waterdrops
 
                             ld	iy,room_waterdrops_buf
                             ld	hl,waterdrops.waterdrops_table
+                            xor	a
+                            ld	(room_waterdrops_count),a
 
 gather_wd_next
                             ld	a,(hl)
@@ -41,14 +43,14 @@ gather_wd_next
                             ld	a,ixh
                             ld	(iy),a
                             inc	iy
+                            ld	a,(room_waterdrops_count)
+                            inc	a
+                            ld	(room_waterdrops_count),a
 
 gather_wd_skip
                             pop	hl
                             djnz	gather_wd_next
-                            ld	a,waterdrops_marker
-                            ld	(iy),a
-                            ld	(iy+1),a
                             ret
 room_waterdrops_buf
-                            ds	room_waterdrops_lim*2+1
+                            ds	room_waterdrops_lim*2
 room_waterdrops_end

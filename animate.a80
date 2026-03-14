@@ -37,13 +37,13 @@ start
                             ret
 
 check
-                ; пропустить тик, если one-shot анимация не активна
+                ; Skip processing when no one-shot animation is active
                             ld	ix,(current_animation)
                             ld	a,ixh
                             or	a
                             ret	z
 
-                ; дождаться следующего кадра по таймеру задержки
+                ; Wait until the frame delay expires
                             ld	a,(current_delay)
                             or	a
                             jr	z,draw_frame
@@ -52,13 +52,13 @@ check
                             ret
 
 draw_frame
-                ; остановить анимацию, когда текущий кадр вышел за пределы списка
+                ; Stop when the frame index reaches the end
                             ld	c,(ix+@animation.frames)
                             ld	a,(ix+@animation.current)
                             sub	c
                             jr	z,stop
 
-                ; подготовить адрес рисунка в буфере комнаты и размер кадра
+                ; Prepare room address and frame size
                             ld	a,(ix+@animation.current)
                             ld	d,(ix+@animation.room_address+1)
                             ld	e,(ix+@animation.room_address)
@@ -67,11 +67,11 @@ draw_frame
                             call	find_sprite_address
 
 draw_frame_sprite
-                ; нарисовать текущий кадр и сразу обновить комнату на экране
+                ; Draw the current frame and refresh the room
                             call	draw.draw_room_sprite
                             call	rooms.redraw_current_room
 
-                ; перевести one-shot анимацию на следующий кадр и перезагрузить задержку
+                ; Advance to the next frame and reload delay
                             ld	ix,(current_animation)
                             ld	a,(ix+@animation.current)
                             inc	a
@@ -82,7 +82,7 @@ draw_frame_sprite
                             ret
 
 stop
-                ; сбросить one-shot анимацию после последнего кадра
+                ; Reset one-shot animation after the last frame
                             xor	a
                             ld	(ix+@animation.current),a
 
@@ -108,7 +108,7 @@ find_sprite_address
                             ld	e,b
                             ld	d,0
 
-                ; пропустить предыдущие кадры по формуле width * height
+                ; Skip previous frames using width * height
 frame_loop
                             or	a
                             jr	z,frame_loop_done
@@ -134,13 +134,18 @@ frame_loop_done
                             ret
 
 update_room
+                ; Load room animation count and exit on empty buffer
+                            ld	a,(rooms.room_animations_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
                             ld	hl,rooms.room_animations_buf
 
 update_room_next
-                ; читать буфер указателей, собранный для текущей комнаты
+                ; Read the pointer buffer collected for the current room
+                            push	bc
                             ld	a,(hl)
-                            cp	rooms.anim_end_marker
-                            ret	z
                             ld	ixl,a
                             inc	hl
 
@@ -149,12 +154,12 @@ update_room_next
                             inc	hl
                             push	hl
 
-                ; у выключенной анимации ничего не обновлять
+                ; Skip disabled animations
                             ld	a,(ix+@room_animation.state)
                             cp	state_on
                             jr	nz,update_room_end
 
-                ; пока таймер не дошёл до нуля, только уменьшаем его
+                ; Decrement timer until it reaches zero
                             ld	a,(ix+@room_animation.timer)
                             or	a
                             jr	z,update_room_advance
@@ -163,7 +168,7 @@ update_room_next
                             jr	update_room_end
 
 update_room_advance
-                ; переключить кадр и зациклить его на последнем элементе
+                ; Advance frame and wrap at the end
                             ld	a,(ix+@room_animation.current)
                             inc	a
                             ld	b,a
@@ -184,16 +189,23 @@ update_room_store
 
 update_room_end
                             pop	hl
-                            jr	update_room_next
+                            pop	bc
+                            djnz	update_room_next
+                            ret
 
 draw_room
+                ; Load room animation count and exit on empty buffer
+                            ld	a,(rooms.room_animations_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
                             ld	hl,rooms.room_animations_buf
 
 draw_room_next
-                ; брать только room-анимации, активные в текущей комнате
+                ; Draw only animations active in the current room
+                            push	bc
                             ld	a,(hl)
-                            cp	rooms.anim_end_marker
-                            ret	z
                             ld	ixl,a
                             inc	hl
 
@@ -202,12 +214,12 @@ draw_room_next
                             inc	hl
                             push	hl
 
-                ; выключенную анимацию пропускаем
+                ; Skip disabled animations
                             ld	a,(ix+@room_animation.state)
                             cp	state_on
                             jr	nz,draw_room_end
 
-                ; найти адрес на экране и адрес данных текущего кадра
+                ; Resolve screen address and current frame data
                             ld	d,(ix+@room_animation.x)
                             ld	e,(ix+@room_animation.y)
                             call	screen_utils.get_attrs_address
@@ -222,7 +234,9 @@ draw_room_next
 
 draw_room_end
                             pop	hl
-                            jr	draw_room_next
+                            pop	bc
+                            djnz	draw_room_next
+                            ret
 
 find_room_animation_frame_address
     ; input
@@ -240,7 +254,7 @@ find_room_animation_frame_address
                             ld	e,b
                             ld	d,0
 
-                ; у room-анимации кадры уже лежат отдельным массивом
+                ; Room animation frames are stored in a separate array
 room_frame_loop
                             or	a
                             jr	z,room_frame_loop_done

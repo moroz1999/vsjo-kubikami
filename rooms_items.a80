@@ -77,9 +77,6 @@ gather_room_skip
                             add	ix,bc
                             jr	gather_room_next
 
-gather_room_end             ld	a,rooms_end_marker
-                            ld	(iy),a
-                            ret
 item_not_found              equ	255
 
 find_item_by_coord

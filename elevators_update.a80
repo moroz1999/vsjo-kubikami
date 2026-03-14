@@ -1,12 +1,16 @@
                         module	elevators_update
 update_room
                 ; move all elevators from current room's buffer up/down - calculate state only
+                            ld	a,(rooms.room_elevators_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
                             ld	hl,rooms.room_elevators_buf
 elevators_update_next
+                            push	bc
+
                             ld	a,(hl)
-                ; check if there are no elevators
-                            cp	rooms.elev_end_marker
-                            ret	z
                 ; read elevator address to ix
                             ld	ixl,a
                             inc	hl
@@ -68,10 +72,11 @@ elevator_switch_up
                             jr	elevator_move_end
 elevator_move_end
                             pop	hl
-                            jr	elevators_update_next
+                            pop	bc
+                            djnz	elevators_update_next
                             ret
 elevator_move_items
-                ; input
+                ; Move hero together with the active elevator
                 ; ix points to elevator data
                             push	hl
                             push	de
@@ -82,7 +87,7 @@ elevator_move_items
                             jr	nz,elevator_move_items_end
 
                             ld	hl,(hero.current_elevator)
-                ; check if hero is on this elevator from ix
+                ; Check whether hero is on this elevator
                             push	ix
                             pop	de
 
@@ -92,7 +97,7 @@ elevator_move_items
                             ld	a,h
                             or	l
                             jr	nz,elevator_move_items_end
-                ; hero is on this elevator
+                ; Hero stands on this elevator
                             ld	a,(ix+elevators.elevator.state)
                             cp	elevators.state_down
                             jr	z,elevator_move_items_down
