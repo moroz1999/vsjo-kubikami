@@ -282,7 +282,7 @@ room_animations_amount      equ	(animations_table_end-animations_table)/2
 
 animations_table
                             dw	room_animation_5_1
-                            dw	room_animation_right
+                            dw	room_animation_3_2
 animations_table_end
 
 sky_color                   equ	rooms.room_bg_color_sky
@@ -362,31 +362,35 @@ room_animation_5_1_frames
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3                       
-room_animation_right
+room_animation_3_2
                             @room_animation	{
-                            2,                              ; room_x
-                            0,                              ; room_y
+                            3,                              ; room_x
+                            2,                              ; room_y
 
-                            24,                             ; x
-                            2,                              ; y
+                            0,                             ; x
+                            9,                              ; y
                             4,                              ; width
-                            2,                              ; height
+                            1,                              ; height
 
-                            2,                              ; frames
+                            4,                              ; frames
                             0,                              ; current
-                            8,                              ; delay
-                            8,                              ; timer
+                            10,                              ; delay
+                            0,                              ; timer
                             state_on,                       ; state
-                            room_animation_right_frames     ; frames_ptr
+                            room_animation_3_2_frames     ; frames_ptr
                             }
-
-room_animation_right_frames
+c32r                         equ %01011010
+c32w                         equ %01011111
+room_animation_3_2_frames
                 ; кадр 0
-                            db	sky_color,water_color,water_color,sky_color
-                            db	sky_color,sky_color,gray_color,sky_color
+                            db	c32r,c32r,c32w,c32w                            
 
                 ; кадр 1
-                            db	sky_color,gray_color,sky_color,sky_color
-                            db	sky_color,water_color,water_color,sky_color
+                            db	c32w,c32r,c32r,c32w                            
 
+                ; кадр 2
+                            db	c32w,c32w,c32r,c32r     
+
+                ; кадр 3
+                            db	c32w,c32r,c32r,c32w                                 
                         endmodule
