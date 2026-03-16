@@ -283,6 +283,8 @@ room_animations_amount      equ	(animations_table_end-animations_table)/2
 animations_table
                             dw	room_animation_5_1
                             dw	room_animation_3_2
+                            dw room_animation_3_2_2
+                            dw room_animation_3_2_3
 animations_table_end
 
 sky_color                   equ	rooms.room_bg_color_sky
@@ -374,12 +376,12 @@ room_animation_3_2
 
                             4,                              ; frames
                             0,                              ; current
-                            10,                              ; delay
+                            16,                              ; delay
                             0,                              ; timer
                             state_on,                       ; state
                             room_animation_3_2_frames     ; frames_ptr
                             }
-c32r                         equ %01011010
+c32r                         equ %01010011
 c32w                         equ %01011111
 room_animation_3_2_frames
                 ; кадр 0
@@ -392,5 +394,54 @@ room_animation_3_2_frames
                             db	c32w,c32w,c32r,c32r     
 
                 ; кадр 3
-                            db	c32w,c32r,c32r,c32w                                 
+                            db	c32w,c32r,c32r,c32w  
+
+room_animation_3_2_2
+                            @room_animation	{
+                            3,                              ; room_x
+                            2,                              ; room_y
+
+                            18,                             ; x
+                            18,                              ; y
+                            5,                              ; width
+                            1,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_3_2_2_frames     ; frames_ptr
+                            }
+room_animation_3_2_2_frames
+                ; кадр 0
+                            db	c32r,c32w,c32w,c32w,c32w
+                ; кадр 1
+                            db	c32w,c32r,c32w,c32w,c32w
+
+room_animation_3_2_3
+                            @room_animation	{
+                            3,                              ; room_x
+                            2,                              ; room_y
+
+                            23,                             ; x
+                            18,                              ; y
+                            1,                              ; width
+                            2,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            22,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_3_2_3_frames     ; frames_ptr
+                            }
+room_animation_3_2_3_frames
+                ; кадр 0
+                            db	c32r
+                            db  c32w
+                ; кадр 1
+                            db	c32w
+                            db  c32r
+
                         endmodule
