@@ -282,6 +282,9 @@ room_animations_amount      equ	(animations_table_end-animations_table)/2
 
 animations_table
                             dw	room_animation_5_1
+                            dw room_animation_5_1_2
+                            dw room_animation_5_1_3
+                            dw room_animation_5_1_4
                             dw	room_animation_3_2
                             dw room_animation_3_2_2
                             dw room_animation_3_2_3
@@ -297,7 +300,7 @@ room_animation_5_1
                             5,                              ; room_x
                             1,                              ; room_y
 
-                            11,                              ; x
+                            10,                              ; x
                             8,                              ; y
                             15,                              ; width
                             5,                              ; height
@@ -363,7 +366,109 @@ room_animation_5_1_frames
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
                             db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3                       
+                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3                
+room_animation_5_1_2
+                            @room_animation	{
+                            5,                              ; room_x
+                            1,                              ; room_y
+
+                            5,                              ; x
+                            8,                              ; y
+                            4,                              ; width
+                            2,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            3,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_5_1_2_frames      ; frames_ptr
+                            }                            
+black                       equ %00000000
+magen                       equ %01000011
+room_animation_5_1_2_frames
+                ; кадр 0
+                            db	black,magen,black,magen
+                            db	magen,black,magen,black
+                ; кадр 2
+                            db	green,black,green,black
+                            db	black,green,black,green
+
+room_animation_5_1_3
+                            @room_animation	{
+                            5,                              ; room_x
+                            1,                              ; room_y
+
+                            5,                              ; x
+                            11,                              ; y
+                            4,                              ; width
+                            2,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            5,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_5_1_3_frames      ; frames_ptr
+                            }                            
+orang                       equ %01110010
+yell1                       equ %00110110
+
+room_animation_5_1_3_frames
+                ; кадр 0
+                            db	orang,black,orang,black
+                            db	black,orang,black,orang
+                            
+                ; кадр 2
+                            db	yell1,black,yell1,black
+                            db	black,yell1,black,yell1
+
+room_animation_5_1_4
+                            @room_animation	{
+                            5,                              ; room_x
+                            1,                              ; room_y
+
+                            26,                              ; x
+                            8,                              ; y
+                            5,                              ; width
+                            5,                              ; height
+
+                            4,                              ; frames
+                            0,                              ; current
+                            40,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_5_1_4_frames      ; frames_ptr
+                            }                            
+red1                       equ %01010010
+red2                       equ %00010010
+
+room_animation_5_1_4_frames
+                ; кадр 0
+                            db	red2,black,red2,black,red2
+                            db	black,red2,black,red2,black
+                            db	red2,black,red2,black,red2
+                            db	black,red2,black,red2,black
+                            db	red2,black,red2,black,red2
+                ; кадр 1
+                            db	red1,black,red1,black,red1
+                            db	black,red1,black,red1,black
+                            db	red1,black,red1,black,red1
+                            db	black,red1,black,red1,black
+                            db	red1,black,red1,black,red1
+                ; кадр 2                            
+                            db	black,red1,black,red1,black
+                            db	red1,black,red1,black,red1
+                            db	black,red1,black,red1,black
+                            db	red1,black,red1,black,red1                            
+                            db	black,red1,black,red1,black
+               ; кадр 3                            
+                            db	black,red2,black,red2,black
+                            db	red2,black,red2,black,red2
+                            db	black,red2,black,red2,black
+                            db	red2,black,red2,black,red2 
+                            db	black,red2,black,red2,black                           
+
 room_animation_3_2
                             @room_animation	{
                             3,                              ; room_x
