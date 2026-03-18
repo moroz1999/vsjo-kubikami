@@ -66,13 +66,13 @@ elevator_2_3
                             0,           ; x          
                             0,           ; y          
                             8,           ; room_pos_x 
-                            21,          ; room_pos_y 
+                            20,          ; room_pos_y 
                             12,          ; width      
                             5,           ; leg_left   
-                            45,           ; cur_height 
-                            45,           ; end_height 
+                            44,           ; cur_height 
+                            44,           ; end_height 
                             state_stop,  ; state      
-                            2,           ; delay      
+                            6,           ; delay      
                             0            ; timer      
                             }
 elevator_3_1
