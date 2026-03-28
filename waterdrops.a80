@@ -87,6 +87,8 @@ move_drop
                             cp	1
                             jr	nz,move_restore_source
                             ld	(ix+waterdrop.room_pos_y),e
+move_check_hero
+                            call	check_hero_collision
 move_skip
                             pop	hl
                             pop	bc
@@ -101,9 +103,27 @@ move_restore_source
 
                             ld	a,(ix+waterdrop.room_start_y)
                             ld	(ix+waterdrop.room_pos_y),a
+                            call	check_hero_collision
                             pop	hl
                             pop	bc
                             djnz	move_next
+                            ret
+check_hero_collision
+                ; Check visible drop against current hero position
+                            ld	a,(ix+waterdrop.type)
+                            or	(ix+waterdrop.state)
+                            ret	z
+
+                            ld	a,(hero.hero_x)
+                            cp	(ix+waterdrop.room_pos_x)
+                            ret	nz
+
+                            ld	a,(hero.hero_y)
+                            cp	(ix+waterdrop.room_pos_y)
+                            ret	nz
+
+                            ld	a,32
+                            call	hero.decrease_health
                             ret
 
 waterdrops_table

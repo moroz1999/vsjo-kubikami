@@ -282,16 +282,16 @@ room_animations_amount      equ	(animations_table_end-animations_table)/2
 
 animations_table
                             dw	room_animation_5_1
-                            dw room_animation_5_1_2
-                            dw room_animation_5_1_3
-                            dw room_animation_5_1_4
+                            dw	room_animation_5_1_2
+                            dw	room_animation_5_1_3
+                            dw	room_animation_5_1_4
                             dw	room_animation_3_2
-                            dw room_animation_3_2_2
-                            dw room_animation_3_2_3
-                            dw room_animation_1_1
-                            dw room_animation_2_2
-                            dw room_animation_2_2_2
-                            dw room_animation_0_2
+                            dw	room_animation_3_2_2
+                            dw	room_animation_3_2_3
+                            dw	room_animation_1_1
+                            dw	room_animation_2_2
+                            dw	room_animation_2_2_2
+                            dw	room_animation_0_2
 animations_table_end
 
 room_animation_0_2
@@ -311,9 +311,9 @@ room_animation_0_2
                             state_on,                       ; state
                             room_animation_0_2_frames     ; frames_ptr
                             }
-c01bl                       equ %00000001
-c01wh                       equ %01000111
-c01bb                       equ %00000000
+c01bl                       equ	%00000001
+c01wh                       equ	%01000111
+c01bb                       equ	%00000000
 
 room_animation_0_2_frames
                 ; кадр 0
@@ -339,7 +339,7 @@ room_animation_0_2_frames
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
-                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh     
+                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh
                 ; кадр 3
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
@@ -347,7 +347,7 @@ room_animation_0_2_frames
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
-                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh       
+                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh
                 ; кадр 4
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
@@ -355,7 +355,7 @@ room_animation_0_2_frames
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
-                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh   
+                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh
                 ; кадр 5
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
@@ -363,7 +363,7 @@ room_animation_0_2_frames
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bl,c01bl,c01bl,c01bl,c01bl,c01bl,c01bl
-                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh                                                                                                                                      
+                            db	c01wh,c01wh,c01wh,c01bl,c01wh,c01wh,c01wh
                 ; кадр 6
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
@@ -371,7 +371,7 @@ room_animation_0_2_frames
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
                             db	c01bb,c01bb,c01bb,c01bb,c01bb,c01bb,c01bb
-                            db	c01wh,c01wh,c01wh,c01bb,c01wh,c01wh,c01wh                            
+                            db	c01wh,c01wh,c01wh,c01bb,c01wh,c01wh,c01wh
 room_animation_5_1
                             @room_animation	{
                             5,                              ; room_x
@@ -389,61 +389,61 @@ room_animation_5_1
                             state_on,                       ; state
                             room_animation_5_1_frames      ; frames_ptr
                             }
-green                       equ %00100100
-gree2                       equ %01100000
-yello                       equ %01110000
-purpl                       equ %01011010
-gree3                       equ %00100101
+green                       equ	%00100100
+gree2                       equ	%01100000
+yello                       equ	%01110000
+purpl                       equ	%01011010
+gree3                       equ	%00100101
 
 room_animation_5_1_frames
                 ; кадр 0
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 1
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 2
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,yello, yello,yello,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,yello,yello,yello,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 3
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green       
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,yello,yello,yello,green,gree2,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 4
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,yello,yello,yello,green,gree2,green,purpl,yello,yello,yello,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 5
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,yello,yello, yello,green,green,green,green, green,green,green,green,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,yello,yello,yello,green,gree2,green,purpl,yello,yello,yello,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,yello,yello,yello,green,green,green,green,green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 6
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,green,yello, yello,yello,green,gree2,green, purpl,yello,yello,yello,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
-                            db	green,yello,yello,yello,yello, yello,green,gree2,purpl,yello, yello,yello,yello,yello,green
-                            db	green,green,green,green,green, green,green,green,green,green, green,green,green,green,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,green,yello,yello,yello,green,gree2,green,purpl,yello,yello,yello,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
+                            db	green,yello,yello,yello,yello,yello,green,gree2,purpl,yello,yello,yello,yello,yello,green
+                            db	green,green,green,green,green,green,green,green,green,green,green,green,green,green,green
                 ; кадр 7
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3
-                            db	gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3, gree3,gree3,gree3,gree3,gree3                
+                            db	gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3
+                            db	gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3,gree3
 room_animation_5_1_2
                             @room_animation	{
                             5,                              ; room_x
@@ -460,9 +460,9 @@ room_animation_5_1_2
                             0,                              ; timer
                             state_on,                       ; state
                             room_animation_5_1_2_frames      ; frames_ptr
-                            }                            
-black                       equ %00000000
-magen                       equ %01000011
+                            }
+black                       equ	%00000000
+magen                       equ	%01000011
 room_animation_5_1_2_frames
                 ; кадр 0
                             db	black,magen,black,magen
@@ -487,15 +487,15 @@ room_animation_5_1_3
                             0,                              ; timer
                             state_on,                       ; state
                             room_animation_5_1_3_frames      ; frames_ptr
-                            }                            
-orang                       equ %01110010
-yell1                       equ %00110110
+                            }
+orang                       equ	%01110010
+yell1                       equ	%00110110
 
 room_animation_5_1_3_frames
                 ; кадр 0
                             db	orang,black,orang,black
                             db	black,orang,black,orang
-                            
+
                 ; кадр 2
                             db	yell1,black,yell1,black
                             db	black,yell1,black,yell1
@@ -516,9 +516,9 @@ room_animation_5_1_4
                             0,                              ; timer
                             state_on,                       ; state
                             room_animation_5_1_4_frames      ; frames_ptr
-                            }                            
-red1                       equ %01010010
-red2                       equ %00010010
+                            }
+red1                        equ	%01010010
+red2                        equ	%00010010
 
 room_animation_5_1_4_frames
                 ; кадр 0
@@ -537,14 +537,14 @@ room_animation_5_1_4_frames
                             db	black,red1,black,red1,black
                             db	red1,black,red1,black,red1
                             db	black,red1,black,red1,black
-                            db	red1,black,red1,black,red1                            
+                            db	red1,black,red1,black,red1
                             db	black,red1,black,red1,black
                ; кадр 3                            
                             db	black,red2,black,red2,black
                             db	red2,black,red2,black,red2
                             db	black,red2,black,red2,black
-                            db	red2,black,red2,black,red2 
-                            db	black,red2,black,red2,black                           
+                            db	red2,black,red2,black,red2
+                            db	black,red2,black,red2,black
 
 room_animation_3_2
                             @room_animation	{
@@ -563,20 +563,20 @@ room_animation_3_2
                             state_on,                       ; state
                             room_animation_3_2_frames     ; frames_ptr
                             }
-c32r                         equ %01010011
-c32w                         equ %01011111
+c32r                        equ	%01010011
+c32w                        equ	%01011111
 room_animation_3_2_frames
                 ; кадр 0
-                            db	c32r,c32r,c32w,c32w                            
+                            db	c32r,c32r,c32w,c32w
 
                 ; кадр 1
-                            db	c32w,c32r,c32r,c32w                            
+                            db	c32w,c32r,c32r,c32w
 
                 ; кадр 2
-                            db	c32w,c32w,c32r,c32r     
+                            db	c32w,c32w,c32r,c32r
 
                 ; кадр 3
-                            db	c32w,c32r,c32r,c32w  
+                            db	c32w,c32r,c32r,c32w
 
 room_animation_3_2_2
                             @room_animation	{
@@ -621,10 +621,10 @@ room_animation_3_2_3
 room_animation_3_2_3_frames
                 ; кадр 0
                             db	c32r
-                            db  c32w
+                            db	c32w
                 ; кадр 1
                             db	c32w
-                            db  c32r
+                            db	c32r
 room_animation_2_2
                             @room_animation	{
                             2,                              ; room_x
@@ -642,9 +642,9 @@ room_animation_2_2
                             state_on,                       ; state
                             room_animation_2_2_frames     ; frames_ptr
                             }
-c22re                        equ %01010010
-c22bl                        equ %01001001
-c22bb                        equ 0
+c22re                       equ	%01010010
+c22bl                       equ	%01001001
+c22bb                       equ	0
 
 room_animation_2_2_frames
                 ; кадр 0
@@ -659,8 +659,8 @@ room_animation_2_2_frames
                             db	c22bb,c22bb,c22bb,c22bb,c22bb,c22bb,c22bb
                             db	c22bl,c22bb,c22bl,c22bb,c22bl,c22bb,c22bl
                             db	c22bb,c22bb,c22bb,c22bb,c22bb,c22bb,c22bb
-                            db	c22bl,c22bb,c22bl,c22bb,c22bl,c22bb,c22bl       
-room_animation_2_2_2                     
+                            db	c22bl,c22bb,c22bl,c22bb,c22bl,c22bb,c22bl
+room_animation_2_2_2
                             @room_animation	{
                             2,                              ; room_x
                             2,                              ; room_y
@@ -677,7 +677,7 @@ room_animation_2_2_2
                             state_on,                       ; state
                             room_animation_2_2_2_frames     ; frames_ptr
                             }
-c22gr                        equ %01100100
+c22gr                       equ	%01100100
 
 room_animation_2_2_2_frames
                 ; кадр 0
@@ -700,7 +700,7 @@ room_animation_2_2_2_frames
                             db	c22re,c22bb,c22bb,c22bb,c22re
                             db	c22re,c22bb,c22bb,c22bb,c22re
                             db	c22re,c22bb,c22bb,c22bb,c22re
-                            db	c22re,c22re,c22re,c22re,c22re                            
+                            db	c22re,c22re,c22re,c22re,c22re
                 ; кадр 3
                             db	c22bb,c22bb,c22bb,c22bb,c22bb
                             db	c22bb,c22bb,c22bb,c22bb,c22bb
@@ -714,21 +714,21 @@ room_animation_2_2_2_frames
                             db	c22re,c22bb,c22bb,c22bb,c22re
                             db	c22re,c22bb,c22bb,c22bb,c22re
                             db	c22re,c22bb,c22bb,c22bb,c22re
-                            db	c22re,c22re,c22re,c22re,c22re  
+                            db	c22re,c22re,c22re,c22re,c22re
                 ; кадр 5
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22bb,c22re,c22re
                             db	c22re,c22re,c22bb,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
-                            db	c22re,c22re,c22re,c22re,c22re    
+                            db	c22re,c22re,c22re,c22re,c22re
                 ; кадр 6
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
                             db	c22re,c22re,c22re,c22re,c22re
-                            db	c22re,c22re,c22re,c22re,c22re    
+                            db	c22re,c22re,c22re,c22re,c22re
                 ; кадр 7
                             db	c22gr,c22gr,c22gr,c22gr,c22gr
                             db	c22gr,c22gr,c22gr,c22gr,c22gr
@@ -753,53 +753,53 @@ room_animation_1_1
                             state_on,                       ; state
                             room_animation_1_1_frames     ; frames_ptr
                             }
-c11w                         equ %00111111
-c11r                         equ %01010010
-c11y                         equ %01110110
-c11g                         equ %01100100
-c11b                         equ %01001001
-c11m                         equ %01011011
+c11w                        equ	%00111111
+c11r                        equ	%01010010
+c11y                        equ	%01110110
+c11g                        equ	%01100100
+c11b                        equ	%01001001
+c11m                        equ	%01011011
 room_animation_1_1_frames
                 ; кадр 0
                             db	c11w
-                            db  c11w
-                            db  c11w
-                            db  c11w
-                            db  c11w
+                            db	c11w
+                            db	c11w
+                            db	c11w
+                            db	c11w
                 ; кадр 1
-                            db  c11r
-                            db  c11r
-                            db  c11r
-                            db  c11r
-                            db  c11r
+                            db	c11r
+                            db	c11r
+                            db	c11r
+                            db	c11r
+                            db	c11r
                 ; кадр 2
-                            db  c11y
-                            db  c11y
-                            db  c11y
-                            db  c11y
-                            db  c11y
+                            db	c11y
+                            db	c11y
+                            db	c11y
+                            db	c11y
+                            db	c11y
                 ; кадр 3
-                            db  c11g
-                            db  c11g
-                            db  c11g
-                            db  c11g
-                            db  c11g
+                            db	c11g
+                            db	c11g
+                            db	c11g
+                            db	c11g
+                            db	c11g
                 ; кадр 4
-                            db  c11b
-                            db  c11b
-                            db  c11b
-                            db  c11b
-                            db  c11b         
+                            db	c11b
+                            db	c11b
+                            db	c11b
+                            db	c11b
+                            db	c11b
                 ; кадр 5
-                            db  c11m
-                            db  c11m
-                            db  c11m
-                            db  c11m
-                            db  c11m         
+                            db	c11m
+                            db	c11m
+                            db	c11m
+                            db	c11m
+                            db	c11m
                 ; кадр 6
-                            db  c11w
-                            db  c11w
-                            db  c11w
-                            db  c11w
-                            db  c11w                                                                         
+                            db	c11w
+                            db	c11w
+                            db	c11w
+                            db	c11w
+                            db	c11w
                         endmodule

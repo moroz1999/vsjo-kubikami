@@ -14,6 +14,12 @@ hero_timer                  db	0
 hero_delay                  db	2
 hero_delay_ground           equ	2
 hero_delay_swim             equ	4
+max_health                  equ	192
+max_armor                   equ	192
+health_damage_delay         equ	25
+health                      db	max_health
+armor                       db	max_armor
+health_damage_timer         db	0
 swam_up                     db	0
 
 state_void                  equ	%00000001
@@ -38,6 +44,48 @@ jump_steps                  equ	8
 jump_type                   db	jump_type_top
 no_item_in_pocket           equ	255
 current_item                db	no_item_in_pocket
+reset_stats
+                            ld	a,max_health
+                            ld	(health),a
+
+                            ld	a,max_armor
+                            ld	(armor),a
+
+                            xor	a
+                            ld	(health_damage_timer),a
+                            ret
+update_health_damage_timer
+                            ld	a,(health_damage_timer)
+                            or	a
+                            ret	z
+
+                            dec	a
+                            ld	(health_damage_timer),a
+                            ret
+decrease_health
+                ; input:
+                ; a - damage amount
+                            ld	b,a
+
+                            ld	a,(health)
+                            or	a
+                            ret	z
+
+                            ld	a,(health_damage_timer)
+                            or	a
+                            ret	nz
+
+                            ld	a,health_damage_delay
+                            ld	(health_damage_timer),a
+
+                            ld	a,(health)
+                            sub	b
+                            jr	nc,decrease_health_store
+
+                            xor	a
+decrease_health_store
+                            ld	(health),a
+                            ret
 draw_hero
                             ld	a,(hero_x)
                             ld	d,a
@@ -47,6 +95,7 @@ draw_hero
                             call	draw.draw_gigapoint
                             ret
 recalculate
+                            call	update_health_damage_timer
                             call	update_global_y
                             call	check_elevator
                             call	check_hero_state
@@ -250,7 +299,7 @@ move_hero_down_force
                             call	z,hero_bottom
                             cp	rooms.room_change_abort
                             jr	z,move_hero_down_stand
-                            
+
                             ld	(hero_coords),de
                             call	hero.save_restore
                             ret

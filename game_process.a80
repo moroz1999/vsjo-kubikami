@@ -8,7 +8,7 @@ loop
 
                             call	calculate_state
 
-                            call    hero.recalculate
+                            call	hero.recalculate
 
                             call	hero.hero_move
                             call	hero.hero_gravity
@@ -25,10 +25,9 @@ room_logic_pointer          equ	$+1
                             call	logic.empty_room_logic
                             call	draw.switch_colors
                             call	draw.draw_state
+                            call	game_ui.draw_stats
                             xor	a
                             call	draw.border
-
-                            call	debug.print_hero_state
 
                             ld	b,1
                             call	wait

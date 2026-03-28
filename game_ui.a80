@@ -1,19 +1,95 @@
-    module  game_ui
-item_name_x         equ 0
-item_name_y         equ 23
+                        module	game_ui
+item_name_x                 equ	0
+item_name_y                 equ	22
+stats_y                     equ	23
+health_label_x              equ	0
+health_bar_x                equ	2
+armor_label_x               equ	12
+armor_bar_x                 equ	14
+stat_bar_len                equ	6
+stat_value_shift            equ	5
+stat_empty_color            equ	%00111111
+health_bar_color            equ	%01010010
+armor_bar_color             equ	%01101101
+draw_stats
+        ;   Draw current hero stats in the bottom ui row
+                            ld	hl,health_label
+                            ld	b,health_label_x
+                            ld	c,stats_y
+                            call	print.print_string
+
+                            ld	a,(hero.health)
+                            ld	b,health_bar_x
+                            ld	c,health_bar_color
+                            call	draw_stat_bar
+
+                            ld	hl,armor_label
+                            ld	b,armor_label_x
+                            ld	c,stats_y
+                            call	print.print_string
+
+                            ld	a,(hero.armor)
+                            ld	b,armor_bar_x
+                            ld	c,armor_bar_color
+                            call	draw_stat_bar
+                            ret
+draw_stat_bar
+        ;   input
+        ;   a - stat value
+        ;   b - bar x
+        ;   c - filled color
+                            srl	a
+                            srl	a
+                            srl	a
+                            srl	a
+                            srl	a
+                            cp	stat_bar_len+1
+                            jr	c,draw_stat_bar_loop
+                            ld	a,stat_bar_len
+draw_stat_bar_loop
+                            ld	l,a
+                            ld	d,b
+                            ld	e,stats_y
+                            ld	b,stat_bar_len
+draw_stat_bar_next
+                            ld	a,l
+                            or	a
+                            jr	z,draw_stat_bar_empty
+
+                            dec	l
+                            ld	a,c
+                            jr	draw_stat_bar_draw
+draw_stat_bar_empty
+                            ld	a,stat_empty_color
+draw_stat_bar_draw
+                            push	af
+                            push	bc
+                            push	de
+                            call	screen_utils.get_attrs_address
+                            pop	de
+                            pop	bc
+                            pop	af
+                            ld	(hl),a
+                            inc	d
+                            djnz	draw_stat_bar_next
+                            ret
 print_item_name
         ;   input
         ;   hl - item name string address
-                    ld  b,item_name_x
-                    ld  c,item_name_y
-                    call    print.print_string
-                    ret
-erase_item_name                    
-                    ld  hl,empty_item_name
-                    ld  b,item_name_x
-                    ld  c,item_name_y
-                    call    print.print_string
-                    ret
+                            ld	b,item_name_x
+                            ld	c,item_name_y
+                            call	print.print_string
+                            ret
+erase_item_name
+                            ld	hl,empty_item_name
+                            ld	b,item_name_x
+                            ld	c,item_name_y
+                            call	print.print_string
+                            ret
+health_label
+                            db	"h",255
+armor_label
+                            db	"a",255
 empty_item_name
-                    db "             ",255             
-    endmodule
+                            db	"             ",255
+                        endmodule

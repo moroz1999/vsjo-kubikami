@@ -10,6 +10,7 @@ start                       equ	#6000
                             call	draw.border
                             call	draw.draw_pattern
                             call	draw.draw_panel
+                            call	hero.reset_stats
                             call	rooms.init_current_room
                             jp	game_process.loop
                             include	"math.a80"
