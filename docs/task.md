@@ -1,7 +1,8 @@
-глянь по проекту, как организована обработка лифтов в комнате. кратко - есть буфер, куда при инициализации копируются указатели на лифты, принадлежащие этой комнате. нужно АНАЛОГИЧНО добавить показ повторяющихся анимаций. 
-1. структуру анимации. номер комнаты, координата, ширина, высота, колво кадров, текущий кадр, задержка, статус (on-off), указатель на данные кадров.
-2. список анимаций. добавь парочку для примера.
-3. копирование указателей на структуры анимаций в отдельный буфер при ините комнаты. 
-4. процедура обхода списка указателей анимаций текущей комнаты. 
-5. учет задержки. задержка тупо в кадрах, сколько надо пропустить.
-6. процедура отрисовки текущего кадра анимации. пример есть в animate.a80
+Review how elevator handling is organized in the project. In short: there is a buffer that, during room initialization, receives pointers to elevators that belong to the current room. We need to add repeated animation display in the same way.
+
+1. Add an animation structure with room number, coordinate, width, height, frame count, current frame, delay, status (`on` / `off`), and a pointer to frame data.
+2. Add an animation list. Include a couple of sample entries.
+3. Copy pointers to animation structures into a dedicated buffer during room initialization.
+4. Add a procedure that iterates over the pointer list for animations in the current room.
+5. Account for delay. The delay is measured in frames and simply means how many frames must be skipped.
+6. Add a procedure that draws the current animation frame. See `animate.a80` for an example.
