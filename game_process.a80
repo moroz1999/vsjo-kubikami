@@ -1,7 +1,5 @@
                         module	game_process
 loop
-                            ld	a,1
-                            call	draw.border
                             call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore
@@ -13,12 +11,9 @@ loop
                             call	hero.hero_move
                             call	hero.hero_gravity
 
-                            ld	a,2
-                            call	draw.border
                             //waterdrops are better painted in beginning of frame
                             call	waterdrops.move_waterdrops
-                            ld	a,1
-                            call	draw.border
+
                             call	teleports.check_hero
 
 room_logic_pointer          equ	$+1
@@ -26,6 +21,7 @@ room_logic_pointer          equ	$+1
                             call	draw.switch_colors
                             call	draw.draw_state
                             call	game_ui.draw_stats
+
                             xor	a
                             call	draw.border
 

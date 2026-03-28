@@ -65,6 +65,7 @@ update_health_damage_timer
 decrease_health
                 ; input:
                 ; a - damage amount
+
                             ld	b,a
 
                             ld	a,(health)

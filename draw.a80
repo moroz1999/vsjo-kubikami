@@ -73,32 +73,18 @@ switch_colors
                             ld	(color_shift),a
                             ret
 draw_state
-                            ld	a,4
-                            call	draw.border
                             call	restore_pixels
 
-                            ld	a,2
-                            call	draw.border
                             call	animate.draw_room
 
-                            ld	a,3
-                            call	draw.border
                             call	waterdrops.draw_room_waterdrops
 
-                            ld	a,5
-                            call	draw.border
                             call	elevators_draw.draw
 
-                            ld	a,6
-                            call	draw.border
                             call	rooms.draw_room_items
 
-                            ld	a,7
-                            call	draw.border
                             call	teleports.draw_current
 
-                            ld	a,1
-                            call	draw.border
                             call	hero.draw_hero
 
 

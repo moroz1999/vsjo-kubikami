@@ -47,6 +47,7 @@ draw_stat_bar
                             jr	c,draw_stat_bar_loop
                             ld	a,stat_bar_len
 draw_stat_bar_loop
+                            ld	h,0
                             ld	l,a
                             ld	d,b
                             ld	e,stats_y
@@ -62,6 +63,7 @@ draw_stat_bar_next
 draw_stat_bar_empty
                             ld	a,stat_empty_color
 draw_stat_bar_draw
+                            push	hl
                             push	af
                             push	bc
                             push	de
@@ -70,6 +72,7 @@ draw_stat_bar_draw
                             pop	bc
                             pop	af
                             ld	(hl),a
+                            pop	hl
                             inc	d
                             djnz	draw_stat_bar_next
                             ret
