@@ -85,6 +85,8 @@ draw_state
 
                             call	medkits.draw_room
 
+                            call	armors.draw_room
+
                             call	teleports.draw_current
 
                             call	hero.draw_hero

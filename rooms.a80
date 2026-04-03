@@ -3,8 +3,8 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	6
-room_number_y				db	1
+room_number_x				db	0
+room_number_y				db	0
 
 room_amount_x				equ	7
 room_amount_y				equ	4
@@ -25,6 +25,7 @@ init_current_room
 							call	gather_elevators
 							call	gather_room_animations
 							call	gather_medkits
+							call	gather_armors
 							call	gather_teleports
 							call	gather_waterdrops
 
@@ -211,6 +212,7 @@ room_pointers
 							include	"rooms_elevators.a80"
 							include	"rooms_animations.a80"
 							include	"rooms_medkits.a80"
+							include	"rooms_armors.a80"
 							include	"rooms_items.a80"
 							include	"rooms_teleports.a80"
 							include	"rooms_waterdrops.a80"

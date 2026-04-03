@@ -1,0 +1,245 @@
+                        module	armors
+                        struct	armor
+room_x                      byte
+room_y                      byte
+x                           byte
+y                           byte
+state                       byte
+type                        byte
+                        ends
+
+state_off                   equ	0
+state_on                    equ	1
+type_big                    equ	0
+type_small                  equ	1
+big_width                   equ	3
+big_height                  equ	3
+small_width                 equ	1
+small_height                equ	2
+big_armor_amount            equ	hero.max_armor
+small_armor_amount          equ	hero.max_armor/2
+
+armor_color1                equ	%01101001
+armor_color2                equ	%00001101
+
+check_hero
+                ; Load current room armors and exit on empty buffer
+                            ld	a,(rooms.room_armors_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_armors_buf
+check_hero_next
+                            push	bc
+
+                ; Read armor address into ix
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip collected armors
+                            ld	a,(ix+armor.state)
+                            cp	state_on
+                            jr	nz,check_hero_skip
+
+                            call	resolve_size
+
+                ; Reject hero positions outside the armor width
+                            ld	a,(ix+armor.x)
+                            ld	d,a
+
+                            ld	a,(hero.hero_x)
+                            sub	d
+                            jr	c,check_hero_skip
+                            cp	b
+                            jr	nc,check_hero_skip
+
+                ; Reject hero positions outside the armor height
+                            ld	a,(ix+armor.y)
+                            ld	e,a
+
+                            ld	a,(hero.hero_y)
+                            sub	e
+                            jr	c,check_hero_skip
+                            cp	c
+                            jr	nc,check_hero_skip
+
+                            call	hero.is_armor_full
+                            jr	z,check_hero_skip
+
+                            call	collect
+
+check_hero_skip
+                            pop	hl
+                            pop	bc
+                            djnz	check_hero_next
+                            ret
+
+draw_room
+                ; Load current room armors and exit on empty buffer
+                            ld	a,(rooms.room_armors_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_armors_buf
+draw_room_next
+                            push	bc
+
+                ; Read armor address into ix
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip collected armors
+                            ld	a,(ix+armor.state)
+                            cp	state_on
+                            jr	nz,draw_room_skip
+
+                ; Resolve screen address and blinking frame
+                            ld	d,(ix+armor.x)
+                            ld	e,(ix+armor.y)
+                            call	draw_armor
+
+draw_room_skip
+                            pop	hl
+                            pop	bc
+                            djnz	draw_room_next
+                            ret
+
+draw_armor
+                            ld	a,(ix+armor.type)
+                            cp	type_small
+                            jr	z,draw_armor_small
+
+                            ld	hl,armor_big_color_table
+                            call	draw_armor_row
+                            inc	e
+
+                            call	draw_armor_row
+                            inc	e
+
+                            call	draw_armor_row
+                            ret
+
+draw_armor_small
+                            ld	hl,armor_small_color
+                            push	de
+                            call	draw.draw_gigapoint
+                            pop	de
+                            inc	e
+                            ld	hl,armor_small_color
+                            call	draw.draw_gigapoint
+                            ret
+
+collect
+                ; Disable the armor, restore hero armor, and restore room area
+                            ld	a,state_off
+                            ld	(ix+armor.state),a
+
+                            ld	a,(ix+armor.type)
+                            cp	type_small
+                            ld	a,big_armor_amount
+                            jr	nz,collect_armor_amount_ready
+                            ld	a,small_armor_amount
+
+collect_armor_amount_ready
+                            call	hero.restore_armor
+                            call	resolve_size
+
+                            ld	d,(ix+armor.x)
+                            ld	e,(ix+armor.y)
+                            call	draw.restore_rectangle
+                            ret
+
+resolve_size
+                            ld	a,(ix+armor.type)
+                            cp	type_small
+                            ld	b,big_width
+                            ld	c,big_height
+                            ret	nz
+
+                            ld	b,small_width
+                            ld	c,small_height
+                            ret
+
+draw_armor_row
+                ; Draw one armor row and advance the color pointer table
+                            push	de
+                            call	draw_armor_point
+                            inc	d
+
+                            call	draw_armor_point
+                            inc	d
+
+                            call	draw_armor_point
+                            pop	de
+                            ret
+
+draw_armor_point
+                ; Draw one armor cell using a two-color pointer pair
+                            push	de
+                            ld	c,(hl)
+                            inc	hl
+                            ld	b,(hl)
+                            inc	hl
+                            push	hl
+
+                            ld	h,b
+                            ld	l,c
+                            call	draw.draw_gigapoint
+
+                            pop	hl
+                            pop	de
+                            ret
+
+amount                      equ	(armors_table_end-armors_table)/2
+
+armors_table
+                            dw	armor_0_0_1
+                            dw	armor_0_0_2
+armors_table_end
+
+armor_0_0_1
+                            armor	{
+                            0,          ; room_x
+                            0,          ; room_y
+                            10,         ; x
+                            16,         ; y
+                            state_on,   ; state
+                            type_big    ; type
+                            }
+
+armor_0_0_2
+                            armor	{
+                            0,          ; room_x
+                            0,          ; room_y
+                            14,         ; x
+                            17,         ; y
+                            state_on,   ; state
+                            type_small    ; type
+                            }
+
+
+armor_big_color
+                            db	armor_color1,armor_color2
+
+armor_small_color
+                            db	armor_color1,armor_color2
+
+armor_big_color_table
+                            dw	armor_big_color,armor_big_color,armor_big_color
+                            dw	armor_big_color,armor_big_color,armor_big_color
+                            dw	armor_big_color,armor_big_color,armor_big_color
+                        endmodule

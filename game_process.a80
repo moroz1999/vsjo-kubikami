@@ -16,6 +16,7 @@ loop
 
                             call	teleports.check_hero
                             call	medkits.check_hero
+                            call	armors.check_hero
 
 room_logic_pointer          equ	$+1
                             call	logic.empty_room_logic

@@ -68,6 +68,9 @@ check_hero_next
                             cp	height
                             jr	nc,check_hero_skip
 
+                            call	hero.is_health_full
+                            jr	z,check_hero_skip
+
                             call	collect
 
 check_hero_skip

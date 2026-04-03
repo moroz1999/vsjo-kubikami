@@ -1,0 +1,63 @@
+room_armors_lim             equ	8
+room_armors_count           db	0
+
+gather_armors
+                ; Clear current room armor count
+                            xor	a
+                            ld	(room_armors_count),a
+
+                            ld	b,armors.amount
+                ; Return if there are no armors in game
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                ; Prepare room coordinates and pointer buffer
+                            ld	iy,room_armors_buf
+
+                            ld	a,(rooms.room_number_x)
+                            ld	d,a
+
+                            ld	a,(rooms.room_number_y)
+                            ld	e,a
+
+                            ld	hl,armors.armors_table
+gather_armor_next
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip armors outside the current room
+                            ld	a,(ix+armors.armor.room_x)
+                            cp	d
+                            jr	nz,gather_armor_skip
+
+                            ld	a,(ix+armors.armor.room_y)
+                            cp	e
+                            jr	nz,gather_armor_skip
+
+                ; Store pointer in the room buffer and bump count
+                            ld	a,ixl
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,ixh
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,(room_armors_count)
+                            inc	a
+                            ld	(room_armors_count),a
+
+gather_armor_skip
+                            pop	hl
+                            djnz	gather_armor_next
+                            ret
+
+room_armors_buf
+                            ds	room_armors_lim*2
+room_armors_end

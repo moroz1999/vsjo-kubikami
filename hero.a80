@@ -81,6 +81,28 @@ decrease_health
                             ld	a,health_damage_delay
                             ld	(health_damage_timer),a
 
+                            ld	a,(armor)
+                            or	a
+                            jr	z,decrease_health_apply
+
+                            sub	b
+                            jr	c,decrease_health_overflow
+
+                            ld	(armor),a
+                            ret
+
+decrease_health_overflow
+                            add	a,b
+                            ld	c,a
+
+                            xor	a
+                            ld	(armor),a
+
+                            ld	a,b
+                            sub	c
+                            ld	b,a
+
+decrease_health_apply
                             ld	a,(health)
                             sub	b
                             jr	nc,decrease_health_store
@@ -106,6 +128,32 @@ heal
 heal_store_max
                             ld	a,max_health
                             ld	(health),a
+                            ret
+is_health_full
+                            ld	a,(health)
+                            cp	max_health
+                            ret
+restore_armor
+                ; input:
+                ; a - armor amount
+                            ld	b,a
+
+                            ld	a,(armor)
+                            add	a,b
+                            jr	c,restore_armor_store_max
+
+                            cp	max_armor
+                            jr	nc,restore_armor_store_max
+
+                            ld	(armor),a
+                            ret
+restore_armor_store_max
+                            ld	a,max_armor
+                            ld	(armor),a
+                            ret
+is_armor_full
+                            ld	a,(armor)
+                            cp	max_armor
                             ret
 draw_hero
                             ld	a,(hero_x)
