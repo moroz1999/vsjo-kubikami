@@ -1,0 +1,63 @@
+room_medkits_lim            equ	8
+room_medkits_count          db	0
+
+gather_medkits
+                ; Clear current room medkit count
+                            xor	a
+                            ld	(room_medkits_count),a
+
+                            ld	b,medkits.amount
+                ; Return if there are no medkits in game
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                ; Prepare room coordinates and pointer buffer
+                            ld	iy,room_medkits_buf
+
+                            ld	a,(rooms.room_number_x)
+                            ld	d,a
+
+                            ld	a,(rooms.room_number_y)
+                            ld	e,a
+
+                            ld	hl,medkits.medkits_table
+gather_medkit_next
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip medkits outside the current room
+                            ld	a,(ix+medkits.medkit.room_x)
+                            cp	d
+                            jr	nz,gather_medkit_skip
+
+                            ld	a,(ix+medkits.medkit.room_y)
+                            cp	e
+                            jr	nz,gather_medkit_skip
+
+                ; Store pointer in the room buffer and bump count
+                            ld	a,ixl
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,ixh
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,(room_medkits_count)
+                            inc	a
+                            ld	(room_medkits_count),a
+
+gather_medkit_skip
+                            pop	hl
+                            djnz	gather_medkit_next
+                            ret
+
+room_medkits_buf
+                            ds	room_medkits_lim*2
+room_medkits_end

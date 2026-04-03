@@ -7,7 +7,7 @@ hero_coords
 ; original coords
 ;hero_y                      db	15
 ;hero_x                      db	16
-hero_y                      db	15
+hero_y                      db	5
 hero_x                      db	16
 hero_global_y               db	3
 hero_timer                  db	0
@@ -35,11 +35,13 @@ state_movable               equ	state_swim|state_ground
 hero_state                  db	state_ground
 
 jump_step                   db	0
+jump_phase_delay            db	0
 
 jump_type_top               equ	0
 jump_type_left              equ	1
 jump_type_right             equ	2
 jump_steps                  equ	8
+jump_phase_delay_frames     equ	1
 
 jump_type                   db	jump_type_top
 no_item_in_pocket           equ	255
@@ -87,6 +89,24 @@ decrease_health
 decrease_health_store
                             ld	(health),a
                             ret
+heal
+                ; input:
+                ; a - health amount
+                            ld	b,a
+
+                            ld	a,(health)
+                            add	a,b
+                            jr	c,heal_store_max
+
+                            cp	max_health
+                            jr	nc,heal_store_max
+
+                            ld	(health),a
+                            ret
+heal_store_max
+                            ld	a,max_health
+                            ld	(health),a
+                            ret
 draw_hero
                             ld	a,(hero_x)
                             ld	d,a
@@ -120,6 +140,15 @@ hero_jump
                             cp	state_jump
                             ret	nz
 
+                            ld	a,(jump_phase_delay)
+                            or	a
+                            jr	z,hero_jump_process
+
+                            dec	a
+                            ld	(jump_phase_delay),a
+                            ret
+
+hero_jump_process
                             ld	a,(jump_type)
                             cp	jump_type_right
                             jr	z,jump_process_right
@@ -198,6 +227,9 @@ jump_process_dec
                             dec	a
                             ld	(jump_step),a
                             jr	z,hero_jump_stop
+
+                            ld	a,jump_phase_delay_frames
+                            ld	(jump_phase_delay),a
                             ret
 hero_jump_stop
                             ld	a,state_void
@@ -235,6 +267,9 @@ hero_jump_top
                             ld	a,jump_steps
                             ld	(jump_step),a
 
+                            xor	a
+                            ld	(jump_phase_delay),a
+
                             ld	a,state_jump
                             ld	(hero_state),a
 
@@ -250,6 +285,9 @@ hero_jump_right
                             ld	a,jump_steps
                             ld	(jump_step),a
 
+                            xor	a
+                            ld	(jump_phase_delay),a
+
                             ld	a,state_jump
                             ld	(hero_state),a
 
@@ -264,6 +302,9 @@ hero_jump_left
 
                             ld	a,jump_steps
                             ld	(jump_step),a
+
+                            xor	a
+                            ld	(jump_phase_delay),a
 
                             ld	a,state_jump
                             ld	(hero_state),a

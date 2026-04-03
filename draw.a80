@@ -83,6 +83,8 @@ draw_state
 
                             call	rooms.draw_room_items
 
+                            call	medkits.draw_room
+
                             call	teleports.draw_current
 
                             call	hero.draw_hero

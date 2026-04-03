@@ -1,0 +1,233 @@
+                        module	medkits
+                        struct	medkit
+room_x                      byte
+room_y                      byte
+x                           byte
+y                           byte
+state                       byte
+                        ends
+
+state_off                   equ	0
+state_on                    equ	1
+width                       equ	3
+height                      equ	3
+heal_amount                 equ	96
+
+gray_color1                 equ	%01000111
+gray_color2                 equ	%01111000
+red_color1                  equ	%00000010
+red_color2                  equ	%01010000
+
+check_hero
+                ; Load current room medkits and exit on empty buffer
+                            ld	a,(rooms.room_medkits_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_medkits_buf
+check_hero_next
+                            push	bc
+
+                ; Read medkit address into ix
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip collected medkits
+                            ld	a,(ix+medkit.state)
+                            cp	state_on
+                            jr	nz,check_hero_skip
+
+                ; Reject hero positions outside the medkit width
+                            ld	a,(ix+medkit.x)
+                            ld	d,a
+
+                            ld	a,(hero.hero_x)
+                            sub	d
+                            jr	c,check_hero_skip
+                            cp	width
+                            jr	nc,check_hero_skip
+
+                ; Reject hero positions outside the medkit height
+                            ld	a,(ix+medkit.y)
+                            ld	e,a
+
+                            ld	a,(hero.hero_y)
+                            sub	e
+                            jr	c,check_hero_skip
+                            cp	height
+                            jr	nc,check_hero_skip
+
+                            call	collect
+
+check_hero_skip
+                            pop	hl
+                            pop	bc
+                            djnz	check_hero_next
+                            ret
+
+draw_room
+                ; Load current room medkits and exit on empty buffer
+                            ld	a,(rooms.room_medkits_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_medkits_buf
+draw_room_next
+                            push	bc
+
+                ; Read medkit address into ix
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                ; Skip collected medkits
+                            ld	a,(ix+medkit.state)
+                            cp	state_on
+                            jr	nz,draw_room_skip
+
+                ; Resolve screen address and blinking frame
+                            ld	d,(ix+medkit.x)
+                            ld	e,(ix+medkit.y)
+                            call	draw_medkit
+
+draw_room_skip
+                            pop	hl
+                            pop	bc
+                            djnz	draw_room_next
+                            ret
+
+draw_medkit
+                ; Draw the medkit as a 3x3 grid of blinking gigapoints
+                            ld	hl,medkit_color_table
+                            call	draw_medkit_row
+                            inc	e
+
+                            call	draw_medkit_row
+                            inc	e
+
+                            call	draw_medkit_row
+                            ret
+
+collect
+                ; Disable the medkit, heal hero, and restore room area
+                            ld	a,state_off
+                            ld	(ix+medkit.state),a
+
+                            ld	a,heal_amount
+                            call	hero.heal
+
+                            ld	d,(ix+medkit.x)
+                            ld	e,(ix+medkit.y)
+                            ld	b,width
+                            ld	c,height
+                            call	draw.restore_rectangle
+                            ret
+
+draw_medkit_row
+                ; Draw one medkit row and advance the color pointer table
+                            push	de
+                            call	draw_medkit_point
+                            inc	d
+
+                            call	draw_medkit_point
+                            inc	d
+
+                            call	draw_medkit_point
+                            pop	de
+                            ret
+
+draw_medkit_point
+                ; Draw one medkit cell using a two-color pointer pair
+                            push	de
+                            ld	c,(hl)
+                            inc	hl
+                            ld	b,(hl)
+                            inc	hl
+                            push	hl
+
+                            ld	h,b
+                            ld	l,c
+                            call	draw.draw_gigapoint
+
+                            pop	hl
+                            pop	de
+                            ret
+
+amount                      equ	(medkits_table_end-medkits_table)/2
+
+medkits_table
+                            dw	medkit_0_0_1
+                            dw	medkit_1_1_1
+                            dw	medkit_2_1_1
+                            dw	medkit_5_0_1
+                            dw	medkit_6_1_1
+medkits_table_end
+
+medkit_0_0_1
+                            medkit	{
+                            0,        ; room_x
+                            0,        ; room_y
+                            16,       ; x
+                            16,       ; y
+                            state_on  ; state
+                            }
+
+medkit_1_1_1
+                            medkit	{
+                            1,        ; room_x
+                            1,        ; room_y
+                            7,       ; x
+                            8,       ; y
+                            state_on  ; state
+                            }
+
+medkit_2_1_1
+                            medkit	{
+                            2,        ; room_x
+                            1,        ; room_y
+                            24,       ; x
+                            6,       ; y
+                            state_on  ; state
+                            }
+
+medkit_5_0_1
+                            medkit	{
+                            5,        ; room_x
+                            0,        ; room_y
+                            26,       ; x
+                            11,       ; y
+                            state_on  ; state
+                            }
+
+medkit_6_1_1
+                            medkit	{
+                            6,        ; room_x
+                            1,        ; room_y
+                            9,       ; x
+                            18,       ; y
+                            state_on  ; state
+                            }
+medkit_gray_color
+                            db	gray_color1,gray_color2
+
+medkit_red_color
+                            db	red_color1,red_color2
+
+medkit_color_table
+                            dw	medkit_gray_color,medkit_red_color,medkit_gray_color
+                            dw	medkit_red_color,medkit_red_color,medkit_red_color
+                            dw	medkit_gray_color,medkit_red_color,medkit_gray_color
+                        endmodule

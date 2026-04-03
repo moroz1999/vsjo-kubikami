@@ -15,6 +15,7 @@ loop
                             call	waterdrops.move_waterdrops
 
                             call	teleports.check_hero
+                            call	medkits.check_hero
 
 room_logic_pointer          equ	$+1
                             call	logic.empty_room_logic

@@ -31,6 +31,7 @@ start                       equ	#6000
                             include	"swimming.a80"
                             include	"elevators.a80"
                             include	"teleports.a80"
+                            include	"medkits.a80"
                             include	"waterdrops.a80"
                             include	"debug.a80"
 rooms_data
