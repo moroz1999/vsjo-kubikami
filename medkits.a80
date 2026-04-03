@@ -5,13 +5,17 @@ room_y                      byte
 x                           byte
 y                           byte
 state                       byte
+type                        byte
                         ends
 
 state_off                   equ	0
 state_on                    equ	1
+type_big                    equ	0
+type_small                  equ	1
 width                       equ	3
 height                      equ	3
-heal_amount                 equ	96
+big_heal_amount             equ	hero.max_health
+small_heal_amount           equ	hero.max_health/2
 
 gray_color1                 equ	%01000111
 gray_color2                 equ	%01111000
@@ -111,7 +115,13 @@ draw_room_skip
 
 draw_medkit
                 ; Draw the medkit as a 3x3 grid of blinking gigapoints
-                            ld	hl,medkit_color_table
+                            ld	a,(ix+medkit.type)
+                            cp	type_small
+                            ld	hl,medkit_big_color_table
+                            jr	nz,draw_medkit_color_ready
+                            ld	hl,medkit_small_color_table
+
+draw_medkit_color_ready
                             call	draw_medkit_row
                             inc	e
 
@@ -126,7 +136,13 @@ collect
                             ld	a,state_off
                             ld	(ix+medkit.state),a
 
-                            ld	a,heal_amount
+                            ld	a,(ix+medkit.type)
+                            cp	type_small
+                            ld	a,big_heal_amount
+                            jr	nz,collect_heal_amount_ready
+                            ld	a,small_heal_amount
+
+collect_heal_amount_ready
                             call	hero.heal
 
                             ld	d,(ix+medkit.x)
@@ -178,47 +194,52 @@ medkits_table_end
 
 medkit_0_0_1
                             medkit	{
-                            0,        ; room_x
-                            0,        ; room_y
-                            16,       ; x
-                            16,       ; y
-                            state_on  ; state
+                            0,         ; room_x
+                            0,         ; room_y
+                            16,        ; x
+                            16,        ; y
+                            state_on,  ; state
+                            type_big   ; type
                             }
 
 medkit_1_1_1
                             medkit	{
-                            1,        ; room_x
-                            1,        ; room_y
-                            7,       ; x
-                            8,       ; y
-                            state_on  ; state
+                            1,         ; room_x
+                            1,         ; room_y
+                            7,         ; x
+                            8,         ; y
+                            state_on,  ; state
+                            type_big   ; type
                             }
 
 medkit_2_1_1
                             medkit	{
-                            2,        ; room_x
-                            1,        ; room_y
-                            24,       ; x
-                            6,       ; y
-                            state_on  ; state
+                            2,         ; room_x
+                            1,         ; room_y
+                            24,        ; x
+                            6,         ; y
+                            state_on,  ; state
+                            type_big   ; type
                             }
 
 medkit_5_0_1
                             medkit	{
-                            5,        ; room_x
-                            0,        ; room_y
-                            26,       ; x
-                            11,       ; y
-                            state_on  ; state
+                            5,         ; room_x
+                            0,         ; room_y
+                            26,        ; x
+                            11,        ; y
+                            state_on,  ; state
+                            type_big   ; type
                             }
 
 medkit_6_1_1
                             medkit	{
-                            6,        ; room_x
-                            1,        ; room_y
-                            9,       ; x
-                            18,       ; y
-                            state_on  ; state
+                            6,         ; room_x
+                            1,         ; room_y
+                            9,         ; x
+                            18,        ; y
+                            state_on,  ; state
+                            type_small   ; type
                             }
 medkit_gray_color
                             db	gray_color1,gray_color2
@@ -226,8 +247,13 @@ medkit_gray_color
 medkit_red_color
                             db	red_color1,red_color2
 
-medkit_color_table
+medkit_big_color_table
                             dw	medkit_gray_color,medkit_red_color,medkit_gray_color
                             dw	medkit_red_color,medkit_red_color,medkit_red_color
                             dw	medkit_gray_color,medkit_red_color,medkit_gray_color
+
+medkit_small_color_table
+                            dw	medkit_gray_color,medkit_red_color,medkit_gray_color
+                            dw	medkit_gray_color,medkit_gray_color,medkit_gray_color
+                            dw	medkit_gray_color,medkit_gray_color,medkit_gray_color
                         endmodule
