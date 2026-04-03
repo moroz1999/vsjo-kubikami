@@ -125,7 +125,7 @@ move_check_hero
                             cp	e
                             jr	nz,move_skip
 
-                            ld	a,32
+                            ld	a,16
                             call	hero.decrease_health
 move_skip
                             pop	hl
@@ -167,7 +167,7 @@ check_hero_collision
                             cp	(ix+waterdrop.room_pos_y)
                             ret	nz
 
-                            ld	a,32
+                            ld	a,16
                             call	hero.decrease_health
                             ret
 

@@ -16,10 +16,15 @@ hero_delay_ground           equ	2
 hero_delay_swim             equ	4
 max_health                  equ	192
 max_armor                   equ	192
+max_oxygen                  equ	250
 health_damage_delay         equ	25
+oxygen_health_delay         equ	50
+oxygen_health_damage        equ	16
 health                      db	max_health
 armor                       db	max_armor
+oxygen                      db	max_oxygen
 health_damage_timer         db	0
+oxygen_health_timer         db	oxygen_health_delay
 swam_up                     db	0
 
 state_void                  equ	%00000001
@@ -53,6 +58,12 @@ reset_stats
                             ld	a,max_armor
                             ld	(armor),a
 
+                            ld	a,max_oxygen
+                            ld	(oxygen),a
+
+                            ld	a,oxygen_health_delay
+                            ld	(oxygen_health_timer),a
+
                             xor	a
                             ld	(health_damage_timer),a
                             ret
@@ -66,8 +77,10 @@ update_health_damage_timer
                             ret
 decrease_health
                 ; input:
-                ; a - damage amount
+                ; a - health damage amount
 
+                            ld	c,a
+                            add	a,a
                             ld	b,a
 
                             ld	a,(health)
@@ -83,32 +96,56 @@ decrease_health
 
                             ld	a,(armor)
                             or	a
-                            jr	z,decrease_health_apply
+                            jr	z,decrease_health_no_armor
 
                             sub	b
                             jr	c,decrease_health_overflow
 
                             ld	(armor),a
-                            ret
+                            ld	a,c
+                            jr	decrease_health_apply
 
 decrease_health_overflow
                             add	a,b
-                            ld	c,a
+                            ld	d,a
 
                             xor	a
                             ld	(armor),a
 
                             ld	a,b
-                            sub	c
-                            ld	b,a
+                            sub	d
+                            srl	a
+                            add	a,c
+                            jr	decrease_health_apply
+
+decrease_health_no_armor
+                            ld	a,b
 
 decrease_health_apply
+                            ld	b,a
                             ld	a,(health)
                             sub	b
                             jr	nc,decrease_health_store
 
                             xor	a
 decrease_health_store
+                            ld	(health),a
+                            ret
+decrease_health_only
+                ; input:
+                ; a - health damage amount
+                            ld	b,a
+
+                            ld	a,(health)
+                            or	a
+                            ret	z
+
+                            ld	a,(health)
+                            sub	b
+                            jr	nc,decrease_health_only_store
+
+                            xor	a
+decrease_health_only_store
                             ld	(health),a
                             ret
 heal
@@ -155,6 +192,44 @@ is_armor_full
                             ld	a,(armor)
                             cp	max_armor
                             ret
+update_oxygen
+                ; Refill oxygen on air and apply drowning once per second underwater
+                            ld	a,(hero_state)
+                            cp	state_swim
+                            jr	z,update_oxygen_underwater
+
+                            ld	a,max_oxygen
+                            ld	(oxygen),a
+
+                            ld	a,oxygen_health_delay
+                            ld	(oxygen_health_timer),a
+                            ret
+
+update_oxygen_underwater
+                            ld	a,(oxygen)
+                            or	a
+                            jr	z,update_oxygen_damage
+
+                            dec	a
+                            ld	(oxygen),a
+                            ret	nz
+
+                            ld	a,oxygen_health_delay
+                            ld	(oxygen_health_timer),a
+                            ret
+
+update_oxygen_damage
+                            ld	a,(oxygen_health_timer)
+                            dec	a
+                            ld	(oxygen_health_timer),a
+                            ret	nz
+
+                            ld	a,oxygen_health_delay
+                            ld	(oxygen_health_timer),a
+
+                            ld	a,oxygen_health_damage
+                            call	decrease_health_only
+                            ret
 draw_hero
                             ld	a,(hero_x)
                             ld	d,a
@@ -168,6 +243,7 @@ recalculate
                             call	update_global_y
                             call	check_elevator
                             call	check_hero_state
+                            call	update_oxygen
                             ret
 update_global_y
                         ; y = hero_room_y * each_room_height + room y
