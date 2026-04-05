@@ -103,6 +103,7 @@ draw_only_leg
 
                 ; Use base Y when elevator belongs to this room
                             ld	a,(ix+elevators.elevator.room_pos_y)
+                            inc	a
                             ld	b,a
                             jr	draw_only_leg_draw
 draw_full_leg
