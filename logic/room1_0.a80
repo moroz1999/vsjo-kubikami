@@ -1,0 +1,243 @@
+                        module	room_1_0
+frames_per_second           equ	50
+rain_mode_wait_start        equ	0
+rain_mode_quarter_1         equ	1
+rain_mode_quarter_2         equ	2
+rain_mode_quarter_3         equ	3
+rain_mode_full              equ	4
+rain_mode_half              equ	5
+rain_mode_done              equ	6
+rain_wait_start_seconds     equ	5
+rain_wait_step_seconds      equ	3
+rain_wait_full_seconds      equ	10
+rain_wait_finish_seconds    equ	3
+
+logic
+                            call	update_rain_state
+                            call	apply_rain_mask
+                            ret
+
+onstart
+                            ld	a,rain_mode_wait_start
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_start_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+
+                            call	reset_room_waterdrops
+                            ret
+
+                ; Restore every buffered room drop to its source state
+reset_room_waterdrops
+                            ld	a,(rooms.room_waterdrops_count)
+                            or	a
+                            ret	z
+
+                ; Reset all current-room drops to their dormant source state
+                            ld	b,a
+                            ld	hl,rooms.room_waterdrops_buf
+reset_room_waterdrops_next
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            push	bc
+                            push	hl
+
+                            ld	h,d
+                            ld	l,e
+                            call	waterdrops.reset_drop
+
+                            pop	hl
+                            pop	bc
+                            djnz	reset_room_waterdrops_next
+                            ret
+
+update_rain_state
+                            ld	a,(rain_seconds)
+                            or	a
+                            jr	z,update_rain_state_advance
+
+                            ld	a,(rain_frames)
+                            dec	a
+                            ld	(rain_frames),a
+                            ret	nz
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+
+                            ld	a,(rain_seconds)
+                            dec	a
+                            ld	(rain_seconds),a
+                            jr	z,update_rain_state_advance
+                            ret
+
+update_rain_state_advance
+                            ld	a,(rain_mode)
+                            cp	rain_mode_wait_start
+                            jr	z,update_rain_state_quarter_1
+
+                            cp	rain_mode_quarter_1
+                            jr	z,update_rain_state_quarter_2
+
+                            cp	rain_mode_quarter_2
+                            jr	z,update_rain_state_quarter_3
+
+                            cp	rain_mode_quarter_3
+                            jr	z,update_rain_state_full
+
+                            cp	rain_mode_full
+                            jr	z,update_rain_state_half
+
+                            cp	rain_mode_half
+                            jr	z,update_rain_state_done
+
+                            ret
+
+update_rain_state_quarter_1
+                            ld	a,rain_mode_quarter_1
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_step_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+                            ret
+
+update_rain_state_quarter_2
+                            ld	a,rain_mode_quarter_2
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_step_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+                            ret
+
+update_rain_state_quarter_3
+                            ld	a,rain_mode_quarter_3
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_step_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+                            ret
+
+update_rain_state_full
+                            ld	a,rain_mode_full
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_full_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+                            ret
+
+update_rain_state_half
+                            ld	a,rain_mode_half
+                            ld	(rain_mode),a
+
+                            ld	a,rain_wait_finish_seconds
+                            ld	(rain_seconds),a
+
+                            ld	a,frames_per_second
+                            ld	(rain_frames),a
+                            ret
+
+update_rain_state_done
+                            ld	a,rain_mode_done
+                            ld	(rain_mode),a
+
+                            xor	a
+                            ld	(rain_seconds),a
+                            ld	(rain_frames),a
+                            ret
+
+apply_rain_mask
+                            ld	a,(rain_mode)
+                            cp	rain_mode_wait_start
+                            jr	z,apply_rain_mask_reset_all
+
+                            cp	rain_mode_done
+                            jr	z,apply_rain_mask_reset_all
+
+                            cp	rain_mode_full
+                            ret	z
+
+                            ld	a,(rooms.room_waterdrops_count)
+                            or	a
+                            ret	z
+
+                // keep disabled drops parked at their source position
+                            ld	b,a
+                            ld	c,0
+                            ld	hl,rooms.room_waterdrops_buf
+apply_rain_mask_next
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            push	bc
+                            push	hl
+
+                            call	is_drop_enabled
+                            or	a
+                            jr	nz,apply_rain_mask_restore
+
+                            ld	h,d
+                            ld	l,e
+                            call	waterdrops.reset_drop
+
+apply_rain_mask_restore
+                            pop	hl
+                            pop	bc
+                            inc	c
+                            djnz	apply_rain_mask_next
+                            ret
+
+apply_rain_mask_reset_all
+                            call	reset_room_waterdrops
+                            ret
+
+is_drop_enabled
+                ; input:
+                ; c - zero-based drop index in current room buffer
+                ;
+                ; output:
+                ; a - 0 if rain phase disables the drop
+                            ld	a,(rain_mode)
+                            cp	rain_mode_half
+                            jr	z,is_drop_enabled_half
+
+                            ld	b,a
+                            ld	a,c
+                            and	3
+                            cp	b
+                            jr	c,is_drop_enabled_yes
+
+                            xor	a
+                            ret
+
+is_drop_enabled_half
+                            bit	0,c
+                            jr	z,is_drop_enabled_yes
+
+                            xor	a
+                            ret
+
+is_drop_enabled_yes
+                            ld	a,1
+                            ret
+
+rain_mode                   db	rain_mode_wait_start
+rain_seconds                db	0
+rain_frames                 db	0
+                        endmodule

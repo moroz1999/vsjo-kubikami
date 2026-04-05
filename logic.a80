@@ -3,39 +3,67 @@ game_end_x                  equ	6
 game_end_y                  equ	19
 
 change_logic_pointer
-                            call	get_logic_pointer
+                            call	rooms.get_current_room_struct_pointer
+                            push	hl
+
+                            ld	de,rooms.room.logic_pointer
+                            call	rooms.get_room_field_pointer
                             ld	(game_process.room_logic_pointer),hl
+
+                            pop	hl
+                            push	hl
+
+                            ld	de,rooms.room.onstart_pointer
+                            call	rooms.get_room_field_pointer
+                            ld	(room_onstart_pointer),hl
+
+                            pop	hl
+                            ld	de,rooms.room.onend_pointer
+                            call	rooms.get_room_field_pointer
+                            ld	(room_onend_pointer),hl
                             ret
+
 get_logic_pointer
                 ; output:
-                ; hl - current room logic callback pointer 
-                            ld	a,(rooms.room_number_y)
-                            or	a
-                            jr	z,get_room_logic_skip_add
-
-                            ld	b,a
-                            xor	a
-get_room_logic_y
-                            add	rooms.room_amount_x
-                            djnz	get_room_logic_y
-get_room_logic_skip_add
-                            ld	b,a
-                            ld	a,(rooms.room_number_x)
-                            add	b
-                            add	a
-                    ; a now contains shift to room logic pointer
-
-                            ld	l,a
-                            ld	h,0
-                            ld	de,room_logic_pointers
-                            add	hl,de
-                            ex	hl,de
-                            ld	a,(de)
-                            ld	l,a
-                            inc	de
-                            ld	a,(de)
-                            ld	h,a
+                ; hl - current room logic callback pointer
+                            call	rooms.get_current_room_struct_pointer
+                            ld	de,rooms.room.logic_pointer
+                            call	rooms.get_room_field_pointer
                             ret
+
+get_room_onstart_pointer
+                ; output:
+                ; hl - current room onstart callback pointer
+                            call	rooms.get_current_room_struct_pointer
+                            ld	de,rooms.room.onstart_pointer
+                            call	rooms.get_room_field_pointer
+                            ret
+
+get_room_onend_pointer
+                ; output:
+                ; hl - current room onend callback pointer
+                            call	rooms.get_current_room_struct_pointer
+                            ld	de,rooms.room.onend_pointer
+                            call	rooms.get_room_field_pointer
+                            ret
+
+call_room_onstart
+                            ld	hl,(room_onstart_pointer)
+                            jr	call_room_callback
+
+call_room_onend
+                            ld	hl,(room_onend_pointer)
+call_room_callback
+                            ld	a,l
+                            or	h
+                            ret	z
+
+                            push	hl
+                            ret
+
+room_onstart_pointer        dw	0
+room_onend_pointer          dw	0
+
                             include	"./logic/crowbar.a80";
                             include	"./logic/stone.a80";
                             include	"./logic/toolkit.a80";
@@ -48,39 +76,8 @@ empty_room_logic
 empty_item_action
                             xor	a
                             ret
+                            include	"logic/room1_0.a80"
                             include	"logic/room2_0.a80"
                             include	"logic/room1_3.a80"
                             include	"logic/room2_1.a80"
-room_logic_pointers
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	room_2_0.logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	room_2_1.logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-
-                            dw	empty_room_logic
-                            dw	room_1_3.logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
-                            dw	empty_room_logic
                         endmodule

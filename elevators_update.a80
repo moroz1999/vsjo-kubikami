@@ -1,6 +1,6 @@
                         module	elevators_update
 update_room
-                ; move all elevators from current room's buffer up/down - calculate state only
+                ; Move elevators from the current room buffer and update their state
                             ld	a,(rooms.room_elevators_count)
                             or	a
                             ret	z
@@ -8,10 +8,11 @@ update_room
                             ld	b,a
                             ld	hl,rooms.room_elevators_buf
 elevators_update_next
+                ; Preserve the outer loop counter while IX/HL are rebuilt for one elevator
                             push	bc
 
+                ; Read the 16-bit elevator pointer from the room buffer into IX
                             ld	a,(hl)
-                ; read elevator address to ix
                             ld	ixl,a
                             inc	hl
 
@@ -19,8 +20,9 @@ elevators_update_next
                             ld	ixh,a
                             inc	hl
                             push	hl
-                ; ix now has elevator data start
+                ; IX now points to elevator data
 
+                ; Count down the already armed wait timer
                             ld	a,(ix+elevators.elevator.timer)
                             or	a
                             jr	z,elevator_move_allow
@@ -28,9 +30,11 @@ elevators_update_next
                             ld	(ix+elevators.elevator.timer),a
                             jr	elevator_move_end
 elevator_move_allow
+                ; Arm the regular per-step delay before movement runs
                             ld	a,(ix+elevators.elevator.delay)
                             ld	(ix+elevators.elevator.timer),a
 
+                ; Process only active movement states
                             ld	a,(ix+elevators.elevator.state)
                             cp	elevators.state_down
                             jr	z,elevator_move_down
@@ -38,66 +42,94 @@ elevator_move_allow
                             cp	elevators.state_up
                             jr	nz,elevator_move_end
 elevator_move_up
+                ; B = top height limit, A = current height before this frame
                             ld	a,(ix+elevators.elevator.end_height)
                             ld	b,a
 
                             ld	a,(ix+elevators.elevator.cur_height)
                             cp	b
-
                             jr	z,elevator_switch_down
+
                             inc	a
                             ld	(ix+elevators.elevator.cur_height),a
+                ; C keeps the new height across elevator_move_items
+                            ld	c,a
 
                             call	elevator_move_items
+
+                ; If this step reached the top, replace the regular delay with the edge pause
+                            ld	a,c
+                            cp	b
+                            jr	z,elevator_pause_down
 
                             jr	elevator_move_end
 elevator_switch_down
+elevator_pause_down
+                ; Reverse to downward motion and arm the shared edge pause
                             ld	a,elevators.state_down
                             ld	(ix+elevators.elevator.state),a
+                            ld	a,(ix+elevators.elevator.edge_delay)
+                            ld	(ix+elevators.elevator.timer),a
                             jr	elevator_move_end
 elevator_move_down
+                ; A = current height. Zero means the platform already sits at the bottom.
                             ld	a,(ix+elevators.elevator.cur_height)
                             or	a
-
                             jr	z,elevator_switch_up
+
                             dec	a
                             ld	(ix+elevators.elevator.cur_height),a
+                ; B keeps the new height across elevator_move_items
+                            ld	b,a
 
                             call	elevator_move_items
 
+                ; If this step reached the bottom, replace the regular delay with the edge pause
+                            ld	a,b
+                            or	a
+                            jr	z,elevator_pause_up
+
                             jr	elevator_move_end
 elevator_switch_up
+elevator_pause_up
+                ; Reverse to upward motion and arm the shared edge pause
                             ld	a,elevators.state_up
                             ld	(ix+elevators.elevator.state),a
+                            ld	a,(ix+elevators.elevator.edge_delay)
+                            ld	(ix+elevators.elevator.timer),a
                             jr	elevator_move_end
 elevator_move_end
+                ; Restore the buffer cursor and loop counter for the next elevator
                             pop	hl
                             pop	bc
                             djnz	elevators_update_next
                             ret
 elevator_move_items
-                ; Move hero together with the active elevator
-                ; ix points to elevator data
+                ; Move the hero together with the active elevator
+                ; IX = elevator data pointer
                             push	hl
                             push	de
                             push	bc
                             push	ix
+                ; Fast exit when the hero is not standing on any elevator this frame
                             ld	a,(hero.hero_elevator)
                             cp	elevators.item_on_elevator
                             jr	nz,elevator_move_items_end
 
+                ; HL = elevator under the hero, DE = elevator processed in this call
                             ld	hl,(hero.current_elevator)
-                ; Check whether hero is on this elevator
                             push	ix
                             pop	de
 
+                ; Clear carry before SBC and compare the two elevator pointers
                             or	a
                             sbc	hl,de
 
+                ; Non-zero result means the hero stands on another elevator
                             ld	a,h
                             or	l
                             jr	nz,elevator_move_items_end
-                ; Hero stands on this elevator
+                ; Hero stands on this elevator, so mirror the platform direction
                             ld	a,(ix+elevators.elevator.state)
                             cp	elevators.state_down
                             jr	z,elevator_move_items_down

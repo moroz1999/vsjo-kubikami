@@ -11,6 +11,9 @@ room_inside                 equ	1
 room_above                  equ	2
 room_below                  equ	3
 
+                ; Shared top/bottom pause in 50 Hz ticks
+edge_delay_default          equ	100
+
                         struct	elevator
 in_room                     byte
 room_x                      byte
@@ -25,6 +28,8 @@ cur_height                  byte
 end_height                  byte
 state                       byte
 delay                       byte
+                ; Shared pause for both end positions
+edge_delay                  byte
 timer                       byte
                         ends
 
@@ -56,6 +61,7 @@ elevator_1_1
                             8,           ; end_height 
                             state_up,    ; state      
                             4,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_2_3
@@ -73,6 +79,7 @@ elevator_2_3
                             44,           ; end_height 
                             state_stop,  ; state      
                             6,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_3_1
@@ -90,6 +97,7 @@ elevator_3_1
                             35,          ; end_height 
                             state_up,    ; state      
                             2,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_4_1_1
@@ -107,6 +115,7 @@ elevator_4_1_1
                             13,          ; end_height 
                             state_stop,    ; state      
                             2,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_4_1_2
@@ -124,6 +133,7 @@ elevator_4_1_2
                             13,          ; end_height 
                             state_stop,    ; state      
                             2,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_4_1_3
@@ -141,6 +151,7 @@ elevator_4_1_3
                             13,          ; end_height 
                             state_stop,    ; state      
                             1,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_4_2
@@ -158,6 +169,7 @@ elevator_4_2
                             10,           ; end_height 
                             state_up,    ; state      
                             3,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_4_3
@@ -175,6 +187,7 @@ elevator_4_3
                             13,          ; end_height 
                             state_down,  ; state      
                             3,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
 elevator_6_3
@@ -192,6 +205,7 @@ elevator_6_3
                             52,          ; end_height 
                             state_stop,  ; state      
                             4,           ; delay      
+                            edge_delay_default, ; edge_delay
                             0            ; timer      
                             }
                         endmodule

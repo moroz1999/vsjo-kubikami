@@ -3,8 +3,8 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	0
-room_number_y				db	1
+room_number_x				db	2
+room_number_y				db	0
 
 room_amount_x				equ	7
 room_amount_y				equ	4
@@ -17,6 +17,13 @@ room_bg_color_sky			equ	%01000001
 room_bg_color_wat			equ	%00000001
 
 room_change_abort			equ	255
+
+						struct	room
+data_address				word
+logic_pointer				word
+onstart_pointer				word
+onend_pointer				word
+						ends
 
 current_room_address		dw	0
 init_current_room
@@ -31,6 +38,7 @@ init_current_room
 
 							call	calculate_room_top_y
 							call	calculate_room_bottom_y
+							call	logic.call_room_onstart
 
 							call	redraw_current_room
 
@@ -51,11 +59,20 @@ get_current_room_address
 				;
                 ; output:
                 ; hl - address in memory
+							call	get_current_room_struct_pointer
+							ld	de,room.data_address
+							call	get_room_field_pointer
+							ret
+get_current_room_struct_pointer
+                ; returns current room struct pointer
+				;
+                ; output:
+                ; hl - address in memory
 							ld	a,(room_number_x)
 							ld	b,a
 							ld	a,(room_number_y)
 							ld	c,a
-							call	get_room_address
+							call	get_room_struct_pointer
 							ret
 get_room_address
                 ; return start address of room data by its x/y number
@@ -64,26 +81,37 @@ get_room_address
                 ; c - room number y
                 ; output
                 ; hl - current room address 
+							call	get_room_struct_pointer
+							ld	de,room.data_address
+							call	get_room_field_pointer
+							ret
+get_room_struct_pointer
+                ; return room struct pointer by its x/y number
+                ; input
+                ; b - room number x
+                ; c - room number y
+                ; output
+                ; hl - room struct address 
 							push	bc
 							pop	de
 							ld	a,e
 							or	a
-							jr	z,get_room_address_skip_add
+							jr	z,get_room_struct_pointer_skip_add
 							ld	b,a
 							xor	a
-get_room_address_y
+get_room_struct_pointer_y
 							add	room_amount_x
-							djnz	get_room_address_y
-get_room_address_skip_add
+							djnz	get_room_struct_pointer_y
+get_room_struct_pointer_skip_add
 							ld	c,a
 							ld	a,d
 							add	c
 							add	a
-                    ; a now contains shift to room pointer
+                    ; a now contains shift to room table pointer
 
 							ld	l,a
 							ld	h,0
-							ld	de,room_pointers
+							ld	de,rooms_table
 							add	hl,de
 							ex	hl,de
 							ld	a,(de)
@@ -91,6 +119,18 @@ get_room_address_skip_add
 							inc	de
 							ld	a,(de)
 							ld	h,a
+							ret
+get_room_field_pointer
+                ; input:
+                ; hl - room struct pointer
+                ; de - room struct field offset
+                ; output:
+                ; hl - room field pointer
+							add	hl,de
+							ld	e,(hl)
+							inc	hl
+							ld	d,(hl)
+							ex	de,hl
 							ret
 get_current_room_pixel_address
                 ; input
@@ -134,6 +174,9 @@ goto_left_room
 							ld	a,(room_number_x)
 							dec	a
 							jr	c,goto_abort
+							push	af
+							call	logic.call_room_onend
+							pop	af
 							ld	(room_number_x),a
 							call	init_current_room
 							xor	a
@@ -146,6 +189,9 @@ goto_right_room
 							inc	a
 							cp	room_amount_x
 							jr	z,goto_abort
+							push	af
+							call	logic.call_room_onend
+							pop	af
 							ld	(room_number_x),a
 							call	init_current_room
 							xor	a
@@ -158,6 +204,9 @@ goto_bottom_room
 							inc	a
 							cp	room_amount_y
 							jr	z,goto_abort
+							push	af
+							call	logic.call_room_onend
+							pop	af
 							ld	(room_number_y),a
 							call	init_current_room
 							xor	a
@@ -170,6 +219,9 @@ goto_top_room
 							dec	a
 							cp	255
 							jr	z,goto_abort
+							push	af
+							call	logic.call_room_onend
+							pop	af
 							ld	(room_number_y),a
 							call	init_current_room
 							xor	a
@@ -177,38 +229,239 @@ goto_top_room
 goto_abort
 							ld	a,room_change_abort
 							ret
-room_pointers
-							dw	room_0_0
-							dw	room_1_0
-							dw	room_2_0
-							dw	room_3_0
-							dw	room_4_0
-							dw	room_5_0
-							dw	room_6_0
+rooms_table
+							dw	room_0_0_info
+							dw	room_1_0_info
+							dw	room_2_0_info
+							dw	room_3_0_info
+							dw	room_4_0_info
+							dw	room_5_0_info
+							dw	room_6_0_info
 
-							dw	room_0_1
-							dw	room_1_1
-							dw	room_2_1
-							dw	room_3_1
-							dw	room_4_1
-							dw	room_5_1
-							dw	room_6_1
+							dw	room_0_1_info
+							dw	room_1_1_info
+							dw	room_2_1_info
+							dw	room_3_1_info
+							dw	room_4_1_info
+							dw	room_5_1_info
+							dw	room_6_1_info
 
-							dw	room_0_2
-							dw	room_1_2
-							dw	room_2_2
-							dw	room_3_2
-							dw	room_4_2
-							dw	room_5_2
-							dw	room_6_2
+							dw	room_0_2_info
+							dw	room_1_2_info
+							dw	room_2_2_info
+							dw	room_3_2_info
+							dw	room_4_2_info
+							dw	room_5_2_info
+							dw	room_6_2_info
 
-							dw	room_0_3
-							dw	room_1_3
-							dw	room_2_3
-							dw	room_3_3
-							dw	room_4_3
-							dw	room_5_3
-							dw	room_6_3
+							dw	room_0_3_info
+							dw	room_1_3_info
+							dw	room_2_3_info
+							dw	room_3_3_info
+							dw	room_4_3_info
+							dw	room_5_3_info
+							dw	room_6_3_info
+rooms_table_end
+
+room_0_0_info
+							room	{
+							room_0_0,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_1_0_info
+							room	{
+							room_1_0,                 ; data_address
+							logic.room_1_0.logic,     ; logic_pointer
+							logic.room_1_0.onstart,   ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_2_0_info
+							room	{
+							room_2_0,                 ; data_address
+							logic.room_2_0.logic,     ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_3_0_info
+							room	{
+							room_3_0,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_4_0_info
+							room	{
+							room_4_0,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_5_0_info
+							room	{
+							room_5_0,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_6_0_info
+							room	{
+							room_6_0,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+
+room_0_1_info
+							room	{
+							room_0_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_1_1_info
+							room	{
+							room_1_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_2_1_info
+							room	{
+							room_2_1,                 ; data_address
+							logic.room_2_1.logic,     ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_3_1_info
+							room	{
+							room_3_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_4_1_info
+							room	{
+							room_4_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_5_1_info
+							room	{
+							room_5_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_6_1_info
+							room	{
+							room_6_1,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+
+room_0_2_info
+							room	{
+							room_0_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_1_2_info
+							room	{
+							room_1_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_2_2_info
+							room	{
+							room_2_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_3_2_info
+							room	{
+							room_3_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_4_2_info
+							room	{
+							room_4_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_5_2_info
+							room	{
+							room_5_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_6_2_info
+							room	{
+							room_6_2,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+
+room_0_3_info
+							room	{
+							room_0_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_1_3_info
+							room	{
+							room_1_3,                 ; data_address
+							logic.room_1_3.logic,     ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_2_3_info
+							room	{
+							room_2_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_3_3_info
+							room	{
+							room_3_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_4_3_info
+							room	{
+							room_4_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_5_3_info
+							room	{
+							room_5_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
+room_6_3_info
+							room	{
+							room_6_3,                 ; data_address
+							logic.empty_room_logic,   ; logic_pointer
+							0,                        ; onstart_pointer
+							0                         ; onend_pointer
+							}
 							include	"rooms_elevators.a80"
 							include	"rooms_animations.a80"
 							include	"rooms_medkits.a80"

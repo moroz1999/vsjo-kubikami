@@ -16,6 +16,27 @@ type_always                 equ	1
 type_falling                equ	0
 amount                      equ	(waterdrops_table_end-waterdrops_table)/2
 waterdrop_color             db	%01001001,%01111000
+
+reset_drop
+                ; input:
+                ; hl - waterdrop struct pointer
+                ;
+                ; output:
+                ; hl - points to waterdrop.state
+                            inc	hl
+                            inc	hl
+                            ld	a,(hl)
+                            inc	hl
+                            inc	hl
+                            ld	(hl),a
+                            inc	hl
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(hl),a
+                            inc	hl
+                            ld	(hl),state_delay
+                            ret
+
 draw_room_waterdrops
                             ld	a,(rooms.room_waterdrops_count)
                             or	a
@@ -224,7 +245,7 @@ waterdrop_1_0_1
                             0,  //room_start_y
                             0,  //room_pos_x
                             0   //room_pos_y
-                            27  //delay
+                            14  //delay
                             84  //timer
                             0   //state_delay
                             type_falling //type
@@ -237,7 +258,7 @@ waterdrop_1_0_2
                             0,  //room_start_y
                             1,  //room_pos_x
                             0   //room_pos_y
-                            14  //delay
+                            7   //delay
                             33  //timer
                             0   //state_delay
                             type_falling //type
@@ -250,7 +271,7 @@ waterdrop_1_0_3
                             0,  //room_start_y
                             2,  //room_pos_x
                             0   //room_pos_y
-                            42  //delay
+                            21  //delay
                             51  //timer
                             0   //state_delay
                             type_falling //type
@@ -263,7 +284,7 @@ waterdrop_1_0_4
                             0,  //room_start_y
                             3,  //room_pos_x
                             0   //room_pos_y
-                            18  //delay
+                            9   //delay
                             76  //timer
                             0   //state_delay
                             type_falling //type
@@ -276,7 +297,7 @@ waterdrop_1_0_5
                             0,  //room_start_y
                             4,  //room_pos_x
                             0   //room_pos_y
-                            36  //delay
+                            18  //delay
                             65  //timer
                             0   //state_delay
                             type_falling //type
@@ -289,7 +310,7 @@ waterdrop_1_0_6
                             0,  //room_start_y
                             5,  //room_pos_x
                             0   //room_pos_y
-                            15  //delay
+                            8   //delay
                             87  //timer
                             0   //state_delay
                             type_falling //type
@@ -302,7 +323,7 @@ waterdrop_1_0_7
                             0,  //room_start_y
                             6,  //room_pos_x
                             0   //room_pos_y
-                            28  //delay
+                            14  //delay
                             39  //timer
                             0   //state_delay
                             type_falling //type
@@ -315,7 +336,7 @@ waterdrop_1_0_8
                             0,  //room_start_y
                             7,  //room_pos_x
                             0   //room_pos_y
-                            33  //delay
+                            17  //delay
                             55  //timer
                             0   //state_delay
                             type_falling //type
@@ -328,7 +349,7 @@ waterdrop_1_0_9
                             0,  //room_start_y
                             8,  //room_pos_x
                             0   //room_pos_y
-                            11  //delay
+                            6   //delay
                             70  //timer
                             0   //state_delay
                             type_falling //type
@@ -341,7 +362,7 @@ waterdrop_1_0_10
                             0,  //room_start_y
                             9,  //room_pos_x
                             0   //room_pos_y
-                            22  //delay
+                            11  //delay
                             45  //timer
                             0   //state_delay
                             type_falling //type
@@ -354,7 +375,7 @@ waterdrop_1_0_11
                             0,  //room_start_y
                             10,  //room_pos_x
                             0   //room_pos_y
-                            39  //delay
+                            20  //delay
                             60  //timer
                             0   //state_delay
                             type_falling //type
@@ -367,7 +388,7 @@ waterdrop_1_0_12
                             0,  //room_start_y
                             11,  //room_pos_x
                             0   //room_pos_y
-                            19  //delay
+                            10  //delay
                             72  //timer
                             0   //state_delay
                             type_falling //type
@@ -380,7 +401,7 @@ waterdrop_1_0_13
                             0,  //room_start_y
                             12,  //room_pos_x
                             0   //room_pos_y
-                            44  //delay
+                            22  //delay
                             38  //timer
                             0   //state_delay
                             type_falling //type
@@ -393,7 +414,7 @@ waterdrop_1_0_14
                             0,  //room_start_y
                             13,  //room_pos_x
                             0   //room_pos_y
-                            30  //delay
+                            15  //delay
                             58  //timer
                             0   //state_delay
                             type_falling //type
@@ -406,7 +427,7 @@ waterdrop_1_0_15
                             0,  //room_start_y
                             14,  //room_pos_x
                             0   //room_pos_y
-                            25  //delay
+                            13  //delay
                             67  //timer
                             0   //state_delay
                             type_falling //type
@@ -419,7 +440,7 @@ waterdrop_1_0_16
                             0,  //room_start_y
                             15,  //room_pos_x
                             0   //room_pos_y
-                            41  //delay
+                            21  //delay
                             90  //timer
                             0   //state_delay
                             type_falling //type
@@ -432,7 +453,7 @@ waterdrop_1_0_17
                             0,  //room_start_y
                             16,  //room_pos_x
                             0   //room_pos_y
-                            23  //delay
+                            12  //delay
                             37  //timer
                             0   //state_delay
                             type_falling //type
@@ -445,7 +466,7 @@ waterdrop_1_0_18
                             0,  //room_start_y
                             17,  //room_pos_x
                             0   //room_pos_y
-                            46  //delay
+                            23  //delay
                             80  //timer
                             0   //state_delay
                             type_falling //type
@@ -458,7 +479,7 @@ waterdrop_1_0_19
                             0,  //room_start_y
                             18,  //room_pos_x
                             0   //room_pos_y
-                            12  //delay
+                            6   //delay
                             43  //timer
                             0   //state_delay
                             type_falling //type
@@ -471,7 +492,7 @@ waterdrop_1_0_20
                             0,  //room_start_y
                             19,  //room_pos_x
                             0   //room_pos_y
-                            35  //delay
+                            18  //delay
                             59  //timer
                             0   //state_delay
                             type_falling //type
@@ -484,7 +505,7 @@ waterdrop_1_0_21
                             0,  //room_start_y
                             20,  //room_pos_x
                             0   //room_pos_y
-                            29  //delay
+                            15  //delay
                             78  //timer
                             0   //state_delay
                             type_falling //type
@@ -497,7 +518,7 @@ waterdrop_1_0_22
                             0,  //room_start_y
                             21,  //room_pos_x
                             0   //room_pos_y
-                            10  //delay
+                            5   //delay
                             40  //timer
                             0   //state_delay
                             type_falling //type
@@ -510,7 +531,7 @@ waterdrop_1_0_23
                             0,  //room_start_y
                             22,  //room_pos_x
                             0   //room_pos_y
-                            38  //delay
+                            19  //delay
                             48  //timer
                             0   //state_delay
                             type_falling //type
@@ -523,7 +544,7 @@ waterdrop_1_0_24
                             0,  //room_start_y
                             23,  //room_pos_x
                             0   //room_pos_y
-                            21  //delay
+                            11  //delay
                             63  //timer
                             0   //state_delay
                             type_falling //type
@@ -536,7 +557,7 @@ waterdrop_1_0_25
                             0,  //room_start_y
                             24,  //room_pos_x
                             0   //room_pos_y
-                            26  //delay
+                            13  //delay
                             71  //timer
                             0   //state_delay
                             type_falling //type
@@ -549,7 +570,7 @@ waterdrop_1_0_26
                             0,  //room_start_y
                             25,  //room_pos_x
                             0   //room_pos_y
-                            50  //delay
+                            25  //delay
                             44  //timer
                             0   //state_delay
                             type_falling //type
@@ -562,7 +583,7 @@ waterdrop_1_0_27
                             0,  //room_start_y
                             26,  //room_pos_x
                             0   //room_pos_y
-                            13  //delay
+                            7   //delay
                             60  //timer
                             0   //state_delay
                             type_falling //type
@@ -575,7 +596,7 @@ waterdrop_1_0_28
                             0,  //room_start_y
                             27,  //room_pos_x
                             0   //room_pos_y
-                            20  //delay
+                            10  //delay
                             75  //timer
                             0   //state_delay
                             type_falling //type
@@ -588,7 +609,7 @@ waterdrop_1_0_29
                             0,  //room_start_y
                             28,  //room_pos_x
                             0   //room_pos_y
-                            17  //delay
+                            9   //delay
                             30  //timer
                             0   //state_delay
                             type_falling //type
@@ -601,7 +622,7 @@ waterdrop_1_0_30
                             0,  //room_start_y
                             29,  //room_pos_x
                             0   //room_pos_y
-                            43  //delay
+                            22  //delay
                             36  //timer
                             0   //state_delay
                             type_falling //type
@@ -614,7 +635,7 @@ waterdrop_1_0_31
                             0,  //room_start_y
                             30,  //room_pos_x
                             0   //room_pos_y
-                            16  //delay
+                            8   //delay
                             66  //timer
                             0   //state_delay
                             type_falling //type
@@ -627,7 +648,7 @@ waterdrop_1_0_32
                             0,  //room_start_y
                             31,  //room_pos_x
                             0   //room_pos_y
-                            32  //delay
+                            16  //delay
                             81  //timer
                             0   //state_delay
                             type_falling //type

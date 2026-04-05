@@ -11,15 +11,15 @@ loop
                             call	hero.hero_move
                             call	hero.hero_gravity
 
+room_logic_pointer          equ	$+1
+                            call	logic.empty_room_logic
+
                             //waterdrops are better painted in beginning of frame
                             call	waterdrops.move_waterdrops
 
                             call	teleports.check_hero
                             call	medkits.check_hero
                             call	armors.check_hero
-
-room_logic_pointer          equ	$+1
-                            call	logic.empty_room_logic
                             call	draw.switch_colors
                             call	draw.draw_state
                             call	game_ui.draw_stats
