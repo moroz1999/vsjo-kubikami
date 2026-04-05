@@ -71,6 +71,11 @@ room_onend_pointer          dw	0
                             include	"./logic/redcard.a80";
                             include	"./logic/key.a80";
                             include	"./logic/screwdriver.a80";
+                            include	"./logic/dynamite.a80";
+                            include	"./logic/handle.a80";
+                            include	"./logic/seeds.a80";
+                            include	"./logic/bottle.a80";
+                            include	"./logic/poison_bottle.a80";
 empty_room_logic
                             ret
 empty_item_action

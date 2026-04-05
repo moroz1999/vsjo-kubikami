@@ -12,5 +12,15 @@ redcard
 key
                             db	"kl@^",255                            
 screwdriver
-                            db	"otwertka",255                     
+                            db	"otwertka",255
+dynamite
+                            db	"dinamit",255
+handle
+                            db	"ru4ka",255
+seeds
+                            db	"semena",255
+bottle
+                            db	"butylka",255
+poison_bottle
+                            db	"butylka qd",255
                         endmodule

@@ -7,12 +7,12 @@ action
                             cp	3
                             jr	nz,action_false
 
-                ; hero must be between 2 and 11 x
-                            ld	a,(hero.hero_x)
-                            sub	2
-                            jr	c,action_false
+                ; hero must be between 11 and 12 x
                             ld	a,(hero.hero_x)
                             sub	11
+                            jr	c,action_false
+                            ld	a,(hero.hero_x)
+                            sub	12
                             jr	nc,action_false
                 
                 ; hero must be at 20 y
@@ -21,14 +21,9 @@ action
                             cp	20
                             jr	nz,action_false
 
-                            ; ld	d,17
-                            ; ld	e,18
-                            ; ld	b,4
-                            ; ld	c,1
-                            ; call	rooms.get_room_pixel_address
-                            ; ld	(item_animation + @animation.room_address),hl
-                            ; ld	hl,item_animation
-                            ; call	animate.start
+
+                            ld	a,animate.state_on
+                            ld	(animate.room_animation_6_3+@room_animation.state),a
 
                             ld a,elevators.state_up
                             ld ix,elevators.elevator_6_3

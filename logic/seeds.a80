@@ -1,0 +1,65 @@
+                        module	seeds
+action
+                            ld	a,(rooms.room_number_x)
+                            cp	5
+                            jr	nz,action_false
+                            ld	a,(rooms.room_number_y)
+                            cp	0
+                            jr	nz,action_false
+
+                ; hero must be between 14 and 20 x
+                            ld	a,(hero.hero_x)
+                            sub	14
+                            jr	c,action_false
+                            ld	a,(hero.hero_x)
+                            sub	20
+                            jr	nc,action_false
+
+                ; hero must be on 20 line
+                            ld	a,(hero.hero_y)
+                            cp	20
+                            jr	nz,action_false
+
+                            ld	d,14
+                            ld	e,17
+                            ld	b,5
+                            ld	c,0
+                            call	rooms.get_room_pixel_address
+                            ld	(item_animation + @animation.room_address),hl
+                            ld	hl,item_animation
+                            call	animate.start
+
+                            call	hero.delete_item_in_pocket
+
+                            ld	a,255
+                            ret
+action_false
+                            xor	a
+                            ret
+
+item_animation
+                            @animation	{
+                            3       ;frames
+                            0       ;current
+                            15      ;delay
+                            0       ;room_address
+                            4       ;width
+                            3       ;height
+                            }
+black                       equ	rooms.room_bg_color
+green                       equ	%01100100
+yel_color                   equ	%01110110
+
+animation_frame0
+                            db	black,black,black,black
+                            db	black,black,black,black
+                            db	green,black,green,black
+animation_frame1
+                            db	black,black,black,black
+                            db	green,black,green,black
+                            db	green,yel_color,green,yel_color
+animation_frame2
+                            db	green,black,green,black
+                            db	green,yel_color,green,yel_color
+                            db	green,green,green,green
+                        endmodule

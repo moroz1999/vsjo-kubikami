@@ -209,6 +209,7 @@ amount                      equ	(armors_table_end-armors_table)/2
 armors_table
                             dw	armor_0_0_1
                             dw	armor_0_0_2
+                            dw	armor_6_3_1
 armors_table_end
 
 armor_0_0_1
@@ -229,6 +230,16 @@ armor_0_0_2
                             17,         ; y
                             state_on,   ; state
                             type_small    ; type
+                            }
+
+armor_6_3_1
+                            armor	{
+                            6,          ; room_x
+                            3,          ; room_y
+                            20,         ; x
+                            17,         ; y
+                            state_on,   ; state
+                            type_big    ; type
                             }
 
 

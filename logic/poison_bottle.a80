@@ -1,0 +1,5 @@
+                        module	poison_bottle
+action
+                            xor	a
+                            ret
+                        endmodule

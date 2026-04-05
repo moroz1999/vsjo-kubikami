@@ -292,6 +292,8 @@ animations_table
                             dw	room_animation_2_2
                             dw	room_animation_2_2_2
                             dw	room_animation_0_2
+                            dw	room_animation_6_3_bg
+                            dw	room_animation_6_3
 animations_table_end
 
 room_animation_0_2
@@ -802,4 +804,77 @@ room_animation_1_1_frames
                             db	c11w
                             db	c11w
                             db	c11w
+room_animation_6_3_bg
+                            @room_animation	{
+                            6,                              ; room_x
+                            3,                              ; room_y
+
+                            2,                              ; x
+                            8,                              ; y
+                            10,                             ; width
+                            5,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            0,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_6_3_bg_frames   ; frames_ptr
+                            }
+c63bg_bl                    equ	rooms.room_bg_color
+c63bg_yg                    equ	%00100110 
+c63bg_wb                    equ	%01100111
+room_animation_6_3_bg_frames
+                ; frame 0
+                            db	c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb
+                            db	c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg
+                            db	c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb
+                            db	c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg
+                            db	c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb
+                ; frame 1
+                            db	c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl,c63bg_wb,c63bg_bl
+                            db	c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb
+                            db	c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg
+                            db	c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb
+                            db	c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg,c63bg_wb,c63bg_yg
+room_animation_6_3
+                            @room_animation	{
+                            6,                              ; room_x
+                            3,                              ; room_y
+
+                            4,                             ; x
+                            16,                             ; y
+                            6,                              ; width
+                            3,                              ; height
+
+                            4,                              ; frames
+                            0,                              ; current
+                            1,                             ; delay
+                            0,                              ; timer
+                            state_off,                      ; state
+                            room_animation_6_3_frames      ; frames_ptr
+                            }
+c63r                        equ	%01000010
+c63w                        equ	%01000111
+c63g                        equ	%00000111
+c63c                        equ	%01000101
+c63y                        equ	%01000110
+c63b                        equ	rooms.room_bg_color
+room_animation_6_3_frames
+                ; frame 0
+                            db	c63y,c63r,c63g,c63c,c63b,c63b
+                            db	c63r,c63r,c63b,c63c,c63b,c63c
+                            db	c63g,c63r,c63b,c63w,c63w,c63w
+                ; frame 1
+                            db	c63y,c63r,c63g,c63c,c63b,c63b
+                            db	c63r,c63r,c63b,c63c,c63c,c63b
+                            db	c63g,c63r,c63b,c63w,c63w,c63w
+                ; frame 2
+                            db	c63g,c63r,c63g,c63c,c63c,c63b
+                            db	c63r,c63r,c63b,c63c,c63b,c63b
+                            db	c63y,c63r,c63b,c63w,c63w,c63w
+                ; frame 3
+                            db	c63g,c63r,c63g,c63c,c63b,c63c
+                            db	c63r,c63r,c63b,c63c,c63b,c63b
+                            db	c63y,c63r,c63b,c63w,c63w,c63w
                         endmodule

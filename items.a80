@@ -79,7 +79,9 @@ key                         equ	5
 dynamite                    equ	6
 handle                      equ	7
 seeds                       equ	8
-screwdriver                 equ 9
+screwdriver                 equ	9
+bottle                      equ	10
+poison_bottle               equ	11
 
 all_items
 item_0
@@ -166,6 +168,42 @@ item_5
                             %00000110               // color1
                             %01110000               // color2
                             }
+item_6
+                            item	{
+                            dynamite                // type_id
+                            2                       // room_x
+                            3                       // room_y
+                            10                      // room_pos_x
+                            20                      // room_pos_y
+                            strings.dynamite        // name
+                            logic.dynamite.action   // logic
+                            %01010010               // color1
+                            %01110000               // color2
+                            }
+item_7
+                            item	{
+                            handle                  // type_id
+                            4                       // room_x
+                            0                       // room_y
+                            2                       // room_pos_x
+                            20                      // room_pos_y
+                            strings.handle          // name
+                            logic.handle.action     // logic
+                            %01000111               // color1
+                            %01110110               // color2
+                            }
+item_8
+                            item	{
+                            seeds                   // type_id
+                            5                       // room_x
+                            0                       // room_y
+                            15                      // room_pos_x
+                            20                      // room_pos_y
+                            strings.seeds           // name
+                            logic.seeds.action      // logic
+                            %01100100               // color1
+                            %01110110               // color2
+                            }
 
 item_9
                             item	{
@@ -176,13 +214,37 @@ item_9
                             3                       // room_y
                             ; 2                     // room_pos_x
                             ; 18                       // room_pos_y
-                            2                     // room_pos_x
+                            11                     // room_pos_x
                             20                    // room_pos_y
                             strings.screwdriver          // name
                             logic.screwdriver.action     // logic
                             %00000101               // color1
                             %00111000               // color2
-                            }                            
+                            }
+item_10
+                            item	{
+                            bottle                  // type_id
+                            6                       // room_x
+                            3                       // room_y
+                            8                      // room_pos_x
+                            5                      // room_pos_y
+                            strings.bottle          // name
+                            logic.bottle.action     // logic
+                            %01001101               // color1
+                            %01000111               // color2
+                            }
+item_11
+                            item	{
+                            poison_bottle           // type_id
+                            item_not_in_room        // room_x
+                            0                       // room_y
+                            0                       // room_pos_x
+                            0                       // room_pos_y
+                            strings.poison_bottle   // name
+                            logic.poison_bottle.action ; logic
+                            %01001101               // color1
+                            %01010010               // color2
+                            }
 items_end
                             db	items_end_marker
                         endmodule
