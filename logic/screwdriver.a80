@@ -12,7 +12,7 @@ action
                             sub	11
                             jr	c,action_false
                             ld	a,(hero.hero_x)
-                            sub	12
+                            sub	13
                             jr	nc,action_false
                 
                 ; hero must be at 20 y
@@ -24,6 +24,10 @@ action
 
                             ld	a,animate.state_on
                             ld	(animate.room_animation_6_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_2+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_4+@room_animation.state),a
 
                             ld a,elevators.state_up
                             ld ix,elevators.elevator_6_3
@@ -45,23 +49,5 @@ action
 action_false
                             xor	a
                             ret
-; item_animation
-;                             @animation	{
-;                             2       ;frames
-;                             0       ;current
-;                             25      ;delay
-;                             0       ;room_address
-;                             5       ;width
-;                             2       ;height
-;                             }
-; sky_color                   equ	rooms.room_bg_color_sky
-; blu_color                   equ	%01001101
-; bla_color                   equ	rooms.room_bg_color
 
-; animation_frame0
-;                             db	sky_color,blu_color,sky_color,blu_color,sky_color
-;                             db	blu_color,bla_color,bla_color,bla_color,blu_color
-; animation_frame1
-;                             db	sky_color,sky_color,sky_color,sky_color,sky_color
-;                             db	blu_color,bla_color,bla_color,bla_color,blu_color
                         endmodule

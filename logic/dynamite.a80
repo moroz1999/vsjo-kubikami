@@ -9,19 +9,15 @@ action
 
                 ; hero must be between 8 and 15 x
                             ld	a,(hero.hero_x)
-                            sub	8
+                            sub	20
                             jr	c,action_false
                             ld	a,(hero.hero_x)
-                            sub	15
-                            jr	nc,action_false
+                            sub	23
+                            jr	nc,action_false              
 
-                ; hero must be on 20 line
-                            ld	a,(hero.hero_y)
-                            cp	20
-                            jr	nz,action_false
 
-                            ld	d,8
-                            ld	e,16
+                            ld	d,23
+                            ld	e,11
                             ld	b,2
                             ld	c,3
                             call	rooms.get_room_pixel_address
@@ -44,7 +40,7 @@ item_animation
                             8       ;delay
                             0       ;room_address
                             5       ;width
-                            4       ;height
+                            7       ;height
                             }
 black                       equ	rooms.room_bg_color
 red_color                   equ	%01010010
@@ -54,21 +50,33 @@ whi_color                   equ	%01000111
 animation_frame0
                             db	black,black,red_color,black,black
                             db	black,red_color,yel_color,red_color,black
+                            db	red_color,yel_color,whi_color,yel_color,red_color
+                            db	black,red_color,yel_color,red_color,black
                             db	black,black,red_color,black,black
+                            db	black,black,black,black,black
                             db	black,black,black,black,black
 animation_frame1
                             db	black,red_color,yel_color,red_color,black
                             db	red_color,yel_color,whi_color,yel_color,red_color
-                            db	black,red_color,yel_color,red_color,black
-                            db	black,black,red_color,black,black
-animation_frame2
-                            db	red_color,yel_color,whi_color,yel_color,red_color
+                            db	yel_color,whi_color,whi_color,whi_color,yel_color
+                            db	red_color,whi_color,whi_color,whi_color,red_color
                             db	yel_color,whi_color,whi_color,whi_color,yel_color
                             db	red_color,yel_color,whi_color,yel_color,red_color
                             db	black,red_color,yel_color,red_color,black
+animation_frame2
+                            db	red_color,yel_color,whi_color,yel_color,red_color
+                            db	yel_color,whi_color,whi_color,whi_color,yel_color
+                            db	whi_color,whi_color,red_color,whi_color,whi_color
+                            db	yel_color,whi_color,black,whi_color,yel_color
+                            db	whi_color,whi_color,red_color,whi_color,whi_color
+                            db	yel_color,whi_color,whi_color,whi_color,yel_color
+                            db	red_color,yel_color,whi_color,yel_color,red_color
 animation_frame3
                             db	black,black,black,black,black
-                            db	black,black,red_color,black,black
-                            db	black,red_color,yel_color,red_color,black
-                            db	red_color,black,black,black,red_color
+                            db	black,black,black,black,black
+                            db	black,black,black,black,black
+                            db	black,black,black,black,black
+                            db	black,black,black,black,black
+                            db	black,black,black,black,black
+                            db	black,black,black,black,black
                         endmodule
