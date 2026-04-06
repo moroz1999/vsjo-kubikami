@@ -209,6 +209,10 @@ amount                      equ	(armors_table_end-armors_table)/2
 armors_table
                             dw	armor_0_0_1
                             dw	armor_0_0_2
+                            dw	armor_2_0_1
+                            dw	armor_4_2_1
+                            dw	armor_5_0_1
+                            dw	armor_5_0_2
                             dw	armor_6_3_1
 armors_table_end
 
@@ -228,6 +232,46 @@ armor_0_0_2
                             0,          ; room_y
                             14,         ; x
                             17,         ; y
+                            state_on,   ; state
+                            type_small    ; type
+                            }
+
+armor_2_0_1
+                            armor	{
+                            2,          ; room_x
+                            0,          ; room_y
+                            21,         ; x
+                            18,         ; y
+                            state_on,   ; state
+                            type_small    ; type
+                            }
+
+armor_4_2_1
+                            armor	{
+                            4,          ; room_x
+                            2,          ; room_y
+                            3,          ; x
+                            3,          ; y
+                            state_on,   ; state
+                            type_big    ; type
+                            }
+
+armor_5_0_1
+                            armor	{
+                            5,          ; room_x
+                            0,          ; room_y
+                            26,         ; x
+                            3,          ; y
+                            state_on,   ; state
+                            type_big    ; type
+                            }
+
+armor_5_0_2
+                            armor	{
+                            5,          ; room_x
+                            0,          ; room_y
+                            27,         ; x
+                            8,          ; y
                             state_on,   ; state
                             type_small    ; type
                             }
