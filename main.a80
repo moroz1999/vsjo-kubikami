@@ -19,6 +19,7 @@ start                       equ	#6000
                             include	"objects.a80"
                             include	"hero.a80"
                             include	"screen_utils.a80"
+                            include	"bresenham.a80"
                             include	"animate.a80"
                             include	"logic.a80"
                             include	"items.a80"

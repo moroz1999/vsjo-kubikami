@@ -1,4 +1,41 @@
     module  room_1_3
+onstart
+                    ld  a,%01000111
+                    ld  d,22
+                    ld  e,10
+                    ld  b,29
+                    ld  c,10
+                    call    bresenham.draw_line
+
+                    ld  a,%01000110
+                    ld  d,22
+                    ld  e,10
+                    ld  b,22
+                    ld  c,4
+                    call    bresenham.draw_line
+
+                    ld  a,%01000101
+                    ld  d,22
+                    ld  e,10
+                    ld  b,28
+                    ld  c,4
+                    call    bresenham.draw_line
+
+                    ld  a,%01010010
+                    ld  d,22
+                    ld  e,10
+                    ld  b,28
+                    ld  c,16
+                    call    bresenham.draw_line
+
+                    ld  a,%01100100
+                    ld  d,22
+                    ld  e,10
+                    ld  b,16
+                    ld  c,16
+                    call    bresenham.draw_line
+                    ret
+
 logic
                     ld  a,(hero.hero_x)
                     cp  logic.game_end_x

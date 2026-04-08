@@ -3,7 +3,7 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	2
+room_number_x				db	1
 room_number_y				db	3
 
 room_amount_x				equ	7
@@ -38,6 +38,10 @@ init_current_room
 
 							call	calculate_room_top_y
 							call	calculate_room_bottom_y
+
+							call	get_current_room_address
+							ld	(current_room_address),hl
+
 							call	logic.call_room_onstart
 
 							call	redraw_current_room
@@ -47,9 +51,7 @@ init_current_room
 
 							ret
 redraw_current_room
-							call	get_current_room_address
-
-							ld	(current_room_address),hl
+							ld	hl,(current_room_address)
 							ld	de,screen_utils.attrs
 							ld	bc,room_size
 							ldir
@@ -424,7 +426,7 @@ room_1_3_info
 							room	{
 							room_1_3,                 ; data_address
 							logic.room_1_3.logic,     ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_1_3.onstart,   ; onstart_pointer
 							0                         ; onend_pointer
 							}
 room_2_3_info
@@ -494,5 +496,3 @@ room_top_y					db	0
 room_bottom_y				db	0
 
 						endmodule
-
-

@@ -1,0 +1,495 @@
+                        module	bresenham
+draw_line
+                ; input:
+                ; a - color
+                ; d - x0
+                ; e - y0
+                ; b - x1
+                ; c - y1
+                ;
+                ; output:
+                ; current room data and screen attrs are updated in place
+                ;
+                ; note:
+                ; coordinates must already be inside current room bounds
+                            ex	af,af'
+
+                            push	bc
+                            ld	h,0
+                            ld	l,e
+                        dup	5
+                            add	hl,hl
+                        edup
+                            ld	b,0
+                            ld	c,d
+                            add	hl,bc
+                            push	hl
+
+                            ld	bc,(rooms.current_room_address)
+                            add	hl,bc
+
+                            exx
+                            pop	hl
+                            ld	bc,screen_utils.attrs
+                            add	hl,bc
+                            exx
+
+                            pop	bc
+
+                            ld	a,b
+                            sub	d
+                            jr	nc,draw_line_x_pos
+                            neg
+                            ld	d,a
+                            jp	draw_line_x_neg
+
+draw_line_x_pos
+                            ld	d,a
+
+                            ld	a,c
+                            sub	e
+                            jr	nc,draw_line_x_pos_y_pos
+                            neg
+                            ld	e,a
+
+                            ld	a,d
+                            cp	e
+                            jr	c,draw_line_setup_ymajor_x_pos_y_neg
+
+                            ld	b,d
+                            inc	b
+                            ld	a,d
+                            srl	a
+                            ld	c,a
+                            jp	xmajor_x_pos_y_neg
+
+draw_line_x_pos_y_pos
+                            ld	e,a
+
+                            ld	a,d
+                            cp	e
+                            jr	c,draw_line_setup_ymajor_x_pos_y_pos
+
+                            ld	b,d
+                            inc	b
+                            ld	a,d
+                            srl	a
+                            ld	c,a
+                            jp	xmajor_x_pos_y_pos
+
+draw_line_setup_ymajor_x_pos_y_neg
+                            ld	b,e
+                            inc	b
+                            ld	a,e
+                            srl	a
+                            ld	c,a
+
+                            ld	a,d
+                            ld	d,e
+                            ld	e,a
+                            jp	ymajor_x_pos_y_neg
+
+draw_line_setup_ymajor_x_pos_y_pos
+                            ld	b,e
+                            inc	b
+                            ld	a,e
+                            srl	a
+                            ld	c,a
+
+                            ld	a,d
+                            ld	d,e
+                            ld	e,a
+                            jp	ymajor_x_pos_y_pos
+
+draw_line_x_neg
+                            ld	a,c
+                            sub	e
+                            jr	nc,draw_line_x_neg_y_pos
+                            neg
+                            ld	e,a
+
+                            ld	a,d
+                            cp	e
+                            jr	c,draw_line_setup_ymajor_x_neg_y_neg
+
+                            ld	b,d
+                            inc	b
+                            ld	a,d
+                            srl	a
+                            ld	c,a
+                            jp	xmajor_x_neg_y_neg
+
+draw_line_x_neg_y_pos
+                            ld	e,a
+
+                            ld	a,d
+                            cp	e
+                            jr	c,draw_line_setup_ymajor_x_neg_y_pos
+
+                            ld	b,d
+                            inc	b
+                            ld	a,d
+                            srl	a
+                            ld	c,a
+                            jp	xmajor_x_neg_y_pos
+
+draw_line_setup_ymajor_x_neg_y_neg
+                            ld	b,e
+                            inc	b
+                            ld	a,e
+                            srl	a
+                            ld	c,a
+
+                            ld	a,d
+                            ld	d,e
+                            ld	e,a
+                            jp	ymajor_x_neg_y_neg
+
+draw_line_setup_ymajor_x_neg_y_pos
+                            ld	b,e
+                            inc	b
+                            ld	a,e
+                            srl	a
+                            ld	c,a
+
+                            ld	a,d
+                            ld	d,e
+                            ld	e,a
+                            jp	ymajor_x_neg_y_pos
+
+xmajor_x_pos_y_pos
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	xmajor_x_pos_y_pos_step
+                            ret
+
+xmajor_x_pos_y_pos_step
+                            inc	hl
+                            exx
+                            inc	hl
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,xmajor_x_pos_y_pos
+
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,xmajor_x_pos_y_pos_room_y_done
+                            inc	h
+xmajor_x_pos_y_pos_room_y_done
+                            exx
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,xmajor_x_pos_y_pos_screen_y_done
+                            inc	h
+xmajor_x_pos_y_pos_screen_y_done
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	xmajor_x_pos_y_pos
+
+xmajor_x_pos_y_neg
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	xmajor_x_pos_y_neg_step
+                            ret
+
+xmajor_x_pos_y_neg_step
+                            inc	hl
+                            exx
+                            inc	hl
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,xmajor_x_pos_y_neg
+
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,xmajor_x_pos_y_neg_room_y_done
+                            dec	h
+xmajor_x_pos_y_neg_room_y_done
+                            exx
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,xmajor_x_pos_y_neg_screen_y_done
+                            dec	h
+xmajor_x_pos_y_neg_screen_y_done
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	xmajor_x_pos_y_neg
+
+xmajor_x_neg_y_pos
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	xmajor_x_neg_y_pos_step
+                            ret
+
+xmajor_x_neg_y_pos_step
+                            dec	hl
+                            exx
+                            dec	hl
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,xmajor_x_neg_y_pos
+
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,xmajor_x_neg_y_pos_room_y_done
+                            inc	h
+xmajor_x_neg_y_pos_room_y_done
+                            exx
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,xmajor_x_neg_y_pos_screen_y_done
+                            inc	h
+xmajor_x_neg_y_pos_screen_y_done
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	xmajor_x_neg_y_pos
+
+xmajor_x_neg_y_neg
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	xmajor_x_neg_y_neg_step
+                            ret
+
+xmajor_x_neg_y_neg_step
+                            dec	hl
+                            exx
+                            dec	hl
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,xmajor_x_neg_y_neg
+
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,xmajor_x_neg_y_neg_room_y_done
+                            dec	h
+xmajor_x_neg_y_neg_room_y_done
+                            exx
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,xmajor_x_neg_y_neg_screen_y_done
+                            dec	h
+xmajor_x_neg_y_neg_screen_y_done
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	xmajor_x_neg_y_neg
+
+ymajor_x_pos_y_pos
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	ymajor_x_pos_y_pos_step
+                            ret
+
+ymajor_x_pos_y_pos_step
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,ymajor_x_pos_y_pos_room_y_done
+                            inc	h
+ymajor_x_pos_y_pos_room_y_done
+                            exx
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,ymajor_x_pos_y_pos_screen_y_done
+                            inc	h
+ymajor_x_pos_y_pos_screen_y_done
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,ymajor_x_pos_y_pos
+
+                            inc	hl
+                            exx
+                            inc	hl
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	ymajor_x_pos_y_pos
+
+ymajor_x_pos_y_neg
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	ymajor_x_pos_y_neg_step
+                            ret
+
+ymajor_x_pos_y_neg_step
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,ymajor_x_pos_y_neg_room_y_done
+                            dec	h
+ymajor_x_pos_y_neg_room_y_done
+                            exx
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,ymajor_x_pos_y_neg_screen_y_done
+                            dec	h
+ymajor_x_pos_y_neg_screen_y_done
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,ymajor_x_pos_y_neg
+
+                            inc	hl
+                            exx
+                            inc	hl
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	ymajor_x_pos_y_neg
+
+ymajor_x_neg_y_pos
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	ymajor_x_neg_y_pos_step
+                            ret
+
+ymajor_x_neg_y_pos_step
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,ymajor_x_neg_y_pos_room_y_done
+                            inc	h
+ymajor_x_neg_y_pos_room_y_done
+                            exx
+                            ld	a,l
+                            add	32
+                            ld	l,a
+                            jr	nc,ymajor_x_neg_y_pos_screen_y_done
+                            inc	h
+ymajor_x_neg_y_pos_screen_y_done
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,ymajor_x_neg_y_pos
+
+                            dec	hl
+                            exx
+                            dec	hl
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	ymajor_x_neg_y_pos
+
+ymajor_x_neg_y_neg
+                            ex	af,af'
+                            ld	(hl),a
+                            exx
+                            ld	(hl),a
+                            exx
+                            ex	af,af'
+
+                            djnz	ymajor_x_neg_y_neg_step
+                            ret
+
+ymajor_x_neg_y_neg_step
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,ymajor_x_neg_y_neg_room_y_done
+                            dec	h
+ymajor_x_neg_y_neg_room_y_done
+                            exx
+                            ld	a,l
+                            sub	32
+                            ld	l,a
+                            jr	nc,ymajor_x_neg_y_neg_screen_y_done
+                            dec	h
+ymajor_x_neg_y_neg_screen_y_done
+                            exx
+
+                            ld	a,c
+                            sub	e
+                            ld	c,a
+                            jp	p,ymajor_x_neg_y_neg
+
+                            dec	hl
+                            exx
+                            dec	hl
+                            exx
+
+                            ld	a,c
+                            add	d
+                            ld	c,a
+                            jr	ymajor_x_neg_y_neg
+                        endmodule
