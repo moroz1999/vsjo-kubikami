@@ -8,12 +8,14 @@ draw_line
                 ; c - y1
                 ;
                 ; output:
-                ; current room data and screen attrs are updated in place
+                ; screen attrs are updated in place
                 ;
                 ; note:
                 ; coordinates must already be inside current room bounds
+                ; AF' keeps the color while A is reused for delta math
                             ex	af,af'
 
+                ; Resolve the attribute address of the first point: attrs + y0*32 + x0
                             push	bc
                             ld	h,0
                             ld	l,e
@@ -23,19 +25,17 @@ draw_line
                             ld	b,0
                             ld	c,d
                             add	hl,bc
-                            push	hl
-
-                            ld	bc,(rooms.current_room_address)
-                            add	hl,bc
-
-                            exx
-                            pop	hl
                             ld	bc,screen_utils.attrs
                             add	hl,bc
-                            exx
 
                             pop	bc
 
+                ; Split the line into one of eight octants.
+                ; After setup:
+                ; D = major-axis length
+                ; E = minor-axis length
+                ; B = remaining plotted cells
+                ; C = Bresenham error accumulator
                             ld	a,b
                             sub	d
                             jr	nc,draw_line_x_pos
@@ -44,6 +44,7 @@ draw_line
                             jp	draw_line_x_neg
 
 draw_line_x_pos
+                ; dx >= 0, now inspect dy sign and choose x-major or y-major path
                             ld	d,a
 
                             ld	a,c
@@ -64,6 +65,7 @@ draw_line_x_pos
                             jp	xmajor_x_pos_y_neg
 
 draw_line_x_pos_y_pos
+                ; dx >= 0, dy >= 0
                             ld	e,a
 
                             ld	a,d
@@ -78,6 +80,7 @@ draw_line_x_pos_y_pos
                             jp	xmajor_x_pos_y_pos
 
 draw_line_setup_ymajor_x_pos_y_neg
+                ; y-major path: count by dy, start error at dy/2, then swap major/minor deltas
                             ld	b,e
                             inc	b
                             ld	a,e
@@ -90,6 +93,7 @@ draw_line_setup_ymajor_x_pos_y_neg
                             jp	ymajor_x_pos_y_neg
 
 draw_line_setup_ymajor_x_pos_y_pos
+                ; y-major path: count by dy, start error at dy/2, then swap major/minor deltas
                             ld	b,e
                             inc	b
                             ld	a,e
@@ -102,6 +106,7 @@ draw_line_setup_ymajor_x_pos_y_pos
                             jp	ymajor_x_pos_y_pos
 
 draw_line_x_neg
+                ; dx < 0, now inspect dy sign and choose x-major or y-major path
                             ld	a,c
                             sub	e
                             jr	nc,draw_line_x_neg_y_pos
@@ -120,6 +125,7 @@ draw_line_x_neg
                             jp	xmajor_x_neg_y_neg
 
 draw_line_x_neg_y_pos
+                ; dx < 0, dy >= 0
                             ld	e,a
 
                             ld	a,d
@@ -134,6 +140,7 @@ draw_line_x_neg_y_pos
                             jp	xmajor_x_neg_y_pos
 
 draw_line_setup_ymajor_x_neg_y_neg
+                ; y-major path: count by dy, start error at dy/2, then swap major/minor deltas
                             ld	b,e
                             inc	b
                             ld	a,e
@@ -146,6 +153,7 @@ draw_line_setup_ymajor_x_neg_y_neg
                             jp	ymajor_x_neg_y_neg
 
 draw_line_setup_ymajor_x_neg_y_pos
+                ; y-major path: count by dy, start error at dy/2, then swap major/minor deltas
                             ld	b,e
                             inc	b
                             ld	a,e
@@ -157,22 +165,20 @@ draw_line_setup_ymajor_x_neg_y_pos
                             ld	e,a
                             jp	ymajor_x_neg_y_pos
 
+                ; X-major loops advance one column every iteration.
+                ; When the error goes below zero, they also advance one row and refill the error by D.
 xmajor_x_pos_y_pos
+                ; Move right, move down on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	xmajor_x_pos_y_pos_step
                             ret
 
 xmajor_x_pos_y_pos_step
+                ; Always step along X, then decide whether Y must also change
                             inc	hl
-                            exx
-                            inc	hl
-                            exx
 
                             ld	a,c
                             sub	e
@@ -182,17 +188,9 @@ xmajor_x_pos_y_pos_step
                             ld	a,l
                             add	32
                             ld	l,a
-                            jr	nc,xmajor_x_pos_y_pos_room_y_done
-                            inc	h
-xmajor_x_pos_y_pos_room_y_done
-                            exx
-                            ld	a,l
-                            add	32
-                            ld	l,a
                             jr	nc,xmajor_x_pos_y_pos_screen_y_done
                             inc	h
 xmajor_x_pos_y_pos_screen_y_done
-                            exx
 
                             ld	a,c
                             add	d
@@ -200,21 +198,17 @@ xmajor_x_pos_y_pos_screen_y_done
                             jr	xmajor_x_pos_y_pos
 
 xmajor_x_pos_y_neg
+                ; Move right, move up on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	xmajor_x_pos_y_neg_step
                             ret
 
 xmajor_x_pos_y_neg_step
+                ; Always step along X, then decide whether Y must also change
                             inc	hl
-                            exx
-                            inc	hl
-                            exx
 
                             ld	a,c
                             sub	e
@@ -224,17 +218,9 @@ xmajor_x_pos_y_neg_step
                             ld	a,l
                             sub	32
                             ld	l,a
-                            jr	nc,xmajor_x_pos_y_neg_room_y_done
-                            dec	h
-xmajor_x_pos_y_neg_room_y_done
-                            exx
-                            ld	a,l
-                            sub	32
-                            ld	l,a
                             jr	nc,xmajor_x_pos_y_neg_screen_y_done
                             dec	h
 xmajor_x_pos_y_neg_screen_y_done
-                            exx
 
                             ld	a,c
                             add	d
@@ -242,21 +228,17 @@ xmajor_x_pos_y_neg_screen_y_done
                             jr	xmajor_x_pos_y_neg
 
 xmajor_x_neg_y_pos
+                ; Move left, move down on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	xmajor_x_neg_y_pos_step
                             ret
 
 xmajor_x_neg_y_pos_step
+                ; Always step along X, then decide whether Y must also change
                             dec	hl
-                            exx
-                            dec	hl
-                            exx
 
                             ld	a,c
                             sub	e
@@ -266,17 +248,9 @@ xmajor_x_neg_y_pos_step
                             ld	a,l
                             add	32
                             ld	l,a
-                            jr	nc,xmajor_x_neg_y_pos_room_y_done
-                            inc	h
-xmajor_x_neg_y_pos_room_y_done
-                            exx
-                            ld	a,l
-                            add	32
-                            ld	l,a
                             jr	nc,xmajor_x_neg_y_pos_screen_y_done
                             inc	h
 xmajor_x_neg_y_pos_screen_y_done
-                            exx
 
                             ld	a,c
                             add	d
@@ -284,21 +258,17 @@ xmajor_x_neg_y_pos_screen_y_done
                             jr	xmajor_x_neg_y_pos
 
 xmajor_x_neg_y_neg
+                ; Move left, move up on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	xmajor_x_neg_y_neg_step
                             ret
 
 xmajor_x_neg_y_neg_step
+                ; Always step along X, then decide whether Y must also change
                             dec	hl
-                            exx
-                            dec	hl
-                            exx
 
                             ld	a,c
                             sub	e
@@ -308,49 +278,34 @@ xmajor_x_neg_y_neg_step
                             ld	a,l
                             sub	32
                             ld	l,a
-                            jr	nc,xmajor_x_neg_y_neg_room_y_done
-                            dec	h
-xmajor_x_neg_y_neg_room_y_done
-                            exx
-                            ld	a,l
-                            sub	32
-                            ld	l,a
                             jr	nc,xmajor_x_neg_y_neg_screen_y_done
                             dec	h
 xmajor_x_neg_y_neg_screen_y_done
-                            exx
 
                             ld	a,c
                             add	d
                             ld	c,a
                             jr	xmajor_x_neg_y_neg
 
+                ; Y-major loops advance one row every iteration.
+                ; When the error goes below zero, they also advance one column and refill the error by D.
 ymajor_x_pos_y_pos
+                ; Move down, move right on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	ymajor_x_pos_y_pos_step
                             ret
 
 ymajor_x_pos_y_pos_step
-                            ld	a,l
-                            add	32
-                            ld	l,a
-                            jr	nc,ymajor_x_pos_y_pos_room_y_done
-                            inc	h
-ymajor_x_pos_y_pos_room_y_done
-                            exx
+                ; Always step along Y, then decide whether X must also change
                             ld	a,l
                             add	32
                             ld	l,a
                             jr	nc,ymajor_x_pos_y_pos_screen_y_done
                             inc	h
 ymajor_x_pos_y_pos_screen_y_done
-                            exx
 
                             ld	a,c
                             sub	e
@@ -358,9 +313,6 @@ ymajor_x_pos_y_pos_screen_y_done
                             jp	p,ymajor_x_pos_y_pos
 
                             inc	hl
-                            exx
-                            inc	hl
-                            exx
 
                             ld	a,c
                             add	d
@@ -368,31 +320,22 @@ ymajor_x_pos_y_pos_screen_y_done
                             jr	ymajor_x_pos_y_pos
 
 ymajor_x_pos_y_neg
+                ; Move up, move right on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	ymajor_x_pos_y_neg_step
                             ret
 
 ymajor_x_pos_y_neg_step
-                            ld	a,l
-                            sub	32
-                            ld	l,a
-                            jr	nc,ymajor_x_pos_y_neg_room_y_done
-                            dec	h
-ymajor_x_pos_y_neg_room_y_done
-                            exx
+                ; Always step along Y, then decide whether X must also change
                             ld	a,l
                             sub	32
                             ld	l,a
                             jr	nc,ymajor_x_pos_y_neg_screen_y_done
                             dec	h
 ymajor_x_pos_y_neg_screen_y_done
-                            exx
 
                             ld	a,c
                             sub	e
@@ -400,9 +343,6 @@ ymajor_x_pos_y_neg_screen_y_done
                             jp	p,ymajor_x_pos_y_neg
 
                             inc	hl
-                            exx
-                            inc	hl
-                            exx
 
                             ld	a,c
                             add	d
@@ -410,31 +350,22 @@ ymajor_x_pos_y_neg_screen_y_done
                             jr	ymajor_x_pos_y_neg
 
 ymajor_x_neg_y_pos
+                ; Move down, move left on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	ymajor_x_neg_y_pos_step
                             ret
 
 ymajor_x_neg_y_pos_step
-                            ld	a,l
-                            add	32
-                            ld	l,a
-                            jr	nc,ymajor_x_neg_y_pos_room_y_done
-                            inc	h
-ymajor_x_neg_y_pos_room_y_done
-                            exx
+                ; Always step along Y, then decide whether X must also change
                             ld	a,l
                             add	32
                             ld	l,a
                             jr	nc,ymajor_x_neg_y_pos_screen_y_done
                             inc	h
 ymajor_x_neg_y_pos_screen_y_done
-                            exx
 
                             ld	a,c
                             sub	e
@@ -442,9 +373,6 @@ ymajor_x_neg_y_pos_screen_y_done
                             jp	p,ymajor_x_neg_y_pos
 
                             dec	hl
-                            exx
-                            dec	hl
-                            exx
 
                             ld	a,c
                             add	d
@@ -452,31 +380,22 @@ ymajor_x_neg_y_pos_screen_y_done
                             jr	ymajor_x_neg_y_pos
 
 ymajor_x_neg_y_neg
+                ; Move up, move left on overflow
                             ex	af,af'
                             ld	(hl),a
-                            exx
-                            ld	(hl),a
-                            exx
                             ex	af,af'
 
                             djnz	ymajor_x_neg_y_neg_step
                             ret
 
 ymajor_x_neg_y_neg_step
-                            ld	a,l
-                            sub	32
-                            ld	l,a
-                            jr	nc,ymajor_x_neg_y_neg_room_y_done
-                            dec	h
-ymajor_x_neg_y_neg_room_y_done
-                            exx
+                ; Always step along Y, then decide whether X must also change
                             ld	a,l
                             sub	32
                             ld	l,a
                             jr	nc,ymajor_x_neg_y_neg_screen_y_done
                             dec	h
 ymajor_x_neg_y_neg_screen_y_done
-                            exx
 
                             ld	a,c
                             sub	e
@@ -484,9 +403,6 @@ ymajor_x_neg_y_neg_screen_y_done
                             jp	p,ymajor_x_neg_y_neg
 
                             dec	hl
-                            exx
-                            dec	hl
-                            exx
 
                             ld	a,c
                             add	d
