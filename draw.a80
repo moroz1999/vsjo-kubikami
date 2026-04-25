@@ -75,6 +75,8 @@ switch_colors
 draw_state
                             call	restore_pixels
 
+                            call	logic.room_1_3.restore_previous
+
                             call	animate.draw_room
 
                             call	waterdrops.draw_room_waterdrops
@@ -88,6 +90,8 @@ draw_state
                             call	armors.draw_room
 
                             call	teleports.draw_current
+
+                            call	logic.room_1_3.draw_current
 
                             call	hero.draw_hero
 

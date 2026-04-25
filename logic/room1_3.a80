@@ -1,52 +1,569 @@
-    module  room_1_3
-onstart
-                    ret
+                        module	room_1_3        ; Room 1,3 boss logic module.
+boss_room_x                 equ	1   ; Boss room column.
+boss_room_y                 equ	3   ; Boss room row.
+boss_color                  equ	%01011001    ; Boss attribute color.
+boss_point_size             equ	2   ; Width and height of each joint marker.
+boss_vision_x_min           equ	6   ; Left edge of the hunt trigger range.
+boss_vision_x_max           equ	23  ; Right edge of the hunt trigger range.
+boss_head_move_delay        equ	5   ; Ticks between head movement steps.
+boss_idle_target_delay      equ	50  ; Ticks between idle target changes.
+boss_idle_target_range      equ	5   ; Maximum idle target offset.
+boss_mode_idle              equ	0   ; Idle movement mode value.
+boss_mode_hunt              equ	1   ; Hero tracking mode value.
+boss_jaw_anim_delay         equ	25  ; Ticks between jaw toggles.
+boss_jaw_state_open         equ	0   ; Open jaw state value.
+boss_jaw_state_closed       equ	1   ; Closed jaw state value.
+boss_jaw_x_offset           equ	boss_point_size ; Jaw column relative to the head.
+boss_jaw_top_open_y_offset  equ	-1  ; Top jaw row when open.
+boss_jaw_top_closed_y_offset
+                            equ	0   ; Top jaw row when closed.
+boss_jaw_bottom_open_y_offset
+                            equ	boss_point_size   ; Bottom jaw row when open.
+boss_jaw_bottom_closed_y_offset
+                            equ	boss_point_size-1    ; Bottom jaw row when closed.
 
-draw_lines
-                    ld  a,%01000111
-                    ld  d,22
-                    ld  e,10
-                    ld  b,29
-                    ld  c,10
-                    call    bresenham.draw_line
+boss_w1_x                   equ	1   ; First wall anchor column.
+boss_w1_y                   equ	3   ; First wall anchor row.
+boss_w2_x                   equ	1   ; Second wall anchor column.
+boss_w2_y                   equ	8   ; Second wall anchor row.
 
-                    ld  a,%01000110
-                    ld  d,22
-                    ld  e,10
-                    ld  b,22
-                    ld  c,4
-                    call    bresenham.draw_line
+boss_a_start_x              equ	6   ; Start column for joint A.
+boss_a_start_y              equ	5   ; Start row for joint A.
+boss_b_start_x              equ	8   ; Start column for joint B.
+boss_b_start_y              equ	7   ; Start row for joint B.
+boss_c_start_x              equ	14  ; Start column for head joint C.
+boss_c_start_y              equ	15  ; Start row for head joint C.
 
-                    ld  a,%01000101
-                    ld  d,22
-                    ld  e,10
-                    ld  b,28
-                    ld  c,4
-                    call    bresenham.draw_line
+onstart                    ; Room startup hook.
+                            call	reset_points ; Reset boss state for the room.
+                            ret     ; Return to room startup dispatcher.
 
-                    ld  a,%01010010
-                    ld  d,22
-                    ld  e,10
-                    ld  b,28
-                    ld  c,16
-                    call    bresenham.draw_line
+logic                      ; Per-frame room logic.
+                            call	update_points ; Advance boss joints and jaws.
 
-                    ld  a,%01100100
-                    ld  d,22
-                    ld  e,10
-                    ld  b,16
-                    ld  c,16
-                    call    bresenham.draw_line
-                    ret
+                            ld	a,(hero.hero_x) ; Read hero column.
+                            cp	logic.game_end_x ; Check for endgame column.
+                            ret	nz ; Leave if the column is not the exit.
 
-logic
-                    call    draw_lines
-                    ld  a,(hero.hero_x)
-                    cp  logic.game_end_x
-                    ret nz
-                    ld  a,(hero.hero_y)
-                    cp  logic.game_end_y
-                    ret nz
-                    jp  game_process.endgame
-                    ret
-    endmodule
+                            ld	a,(hero.hero_y) ; Read hero row.
+                            cp	logic.game_end_y ; Check for endgame row.
+                            ret	nz ; Leave if the row is not the exit.
+
+                            jp	game_process.endgame ; Start the endgame sequence.
+
+restore_previous           ; Restore the old boss drawing area.
+                            call	is_current_room ; Check whether room 1,3 is active.
+                            ret	nz ; Skip when another room is active.
+
+                            ld	a,1
+                            call	draw.border
+                            call	get_previous_bounds ; Compute the old boss footprint.
+                                
+                            call	draw.restore_rectangle ; Redraw the saved background area.
+                            ld	a,0
+                            call	draw.border
+                            ret     ; Finish previous-frame restore.
+
+draw_current               ; Draw the current boss frame.
+                            call	is_current_room ; Check whether room 1,3 is active.
+                            ret	nz ; Skip when another room is active.
+
+                            call	draw_lines ; Draw the arm segments.
+                            call	draw_points ; Draw anchor and joint markers.
+                            call	draw_jaws ; Draw the head jaw pixels.
+                            call	copy_current_to_previous ; Remember the frame for restoration.
+                            ret     ; Finish current-frame draw.
+
+is_current_room            ; Compare the active room with the boss room.
+                            ld	a,(rooms.room_number_x) ; Read current room column.
+                            cp	boss_room_x ; Compare with boss room column.
+                            ret	nz ; Return NZ when the column differs.
+
+                            ld	a,(rooms.room_number_y) ; Read current room row.
+                            cp	boss_room_y ; Compare with boss room row.
+                            ret     ; Return with comparison flags.
+
+update_points              ; Update head, derived joints, and offsets.
+                ; Head moves with delay, inner joints inherit half of the child offset.
+                            call	update_head_position ; Move head C toward its target.
+
+                            ld	a,(boss_c_x) ; Load current head column.
+                            sub	boss_c_start_x ; Convert head column to X delta.
+                            ld	(boss_c_dx),a ; Store head X delta.
+
+                            ld	a,(boss_c_y) ; Load current head row.
+                            sub	boss_c_start_y ; Convert head row to Y delta.
+                            ld	(boss_c_dy),a ; Store head Y delta.
+
+                            ld	a,(boss_c_dx) ; Reload head X delta.
+                            sra	a ; Halve the signed X delta.
+                            add	a,boss_b_start_x ; Offset joint B from its start column.
+                            ld	(boss_b_x),a ; Store joint B column.
+
+                            ld	a,(boss_c_dy) ; Reload head Y delta.
+                            sra	a ; Halve the signed Y delta.
+                            add	a,boss_b_start_y ; Offset joint B from its start row.
+                            ld	(boss_b_y),a ; Store joint B row.
+
+                            ld	a,(boss_b_x) ; Load joint B column.
+                            sub	boss_b_start_x ; Convert joint B column to X delta.
+                            sra	a ; Halve the signed joint B X delta.
+                            add	a,boss_a_start_x ; Offset joint A from its start column.
+                            ld	(boss_a_x),a ; Store joint A column.
+
+                            ld	a,(boss_b_y) ; Load joint B row.
+                            sub	boss_b_start_y ; Convert joint B row to Y delta.
+                            sra	a ; Halve the signed joint B Y delta.
+                            add	a,boss_a_start_y ; Offset joint A from its start row.
+                            ld	(boss_a_y),a ; Store joint A row.
+                            ret     ; Finish joint update.
+
+reset_points               ; Reset boss runtime state.
+                            ld	a,boss_a_start_x ; Load joint A start column.
+                            ld	(boss_a_x),a ; Reset joint A column.
+                            ld	(boss_prev_a_x),a ; Reset previous joint A column.
+
+                            ld	a,boss_a_start_y ; Load joint A start row.
+                            ld	(boss_a_y),a ; Reset joint A row.
+                            ld	(boss_prev_a_y),a ; Reset previous joint A row.
+
+                            ld	a,boss_b_start_x ; Load joint B start column.
+                            ld	(boss_b_x),a ; Reset joint B column.
+                            ld	(boss_prev_b_x),a ; Reset previous joint B column.
+
+                            ld	a,boss_b_start_y ; Load joint B start row.
+                            ld	(boss_b_y),a ; Reset joint B row.
+                            ld	(boss_prev_b_y),a ; Reset previous joint B row.
+
+                            ld	a,boss_c_start_x ; Load head start column.
+                            ld	(boss_c_x),a ; Reset head column.
+                            ld	(boss_prev_c_x),a ; Reset previous head column.
+
+                            ld	a,boss_c_start_y ; Load head start row.
+                            ld	(boss_c_y),a ; Reset head row.
+                            ld	(boss_prev_c_y),a ; Reset previous head row.
+
+                            xor	a ; Clear A for zero-valued state.
+                            ld	(boss_c_dx),a ; Clear head X delta.
+                            ld	(boss_c_dy),a ; Clear head Y delta.
+                            ld	(boss_head_move_timer),a ; Clear head movement timer.
+                            ld	(boss_mode),a ; Set idle mode.
+                            ld	(boss_idle_seed),a ; Clear idle pseudo-random seed.
+                            ld	(boss_jaw_state),a ; Set jaws to the open state.
+
+                            ld	a,boss_c_start_x ; Load default head target column.
+                            ld	(boss_head_target_x),a ; Reset head target column.
+
+                            ld	a,boss_c_start_y ; Load default head target row.
+                            ld	(boss_head_target_y),a ; Reset head target row.
+
+                            xor	a ; Clear A for immediate idle target choice.
+                            ld	(boss_idle_target_timer),a ; Expire idle target timer.
+
+                            ld	a,boss_jaw_anim_delay ; Load jaw animation delay.
+                            ld	(boss_jaw_timer),a ; Reset jaw animation timer.
+                            ret     ; Finish boss reset.
+
+update_head_position       ; Select and approach the current head target.
+                            ld	a,(hero.hero_x) ; Read hero column.
+                            cp	boss_vision_x_min ; Test against left vision edge.
+                            jr	c,update_head_position_idle ; Idle when hero is left of vision.
+
+                            cp	boss_vision_x_max+1 ; Test just beyond right vision edge.
+                            jr	nc,update_head_position_idle ; Idle when hero is right of vision.
+
+                            ld	a,boss_mode_hunt ; Load hunt mode value.
+                            ld	(boss_mode),a ; Mark boss as hunting.
+
+                            ld	a,(hero.hero_x) ; Reload hero column.
+                            ld	(boss_head_target_x),a ; Track hero column.
+
+                            ld	a,(hero.hero_y) ; Read hero row.
+                            ld	(boss_head_target_y),a ; Track hero row.
+                            jp	update_head_position_timer ; Apply movement timing.
+
+update_head_position_idle  ; Handle head targeting outside the vision range.
+                            ld	a,(boss_mode) ; Read current boss mode.
+                            cp	boss_mode_idle ; Check if idle mode is already active.
+                            jr	z,update_head_position_idle_tick ; Continue idle timer if already idle.
+
+                            call	start_idle_mode ; Switch from hunt mode to idle mode.
+                            jp	update_head_position_timer ; Apply movement timing after mode switch.
+
+update_head_position_idle_tick ; Count down the idle target timer.
+                            ld	a,(boss_idle_target_timer) ; Load idle target timer.
+                            or	a ; Test whether the timer is zero.
+                            jr	z,update_head_position_idle_next ; Pick a target when the timer expires.
+
+                            dec	a ; Decrease idle target timer.
+                            ld	(boss_idle_target_timer),a ; Store updated idle target timer.
+                            jp	update_head_position_timer ; Keep moving toward the current idle target.
+
+update_head_position_idle_next ; Select a fresh idle head target.
+                            call	choose_idle_target ; Generate a new idle target.
+                            ld	a,boss_idle_target_delay ; Reload idle target delay.
+                            ld	(boss_idle_target_timer),a ; Restart idle target timer.
+                            jp	update_head_position_timer ; Move toward the new idle target.
+
+start_idle_mode            ; Enter idle mode and force a target refresh.
+                            xor	a ; Clear A to idle mode and zero timer.
+                            ld	(boss_mode),a ; Store idle mode.
+                            ld	(boss_idle_target_timer),a ; Expire idle target timer.
+                            ret     ; Finish idle mode setup.
+
+choose_idle_target         ; Pick a pseudo-random target around the start point.
+                            call	next_idle_seed ; Advance seed for X offset.
+                            call	map_idle_offset ; Convert seed to signed X offset.
+                            add	a,boss_c_start_x ; Convert X offset to target column.
+                            ld	(boss_head_target_x),a ; Store idle target column.
+
+                            call	next_idle_seed ; Advance seed for Y offset.
+                            call	map_idle_offset ; Convert seed to signed Y offset.
+                            add	a,boss_c_start_y ; Convert Y offset to target row.
+                            ld	(boss_head_target_y),a ; Store idle target row.
+                            ret     ; Finish idle target selection.
+
+next_idle_seed             ; Advance the small idle pseudo-random seed.
+                            ld	a,(boss_idle_seed) ; Load current idle seed.
+                            add	a,73 ; Mix the seed with an additive step.
+                            xor	29 ; Mix the seed with a bit pattern.
+                            ld	(boss_idle_seed),a ; Store the next idle seed.
+                            ret     ; Return the seed in A.
+
+map_idle_offset            ; Convert seed bits into an idle target offset.
+                ; Map the seed to a signed offset in range -5..+5.
+                            and	15 ; Keep the low seed nibble.
+                            cp	11 ; Check whether the value is in 0..10.
+                            jr	c,map_idle_offset_ready ; Use values below 11 directly.
+                            sub	11 ; Fold values 11..15 back to 0..4.
+
+map_idle_offset_ready      ; Finish offset mapping.
+                            sub	boss_idle_target_range ; Shift the value into -5..+5.
+                            ret     ; Return the signed offset in A.
+
+update_jaws                ; Advance jaw animation timing.
+                            ld	a,(boss_jaw_timer) ; Load jaw timer.
+                            dec	a ; Tick jaw timer down.
+                            jr	z,update_jaws_toggle ; Toggle jaws when the timer expires.
+
+                            ld	(boss_jaw_timer),a ; Store the remaining jaw timer.
+                            ret     ; Leave jaws in the current state.
+
+update_jaws_toggle         ; Flip jaw state and reset the timer.
+                            ld	a,(boss_jaw_state) ; Load current jaw state.
+                            xor	1 ; Toggle between open and closed.
+                            ld	(boss_jaw_state),a ; Store new jaw state.
+
+                            ld	a,boss_jaw_anim_delay ; Reload jaw animation delay.
+                            ld	(boss_jaw_timer),a ; Reset jaw animation timer.
+                            ret     ; Finish jaw update.
+
+update_head_position_timer ; Gate head movement by the move timer.
+                            ld	hl,boss_head_move_timer ; Point HL at the head move timer.
+                            ld	a,(hl) ; Load head move timer.
+                            or	a ; Test whether the timer is zero.
+                            jr	z,update_head_position_move ; Move the head when the timer expires.
+
+                            dec	(hl) ; Tick down the head move timer.
+                            call	update_jaws ; Keep jaw animation running.
+                            ret     ; Skip head movement this tick.
+
+update_head_position_move  ; Move the head one step toward the target.
+                            call	move_head_x ; Step head column if needed.
+                            ld	b,a ; Save whether X moved.
+                            call	move_head_y ; Step head row if needed.
+                            or	b ; Combine X and Y movement flags.
+                            jr	z,update_head_position_jaws_only ; Skip delay reset if no movement happened.
+
+                            ld	a,boss_head_move_delay ; Reload head movement delay.
+                            ld	(boss_head_move_timer),a ; Restart head move timer.
+                            call	update_jaws ; Update jaw animation after movement.
+                            ret     ; Finish timed head movement.
+
+update_head_position_jaws_only ; Update jaws when the head is already on target.
+                            call	update_jaws ; Keep jaw animation running.
+                            ret     ; Finish without head movement.
+
+move_head_x                ; Move head column one cell toward the target.
+                            ld	a,(boss_head_target_x) ; Load target head column.
+                            ld	hl,boss_c_x ; Point HL at current head column.
+                            cp	(hl) ; Compare target column with current column.
+                            jr	c,move_head_x_left ; Move left when target is smaller.
+                            jr	z,move_head_x_done ; Report no movement when already aligned.
+
+                            inc	(hl) ; Move head one column right.
+                            ld	a,1 ; Report that X moved.
+                            ret     ; Return after right movement.
+
+move_head_x_left           ; Move head left by one column.
+                            dec	(hl) ; Move head one column left.
+                            ld	a,1 ; Report that X moved.
+                            ret     ; Return after left movement.
+
+move_head_x_done           ; Report that the head column is already aligned.
+                            xor	a ; Return zero movement flag.
+                            ret     ; Return without X movement.
+
+move_head_y                ; Move head row one cell toward the target.
+                            ld	a,(boss_head_target_y) ; Load target head row.
+                            ld	hl,boss_c_y ; Point HL at current head row.
+                            cp	(hl) ; Compare target row with current row.
+                            jr	c,move_head_y_up ; Move up when target is smaller.
+                            jr	z,move_head_y_done ; Report no movement when already aligned.
+
+                            inc	(hl) ; Move head one row down.
+                            ld	a,1 ; Report that Y moved.
+                            ret     ; Return after downward movement.
+
+move_head_y_up             ; Move head up by one row.
+                            dec	(hl) ; Move head one row up.
+                            ld	a,1 ; Report that Y moved.
+                            ret     ; Return after upward movement.
+
+move_head_y_done           ; Report that the head row is already aligned.
+                            xor	a ; Return zero movement flag.
+                            ret     ; Return without Y movement.
+
+draw_lines                 ; Draw all boss segment lines.
+                            ld	d,boss_w1_x ; Set line start column to wall anchor 1.
+                            ld	e,boss_w1_y ; Set line start row to wall anchor 1.
+                            ld	a,(boss_a_x) ; Load joint A column.
+                            ld	b,a ; Set line end column to joint A.
+                            ld	a,(boss_a_y) ; Load joint A row.
+                            ld	c,a ; Set line end row to joint A.
+                            ld	a,boss_color ; Set line color.
+                            call	bresenham.draw_line ; Draw wall anchor 1 to joint A.
+
+                            ld	d,boss_w2_x ; Set line start column to wall anchor 2.
+                            ld	e,boss_w2_y ; Set line start row to wall anchor 2.
+                            ld	a,(boss_a_x) ; Load joint A column.
+                            ld	b,a ; Set line end column to joint A.
+                            ld	a,(boss_a_y) ; Load joint A row.
+                            ld	c,a ; Set line end row to joint A.
+                            ld	a,boss_color ; Set line color.
+                            call	bresenham.draw_line ; Draw wall anchor 2 to joint A.
+
+                            ld	a,(boss_a_x) ; Load joint A column.
+                            ld	d,a ; Set line start column to joint A.
+                            ld	a,(boss_a_y) ; Load joint A row.
+                            ld	e,a ; Set line start row to joint A.
+                            ld	a,(boss_b_x) ; Load joint B column.
+                            ld	b,a ; Set line end column to joint B.
+                            ld	a,(boss_b_y) ; Load joint B row.
+                            ld	c,a ; Set line end row to joint B.
+                            ld	a,boss_color ; Set line color.
+                            call	bresenham.draw_line ; Draw joint A to joint B.
+
+                            ld	a,(boss_b_x) ; Load joint B column.
+                            ld	d,a ; Set line start column to joint B.
+                            ld	a,(boss_b_y) ; Load joint B row.
+                            ld	e,a ; Set line start row to joint B.
+                            ld	a,(boss_c_x) ; Load head column.
+                            ld	b,a ; Set line end column to head.
+                            ld	a,(boss_c_y) ; Load head row.
+                            ld	c,a ; Set line end row to head.
+                            ld	a,boss_color ; Set line color.
+                            call	bresenham.draw_line ; Draw joint B to head.
+                            ret     ; Finish line drawing.
+
+draw_points                ; Draw all boss anchor and joint squares.
+                            ld	d,boss_w1_x ; Set marker column to wall anchor 1.
+                            ld	e,boss_w1_y ; Set marker row to wall anchor 1.
+                            call	draw_point_square ; Draw wall anchor 1 marker.
+
+                            ld	d,boss_w2_x ; Set marker column to wall anchor 2.
+                            ld	e,boss_w2_y ; Set marker row to wall anchor 2.
+                            call	draw_point_square ; Draw wall anchor 2 marker.
+
+                            ld	a,(boss_a_x) ; Load joint A column.
+                            ld	d,a ; Set marker column to joint A.
+                            ld	a,(boss_a_y) ; Load joint A row.
+                            ld	e,a ; Set marker row to joint A.
+                            call	draw_point_square ; Draw joint A marker.
+
+                            ld	a,(boss_b_x) ; Load joint B column.
+                            ld	d,a ; Set marker column to joint B.
+                            ld	a,(boss_b_y) ; Load joint B row.
+                            ld	e,a ; Set marker row to joint B.
+                            call	draw_point_square ; Draw joint B marker.
+
+                            ld	a,(boss_c_x) ; Load head column.
+                            ld	d,a ; Set marker column to head.
+                            ld	a,(boss_c_y) ; Load head row.
+                            ld	e,a ; Set marker row to head.
+                            call	draw_point_square ; Draw head marker.
+                            ret     ; Finish marker drawing.
+
+draw_point_square          ; Draw one 2x2 boss marker at DE.
+                ; Paint a 2x2 marker with the point coordinate as its top-left corner.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	a,boss_color ; Load marker color.
+
+                            push	hl ; Save top-left marker address.
+                            ld	(hl),a ; Paint top-left marker cell.
+                            inc	hl ; Advance to top-right marker cell.
+                            ld	(hl),a ; Paint top-right marker cell.
+                            pop	hl ; Restore top-left marker address.
+
+                            ld	bc,rooms.room_w ; Load one room row stride.
+                            add	hl,bc ; Advance to bottom-left marker cell.
+                            ld	(hl),a ; Paint bottom-left marker cell.
+                            inc	hl ; Advance to bottom-right marker cell.
+                            ld	(hl),a ; Paint bottom-right marker cell.
+                            ret     ; Finish marker drawing.
+
+draw_jaws                  ; Draw the jaw pixels for the current jaw state.
+                            ld	a,(boss_jaw_state) ; Load current jaw state.
+                            or	a ; Test for the open jaw state.
+                            jr	z,draw_jaws_open ; Use open offsets when state is zero.
+
+                            ld	b,boss_jaw_top_closed_y_offset ; Set closed top jaw offset.
+                            ld	c,boss_jaw_bottom_closed_y_offset ; Set closed bottom jaw offset.
+                            jr	draw_jaws_apply ; Draw closed jaw pixels.
+
+draw_jaws_open             ; Prepare jaw offsets for the open state.
+                            ld	b,boss_jaw_top_open_y_offset ; Set open top jaw offset.
+                            ld	c,boss_jaw_bottom_open_y_offset ; Set open bottom jaw offset.
+
+draw_jaws_apply            ; Draw both jaw pixels from the chosen offsets.
+                            push	bc ; Preserve top and bottom jaw offsets.
+                            ld	a,(boss_c_x) ; Load head column.
+                            add	a,boss_jaw_x_offset ; Move to jaw column.
+                            ld	d,a ; Set top jaw pixel column.
+                            ld	a,(boss_c_y) ; Load head row.
+                            add	a,b ; Apply top jaw row offset.
+                            ld	e,a ; Set top jaw pixel row.
+                            call	draw_jaw_pixel ; Draw top jaw pixel.
+                            pop	bc ; Restore top and bottom jaw offsets.
+
+                            ld	a,(boss_c_x) ; Load head column.
+                            add	a,boss_jaw_x_offset ; Move to jaw column.
+                            ld	d,a ; Set bottom jaw pixel column.
+                            ld	a,(boss_c_y) ; Load head row.
+                            add	a,c ; Apply bottom jaw row offset.
+                            ld	e,a ; Set bottom jaw pixel row.
+                            call	draw_jaw_pixel ; Draw bottom jaw pixel.
+                            ret     ; Finish jaw drawing.
+
+draw_jaw_pixel             ; Draw one jaw pixel at DE.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	a,boss_color ; Load jaw color.
+                            ld	(hl),a ; Paint the jaw attribute cell.
+                            ret     ; Finish jaw pixel drawing.
+
+get_previous_bounds        ; Compute the rectangle that covered the previous boss frame.
+                ; Restore the previous boss footprint from the room background.
+                            ld	d,boss_w1_x ; Initialize min X from wall anchor 1.
+                            ld	b,boss_w1_x+boss_point_size-1 ; Initialize max X from wall anchor 1 width.
+                            ld	e,boss_w1_y ; Initialize min Y from wall anchor 1.
+                            ld	c,boss_w2_y+boss_point_size-1 ; Initialize max Y from wall anchor 2 height.
+
+                            ld	a,(boss_prev_a_x) ; Load previous joint A left column.
+                            call	update_bounds_x ; Include joint A left column.
+                            inc	a ; Move to joint A right column.
+                            call	update_bounds_x ; Include joint A right column.
+                            ld	a,(boss_prev_b_x) ; Load previous joint B left column.
+                            call	update_bounds_x ; Include joint B left column.
+                            inc	a ; Move to joint B right column.
+                            call	update_bounds_x ; Include joint B right column.
+                            ld	a,(boss_prev_c_x) ; Load previous head left column.
+                            call	update_bounds_x ; Include head left column.
+                            inc	a ; Move to head marker right column.
+                            call	update_bounds_x ; Include head marker right column.
+                            inc	a ; Move to jaw column.
+                            call	update_bounds_x ; Include jaw column.
+                            inc	a ; Move to possible far jaw column.
+                            call	update_bounds_x ; Include far jaw column.
+
+                            ld	a,(boss_prev_a_y) ; Load previous joint A top row.
+                            call	update_bounds_y ; Include joint A top row.
+                            inc	a ; Move to joint A bottom row.
+                            call	update_bounds_y ; Include joint A bottom row.
+                            ld	a,(boss_prev_b_y) ; Load previous joint B top row.
+                            call	update_bounds_y ; Include joint B top row.
+                            inc	a ; Move to joint B bottom row.
+                            call	update_bounds_y ; Include joint B bottom row.
+                            ld	a,(boss_prev_c_y) ; Load previous head top row.
+                            call	update_bounds_y ; Include head top row.
+                            inc	a ; Move to head bottom row.
+                            call	update_bounds_y ; Include head bottom row.
+                            dec	a ; Move back to head top row.
+                            dec	a ; Move to open top jaw row.
+                            call	update_bounds_y ; Include open top jaw row.
+                            ld	a,(boss_prev_c_y) ; Reload previous head top row.
+                            add	a,boss_point_size ; Move to open bottom jaw row.
+                            call	update_bounds_y ; Include open bottom jaw row.
+
+                            ld	a,b ; Load max X.
+                            sub	d ; Convert max X to width minus one.
+                            inc	a ; Convert X span to width.
+                            ld	b,a ; Return rectangle width in B.
+
+                            ld	a,c ; Load max Y.
+                            sub	e ; Convert max Y to height minus one.
+                            inc	a ; Convert Y span to height.
+                            ld	c,a ; Return rectangle height in C.
+                            ret     ; Finish previous bounds calculation.
+
+update_bounds_x            ; Expand min/max X bounds with A.
+                            cp	d ; Compare candidate X with current min X.
+                            jr	nc,update_bounds_x_max ; Skip min update when candidate is not smaller.
+                            ld	d,a ; Store new min X.
+
+update_bounds_x_max        ; Expand max X bound with A.
+                            cp	b ; Compare candidate X with current max X.
+                            ret	c ; Keep max X when candidate is smaller.
+                            ld	b,a ; Store new max X.
+                            ret     ; Finish X bounds update.
+
+update_bounds_y            ; Expand min/max Y bounds with A.
+                            cp	e ; Compare candidate Y with current min Y.
+                            jr	nc,update_bounds_y_max ; Skip min update when candidate is not smaller.
+                            ld	e,a ; Store new min Y.
+
+update_bounds_y_max        ; Expand max Y bound with A.
+                            cp	c ; Compare candidate Y with current max Y.
+                            ret	c ; Keep max Y when candidate is smaller.
+                            ld	c,a ; Store new max Y.
+                            ret     ; Finish Y bounds update.
+
+copy_current_to_previous   ; Save current boss coordinates for the next restore pass.
+                            ld	a,(boss_a_x) ; Load current joint A column.
+                            ld	(boss_prev_a_x),a ; Store previous joint A column.
+                            ld	a,(boss_a_y) ; Load current joint A row.
+                            ld	(boss_prev_a_y),a ; Store previous joint A row.
+
+                            ld	a,(boss_b_x) ; Load current joint B column.
+                            ld	(boss_prev_b_x),a ; Store previous joint B column.
+                            ld	a,(boss_b_y) ; Load current joint B row.
+                            ld	(boss_prev_b_y),a ; Store previous joint B row.
+
+                            ld	a,(boss_c_x) ; Load current head column.
+                            ld	(boss_prev_c_x),a ; Store previous head column.
+                            ld	a,(boss_c_y) ; Load current head row.
+                            ld	(boss_prev_c_y),a ; Store previous head row.
+                            ret     ; Finish previous coordinate copy.
+
+boss_a_x                    db	boss_a_start_x  ; Current joint A column.
+boss_a_y                    db	boss_a_start_y  ; Current joint A row.
+boss_b_x                    db	boss_b_start_x  ; Current joint B column.
+boss_b_y                    db	boss_b_start_y  ; Current joint B row.
+boss_c_x                    db	boss_c_start_x  ; Current head column.
+boss_c_y                    db	boss_c_start_y  ; Current head row.
+boss_prev_a_x               db	boss_a_start_x  ; Previous joint A column.
+boss_prev_a_y               db	boss_a_start_y  ; Previous joint A row.
+boss_prev_b_x               db	boss_b_start_x  ; Previous joint B column.
+boss_prev_b_y               db	boss_b_start_y  ; Previous joint B row.
+boss_prev_c_x               db	boss_c_start_x  ; Previous head column.
+boss_prev_c_y               db	boss_c_start_y  ; Previous head row.
+boss_c_dx                   db	0   ; Head X delta from its start column.
+boss_c_dy                   db	0   ; Head Y delta from its start row.
+boss_head_move_timer        db	0   ; Head movement delay countdown.
+boss_head_target_x          db	boss_c_start_x  ; Current head target column.
+boss_head_target_y          db	boss_c_start_y  ; Current head target row.
+boss_idle_target_timer      db	boss_idle_target_delay   ; Idle target refresh countdown.
+boss_idle_seed              db	0   ; Idle pseudo-random seed.
+boss_mode                   db	boss_mode_idle  ; Current boss targeting mode.
+boss_jaw_timer              db	boss_jaw_anim_delay  ; Jaw animation countdown.
+boss_jaw_state              db	boss_jaw_state_open  ; Current jaw open/closed state.
+                        endmodule               ; End room 1,3 boss logic module.
