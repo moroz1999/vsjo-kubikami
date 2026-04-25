@@ -55,16 +55,27 @@ draw_gigapoint
                         ; d - x
                         ; e - y
                         ; hl - points to first color of two
-                            ld	a,(color_shift)
-                            ld	c,a
-                            ld	b,0
-                            add	hl,bc
-                            push	hl
+                            call	select_color ; Load the color chosen for this frame.
+                            push	af ; Preserve the selected color across address lookup.
                             call	screen_utils.get_attrs_address
-                            pop	de
-                            ld	a,(de)
+                            pop	af ; Restore the selected color.
                             ld	(hl),a
 
+                            ret
+select_color
+                        ; input:
+                        ; hl - points to first color of two
+                        ; output:
+                        ; a - color chosen by the current frame color shift
+                            push	bc ; Preserve BC for callers that already use it.
+                            push	hl ; Preserve the base color pointer.
+                            ld	a,(color_shift) ; Load the current frame color index.
+                            ld	c,a ; Convert the index to an HL offset.
+                            ld	b,0 ; Clear the high offset byte.
+                            add	hl,bc ; Advance to the selected color entry.
+                            ld	a,(hl) ; Read the selected color.
+                            pop	hl ; Restore the base color pointer.
+                            pop	bc ; Restore BC for the caller.
                             ret
 color_shift                 db	0
 switch_colors

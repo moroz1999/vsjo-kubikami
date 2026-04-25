@@ -1,13 +1,19 @@
                         module	room_1_3        ; Room 1,3 boss logic module.
 boss_room_x                 equ	1   ; Boss room column.
 boss_room_y                 equ	3   ; Boss room row.
-boss_color                  equ	%01011001    ; Boss attribute color.
+boss_color1                 equ	%01011001    ; Boss attribute with the main ink/paper order.
+boss_color2                 equ	%01010011    ; Boss attribute with ink and paper swapped.
 boss_point_size             equ	2   ; Width and height of each joint marker.
 boss_vision_x_min           equ	6   ; Left edge of the hunt trigger range.
 boss_vision_x_max           equ	23  ; Right edge of the hunt trigger range.
-boss_head_move_delay        equ	5   ; Ticks between head movement steps.
+boss_head_move_delay        equ	3   ; Ticks between head movement steps.
 boss_idle_target_delay      equ	50  ; Ticks between idle target changes.
 boss_idle_target_range      equ	5   ; Maximum idle target offset.
+boss_bite_damage           equ	hero.max_health/2 ; Damage chunk used to strip armor and finish the bite.
+boss_floor_y               equ	20  ; Red floor row that must be restored under the jaws.
+boss_head_y_max            equ	18  ; Lowest row the boss head may reach.
+boss_idle_seed_init         equ	1   ; Non-zero start value for the idle LFSR.
+boss_idle_lfsr_xor_mask     equ	56  ; Feedback mask applied after the LFSR rotate.
 boss_mode_idle              equ	0   ; Idle movement mode value.
 boss_mode_hunt              equ	1   ; Hero tracking mode value.
 boss_jaw_anim_delay         equ	25  ; Ticks between jaw toggles.
@@ -15,17 +21,16 @@ boss_jaw_state_open         equ	0   ; Open jaw state value.
 boss_jaw_state_closed       equ	1   ; Closed jaw state value.
 boss_jaw_x_offset           equ	boss_point_size ; Jaw column relative to the head.
 boss_jaw_top_open_y_offset  equ	-1  ; Top jaw row when open.
-boss_jaw_top_closed_y_offset
-                            equ	0   ; Top jaw row when closed.
-boss_jaw_bottom_open_y_offset
-                            equ	boss_point_size   ; Bottom jaw row when open.
-boss_jaw_bottom_closed_y_offset
-                            equ	boss_point_size-1    ; Bottom jaw row when closed.
+boss_jaw_top_closed_y_offset equ	0   ; Top jaw row when closed.
+boss_jaw_bottom_open_y_offset equ	boss_point_size   ; Bottom jaw row when open.
+boss_jaw_bottom_closed_y_offset equ	boss_point_size-1    ; Bottom jaw row when closed.
 
 boss_w1_x                   equ	1   ; First wall anchor column.
 boss_w1_y                   equ	3   ; First wall anchor row.
 boss_w2_x                   equ	1   ; Second wall anchor column.
 boss_w2_y                   equ	8   ; Second wall anchor row.
+
+boss_color                  db	boss_color1,boss_color2 ; Frame-switched boss palette pair.
 
 boss_a_start_x              equ	6   ; Start column for joint A.
 boss_a_start_y              equ	5   ; Start row for joint A.
@@ -51,18 +56,124 @@ logic                      ; Per-frame room logic.
 
                             jp	game_process.endgame ; Start the endgame sequence.
 
-restore_previous           ; Restore the old boss drawing area.
+restore_previous           ; Erase the old boss drawing area.
                             call	is_current_room ; Check whether room 1,3 is active.
                             ret	nz ; Skip when another room is active.
 
-                            ld	a,1
-                            call	draw.border
-                            call	get_previous_bounds ; Compute the old boss footprint.
-                                
-                            call	draw.restore_rectangle ; Redraw the saved background area.
-                            ld	a,0
-                            call	draw.border
-                            ret     ; Finish previous-frame restore.
+                            call	erase_previous_lines ; Erase the old segment lines in black.
+                            call	erase_previous_points ; Erase the old moving joint markers in black.
+                            call	erase_previous_jaws ; Erase the old jaw area in black.
+                            call	restore_floor_under_previous_jaws ; Restore red floor when the old jaw erase touched it.
+                            ret     ; Finish previous-frame erase.
+
+erase_previous_lines       ; Erase the old boss segment lines.
+                            ld	d,boss_w1_x ; Set line start column to wall anchor 1.
+                            ld	e,boss_w1_y ; Set line start row to wall anchor 1.
+                            ld	a,(boss_prev_a_x) ; Load previous joint A column.
+                            ld	b,a ; Set line end column to previous joint A.
+                            ld	a,(boss_prev_a_y) ; Load previous joint A row.
+                            ld	c,a ; Set line end row to previous joint A.
+                            xor	a ; Set line color to black.
+                            call	bresenham.draw_line ; Erase wall anchor 1 to previous joint A.
+
+                            ld	d,boss_w2_x ; Set line start column to wall anchor 2.
+                            ld	e,boss_w2_y ; Set line start row to wall anchor 2.
+                            ld	a,(boss_prev_a_x) ; Load previous joint A column.
+                            ld	b,a ; Set line end column to previous joint A.
+                            ld	a,(boss_prev_a_y) ; Load previous joint A row.
+                            ld	c,a ; Set line end row to previous joint A.
+                            xor	a ; Set line color to black.
+                            call	bresenham.draw_line ; Erase wall anchor 2 to previous joint A.
+
+                            ld	a,(boss_prev_a_x) ; Load previous joint A column.
+                            ld	d,a ; Set line start column to previous joint A.
+                            ld	a,(boss_prev_a_y) ; Load previous joint A row.
+                            ld	e,a ; Set line start row to previous joint A.
+                            ld	a,(boss_prev_b_x) ; Load previous joint B column.
+                            ld	b,a ; Set line end column to previous joint B.
+                            ld	a,(boss_prev_b_y) ; Load previous joint B row.
+                            ld	c,a ; Set line end row to previous joint B.
+                            xor	a ; Set line color to black.
+                            call	bresenham.draw_line ; Erase previous joint A to previous joint B.
+
+                            ld	a,(boss_prev_b_x) ; Load previous joint B column.
+                            ld	d,a ; Set line start column to previous joint B.
+                            ld	a,(boss_prev_b_y) ; Load previous joint B row.
+                            ld	e,a ; Set line start row to previous joint B.
+                            ld	a,(boss_prev_c_x) ; Load previous head column.
+                            ld	b,a ; Set line end column to previous head.
+                            ld	a,(boss_prev_c_y) ; Load previous head row.
+                            ld	c,a ; Set line end row to previous head.
+                            xor	a ; Set line color to black.
+                            call	bresenham.draw_line ; Erase previous joint B to previous head.
+                            ret     ; Finish line erase.
+
+erase_previous_points      ; Erase the old moving joint squares.
+                            ld	a,(boss_prev_a_x) ; Load previous joint A column.
+                            ld	d,a ; Set marker column to previous joint A.
+                            ld	a,(boss_prev_a_y) ; Load previous joint A row.
+                            ld	e,a ; Set marker row to previous joint A.
+                            call	erase_point_square ; Erase previous joint A marker.
+
+                            ld	a,(boss_prev_b_x) ; Load previous joint B column.
+                            ld	d,a ; Set marker column to previous joint B.
+                            ld	a,(boss_prev_b_y) ; Load previous joint B row.
+                            ld	e,a ; Set marker row to previous joint B.
+                            call	erase_point_square ; Erase previous joint B marker.
+
+                            ld	a,(boss_prev_c_x) ; Load previous head column.
+                            ld	d,a ; Set marker column to previous head.
+                            ld	a,(boss_prev_c_y) ; Load previous head row.
+                            ld	e,a ; Set marker row to previous head.
+                            call	erase_point_square ; Erase previous head marker.
+                            ret     ; Finish marker erase.
+
+erase_point_square         ; Erase one 2x2 boss marker at DE.
+                ; Paint a fixed 2x2 black marker with the point coordinate as its top-left corner.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            xor	a ; Load black attribute color.
+                            ld	(hl),a ; Paint top-left marker cell black.
+                            inc	l ; Advance to top-right marker cell.
+                            ld	(hl),a ; Paint top-right marker cell black.
+
+                            ld	de,rooms.room_w-1 ; Load the offset to the bottom-left marker cell.
+                            add	hl,de ; Advance to bottom-left marker cell.
+                            ld	(hl),a ; Paint bottom-left marker cell black.
+                            inc	l ; Advance to bottom-right marker cell.
+                            ld	(hl),a ; Paint bottom-right marker cell black.
+                            ret     ; Finish marker erase.
+
+erase_previous_jaws        ; Erase the old jaw area around the previous head.
+                            ld	a,(boss_prev_c_x) ; Load previous head column.
+                            add	a,boss_jaw_x_offset ; Move to the jaw column.
+                            ld	d,a ; Set jaw column.
+                            ld	a,(boss_prev_c_y) ; Load previous head row.
+                            dec	a ; Move to the highest possible jaw row.
+                            ld	e,a ; Set top jaw row.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            xor	a ; Load black attribute color.
+                            ld	(hl),a ; Paint the top jaw cell black.
+
+                            ld	de,rooms.room_w ; Load one room row stride.
+                            add	hl,de ; Advance to the next jaw row.
+                            ld	(hl),a ; Paint the second jaw cell black.
+                            add	hl,de ; Advance to the next jaw row.
+                            ld	(hl),a ; Paint the third jaw cell black.
+                            add	hl,de ; Advance to the next jaw row.
+                            ld	(hl),a ; Paint the fourth jaw cell black.
+                            ret     ; Finish jaw erase.
+
+restore_floor_under_previous_jaws ; Restore the red floor when the old jaw erase touched row 20.
+                            ld	a,(boss_prev_c_y) ; Load previous head row.
+                            cp	boss_floor_y-boss_jaw_bottom_open_y_offset ; Check whether the jaw column could reach row 20.
+                            ret	c ; Skip floor restore when the previous head stayed above the floor line.
+
+                            ld	a,(boss_prev_c_x) ; Load previous head column.
+                            add	a,boss_jaw_x_offset ; Move to the jaw column.
+                            ld	d,a ; Set floor restore column.
+                            ld	e,boss_floor_y ; Set floor restore row.
+                            call	draw.restore_pixel ; Restore the red floor cell under the previous jaw column.
+                            ret     ; Finish previous floor restore.
 
 draw_current               ; Draw the current boss frame.
                             call	is_current_room ; Check whether room 1,3 is active.
@@ -70,6 +181,7 @@ draw_current               ; Draw the current boss frame.
 
                             call	draw_lines ; Draw the arm segments.
                             call	draw_points ; Draw anchor and joint markers.
+                            call	restore_floor_under_current_jaws ; Restore red floor before the current jaw draw touches it.
                             call	draw_jaws ; Draw the head jaw pixels.
                             call	copy_current_to_previous ; Remember the frame for restoration.
                             ret     ; Finish current-frame draw.
@@ -148,7 +260,9 @@ reset_points               ; Reset boss runtime state.
                             ld	(boss_c_dy),a ; Clear head Y delta.
                             ld	(boss_head_move_timer),a ; Clear head movement timer.
                             ld	(boss_mode),a ; Set idle mode.
-                            ld	(boss_idle_seed),a ; Clear idle pseudo-random seed.
+                            ld	a,boss_idle_seed_init ; Load a non-zero idle seed.
+                            ld	(boss_idle_seed),a ; Reset idle pseudo-random seed.
+                            xor	a ; Clear A again for the remaining zero-valued state.
                             ld	(boss_jaw_state),a ; Set jaws to the open state.
 
                             ld	a,boss_c_start_x ; Load default head target column.
@@ -176,10 +290,13 @@ update_head_position       ; Select and approach the current head target.
                             ld	(boss_mode),a ; Mark boss as hunting.
 
                             ld	a,(hero.hero_x) ; Reload hero column.
-                            ld	(boss_head_target_x),a ; Track hero column.
+                            sub	2 ; Aim two cells left of the hero.
+                            ld	(boss_head_target_x),a ; Track the shifted hero column.
 
                             ld	a,(hero.hero_y) ; Read hero row.
-                            ld	(boss_head_target_y),a ; Track hero row.
+                            dec	a ; Aim one cell above the hero.
+                            call	clamp_head_target_y ; Clamp target row to the allowed lower bound.
+                            ld	(boss_head_target_y),a ; Track the shifted hero row.
                             jp	update_head_position_timer ; Apply movement timing.
 
 update_head_position_idle  ; Handle head targeting outside the vision range.
@@ -220,13 +337,29 @@ choose_idle_target         ; Pick a pseudo-random target around the start point.
                             call	next_idle_seed ; Advance seed for Y offset.
                             call	map_idle_offset ; Convert seed to signed Y offset.
                             add	a,boss_c_start_y ; Convert Y offset to target row.
+                            call	clamp_head_target_y ; Clamp target row to the allowed lower bound.
                             ld	(boss_head_target_y),a ; Store idle target row.
                             ret     ; Finish idle target selection.
 
+clamp_head_target_y         ; Clamp a target row so the head never goes below row 18.
+                            cp	boss_head_y_max+1 ; Check whether the target is already within range.
+                            ret	c ; Keep target rows up to 18 unchanged.
+
+                            ld	a,boss_head_y_max ; Clamp rows below the limit back to 18.
+                            ret     ; Return the clamped target row.
+
 next_idle_seed             ; Advance the small idle pseudo-random seed.
                             ld	a,(boss_idle_seed) ; Load current idle seed.
-                            add	a,73 ; Mix the seed with an additive step.
-                            xor	29 ; Mix the seed with a bit pattern.
+                            or	a ; Check whether the idle seed fell to zero.
+                            jr	nz,next_idle_seed_step ; Keep valid non-zero seeds as-is.
+                            ld	a,boss_idle_seed_init ; Recover from the forbidden zero seed.
+
+next_idle_seed_step        ; Advance the 8-bit idle LFSR state.
+                            rrca ; Shift the low bit into carry for feedback.
+                            jr	nc,next_idle_seed_store ; Skip feedback when carry is clear.
+                            xor	boss_idle_lfsr_xor_mask ; Apply the feedback taps.
+
+next_idle_seed_store       ; Save the updated idle LFSR state.
                             ld	(boss_idle_seed),a ; Store the next idle seed.
                             ret     ; Return the seed in A.
 
@@ -242,12 +375,34 @@ map_idle_offset_ready      ; Finish offset mapping.
                             ret     ; Return the signed offset in A.
 
 update_jaws                ; Advance jaw animation timing.
+                            ld	a,(boss_mode) ; Load current boss targeting mode.
+                            cp	boss_mode_hunt ; Check whether the boss is hunting.
+                            jr	z,update_jaws_hunt ; Hold jaws open while hunting.
+
+update_jaws_idle           ; Animate jaws outside the hunt mode.
                             ld	a,(boss_jaw_timer) ; Load jaw timer.
                             dec	a ; Tick jaw timer down.
                             jr	z,update_jaws_toggle ; Toggle jaws when the timer expires.
 
                             ld	(boss_jaw_timer),a ; Store the remaining jaw timer.
                             ret     ; Leave jaws in the current state.
+
+update_jaws_hunt           ; Keep jaws open until the head reaches the bite point.
+                            call	is_head_on_target ; Check whether the head reached the hero target.
+                            jr	z,update_jaws_hunt_bite ; Close jaws and bite on contact.
+
+                            xor	a ; Load the open jaw state.
+                            ld	(boss_jaw_state),a ; Hold jaws open during the chase.
+                            ret     ; Finish hunt jaw handling.
+
+update_jaws_hunt_bite      ; Close jaws and remove all hero health on contact.
+                            ld	a,boss_jaw_state_closed ; Load the closed jaw state.
+                            ld	(boss_jaw_state),a ; Clamp jaws shut for the bite.
+                            ld	a,boss_bite_damage ; Load the bite damage chunk.
+                            call	hero.decrease_health ; Remove armor and apply the first damage hit.
+                            ld	a,boss_bite_damage ; Reload the bite damage chunk.
+                            call	hero.decrease_health_only ; Finish the bite without touching hero memory directly.
+                            ret     ; Finish the bite.
 
 update_jaws_toggle         ; Flip jaw state and reset the timer.
                             ld	a,(boss_jaw_state) ; Load current jaw state.
@@ -283,6 +438,17 @@ update_head_position_move  ; Move the head one step toward the target.
 update_head_position_jaws_only ; Update jaws when the head is already on target.
                             call	update_jaws ; Keep jaw animation running.
                             ret     ; Finish without head movement.
+
+is_head_on_target          ; Check whether the head already reached its current target.
+                            ld	a,(boss_head_target_x) ; Load target head column.
+                            ld	hl,boss_c_x ; Point HL at current head column.
+                            cp	(hl) ; Compare target and current head columns.
+                            ret	nz ; Stop when the head column still differs.
+
+                            ld	a,(boss_head_target_y) ; Load target head row.
+                            ld	hl,boss_c_y ; Point HL at current head row.
+                            cp	(hl) ; Compare target and current head rows.
+                            ret     ; Return Z when the head reached the target.
 
 move_head_x                ; Move head column one cell toward the target.
                             ld	a,(boss_head_target_x) ; Load target head column.
@@ -331,7 +497,7 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint A.
                             ld	a,(boss_a_y) ; Load joint A row.
                             ld	c,a ; Set line end row to joint A.
-                            ld	a,boss_color ; Set line color.
+                            call	load_boss_color ; Load the frame-switched line color.
                             call	bresenham.draw_line ; Draw wall anchor 1 to joint A.
 
                             ld	d,boss_w2_x ; Set line start column to wall anchor 2.
@@ -340,7 +506,7 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint A.
                             ld	a,(boss_a_y) ; Load joint A row.
                             ld	c,a ; Set line end row to joint A.
-                            ld	a,boss_color ; Set line color.
+                            call	load_boss_color ; Load the frame-switched line color.
                             call	bresenham.draw_line ; Draw wall anchor 2 to joint A.
 
                             ld	a,(boss_a_x) ; Load joint A column.
@@ -351,7 +517,7 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint B.
                             ld	a,(boss_b_y) ; Load joint B row.
                             ld	c,a ; Set line end row to joint B.
-                            ld	a,boss_color ; Set line color.
+                            call	load_boss_color ; Load the frame-switched line color.
                             call	bresenham.draw_line ; Draw joint A to joint B.
 
                             ld	a,(boss_b_x) ; Load joint B column.
@@ -362,7 +528,7 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to head.
                             ld	a,(boss_c_y) ; Load head row.
                             ld	c,a ; Set line end row to head.
-                            ld	a,boss_color ; Set line color.
+                            call	load_boss_color ; Load the frame-switched line color.
                             call	bresenham.draw_line ; Draw joint B to head.
                             ret     ; Finish line drawing.
 
@@ -396,8 +562,10 @@ draw_points                ; Draw all boss anchor and joint squares.
 
 draw_point_square          ; Draw one 2x2 boss marker at DE.
                 ; Paint a 2x2 marker with the point coordinate as its top-left corner.
+                            call	load_boss_color ; Load the frame-switched marker color.
+                            push	af ; Preserve marker color across address lookup.
                             call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
-                            ld	a,boss_color ; Load marker color.
+                            pop	af ; Restore marker color.
 
                             push	hl ; Save top-left marker address.
                             ld	(hl),a ; Paint top-left marker cell.
@@ -411,6 +579,11 @@ draw_point_square          ; Draw one 2x2 boss marker at DE.
                             inc	hl ; Advance to bottom-right marker cell.
                             ld	(hl),a ; Paint bottom-right marker cell.
                             ret     ; Finish marker drawing.
+
+load_boss_color            ; Load the boss color chosen by the current frame palette switch.
+                            ld	hl,boss_color ; Point HL at the two boss palette entries.
+                            call	draw.select_color ; Pick the color for the current frame.
+                            ret     ; Return the selected boss color in A.
 
 draw_jaws                  ; Draw the jaw pixels for the current jaw state.
                             ld	a,(boss_jaw_state) ; Load current jaw state.
@@ -446,10 +619,24 @@ draw_jaws_apply            ; Draw both jaw pixels from the chosen offsets.
                             ret     ; Finish jaw drawing.
 
 draw_jaw_pixel             ; Draw one jaw pixel at DE.
+                            call	load_boss_color ; Load the frame-switched jaw color.
+                            push	af ; Preserve jaw color across address lookup.
                             call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
-                            ld	a,boss_color ; Load jaw color.
+                            pop	af ; Restore jaw color.
                             ld	(hl),a ; Paint the jaw attribute cell.
                             ret     ; Finish jaw pixel drawing.
+
+restore_floor_under_current_jaws ; Restore the red floor when the jaw overlaps row 20 this frame.
+                            ld	a,(boss_c_y) ; Load current head row.
+                            cp	boss_floor_y-boss_jaw_bottom_open_y_offset ; Check whether the jaw column could reach row 20.
+                            ret	c ; Skip floor restore when the head stayed above the floor line.
+
+                            ld	a,(boss_c_x) ; Load current head column.
+                            add	a,boss_jaw_x_offset ; Move to the jaw column.
+                            ld	d,a ; Set floor restore column.
+                            ld	e,boss_floor_y ; Set floor restore row.
+                            call	draw.restore_pixel ; Restore the red floor cell under the current jaw column.
+                            ret     ; Finish current floor restore.
 
 get_previous_bounds        ; Compute the rectangle that covered the previous boss frame.
                 ; Restore the previous boss footprint from the room background.
@@ -562,7 +749,7 @@ boss_head_move_timer        db	0   ; Head movement delay countdown.
 boss_head_target_x          db	boss_c_start_x  ; Current head target column.
 boss_head_target_y          db	boss_c_start_y  ; Current head target row.
 boss_idle_target_timer      db	boss_idle_target_delay   ; Idle target refresh countdown.
-boss_idle_seed              db	0   ; Idle pseudo-random seed.
+boss_idle_seed              db	boss_idle_seed_init  ; Idle pseudo-random seed.
 boss_mode                   db	boss_mode_idle  ; Current boss targeting mode.
 boss_jaw_timer              db	boss_jaw_anim_delay  ; Jaw animation countdown.
 boss_jaw_state              db	boss_jaw_state_open  ; Current jaw open/closed state.
