@@ -1,0 +1,44 @@
+draw_enemies
+                            call	update_flash_color
+
+                            ld	a,(rooms.room_enemies_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_enemies_buf
+draw_enemies_next
+                            push	bc
+
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            call	draw_enemy
+
+                            pop	hl
+                            pop	bc
+                            djnz	draw_enemies_next
+                            ret
+
+draw_enemy
+                ; input:
+                ; d - x in room attributes
+                ; e - y in room attributes
+                            call	screen_utils.get_attrs_address
+                            ld	a,(enemy_flash_color)
+                            ld	(hl),a
+                            ret
+
+update_flash_color
+                            ld	hl,enemy_flash_colors
+                            call	draw.select_color
+                            ld	(enemy_flash_color),a
+                            ret

@@ -6,3 +6,6 @@
 - New room entities and mechanics should follow that pattern whenever possible instead of bypassing it with one-off hardcode.
 - When changing logic, remember that hero coordinates and behavior are tied to the room, the screen, movement states, and the current-room buffers.
 
+## Topic Details
+
+- [Enemies](domain.enemies.md)

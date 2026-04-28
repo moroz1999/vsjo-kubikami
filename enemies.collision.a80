@@ -1,0 +1,41 @@
+check_hero
+                            ld	a,(rooms.room_enemies_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_enemies_buf
+check_hero_next
+                            push	bc
+
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                            ld	a,(ix+enemy.x)
+                            ld	d,a
+
+                            ld	a,(hero.hero_x)
+                            cp	d
+                            jr	nz,check_hero_skip
+
+                            ld	a,(ix+enemy.y)
+                            ld	e,a
+
+                            ld	a,(hero.hero_y)
+                            cp	e
+                            jr	nz,check_hero_skip
+
+                            ld	a,enemy_damage_amount
+                            call	hero.decrease_health
+
+check_hero_skip
+                            pop	hl
+                            pop	bc
+                            djnz	check_hero_next
+                            ret

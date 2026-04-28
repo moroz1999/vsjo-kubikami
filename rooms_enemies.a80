@@ -1,0 +1,53 @@
+room_enemies_lim            equ	enemies.enemy_count
+room_enemies_count          db	0
+
+gather_enemies
+                            xor	a
+                            ld	(room_enemies_count),a
+
+                            ld	b,enemies.enemy_count
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                            ld	iy,room_enemies_buf
+                            ld	hl,enemies.enemies
+gather_enemy_next
+                            push	bc
+                            push	hl
+
+                            ld	a,(rooms.room_number_x)
+                            cp	(hl)
+                            jr	nz,gather_enemy_skip
+                            inc	hl
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(hl)
+                            jr	nz,gather_enemy_skip
+
+                            pop	de
+                            push	de
+
+                            ld	a,e
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,d
+                            ld	(iy),a
+                            inc	iy
+
+                            ld	a,(room_enemies_count)
+                            inc	a
+                            ld	(room_enemies_count),a
+
+gather_enemy_skip
+                            pop	hl
+                            ld	de,enemies.enemy_size
+                            add	hl,de
+                            pop	bc
+                            djnz	gather_enemy_next
+                            ret
+
+room_enemies_buf
+                            ds	room_enemies_lim*2
+room_enemies_end

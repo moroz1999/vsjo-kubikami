@@ -1,0 +1,30 @@
+enemy_flash_colors          db	enemy_color1,enemy_color2
+enemy_flash_color           db	enemy_color1
+random_seed                 db	random_seed_init
+
+enemies
+enemy_0
+                            enemy	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            2,                  ; x
+                            9,                  ; y
+                            state_stand,        ; state
+                            0,                  ; state_timer
+                            direction_right,    ; direction
+                            10,                 ; move_delay
+                            10                  ; move_timer
+                            }
+
+enemy_1
+                            enemy	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            16,                 ; x
+                            9,                  ; y
+                            state_stand,        ; state
+                            0,                  ; state_timer
+                            direction_left,     ; direction
+                            20,                 ; move_delay
+                            20                  ; move_timer
+                            }

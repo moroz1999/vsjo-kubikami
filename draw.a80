@@ -102,6 +102,8 @@ draw_state
 
                             call	teleports.draw_current
 
+                            call	enemies.draw_enemies
+
                             call	logic.room_1_3.draw_current
 
                             call	hero.draw_hero

@@ -1,0 +1,114 @@
+move
+                            ld	a,(rooms.room_enemies_count)
+                            or	a
+                            ret	z
+
+                            ld	b,a
+                            ld	hl,rooms.room_enemies_buf
+move_next
+                            push	bc
+
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                            call	update_state_timer
+                            call	move_enemy
+
+                            pop	hl
+                            pop	bc
+                            djnz	move_next
+                            ret
+
+update_state_timer
+                            ld	a,(ix+enemy.state_timer)
+                            or	a
+                            jr	z,recalculate_state
+                            dec	a
+                            ld	(ix+enemy.state_timer),a
+                            ret
+
+recalculate_state
+                            ld	a,state_delay
+                            ld	(ix+enemy.state_timer),a
+
+                            call	next_random
+                            and	3
+                            jr	z,recalculate_state_stand
+
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+
+                            call	next_random
+                            and	1
+                            ld	(ix+enemy.direction),a
+                            ret
+
+recalculate_state_stand
+                            ld	a,state_stand
+                            ld	(ix+enemy.state),a
+                            ret
+
+move_enemy
+                            ld	a,(ix+enemy.state)
+                            cp	state_walk
+                            ret	nz
+
+                            ld	a,(ix+enemy.move_timer)
+                            or	a
+                            jr	z,move_enemy_step
+                            dec	a
+                            ld	(ix+enemy.move_timer),a
+                            ret
+
+move_enemy_step
+                            ld	a,(ix+enemy.move_delay)
+                            ld	(ix+enemy.move_timer),a
+
+                            ld	a,(ix+enemy.direction)
+                            cp	direction_left
+                            jr	z,move_enemy_left
+
+                            jr	move_enemy_right
+
+move_enemy_left
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	d
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            call	apply_enemy_move
+                            ret
+
+move_enemy_right
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	d
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            call	apply_enemy_move
+                            ret
+
+apply_enemy_move
+                ; input:
+                ; d - checked target x
+                ; e - checked target y
+                            push	de
+
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            call	draw.add_to_restore
+
+                            pop	de
+                            ld	a,d
+                            ld	(ix+enemy.x),a
+                            ret

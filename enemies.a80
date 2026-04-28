@@ -1,0 +1,36 @@
+                        module	enemies
+enemy_count                 equ	2
+enemy_size                  equ	enemy
+enemy_damage_amount         equ	32
+
+state_stand                 equ	0
+state_walk                  equ	1
+state_delay                 equ	50
+
+direction_left              equ	0
+direction_right             equ	1
+
+random_seed_init            equ	1
+random_lfsr_xor_mask        equ	56
+
+enemy_color1                equ	%00000010
+enemy_color2                equ	%01010000
+
+                        struct	enemy
+room_x                      byte
+room_y                      byte
+x                           byte
+y                           byte
+state                       byte
+state_timer                 byte
+direction                   byte
+move_delay                  byte
+move_timer                  byte
+                        ends
+
+                            include	"enemies.data.a80"
+                            include	"enemies.random.a80"
+                            include	"enemies.collision.a80"
+                            include	"enemies.draw.a80"
+                            include	"enemies.move.a80"
+                        endmodule

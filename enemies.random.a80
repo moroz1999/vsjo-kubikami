@@ -1,0 +1,14 @@
+next_random
+                            ld	a,(random_seed)
+                            or	a
+                            jr	nz,next_random_step
+                            ld	a,random_seed_init
+
+next_random_step
+                            rrca
+                            jr	nc,next_random_store
+                            xor	random_lfsr_xor_mask
+
+next_random_store
+                            ld	(random_seed),a
+                            ret

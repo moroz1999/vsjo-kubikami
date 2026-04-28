@@ -34,6 +34,7 @@ start                       equ	#6000
                             include	"teleports.a80"
                             include	"medkits.a80"
                             include	"armors.a80"
+                            include	"enemies.a80"
                             include	"waterdrops.a80"
                             include	"debug.a80"
 rooms_data
