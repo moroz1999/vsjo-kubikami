@@ -16,6 +16,7 @@
 ## State
 
 - Enemy state recalculation is controlled by an enemy-local state timer.
+- Enemy state timer delay is stored per enemy.
 - Enemy state recalculation chooses standing with chance 1/4 and walking with chance 3/4.
 - When entering the walking state, an enemy randomly chooses left or right direction.
 
@@ -23,8 +24,15 @@
 
 - Standing enemies do not move.
 - Walking enemies move horizontally in their selected direction.
+- Enemies enter falling state when the cell below them is empty.
+- Falling enemies move downward until the cell below is no longer empty.
+- After landing, falling enemies continue walking in the same direction they had before falling.
+- Falling speed is shared by all enemies.
 - Moving enemies check the next room cell through the same `objects.check_coords` path used by the hero.
 - Enemies move only when the next cell is reported as `objects.b_empty`.
+- When the next cell in the walking direction is blocked, enemies check the up-side cell in that direction.
+- If the up-side cell is empty, enemies climb there diagonally in the same movement step.
+- If the up-side cell is also blocked, enemies reverse direction immediately.
 - When the next cell is empty, enemies also check the down-side cell in the movement direction.
 - If the down-side cell is empty, enemies have a 1/2 chance to reverse direction and skip that movement step.
 

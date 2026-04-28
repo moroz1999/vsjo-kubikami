@@ -6,13 +6,37 @@ move_next
                 ; Update one enemy's behavior and patrol step.
                             push	bc
 
+                            call	update_fall_state
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            jr	z,move_next_apply
+
                             call	update_state_timer
+
+move_next_apply
                             call	move_enemy
 
                             ld	de,enemy_size
                             add	ix,de
                             pop	bc
                             djnz	move_next
+                            ret
+
+update_fall_state
+                ; Enemies enter falling state whenever there is no floor below.
+                            call	check_floor_below
+                            jr	z,update_fall_state_falling
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            ret	nz
+
+                            jp	continue_after_fall
+
+update_fall_state_falling
+                            ld	a,state_fall
+                            ld	(ix+enemy.state),a
                             ret
 
 update_state_timer
@@ -26,7 +50,7 @@ update_state_timer
 
 recalculate_state
                 ; Each state roll chooses standing 1/4 of the time and walking otherwise.
-                            ld	a,state_delay
+                            ld	a,(ix+enemy.state_delay)
                             ld	(ix+enemy.state_timer),a
 
                             call	next_random
@@ -49,6 +73,11 @@ recalculate_state_stand
                             ret
 
 move_enemy
+                ; Falling enemies use gravity before any horizontal behavior.
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            jr	z,move_enemy_fall
+
                 ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
                             cp	state_walk
@@ -60,6 +89,37 @@ move_enemy
                             jr	z,move_enemy_step
                             dec	a
                             ld	(ix+enemy.move_timer),a
+                            ret
+
+move_enemy_fall
+                ; Gravity moves a falling enemy down at the shared fall speed.
+                            ld	a,(ix+enemy.fall_timer)
+                            or	a
+                            jr	z,move_enemy_fall_step
+                            dec	a
+                            ld	(ix+enemy.fall_timer),a
+                            ret
+
+move_enemy_fall_step
+                            ld	a,fall_delay
+                            ld	(ix+enemy.fall_timer),a
+
+                            call	check_floor_below
+                            jp	nz,continue_after_fall
+
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	e
+                            call	apply_enemy_move
+                            ret
+
+continue_after_fall
+                ; After landing, enemies keep walking in their previous direction.
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+
+                            ld	a,(ix+enemy.state_delay)
+                            ld	(ix+enemy.state_timer),a
                             ret
 
 move_enemy_step
@@ -81,7 +141,7 @@ move_enemy_left
                             dec	d
                             call	objects.check_coords
                             cp	objects.b_empty
-                            ret	nz
+                            jr	nz,handle_blocked_course
 
                             call	maybe_turn_around_on_empty_floor
                             ret	z
@@ -96,12 +156,24 @@ move_enemy_right
                             inc	d
                             call	objects.check_coords
                             cp	objects.b_empty
-                            ret	nz
+                            jr	nz,handle_blocked_course
 
                             call	maybe_turn_around_on_empty_floor
                             ret	z
 
                             call	apply_enemy_move
+                            ret
+
+handle_blocked_course
+                ; Enemies climb a one-cell obstacle or turn around before a taller wall.
+                            dec	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            jp	z,apply_enemy_move
+
+                            ld	a,(ix+enemy.direction)
+                            xor	1
+                            ld	(ix+enemy.direction),a
                             ret
 
 maybe_turn_around_on_empty_floor
@@ -123,6 +195,15 @@ maybe_turn_around_on_empty_floor
                             xor	a
                             ret
 
+check_floor_below
+                ; Falling starts or continues while the cell below is empty.
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret
+
 apply_enemy_move
                 ; A successful patrol step moves the enemy and restores the old cell later.
                             push	de
@@ -134,4 +215,6 @@ apply_enemy_move
                             pop	de
                             ld	a,d
                             ld	(ix+enemy.x),a
+                            ld	a,e
+                            ld	(ix+enemy.y),a
                             ret

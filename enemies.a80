@@ -7,7 +7,10 @@ enemy_damage_amount         equ	32
 ; Enemy state controls whether the enemy waits or patrols.
 state_stand                 equ	0
 state_walk                  equ	1
-state_delay                 equ	50
+state_fall                  equ	2
+
+; Falling speed is shared by all enemies.
+fall_delay                  equ	1
 
 ; Walking enemies patrol horizontally.
 direction_left              equ	0
@@ -19,7 +22,7 @@ random_lfsr_xor_mask        equ	56
 
 ; Enemies share one blinking visual palette.
 enemy_color1                equ	%00000010
-enemy_color2                equ	%01010000
+enemy_color2                equ	%00010000
 
                 ; Enemy records store room placement, local position, and behavior timers.
                         struct	enemy
@@ -28,10 +31,12 @@ room_y                      byte
 x                           byte
 y                           byte
 state                       byte
+state_delay                 byte
 state_timer                 byte
 direction                   byte
 move_delay                  byte
 move_timer                  byte
+fall_timer                  byte
                         ends
 
 ; Enemy behavior is split by gameplay topic.

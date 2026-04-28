@@ -13,11 +13,13 @@ enemy_0
                             0,                  ; start room row
                             2,                  ; start cell column
                             9,                  ; start cell row
-                            state_stand,        ; starts waiting
-                            0,                  ; chooses behavior immediately
+                            state_walk,         ; starts walking
+                            100,                 ; behavior choice pacing
+                            50,                 ; first behavior choice delay
                             direction_right,    ; initial patrol direction
                             10,                 ; patrol step pacing
-                            10                  ; first patrol step delay
+                            10,                 ; first patrol step delay
+                            0                   ; can fall immediately
                             }
 
 enemy_1
@@ -27,8 +29,10 @@ enemy_1
                             16,                 ; start cell column
                             9,                  ; start cell row
                             state_stand,        ; starts waiting
-                            0,                  ; chooses behavior immediately
+                            40,                 ; behavior choice pacing
+                            40,                 ; first behavior choice delay
                             direction_left,     ; initial patrol direction
-                            20,                 ; patrol step pacing
-                            20                  ; first patrol step delay
+                            6,                  ; patrol step pacing
+                            20,                 ; first patrol step delay
+                            0                   ; can fall immediately
                             }
