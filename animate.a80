@@ -310,7 +310,7 @@ room_animation_0_2
                             0,                              ; current
                             50,                              ; delay
                             0,                              ; timer
-                            state_off,                      ; state
+                            state_on,                      ; state
                             room_animation_0_2_frames     ; frames_ptr
                             }
 c01bl                       equ	%00000001

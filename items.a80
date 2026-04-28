@@ -123,14 +123,10 @@ item_2
 item_3
                             item	{
                             stairs                  // type_id
-                            ; 0                       // room_x
-                            ; 1                       // room_y
-                            ; 19                     // room_pos_x
-                            ; 9                       // room_pos_y
-                            1                       // room_x
-                            0                       // room_y
-                            20                     // room_pos_x
-                            13                       // room_pos_y
+                            0                       // room_x
+                            1                       // room_y
+                            19                     // room_pos_x
+                            9                       // room_pos_y
                             strings.stairs          // name
                             logic.stairs.action     // logic
                             %00000101               // color1
@@ -139,14 +135,10 @@ item_3
 item_4
                             item	{
                             redcard                  // type_id
-                        ;     0                       // room_x
-                        ;     0                       // room_y
-                        ;     5                     // room_pos_x
-                        ;     9                       // room_pos_y
-                            6                       // room_x
-                            1                       // room_y
-                            8                     // room_pos_x
-                            11                       // room_pos_y
+                            0                       // room_x
+                            0                       // room_y
+                            1                     // room_pos_x
+                            8                       // room_pos_y
                             strings.redcard          // name
                             logic.redcard.action     // logic
                             %00000010               // color1
@@ -155,13 +147,9 @@ item_4
 item_5
                             item	{
                             key                  // type_id
-                        ;     0                       // room_x
-                        ;     0                       // room_y
-                        ;     5                     // room_pos_x
-                        ;     9                       // room_pos_y
-                            4                       // room_x
-                            1                       // room_y
-                            11                     // room_pos_x
+                            1                       // room_x
+                            3                       // room_y
+                            22                     // room_pos_x
                             19                       // room_pos_y
                             strings.key          // name
                             logic.key.action     // logic
@@ -171,10 +159,10 @@ item_5
 item_6
                             item	{
                             dynamite                // type_id
-                            2                       // room_x
+                            0                       // room_x
                             3                       // room_y
-                            10                      // room_pos_x
-                            20                      // room_pos_y
+                            9                      // room_pos_x
+                            16                      // room_pos_y
                             strings.dynamite        // name
                             logic.dynamite.action   // logic
                             %01010010               // color1
@@ -183,10 +171,10 @@ item_6
 item_7
                             item	{
                             handle                  // type_id
-                            4                       // room_x
-                            0                       // room_y
-                            2                       // room_pos_x
-                            20                      // room_pos_y
+                            3                       // room_x
+                            3                       // room_y
+                            0                       // room_pos_x
+                            19                      // room_pos_y
                             strings.handle          // name
                             logic.handle.action     // logic
                             %01000111               // color1
@@ -196,9 +184,9 @@ item_8
                             item	{
                             seeds                   // type_id
                             5                       // room_x
-                            0                       // room_y
-                            15                      // room_pos_x
-                            20                      // room_pos_y
+                            3                       // room_y
+                            21                      // room_pos_x
+                            11                      // room_pos_y
                             strings.seeds           // name
                             logic.seeds.action      // logic
                             %01100100               // color1
@@ -208,14 +196,10 @@ item_8
 item_9
                             item	{
                             screwdriver                  // type_id
-                            ; 1                       // room_x
-                            ; 0                       // room_y                            
-                            6                       // room_x
-                            3                       // room_y
-                            ; 2                     // room_pos_x
-                            ; 18                       // room_pos_y
-                            11                     // room_pos_x
-                            20                    // room_pos_y
+                            1                       // room_x
+                            0                       // room_y                            
+                            2                     // room_pos_x
+                            18                       // room_pos_y
                             strings.screwdriver          // name
                             logic.screwdriver.action     // logic
                             %00000101               // color1
