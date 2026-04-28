@@ -1,43 +1,37 @@
 draw_enemies
+                ; Enemies share one flashing color for the current frame.
                             call	update_flash_color
 
-                            ld	a,(rooms.room_enemies_count)
-                            or	a
-                            ret	z
-
-                            ld	b,a
-                            ld	hl,rooms.room_enemies_buf
+                ; The global enemy table is filtered by the active room during drawing.
+                            ld	b,enemy_count
+                            ld	ix,enemies
 draw_enemies_next
+                ; Draw one enemy only when it belongs to the current room.
                             push	bc
 
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
+                            call	is_in_current_room
+                            jr	nz,draw_enemies_skip
 
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             call	draw_enemy
 
-                            pop	hl
+draw_enemies_skip
+                            ld	de,enemy_size
+                            add	ix,de
                             pop	bc
                             djnz	draw_enemies_next
                             ret
 
 draw_enemy
-                ; input:
-                ; d - x in room attributes
-                ; e - y in room attributes
+                ; Paint one enemy cell with the shared flashing enemy color.
                             call	screen_utils.get_attrs_address
                             ld	a,(enemy_flash_color)
                             ld	(hl),a
                             ret
 
 update_flash_color
+                ; Enemy color follows the global draw color switch.
                             ld	hl,enemy_flash_colors
                             call	draw.select_color
                             ld	(enemy_flash_color),a

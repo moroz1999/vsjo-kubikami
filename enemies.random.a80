@@ -1,14 +1,17 @@
 next_random
+                ; Advance the enemy decision sequence for behavior choices.
                             ld	a,(random_seed)
                             or	a
                             jr	nz,next_random_step
                             ld	a,random_seed_init
 
 next_random_step
+                ; Keep the sequence out of the zero state.
                             rrca
                             jr	nc,next_random_store
                             xor	random_lfsr_xor_mask
 
 next_random_store
+                ; Return the next decision value for chance checks.
                             ld	(random_seed),a
                             ret

@@ -1,30 +1,34 @@
+; Enemy drawing uses one shared flashing color for every enemy.
 enemy_flash_colors          db	enemy_color1,enemy_color2
 enemy_flash_color           db	enemy_color1
+
+; Enemy random choices are shared by state and movement decisions.
 random_seed                 db	random_seed_init
 
+; Global enemy records define each enemy's starting room and behavior profile.
 enemies
 enemy_0
                             enemy	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            2,                  ; x
-                            9,                  ; y
-                            state_stand,        ; state
-                            0,                  ; state_timer
-                            direction_right,    ; direction
-                            10,                 ; move_delay
-                            10                  ; move_timer
+                            0,                  ; start room column
+                            0,                  ; start room row
+                            2,                  ; start cell column
+                            9,                  ; start cell row
+                            state_stand,        ; starts waiting
+                            0,                  ; chooses behavior immediately
+                            direction_right,    ; initial patrol direction
+                            10,                 ; patrol step pacing
+                            10                  ; first patrol step delay
                             }
 
 enemy_1
                             enemy	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            16,                 ; x
-                            9,                  ; y
-                            state_stand,        ; state
-                            0,                  ; state_timer
-                            direction_left,     ; direction
-                            20,                 ; move_delay
-                            20                  ; move_timer
+                            0,                  ; start room column
+                            0,                  ; start room row
+                            16,                 ; start cell column
+                            9,                  ; start cell row
+                            state_stand,        ; starts waiting
+                            0,                  ; chooses behavior immediately
+                            direction_left,     ; initial patrol direction
+                            20,                 ; patrol step pacing
+                            20                  ; first patrol step delay
                             }

@@ -1,21 +1,27 @@
                         module	enemies
+; Enemy constants describe gameplay behavior shared by all enemy records.
 enemy_count                 equ	2
 enemy_size                  equ	enemy
 enemy_damage_amount         equ	32
 
+; Enemy state controls whether the enemy waits or patrols.
 state_stand                 equ	0
 state_walk                  equ	1
 state_delay                 equ	50
 
+; Walking enemies patrol horizontally.
 direction_left              equ	0
 direction_right             equ	1
 
+; Enemy random decisions use a small local sequence.
 random_seed_init            equ	1
 random_lfsr_xor_mask        equ	56
 
+; Enemies share one blinking visual palette.
 enemy_color1                equ	%00000010
 enemy_color2                equ	%01010000
 
+                ; Enemy records store room placement, local position, and behavior timers.
                         struct	enemy
 room_x                      byte
 room_y                      byte
@@ -28,8 +34,10 @@ move_delay                  byte
 move_timer                  byte
                         ends
 
+; Enemy behavior is split by gameplay topic.
                             include	"enemies.data.a80"
                             include	"enemies.random.a80"
+                            include	"enemies.room.a80"
                             include	"enemies.collision.a80"
                             include	"enemies.draw.a80"
                             include	"enemies.move.a80"

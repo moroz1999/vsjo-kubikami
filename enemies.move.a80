@@ -1,31 +1,22 @@
 move
-                            ld	a,(rooms.room_enemies_count)
-                            or	a
-                            ret	z
-
-                            ld	b,a
-                            ld	hl,rooms.room_enemies_buf
+                ; Enemy behavior updates globally, regardless of the active room.
+                            ld	b,enemy_count
+                            ld	ix,enemies
 move_next
+                ; Update one enemy's behavior and patrol step.
                             push	bc
-
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
 
                             call	update_state_timer
                             call	move_enemy
 
-                            pop	hl
+                            ld	de,enemy_size
+                            add	ix,de
                             pop	bc
                             djnz	move_next
                             ret
 
 update_state_timer
+                ; Enemy behavior changes only when its state timer expires.
                             ld	a,(ix+enemy.state_timer)
                             or	a
                             jr	z,recalculate_state
@@ -34,6 +25,7 @@ update_state_timer
                             ret
 
 recalculate_state
+                ; Each state roll chooses standing 1/4 of the time and walking otherwise.
                             ld	a,state_delay
                             ld	(ix+enemy.state_timer),a
 
@@ -41,6 +33,7 @@ recalculate_state
                             and	3
                             jr	z,recalculate_state_stand
 
+                ; A walking enemy picks a fresh horizontal patrol direction.
                             ld	a,state_walk
                             ld	(ix+enemy.state),a
 
@@ -50,15 +43,18 @@ recalculate_state
                             ret
 
 recalculate_state_stand
+                ; Standing enemies wait until the next state roll.
                             ld	a,state_stand
                             ld	(ix+enemy.state),a
                             ret
 
 move_enemy
+                ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
                             cp	state_walk
                             ret	nz
 
+                ; Movement speed is controlled by each enemy's own timer.
                             ld	a,(ix+enemy.move_timer)
                             or	a
                             jr	z,move_enemy_step
@@ -67,9 +63,11 @@ move_enemy
                             ret
 
 move_enemy_step
+                ; A ready walking enemy tries one horizontal patrol step.
                             ld	a,(ix+enemy.move_delay)
                             ld	(ix+enemy.move_timer),a
 
+                ; Patrol direction determines which neighboring cell is considered.
                             ld	a,(ix+enemy.direction)
                             cp	direction_left
                             jr	z,move_enemy_left
@@ -77,6 +75,7 @@ move_enemy_step
                             jr	move_enemy_right
 
 move_enemy_left
+                ; Left patrol can continue only into a free next cell.
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             dec	d
@@ -84,10 +83,14 @@ move_enemy_left
                             cp	objects.b_empty
                             ret	nz
 
+                            call	maybe_turn_around_on_empty_floor
+                            ret	z
+
                             call	apply_enemy_move
                             ret
 
 move_enemy_right
+                ; Right patrol can continue only into a free next cell.
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             inc	d
@@ -95,13 +98,33 @@ move_enemy_right
                             cp	objects.b_empty
                             ret	nz
 
+                            call	maybe_turn_around_on_empty_floor
+                            ret	z
+
                             call	apply_enemy_move
                             ret
 
+maybe_turn_around_on_empty_floor
+                ; Enemies may turn away from a walkable edge instead of stepping over it.
+                            push	de
+                            inc	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            pop	de
+                            ret	nz
+
+                            call	next_random
+                            and	1
+                            ret	nz
+
+                            ld	a,(ix+enemy.direction)
+                            xor	1
+                            ld	(ix+enemy.direction),a
+                            xor	a
+                            ret
+
 apply_enemy_move
-                ; input:
-                ; d - checked target x
-                ; e - checked target y
+                ; A successful patrol step moves the enemy and restores the old cell later.
                             push	de
 
                             ld	d,(ix+enemy.x)

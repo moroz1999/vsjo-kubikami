@@ -7,6 +7,7 @@
 - For formatting-only or commenting-only requests, do not change logic. Edit only formatting, blank lines, and comments.
 - In asm files, prefer one short comment per semantic block instead of comments on every instruction.
 - Comments should explain the algorithm flow and processing phases, not restate each instruction.
+- Comments should describe business rules, gameplay intent, and domain contracts; do not comment by narrating CPU instructions or implementation mechanics.
 - Keep right-side comments only for code that is genuinely non-obvious, such as dense arithmetic, optimization tricks, unusual register contracts, magic constants, or non-trivial control flow.
 - New asm comments should be brief and in English.
 - For structs, initializers, and tables, short schema comments are allowed when they help explain the data layout.

@@ -1,0 +1,9 @@
+is_in_current_room
+                ; Enemies affect the current room only when their room matches the active room.
+                            ld	a,(rooms.room_number_x)
+                            cp	(ix+enemy.room_x)
+                            ret	nz
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(ix+enemy.room_y)
+                            ret

@@ -1,21 +1,13 @@
 check_hero
-                            ld	a,(rooms.room_enemies_count)
-                            or	a
-                            ret	z
-
-                            ld	b,a
-                            ld	hl,rooms.room_enemies_buf
+                ; Any enemy can hurt the hero when it is in the current room.
+                            ld	b,enemy_count
+                            ld	ix,enemies
 check_hero_next
+                ; Check one enemy against the hero only after the room matches.
                             push	bc
 
-                            ld	a,(hl)
-                            ld	ixl,a
-                            inc	hl
-
-                            ld	a,(hl)
-                            ld	ixh,a
-                            inc	hl
-                            push	hl
+                            call	is_in_current_room
+                            jr	nz,check_hero_skip
 
                             ld	a,(ix+enemy.x)
                             ld	d,a
@@ -31,11 +23,16 @@ check_hero_next
                             cp	e
                             jr	nz,check_hero_skip
 
+                ; Enemy contact applies normal armor-first damage.
                             ld	a,enemy_damage_amount
+                            push	ix
                             call	hero.decrease_health
+                            pop	ix
 
 check_hero_skip
-                            pop	hl
+                ; Continue checking the global enemy table after misses or contact.
+                            ld	de,enemy_size
+                            add	ix,de
                             pop	bc
                             djnz	check_hero_next
                             ret

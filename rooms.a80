@@ -33,7 +33,6 @@ init_current_room
 							call	gather_room_animations
 							call	gather_medkits
 							call	gather_armors
-							call	gather_enemies
 							call	gather_teleports
 							call	gather_waterdrops
 
@@ -469,7 +468,6 @@ room_6_3_info
 							include	"rooms_animations.a80"
 							include	"rooms_medkits.a80"
 							include	"rooms_armors.a80"
-							include	"rooms_enemies.a80"
 							include	"rooms_items.a80"
 							include	"rooms_teleports.a80"
 							include	"rooms_waterdrops.a80"
