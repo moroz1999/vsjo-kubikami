@@ -1,9 +1,23 @@
-is_in_current_room
-                ; Enemies affect the current room only when their room matches the active room.
+update_screen_status
+                ; Room entry marks enemies as online only when they belong to the active room.
+                            ld	b,enemy_count
+                            ld	ix,enemies
+update_screen_status_next
                             ld	a,(rooms.room_number_x)
                             cp	(ix+enemy.room_x)
-                            ret	nz
+                            jr	nz,update_screen_status_offline
 
                             ld	a,(rooms.room_number_y)
                             cp	(ix+enemy.room_y)
+                            ld	a,screen_status_online
+                            jr	z,update_screen_status_store
+
+update_screen_status_offline
+                            ld	a,screen_status_offline
+update_screen_status_store
+                            ld	(ix+enemy.screen_status),a
+
+                            ld	de,enemy_size
+                            add	ix,de
+                            djnz	update_screen_status_next
                             ret

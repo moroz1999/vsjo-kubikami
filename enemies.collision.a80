@@ -1,12 +1,13 @@
 check_hero
-                ; Any enemy can hurt the hero when it is in the current room.
+                ; Any online enemy can hurt the hero.
                             ld	b,enemy_count
                             ld	ix,enemies
 check_hero_next
-                ; Check one enemy against the hero only after the room matches.
+                ; Check one enemy against the hero only while it is online.
                             push	bc
 
-                            call	is_in_current_room
+                            ld	a,(ix+enemy.screen_status)
+                            cp	screen_status_online
                             jr	nz,check_hero_skip
 
                             ld	a,(ix+enemy.x)

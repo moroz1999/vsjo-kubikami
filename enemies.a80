@@ -9,6 +9,10 @@ state_stand                 equ	0
 state_walk                  equ	1
 state_fall                  equ	2
 
+; Enemy screen status is refreshed when the active room changes.
+screen_status_offline       equ	0
+screen_status_online        equ	1
+
 ; Falling speed is shared by all enemies.
 fall_delay                  equ	1
 
@@ -37,6 +41,7 @@ direction                   byte
 move_delay                  byte
 move_timer                  byte
 fall_timer                  byte
+screen_status               byte
                         ends
 
 ; Enemy behavior is split by gameplay topic.

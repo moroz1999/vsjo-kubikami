@@ -12,6 +12,8 @@
 - Enemy positions use room attribute coordinates, not pixel coordinates.
 - Enemy movement pacing is controlled by enemy-local movement delay and movement timer fields.
 - Enemies are processed from the global table, without a current-room enemy buffer.
+- Enemy records keep a screen status: online when the enemy belongs to the active room, offline otherwise.
+- Enemy screen status is refreshed during room initialization only.
 
 ## State
 
@@ -23,6 +25,8 @@
 
 ## Movement
 
+- Only online enemies process per-frame movement.
+- Offline enemies currently skip movement and are reserved for later offline logic.
 - Standing enemies do not move.
 - Walking enemies move horizontally in their selected direction.
 - Enemies enter falling state when the cell below them is empty.
@@ -46,5 +50,5 @@
 - All enemies share one flashing color value, `enemies.enemy_flash_color`.
 - The shared enemy flash color is selected from `enemies.enemy_flash_colors` through the common draw color switch.
 - Enemy drawing is connected to the main draw pass through `enemies.draw_enemies`.
-- Enemy drawing checks whether each enemy belongs to the current room before painting it.
+- Enemy drawing checks the room-init online status before painting each enemy.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.

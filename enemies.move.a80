@@ -3,8 +3,12 @@ move
                             ld	b,enemy_count
                             ld	ix,enemies
 move_next
-                ; Update one enemy's behavior and patrol step.
+                ; Update one enemy's behavior only while it is online.
                             push	bc
+
+                            ld	a,(ix+enemy.screen_status)
+                            cp	screen_status_online
+                            jr	nz,move_next_skip
 
                             call	update_fall_state
 
@@ -17,6 +21,7 @@ move_next
 move_next_apply
                             call	move_enemy
 
+move_next_skip
                             ld	de,enemy_size
                             add	ix,de
                             pop	bc
@@ -140,6 +145,8 @@ move_enemy_left
                             ld	e,(ix+enemy.y)
                             dec	d
                             call	objects.check_coords
+                            cp	objects.roomedge_left
+                            jr	z,handle_screen_edge
                             cp	objects.b_empty
                             jr	nz,handle_blocked_course
 
@@ -155,6 +162,8 @@ move_enemy_right
                             ld	e,(ix+enemy.y)
                             inc	d
                             call	objects.check_coords
+                            cp	objects.roomedge_right
+                            jr	z,handle_screen_edge
                             cp	objects.b_empty
                             jr	nz,handle_blocked_course
 
@@ -162,6 +171,13 @@ move_enemy_right
                             ret	z
 
                             call	apply_enemy_move
+                            ret
+
+handle_screen_edge
+                ; Screen edges force an immediate turn instead of obstacle probing.
+                            ld	a,(ix+enemy.direction)
+                            xor	1
+                            ld	(ix+enemy.direction),a
                             ret
 
 handle_blocked_course

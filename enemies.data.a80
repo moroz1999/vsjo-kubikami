@@ -19,7 +19,8 @@ enemy_0
                             direction_right,    ; initial patrol direction
                             10,                 ; patrol step pacing
                             10,                 ; first patrol step delay
-                            0                   ; can fall immediately
+                            0,                  ; can fall immediately
+                            screen_status_offline ; refreshed during room init
                             }
 
 enemy_1
@@ -34,5 +35,6 @@ enemy_1
                             direction_left,     ; initial patrol direction
                             6,                  ; patrol step pacing
                             20,                 ; first patrol step delay
-                            0                   ; can fall immediately
+                            0,                  ; can fall immediately
+                            screen_status_offline ; refreshed during room init
                             }
