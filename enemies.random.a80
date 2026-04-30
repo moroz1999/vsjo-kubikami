@@ -14,8 +14,7 @@ next_random_step
 next_random_store
                 ; Enemy decisions also mix in the current frame timing noise.
                             ld	b,a
-                            ld	a,r
-                            and	1
+                            ld	a,r                            
                             xor	b
                             ld	(random_seed),a
                             ret

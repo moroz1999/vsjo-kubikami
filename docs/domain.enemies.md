@@ -39,7 +39,8 @@
 - If the up-side cell is empty, enemies climb there diagonally in the same movement step.
 - If the up-side cell is also blocked, enemies reverse direction immediately.
 - When the next cell is empty, enemies also check the down-side cell in the movement direction.
-- If the down-side cell is empty, enemies have a 1/2 chance to reverse direction and skip that movement step.
+- If the down-side cell is empty and the cell one more row below is occupied, enemies step diagonally down in the same movement step without entering falling state.
+- If the down-side cell is empty and the drop is deeper than one cell, enemies have a 1/2 chance to reverse direction and skip that movement step.
 
 ## Collision
 

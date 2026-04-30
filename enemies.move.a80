@@ -198,9 +198,24 @@ maybe_turn_around_on_empty_floor
                             inc	e
                             call	objects.check_coords
                             cp	objects.b_empty
-                            pop	de
-                            ret	nz
+                            jr	z,maybe_turn_around_on_empty_floor_edge
 
+                            pop	de
+                            ret
+
+maybe_turn_around_on_empty_floor_edge
+                ; A one-cell drop is handled as a diagonal walking step, not a fall.
+                            inc	e
+                            call	objects.check_coords
+                            or	a
+                            pop	de
+                            jr	nz,maybe_turn_around_on_empty_floor_random
+
+                            inc	e
+                            or	1
+                            ret
+
+maybe_turn_around_on_empty_floor_random
                             call	next_random
                             and	1
                             ret	nz
