@@ -4,10 +4,11 @@ enemy_count                 equ	2
 enemy_size                  equ	enemy
 enemy_damage_amount         equ	32
 
-; Enemy state controls whether the enemy waits or patrols.
+; Enemy state controls waiting, patrol, fall, and jump behavior.
 state_stand                 equ	0
 state_walk                  equ	1
 state_fall                  equ	2
+state_jump                  equ	3
 
 ; Enemy screen status is refreshed when the active room changes.
 screen_status_offline       equ	0
@@ -15,6 +16,10 @@ screen_status_online        equ	1
 
 ; Falling speed is shared by all enemies.
 fall_delay                  equ	1
+
+; Enemy jumps copy the hero jump arc while using enemy movement rules.
+jump_steps                  equ	8
+jump_phase_delay_frames     equ	1
 
 ; Walking enemies patrol horizontally.
 direction_left              equ	0
@@ -41,6 +46,8 @@ direction                   byte
 move_delay                  byte
 move_timer                  byte
 fall_timer                  byte
+jump_step                   byte
+jump_phase_delay            byte
 screen_status               byte
                         ends
 
@@ -50,5 +57,6 @@ screen_status               byte
                             include	"enemies.room.a80"
                             include	"enemies.collision.a80"
                             include	"enemies.draw.a80"
+                            include	"enemies.jump.a80"
                             include	"enemies.move.a80"
                         endmodule

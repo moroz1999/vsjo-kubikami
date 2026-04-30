@@ -15,6 +15,8 @@ move_next
                             ld	a,(ix+enemy.state)
                             cp	state_fall
                             jr	z,move_next_apply
+                            cp	state_jump
+                            jr	z,move_next_apply
 
                             call	update_state_timer
 
@@ -30,6 +32,10 @@ move_next_skip
 
 update_fall_state
                 ; Enemies enter falling state whenever there is no floor below.
+                            ld	a,(ix+enemy.state)
+                            cp	state_jump
+                            ret	z
+
                             call	check_floor_below
                             jr	z,update_fall_state_falling
 
@@ -82,6 +88,8 @@ move_enemy
                             ld	a,(ix+enemy.state)
                             cp	state_fall
                             jr	z,move_enemy_fall
+                            cp	state_jump
+                            jp	z,move_enemy_jump
 
                 ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
@@ -193,7 +201,7 @@ handle_blocked_course
                             ret
 
 maybe_turn_around_on_empty_floor
-                ; Enemies may turn away from a walkable edge instead of stepping over it.
+                ; Edge handling starts after the down-side cell is known to be empty.
                             push	de
                             inc	e
                             call	objects.check_coords
@@ -204,22 +212,43 @@ maybe_turn_around_on_empty_floor
                             ret
 
 maybe_turn_around_on_empty_floor_edge
-                ; A one-cell drop is handled as a diagonal walking step, not a fall.
+                ; Edge decisions can jump early before a step-down check.
+                            call	next_random
+                            and	3
+                            jr	nz,maybe_turn_around_on_empty_floor_drop
+                            pop	de
+                            call	start_enemy_jump
+                            xor	a
+                            ret
+
+maybe_turn_around_on_empty_floor_drop
                             inc	e
                             call	objects.check_coords
                             or	a
                             pop	de
-                            jr	nz,maybe_turn_around_on_empty_floor_random
+                            jr	nz,maybe_turn_around_on_empty_floor_deep
 
                             inc	e
                             or	1
                             ret
 
-maybe_turn_around_on_empty_floor_random
+maybe_turn_around_on_empty_floor_deep
+                ; Deep drops choose falling, turning back, or jumping.
                             call	next_random
-                            and	1
-                            ret	nz
+                            and	3
+                            jr	z,maybe_turn_around_on_empty_floor_fall
+                            cp	1
+                            jr	z,maybe_turn_around_on_empty_floor_turn
 
+                            call	start_enemy_jump
+                            xor	a
+                            ret
+
+maybe_turn_around_on_empty_floor_fall
+                            or	1
+                            ret
+
+maybe_turn_around_on_empty_floor_turn
                             ld	a,(ix+enemy.direction)
                             xor	1
                             ld	(ix+enemy.direction),a

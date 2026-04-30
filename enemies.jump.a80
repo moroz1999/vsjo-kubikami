@@ -1,0 +1,155 @@
+start_enemy_jump
+                ; Debug jump uses the current patrol direction and the hero's copied arc.
+                            ld	a,state_jump
+                            ld	(ix+enemy.state),a
+
+                            ld	a,jump_steps
+                            ld	(ix+enemy.jump_step),a
+
+                            xor	a
+                            ld	(ix+enemy.jump_phase_delay),a
+                            ret
+
+move_enemy_jump
+                ; Jump motion has its own delay and ignores walking pace.
+                            ld	a,(ix+enemy.jump_phase_delay)
+                            or	a
+                            jr	z,move_enemy_jump_process
+
+                            dec	a
+                            ld	(ix+enemy.jump_phase_delay),a
+                            ret
+
+move_enemy_jump_process
+                            ld	a,(ix+enemy.direction)
+                            cp	direction_left
+                            jr	z,enemy_jump_process_left
+
+                            jr	enemy_jump_process_right
+
+enemy_jump_process_left
+                            ld	a,(ix+enemy.jump_step)
+                            cp	jump_steps
+                            jr	z,enemy_jump_process_left1
+                            cp	6
+                            jr	nc,enemy_jump_process_left2
+                            cp	3
+                            jr	nc,enemy_jump_process_left3
+                            cp	1
+                            jr	nc,enemy_jump_process_left4
+                            jr	enemy_jump_process_left5
+
+enemy_jump_process_left1
+                            call	enemy_jump_move_up
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_left2
+                            call	enemy_jump_move_up
+                            call	enemy_jump_move_left
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_left3
+                            call	enemy_jump_move_left
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_left4
+                            call	enemy_jump_move_down
+                            call	enemy_jump_move_left
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_left5
+                            call	enemy_jump_move_down
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_right
+                            ld	a,(ix+enemy.jump_step)
+                            cp	jump_steps
+                            jr	z,enemy_jump_process_right1
+                            cp	6
+                            jr	nc,enemy_jump_process_right2
+                            cp	3
+                            jr	nc,enemy_jump_process_right3
+                            cp	1
+                            jr	nc,enemy_jump_process_right4
+                            jr	enemy_jump_process_right5
+
+enemy_jump_process_right1
+                            call	enemy_jump_move_up
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_right2
+                            call	enemy_jump_move_up
+                            call	enemy_jump_move_right
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_right3
+                            call	enemy_jump_move_right
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_right4
+                            call	enemy_jump_move_down
+                            call	enemy_jump_move_right
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_right5
+                            call	enemy_jump_move_down
+                            jr	enemy_jump_process_dec
+
+enemy_jump_process_dec
+                            ld	a,(ix+enemy.jump_step)
+                            dec	a
+                            ld	(ix+enemy.jump_step),a
+                            jr	z,enemy_jump_stop
+
+                            ld	a,jump_phase_delay_frames
+                            ld	(ix+enemy.jump_phase_delay),a
+                            ret
+
+enemy_jump_stop
+                ; Normal fall checks resume on the next enemy update after the arc ends.
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+
+                            ld	a,(ix+enemy.state_delay)
+                            ld	(ix+enemy.state_timer),a
+                            ret
+
+enemy_jump_move_up
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	apply_enemy_move
+
+enemy_jump_move_down
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	apply_enemy_move
+
+enemy_jump_move_left
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	d
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	apply_enemy_move
+
+enemy_jump_move_right
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	d
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	apply_enemy_move

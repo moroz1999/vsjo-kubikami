@@ -20,6 +20,8 @@ enemy_0
                             10,                 ; patrol step pacing
                             10,                 ; first patrol step delay
                             0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
                             screen_status_offline ; refreshed during room init
                             }
 
@@ -36,5 +38,7 @@ enemy_1
                             6,                  ; patrol step pacing
                             20,                 ; first patrol step delay
                             0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
                             screen_status_offline ; refreshed during room init
                             }
