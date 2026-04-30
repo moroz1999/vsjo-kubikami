@@ -19,6 +19,7 @@
 - Enemy state timer delay is stored per enemy.
 - Enemy state recalculation chooses standing with chance 1/4 and walking with chance 3/4.
 - When entering the walking state, an enemy randomly chooses left or right direction.
+- Enemy random movement decisions mix the low bit of the Z80 `R` register into the enemy random sequence.
 
 ## Movement
 

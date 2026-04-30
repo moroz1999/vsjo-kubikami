@@ -12,6 +12,10 @@ next_random_step
                             xor	random_lfsr_xor_mask
 
 next_random_store
-                ; Return the next decision value for chance checks.
+                ; Enemy decisions also mix in the current frame timing noise.
+                            ld	b,a
+                            ld	a,r
+                            and	1
+                            xor	b
                             ld	(random_seed),a
                             ret
