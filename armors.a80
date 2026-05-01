@@ -123,24 +123,31 @@ draw_armor
                             cp	type_small
                             jr	z,draw_armor_small
 
-                            ld	hl,armor_big_color_table
+                            ld	hl,armor_big_color
+                            call	draw.select_color
+                            call	get_armor_attrs_address
                             call	draw_armor_row
-                            inc	e
+
+                            ld	de,rooms.room_w-big_width
+                            add	hl,de
 
                             call	draw_armor_row
-                            inc	e
+
+                            ld	de,rooms.room_w-big_width
+                            add	hl,de
 
                             call	draw_armor_row
                             ret
 
 draw_armor_small
                             ld	hl,armor_small_color
-                            push	de
-                            call	draw.draw_gigapoint
-                            pop	de
-                            inc	e
-                            ld	hl,armor_small_color
-                            call	draw.draw_gigapoint
+                            call	draw.select_color
+                            call	get_armor_attrs_address
+                            ld	(hl),a
+
+                            ld	de,rooms.room_w
+                            add	hl,de
+                            ld	(hl),a
                             ret
 
 collect
@@ -175,33 +182,27 @@ resolve_size
                             ret
 
 draw_armor_row
-                ; Draw one armor row and advance the color pointer table
-                            push	de
-                            call	draw_armor_point
-                            inc	d
-
-                            call	draw_armor_point
-                            inc	d
-
-                            call	draw_armor_point
-                            pop	de
+                ; Draw one 3-cell armor row with the already selected color.
+                            ld	(hl),a
+                            inc	hl
+                            ld	(hl),a
+                            inc	hl
+                            ld	(hl),a
+                            inc	hl
                             ret
 
-draw_armor_point
-                ; Draw one armor cell using a two-color pointer pair
-                            push	de
-                            ld	c,(hl)
-                            inc	hl
-                            ld	b,(hl)
-                            inc	hl
-                            push	hl
-
-                            ld	h,b
-                            ld	l,c
-                            call	draw.draw_gigapoint
-
-                            pop	hl
-                            pop	de
+get_armor_attrs_address
+                ; Build the armor attribute address without clobbering the selected color in A.
+                            ld	h,0
+                            ld	l,e
+                        dup	5
+                            add	hl,hl
+                        edup
+                            ld	b,0
+                            ld	c,d
+                            add	hl,bc
+                            ld	de,screen_utils.attrs
+                            add	hl,de
                             ret
 
 amount                      equ	(armors_table_end-armors_table)/2
@@ -292,9 +293,4 @@ armor_big_color
 
 armor_small_color
                             db	armor_color1,armor_color2
-
-armor_big_color_table
-                            dw	armor_big_color,armor_big_color,armor_big_color
-                            dw	armor_big_color,armor_big_color,armor_big_color
-                            dw	armor_big_color,armor_big_color,armor_big_color
                         endmodule
