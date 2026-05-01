@@ -3,21 +3,25 @@ update_screen_status
                             ld	b,enemy_count
                             ld	ix,enemies
 update_screen_status_next
-                            ld	a,(rooms.room_number_x)
-                            cp	(ix+enemy.room_x)
-                            jr	nz,update_screen_status_offline
-
-                            ld	a,(rooms.room_number_y)
-                            cp	(ix+enemy.room_y)
-                            ld	a,screen_status_online
-                            jr	z,update_screen_status_store
-
-update_screen_status_offline
-                            ld	a,screen_status_offline
-update_screen_status_store
-                            ld	(ix+enemy.screen_status),a
+                            call	refresh_enemy_screen_status
 
                             ld	de,enemy_size
                             add	ix,de
                             djnz	update_screen_status_next
+                            ret
+
+refresh_enemy_screen_status
+                            ld	a,(rooms.room_number_x)
+                            cp	(ix+enemy.room_x)
+                            jr	nz,refresh_enemy_screen_status_offline
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(ix+enemy.room_y)
+                            ld	a,screen_status_online
+                            jr	z,refresh_enemy_screen_status_store
+
+refresh_enemy_screen_status_offline
+                            ld	a,screen_status_offline
+refresh_enemy_screen_status_store
+                            ld	(ix+enemy.screen_status),a
                             ret

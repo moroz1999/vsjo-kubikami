@@ -1,119 +1,68 @@
-У врагов появляется состояние не только ходьбы и свободного брожения, но и движения по точкам маршрута. Пока не нужно делать условия переключения и прочее, нужно отладить общий механизм. Это - параллельная модель свободному брожению, и её надо отдельно реализовать, не перемешивая с имеющимся кодом. Нужно переиспользвать только функции движения влево-вправо с проверками и прыжками. 
-Если враг находится в режиме движения по точкам, он выбирает ближнюю точку (для начала вхардкодим), а потом двигается в её направлении (пока что по x). По достижении точки берёт следующую и повторяет. Пока что идёт как поезд по рельсам. Точки будут направлены так, что враг не пропустит её (гарантированная достижимость).
-Реализуй эту модель, добавь пример (ещё один враг, движется слева направо по точкам в комнате 0 0). 
-Для отладки реализуй ещё:
-1. Дебаг-раскраску врагов по состоянию. Желтый - стоит. Красный как сейчас - свободный. Зеленый - по маршруту. 
-2. Дебаг-отображение точек. Как можно проще - не нужно буферов, просто отрисовка всех точек черным, которые в данной комнате. На скорость плевать. 
-Дебаги сразу пометь комментами на будущее удаление.
+# Route Points Domain
 
-Это первый этап, дальше будут решаться остальные вопросы - развороты, переход в другую комнату по точкам.
+## Enemy Data
 
-# Итоговая модель route points
+- Route following is a path-based enemy model that exists beside free roaming instead of replacing it.
+- Switching rules between free roaming and route following are not decided yet; the current work only proves the route mechanism itself.
+- A route-following enemy remembers the last point it reached and the point it is currently trying to reach.
+- `last_route_point_ptr` is the last reached route point.
+- `target_route_point_ptr` is the route point the enemy is currently moving toward.
+- A route-following enemy initially chooses a nearby route point; during the first test route this start is fixed by hand.
 
-## Враг хранит
+## Route Point Data
 
-    last_route_point_ptr    word
-    target_route_point_ptr  word
+```text
+route_point:
+  room_x                  byte
+  room_y                  byte
+  x                       byte
+  y                       byte
+  type                    byte
+  next_route_point_ptr    word
+  alternative_point_ptr   word
+```
 
-`last_route_point_ptr` — последняя достигнутая точка.
+- Route points belong to rooms and have room-local coordinates.
+- Route points are authored so that a route-following enemy can physically reach the next target and should not skip over it.
+- Each route point is 9 bytes.
 
-`target_route_point_ptr` — точка, к которой враг сейчас движется.
+## Types
 
-## Точка маршрута хранит
+```text
+route_point_normal
+route_point_jump_left
+route_point_jump_right
+route_point_exit
+```
 
-    route_point:
-      room_x                  byte
-      room_y                  byte
-      x                       byte
-      y                       byte
-      type                    byte
-      next_route_point_ptr    word
-      alternative_point_ptr   word
+- `route_point_normal` is an ordinary point.
+- `route_point_jump_left` starts the next transition with a left jump.
+- `route_point_jump_right` starts the next transition with a right jump.
+- `route_point_exit` is a room-exit point on a screen edge.
 
-Итого: **9 байт на точку**.
+## Links
 
-## Типы точек
+- Each route point has a main continuation and an alternative continuation.
+- Both direct links are always valid.
+- A point without a fork uses the same continuation for both choices.
+- A fork uses different main and alternative continuations.
+- A dead end points both continuations back to the previous point.
+- A room-exit point points both continuations to the matching entry point in the neighboring room.
+- Correctly authored point links make normal points, forks, dead ends, and exits work without special-case route decisions.
+- Current first-stage implementation uses only the main continuation, does not yet choose alternatives, and does not yet do low-probability turnbacks.
 
-    route_point_normal
-    route_point_jump_left
-    route_point_jump_right
-    route_point_exit
+## Exit Points
 
-`route_point_normal` — обычная точка.
+- Exit points sit on a screen edge and lead to an entry point in a neighboring room.
+- After reaching an exit point, an online route follower moves to the linked entry point, takes that point's room and position, marks its old cell for restore, and becomes offline immediately.
 
-`route_point_jump_left` — точка, из которой следующий переход начинается прыжком влево.
+## Test Route
 
-`route_point_jump_right` — точка, из которой следующий переход начинается прыжком вправо.
+- The first room `0,0` test route is `(4,9)`, `(12,10)`, `(20,9)`, `(31,5)`, `(20,16)`, `(31,5)`.
+- In the first room `0,0` test route, the fifth point descends to the basement end under the right slope and the sixth returns to the right screen edge.
+- The current cross-room test route exits from room `0,0` at `(31,5)` to the room `1,0` entry point `(0,5)`.
 
-`route_point_exit` — точка выхода из комнаты, всегда на краю экрана.
+## Movement References
 
-## Связи
-
-У каждой точки есть две прямые ссылки:
-
-    next_route_point_ptr
-    alternative_point_ptr
-
-Обе ссылки всегда валидные.
-
-## Обычная точка без развилки
-
-    next_route_point_ptr = следующая точка
-    alternative_point_ptr = та же следующая точка
-
-## Развилка
-
-    next_route_point_ptr = основной вариант
-    alternative_point_ptr = альтернативный вариант
-
-## Тупик
-
-    next_route_point_ptr = предыдущая точка
-    alternative_point_ptr = предыдущая точка
-
-## Exit-точка
-
-    next_route_point_ptr = точка входа в соседней комнате
-    alternative_point_ptr = та же точка входа
-
-При достижении exit-точки враг:
-
-- переходит на точку входа из `next_route_point_ptr`;
-- получает `room_x` / `room_y` / `x` / `y` из точки входа;
-- статус online/offline обновляется существующей системой;
-- продолжает маршрут из новой точки.
-
-## Offline
-
-В offline враг всегда маршрутный.
-
-Offline-враг двигается по тем же route points, но без физики:
-
-- считается достигшим `target_route_point_ptr`;
-- получает `room_x` / `room_y` / `x` / `y` из достигнутой точки;
-- `last_route_point_ptr = достигнутая точка`;
-- `target_route_point_ptr = случайно next_route_point_ptr или alternative_point_ptr из достигнутой точки`.
-
-## Online
-
-Online-враг может двигаться по route points физически:
-
-- идёт к `target_route_point_ptr.x` / `target_route_point_ptr.y`;
-- при достижении выбирает следующую точку.
-
-Если достигнутая точка имеет тип `route_point_jump_left` или `route_point_jump_right`, следующий переход начинается прыжком в указанную сторону.
-
-## Выбор следующей точки
-
-После достижения target:
-
-    old_last = last_route_point_ptr
-    last_route_point_ptr = target_route_point_ptr
-
-    обычно:
-      target_route_point_ptr = random(next_route_point_ptr, alternative_point_ptr)
-
-    с низкой вероятностью разворота:
-      target_route_point_ptr = old_last
-
-Для обычных точек, тупиков и exit это работает без отдельных условий, потому что ссылки заранее заполнены корректно.
+- Online route movement is documented in [Enemies Online Movement](enemies.online.md).
+- Offline route movement is documented in [Enemies Offline Movement](enemies.offline.md).

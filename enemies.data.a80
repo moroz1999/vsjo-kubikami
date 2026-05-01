@@ -24,7 +24,8 @@ enemy_0
                             0,                  ; jump delay
                             screen_status_offline, ; refreshed during room init
                             0,                  ; last route point
-                            0                   ; target route point
+                            0,                  ; target route point
+                            offline_route_point_delay ; offline route timer
                             }
 
 enemy_1
@@ -44,7 +45,8 @@ enemy_1
                             0,                  ; jump delay
                             screen_status_offline, ; refreshed during room init
                             0,                  ; last route point
-                            0                   ; target route point
+                            0,                  ; target route point
+                            offline_route_point_delay ; offline route timer
                             }
 
 enemy_2
@@ -64,5 +66,6 @@ enemy_2
                             0,                  ; jump delay
                             screen_status_offline, ; refreshed during room init
                             route_0_0_left,     ; last route point
-                            route_0_0_mid_left  ; target route point
+                            route_0_0_mid_left, ; target route point
+                            offline_route_point_delay ; offline route timer
                             }

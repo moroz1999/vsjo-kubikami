@@ -3,13 +3,17 @@ move
                             ld	b,enemy_count
                             ld	ix,enemies
 move_next
-                ; Update one enemy's behavior only while it is online.
+                ; Online enemies use physics; offline route followers use a light timer.
                             push	bc
 
                             ld	a,(ix+enemy.screen_status)
                             cp	screen_status_online
-                            jr	nz,move_next_skip
+                            jr	z,move_next_online
 
+                            call	move_offline_route_enemy
+                            jr	move_next_skip
+
+move_next_online
                             call	update_fall_state
 
                             ld	a,(ix+enemy.state)

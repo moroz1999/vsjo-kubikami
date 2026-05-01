@@ -48,7 +48,7 @@ route_0_0_right
                             0,                  ; room_x
                             0,                  ; room_y
                             31,                 ; x
-                            9,                  ; y
+                            5,                  ; y
                             route_point_normal, ; type
                             route_0_0_basement_end, ; next route point
                             route_0_0_basement_end ; alternative route point
@@ -59,7 +59,7 @@ route_0_0_basement_end
                             0,                  ; room_x
                             0,                  ; room_y
                             20,                 ; x
-                            18,                 ; y
+                            16,                 ; y
                             route_point_normal, ; type
                             route_0_0_right_return, ; next route point
                             route_0_0_right_return ; alternative route point
@@ -70,7 +70,7 @@ route_0_0_right_return
                             0,                  ; room_x
                             0,                  ; room_y
                             31,                 ; x
-                            9,                  ; y
+                            5,                  ; y
                             route_point_exit,   ; type
                             route_1_0_left_entry, ; next route point
                             route_1_0_left_entry ; alternative route point
@@ -81,7 +81,7 @@ route_1_0_left_entry
                             1,                  ; room_x
                             0,                  ; room_y
                             0,                  ; x
-                            9,                  ; y
+                            5,                  ; y
                             route_point_normal, ; type
                             route_1_0_left_entry, ; next route point
                             route_1_0_left_entry ; alternative route point
@@ -106,6 +106,30 @@ restore_route_or_walk
 restore_route_or_walk_walk
                             ld	a,state_walk
                             ld	(ix+enemy.state),a
+                            ret
+
+move_offline_route_enemy
+                ; Offline route followers advance abstractly, without room physics.
+                            call	has_route_target
+                            ret	z
+
+                            ld	a,state_route
+                            ld	(ix+enemy.state),a
+
+                            ld	a,(ix+enemy.offline_route_timer)
+                            or	a
+                            jr	z,move_offline_route_enemy_step
+                            dec	a
+                            ld	(ix+enemy.offline_route_timer),a
+                            ret
+
+move_offline_route_enemy_step
+                            ld	a,offline_route_point_delay
+                            ld	(ix+enemy.offline_route_timer),a
+
+                            call	move_enemy_to_target_route_point
+                            call	select_next_offline_route_point
+                            call	refresh_enemy_screen_status
                             ret
 
 move_route_enemy
@@ -215,6 +239,9 @@ select_next_route_point_exit
                             pop	de
                             call	move_enemy_to_route_point
 
+                            ld	a,offline_route_point_delay
+                            ld	(ix+enemy.offline_route_timer),a
+
                             ld	a,screen_status_offline
                             ld	(ix+enemy.screen_status),a
                             ret
@@ -232,10 +259,32 @@ store_target_route_point
                             ld	(ix+enemy.target_route_point_ptr+1),a
                             ret
 
+select_next_offline_route_point
+                ; Offline movement follows point links without starting physical point effects.
+                            call	get_target_route_point
+                            ret	z
+
+                            ld	(ix+enemy.last_route_point_ptr),l
+                            ld	(ix+enemy.last_route_point_ptr+1),h
+
+                            ld	de,route_point.next_route_point_ptr
+                            add	hl,de
+                            call	load_route_point_ptr_from_field
+                            call	store_target_route_point
+                            ret
+
 add_enemy_position_to_restore
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             call	draw.add_to_restore
+                            ret
+
+move_enemy_to_target_route_point
+                            call	get_target_route_point
+                            ret	z
+
+                            ex	de,hl
+                            call	move_enemy_to_route_point
                             ret
 
 move_enemy_to_route_point

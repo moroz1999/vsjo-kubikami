@@ -18,6 +18,9 @@ screen_status_online        equ	1
 ; Falling speed is shared by all enemies.
 fall_delay                  equ	1
 
+; Offline route followers advance one route point after this many frames.
+offline_route_point_delay   equ	50
+
 ; Enemy jumps copy the hero jump arc while using enemy movement rules.
 jump_steps                  equ	8
 jump_phase_delay_frames     equ	1
@@ -70,6 +73,7 @@ jump_phase_delay            byte
 screen_status               byte
 last_route_point_ptr        word
 target_route_point_ptr      word
+offline_route_timer         byte
                         ends
 
 ; Enemy behavior is split by gameplay topic.
