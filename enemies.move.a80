@@ -17,6 +17,8 @@ move_next
                             jr	z,move_next_apply
                             cp	state_jump
                             jr	z,move_next_apply
+                            cp	state_route
+                            jr	z,move_next_apply
 
                             call	update_state_timer
 
@@ -90,6 +92,8 @@ move_enemy
                             jr	z,move_enemy_fall
                             cp	state_jump
                             jp	z,move_enemy_jump
+                            cp	state_route
+                            jp	z,move_route_enemy
 
                 ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
@@ -127,9 +131,8 @@ move_enemy_fall_step
                             ret
 
 continue_after_fall
-                ; After landing, enemies keep walking in their previous direction.
-                            ld	a,state_walk
-                            ld	(ix+enemy.state),a
+                ; After landing, enemies return to their behavior model.
+                            call	restore_route_or_walk
 
                             ld	a,(ix+enemy.state_delay)
                             ld	(ix+enemy.state_timer),a
@@ -213,12 +216,30 @@ maybe_turn_around_on_empty_floor
 
 maybe_turn_around_on_empty_floor_edge
                 ; Edge decisions can jump early before a step-down check.
+                            ld	a,(ix+enemy.state)
+                            cp	state_route
+                            jr	z,maybe_turn_around_on_empty_floor_route_drop
+
                             call	next_random
                             and	3
                             jr	nz,maybe_turn_around_on_empty_floor_drop
                             pop	de
                             call	start_enemy_jump
                             xor	a
+                            ret
+
+maybe_turn_around_on_empty_floor_route_drop
+                ; Route followers step down from ledges, but never roll jump or turn choices.
+                            inc	e
+                            call	objects.check_coords
+                            or	a
+                            pop	de
+                            jr	nz,maybe_turn_around_on_empty_floor_route_move
+
+                            inc	e
+
+maybe_turn_around_on_empty_floor_route_move
+                            or	1
                             ret
 
 maybe_turn_around_on_empty_floor_drop

@@ -1,14 +1,15 @@
                         module	enemies
 ; Enemy constants describe gameplay behavior shared by all enemy records.
-enemy_count                 equ	2
+enemy_count                 equ	3
 enemy_size                  equ	enemy
 enemy_damage_amount         equ	32
 
-; Enemy state controls waiting, patrol, fall, and jump behavior.
+; Enemy state controls waiting, patrol, route following, fall, and jump behavior.
 state_stand                 equ	0
 state_walk                  equ	1
 state_fall                  equ	2
 state_jump                  equ	3
+state_route                 equ	4
 
 ; Enemy screen status is refreshed when the active room changes.
 screen_status_offline       equ	0
@@ -25,6 +26,12 @@ jump_phase_delay_frames     equ	1
 direction_left              equ	0
 direction_right             equ	1
 
+; Route points describe directed enemy paths.
+route_point_normal          equ	0
+route_point_jump_left       equ	1
+route_point_jump_right      equ	2
+route_point_exit            equ	3
+
 ; Enemy random decisions use a small local sequence.
 random_seed_init            equ	1
 random_lfsr_xor_mask        equ	56
@@ -32,6 +39,18 @@ random_lfsr_xor_mask        equ	56
 ; Enemies share one blinking visual palette.
 enemy_color1                equ	%00000010
 enemy_color2                equ	%00010000
+enemy_stand_color           equ	%00000110
+enemy_route_color           equ	%00000100
+
+                        struct	route_point
+room_x                      byte
+room_y                      byte
+x                           byte
+y                           byte
+type                        byte
+next_route_point_ptr        word
+alternative_point_ptr       word
+                        ends
 
                 ; Enemy records store room placement, local position, and behavior timers.
                         struct	enemy
@@ -49,6 +68,8 @@ fall_timer                  byte
 jump_step                   byte
 jump_phase_delay            byte
 screen_status               byte
+last_route_point_ptr        word
+target_route_point_ptr      word
                         ends
 
 ; Enemy behavior is split by gameplay topic.
@@ -58,5 +79,6 @@ screen_status               byte
                             include	"enemies.collision.a80"
                             include	"enemies.draw.a80"
                             include	"enemies.jump.a80"
+                            include	"enemies.route.a80"
                             include	"enemies.move.a80"
                         endmodule

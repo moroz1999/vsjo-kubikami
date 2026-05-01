@@ -1,0 +1,321 @@
+route_point_count           equ	(route_points_table_end-route_points_table)/2
+
+route_points_table
+                            dw	route_0_0_left
+                            dw	route_0_0_mid_left
+                            dw	route_0_0_mid_right
+                            dw	route_0_0_right
+                            dw	route_0_0_basement_end
+                            dw	route_0_0_right_return
+                            dw	route_1_0_left_entry
+route_points_table_end
+
+route_0_0_left
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            4,                  ; x
+                            9,                  ; y
+                            route_point_normal, ; type
+                            route_0_0_mid_left, ; next route point
+                            route_0_0_mid_left  ; alternative route point
+                            }
+
+route_0_0_mid_left
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            12,                 ; x
+                            10,                 ; y
+                            route_point_normal, ; type
+                            route_0_0_mid_right, ; next route point
+                            route_0_0_mid_right ; alternative route point
+                            }
+
+route_0_0_mid_right
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            20,                 ; x
+                            9,                  ; y
+                            route_point_normal, ; type
+                            route_0_0_right,    ; next route point
+                            route_0_0_right     ; alternative route point
+                            }
+
+route_0_0_right
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            31,                 ; x
+                            9,                  ; y
+                            route_point_normal, ; type
+                            route_0_0_basement_end, ; next route point
+                            route_0_0_basement_end ; alternative route point
+                            }
+
+route_0_0_basement_end
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            20,                 ; x
+                            18,                 ; y
+                            route_point_normal, ; type
+                            route_0_0_right_return, ; next route point
+                            route_0_0_right_return ; alternative route point
+                            }
+
+route_0_0_right_return
+                            route_point	{
+                            0,                  ; room_x
+                            0,                  ; room_y
+                            31,                 ; x
+                            9,                  ; y
+                            route_point_exit,   ; type
+                            route_1_0_left_entry, ; next route point
+                            route_1_0_left_entry ; alternative route point
+                            }
+
+route_1_0_left_entry
+                            route_point	{
+                            1,                  ; room_x
+                            0,                  ; room_y
+                            0,                  ; x
+                            9,                  ; y
+                            route_point_normal, ; type
+                            route_1_0_left_entry, ; next route point
+                            route_1_0_left_entry ; alternative route point
+                            }
+
+has_route_target
+                ; A non-zero target pointer marks enemies that should return to routing.
+                            ld	a,(ix+enemy.target_route_point_ptr)
+                            ld	h,a
+                            ld	a,(ix+enemy.target_route_point_ptr+1)
+                            or	h
+                            ret
+
+restore_route_or_walk
+                            call	has_route_target
+                            jr	z,restore_route_or_walk_walk
+
+                            ld	a,state_route
+                            ld	(ix+enemy.state),a
+                            ret
+
+restore_route_or_walk_walk
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+                            ret
+
+move_route_enemy
+                ; Route followers keep their own target and reuse horizontal patrol motion.
+                            call	has_route_target
+                            ret	z
+
+                            call	select_next_route_point_if_reached
+
+                            ld	a,(ix+enemy.screen_status)
+                            cp	screen_status_online
+                            ret	nz
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_route
+                            ret	nz
+
+                            ld	a,(ix+enemy.move_timer)
+                            or	a
+                            jr	z,move_route_enemy_step
+                            dec	a
+                            ld	(ix+enemy.move_timer),a
+                            ret
+
+move_route_enemy_step
+                            ld	a,(ix+enemy.move_delay)
+                            ld	(ix+enemy.move_timer),a
+
+                            call	move_route_step
+                            ret
+
+select_next_route_point_if_reached
+                            call	is_target_route_point_reached
+                            ret	nz
+
+                            call	select_next_route_point
+                            ret
+
+move_route_step
+                            call	get_target_route_point
+                            ret	z
+
+                            ld	de,route_point.x
+                            add	hl,de
+                            ld	a,(ix+enemy.x)
+                            cp	(hl)
+                            ret	z
+                            jr	c,move_route_step_right
+
+                            ld	a,direction_left
+                            ld	(ix+enemy.direction),a
+                            jp	move_enemy_left
+
+move_route_step_right
+                            ld	a,direction_right
+                            ld	(ix+enemy.direction),a
+                            jp	move_enemy_right
+
+select_next_route_point
+                            call	get_target_route_point
+                            ret	z
+
+                            ld	(ix+enemy.last_route_point_ptr),l
+                            ld	(ix+enemy.last_route_point_ptr+1),h
+
+                            ld	de,route_point.type
+                            add	hl,de
+                            ld	a,(hl)
+                            inc	hl
+                            or	a
+                            jr	z,select_next_route_point_normal
+
+                            cp	route_point_jump_left
+                            jr	z,select_next_route_point_jump_left
+
+                            cp	route_point_jump_right
+                            jr	z,select_next_route_point_jump_right
+
+                            cp	route_point_exit
+                            jr	z,select_next_route_point_exit
+
+select_next_route_point_normal
+                            call	load_route_point_ptr_from_field
+                            call	store_target_route_point
+                            ret
+
+select_next_route_point_jump_left
+                ; Jump points force the next transition to start in the authored direction.
+                            ld	(ix+enemy.direction),direction_left
+                            jr	select_next_route_point_jump
+
+select_next_route_point_jump_right
+                            ld	(ix+enemy.direction),direction_right
+
+select_next_route_point_jump
+                            call	load_route_point_ptr_from_field
+                            call	store_target_route_point
+                            call	start_enemy_jump
+                            ret
+
+select_next_route_point_exit
+                ; Exit points move the enemy to the linked entry and hide it from this room.
+                            call	load_route_point_ptr_from_field
+                            call	store_target_route_point
+                            push	de
+                            call	add_enemy_position_to_restore
+                            pop	de
+                            call	move_enemy_to_route_point
+
+                            ld	a,screen_status_offline
+                            ld	(ix+enemy.screen_status),a
+                            ret
+
+load_route_point_ptr_from_field
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            ret
+
+store_target_route_point
+                            ld	a,e
+                            ld	(ix+enemy.target_route_point_ptr),a
+                            ld	a,d
+                            ld	(ix+enemy.target_route_point_ptr+1),a
+                            ret
+
+add_enemy_position_to_restore
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            call	draw.add_to_restore
+                            ret
+
+move_enemy_to_route_point
+                ; DE points to the route point that becomes the enemy's new placement.
+                            ex	de,hl
+                            ld	a,(hl)
+                            ld	(ix+enemy.room_x),a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	(ix+enemy.room_y),a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	(ix+enemy.x),a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	(ix+enemy.y),a
+                            ret
+
+get_target_route_point
+                            ld	l,(ix+enemy.target_route_point_ptr)
+                            ld	h,(ix+enemy.target_route_point_ptr+1)
+                            ld	a,h
+                            or	l
+                            ret
+
+is_target_route_point_reached
+                            call	get_target_route_point
+                            jr	nz,is_target_route_point_reached_check
+
+                            or	1
+                            ret
+
+is_target_route_point_reached_check
+                            ld	de,route_point.x
+                            add	hl,de
+                            ld	a,(ix+enemy.x)
+                            cp	(hl)
+                            ret	nz
+
+                            inc	hl
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            ret
+
+draw_route_points
+                ; DEBUG: temporary route point overlay, remove after route tuning.
+                            ld	b,route_point_count
+                            ld	hl,route_points_table
+
+draw_route_points_next
+                            push	bc
+
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                            ld	a,(rooms.room_number_x)
+                            cp	(ix+route_point.room_x)
+                            jr	nz,draw_route_points_skip
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(ix+route_point.room_y)
+                            jr	nz,draw_route_points_skip
+
+                            ld	d,(ix+route_point.x)
+                            ld	e,(ix+route_point.y)
+                            call	draw_route_point
+
+draw_route_points_skip
+                            pop	hl
+                            pop	bc
+                            djnz	draw_route_points_next
+                            ret
+
+draw_route_point
+                            call	screen_utils.get_attrs_address
+                            xor	a
+                            ld	(hl),a
+                            ret

@@ -2,6 +2,9 @@ draw_enemies
                 ; Enemies share one flashing color for the current frame.
                             call	update_flash_color
 
+                ; DEBUG: temporary route point overlay, remove after route tuning.
+                            call	draw_route_points
+
                 ; Drawing uses the room-init screen status filter.
                             ld	b,enemy_count
                             ld	ix,enemies
@@ -25,10 +28,34 @@ draw_enemies_skip
                             ret
 
 draw_enemy
-                ; Paint one enemy cell with the shared flashing enemy color.
+                ; Paint one enemy cell with a temporary state debug color.
                             call	screen_utils.get_attrs_address
-                            ld	a,(enemy_flash_color)
+                            call	select_enemy_debug_color
                             ld	(hl),a
+                            ret
+
+select_enemy_debug_color
+                ; DEBUG: temporary state color overlay, remove after route tuning.
+                            ld	a,(ix+enemy.state)
+                            cp	state_stand
+                            jr	z,select_enemy_debug_color_stand
+                            cp	state_route
+                            jr	z,select_enemy_debug_color_route
+                            ld	a,(ix+enemy.target_route_point_ptr)
+                            ld	c,a
+                            ld	a,(ix+enemy.target_route_point_ptr+1)
+                            or	c
+                            jr	nz,select_enemy_debug_color_route
+
+                            ld	a,(enemy_flash_color)
+                            ret
+
+select_enemy_debug_color_stand
+                            ld	a,enemy_stand_color
+                            ret
+
+select_enemy_debug_color_route
+                            ld	a,enemy_route_color
                             ret
 
 update_flash_color
