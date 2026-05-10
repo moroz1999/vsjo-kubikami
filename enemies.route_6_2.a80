@@ -1,0 +1,71 @@
+route_6_2_shaft_down_top
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            15,                 ; x
+                            0,                  ; y
+                            route_point_exit,   ; type
+                            route_6_1_shaft_bottom_exit, ; top-left point
+                            route_6_2_shaft_down_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_2_shaft_down_mid
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            15,                 ; x
+                            11,                 ; y
+                            route_point_normal, ; type
+                            route_6_2_shaft_down_top, ; top-left point
+                            route_6_2_shaft_down_bottom_exit, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_2_shaft_down_bottom_exit
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            15,                 ; x
+                            21,                 ; y
+                            route_point_exit,   ; type
+                            route_6_2_shaft_down_mid, ; top-left point
+                            route_6_3_shaft_down_top, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_2_shaft_up_bottom
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            16,                 ; x
+                            21,                 ; y
+                            route_point_exit,   ; type
+                            route_6_3_shaft_up_top_exit, ; top-left point
+                            route_6_2_shaft_up_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_2_shaft_up_mid
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            16,                 ; x
+                            11,                 ; y
+                            route_point_normal, ; type
+                            route_6_2_shaft_up_bottom, ; top-left point
+                            route_6_2_shaft_up_top_exit, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_2_shaft_up_top_exit
+                            route_point	{
+                            6,                  ; room_x
+                            2,                  ; room_y
+                            16,                 ; x
+                            0,                  ; y
+                            route_point_exit,   ; type
+                            route_6_2_shaft_up_mid, ; top-left point
+                            route_6_1_shaft_bottom_entry, ; bottom-right point
+                            0                   ; alternative point
+                            }

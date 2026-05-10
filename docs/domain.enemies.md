@@ -4,6 +4,7 @@
 
 - The `enemies` module should stay split by topic-specific include files.
 - Do not accumulate unrelated enemy functions in `enemies.a80`; put movement, drawing, collision, data, and random helpers into separate `enemies.*.a80` files.
+- Route point records live in per-room include files named `enemies.route_X_Y.a80`; `enemies.route.a80` keeps the route pointer table and shared route logic.
 
 ## Data
 
@@ -26,7 +27,7 @@
 - Enemy drawing checks the current screen status before painting each enemy.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
 - Temporary debug drawing colors standing enemies yellow, free-moving enemies with the existing red flash, and route-following enemies green.
-- Temporary route-point debug drawing paints current-room route points black.
+- Temporary route-point debug drawing paints current-room route points bright magenta when `route_points_debug_enabled` is enabled.
 
 ## Topic Details
 
@@ -34,3 +35,4 @@
 - [Online Movement](enemies.online.md)
 - [Offline Movement](enemies.offline.md)
 - [Route Points](waypoints.md)
+- [Route Point Logic](route-points.logic.md)

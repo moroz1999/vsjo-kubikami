@@ -7,7 +7,7 @@
 - A route-following enemy remembers the last point it reached and the point it is currently trying to reach.
 - `last_route_point_ptr` is the last reached route point.
 - `target_route_point_ptr` is the route point the enemy is currently moving toward.
-- A route-following enemy initially chooses a nearby route point; during the first test route this start is fixed by hand.
+- A route-following enemy starts from authored route pointers in `enemies.data.a80`.
 
 ## Route Point Data
 
@@ -18,13 +18,14 @@ route_point:
   x                       byte
   y                       byte
   type                    byte
-  next_route_point_ptr    word
+  top_left_point_ptr      word
+  bottom_right_point_ptr  word
   alternative_point_ptr   word
 ```
 
 - Route points belong to rooms and have room-local coordinates.
 - Route points are authored so that a route-following enemy can physically reach the next target and should not skip over it.
-- Each route point is 9 bytes.
+- Each route point is 11 bytes.
 
 ## Types
 
@@ -42,25 +43,25 @@ route_point_exit
 
 ## Links
 
-- Each route point has a main continuation and an alternative continuation.
+- Each route point has one `top_left_point_ptr` neighbor and one `bottom_right_point_ptr` neighbor.
 - Both direct links are always valid.
-- A point without a fork uses the same continuation for both choices.
-- A fork uses different main and alternative continuations.
-- A dead end points both continuations back to the previous point.
-- A room-exit point points both continuations to the matching entry point in the neighboring room.
-- Correctly authored point links make normal points, forks, dead ends, and exits work without special-case route decisions.
-- Current first-stage implementation uses only the main continuation, does not yet choose alternatives, and does not yet do low-probability turnbacks.
+- A point with only one physical neighbor stores the same neighbor in both link fields.
+- `alternative_point_ptr` is an optional branch. A zero high byte disables the alternative branch.
+- Route selection first compares `last_route_point_ptr` with the two direct links and selects the opposite direct neighbor.
+- When `last_route_point_ptr` matches neither direct link, route selection falls back to `bottom_right_point_ptr`.
+- If `alternative_point_ptr` is enabled, route selection chooses 50/50 between the direct neighbor and the alternative branch.
+- Correctly authored point links make two-way lines, dead ends, item rewires, random forks, and exits work without special point types.
 
 ## Exit Points
 
 - Exit points sit on a screen edge and lead to an entry point in a neighboring room.
-- After reaching an exit point, an online route follower moves to the linked entry point, takes that point's room and position, marks its old cell for restore, and becomes offline immediately.
+- After reaching an exit point, an online route follower moves to the selected neighbor only when that neighbor belongs to another room.
+- Exit points can also act as normal edge entries: when the selected neighbor is in the same room, the enemy keeps routing physically instead of teleporting.
+- Cross-room exit movement takes the selected point's room and position, marks the old cell for restore, and becomes offline immediately.
 
-## Test Route
+## Room Logic
 
-- The first room `0,0` test route is `(4,9)`, `(12,10)`, `(20,9)`, `(31,5)`, `(20,16)`, `(31,5)`.
-- In the first room `0,0` test route, the fifth point descends to the basement end under the right slope and the sixth returns to the right screen edge.
-- The current cross-room test route exits from room `0,0` at `(31,5)` to the room `1,0` entry point `(0,5)`.
+- Room-specific route graph decisions and item-driven rewires are documented in [Route Point Logic](route-points.logic.md).
 
 ## Movement References
 

@@ -16,6 +16,10 @@ move_next
 move_next_online
                             call	update_fall_state
 
+                            ld	a,(ix+enemy.screen_status)
+                            cp	screen_status_online
+                            jr	nz,move_next_skip
+
                             ld	a,(ix+enemy.state)
                             cp	state_fall
                             jr	z,move_next_apply
@@ -41,9 +45,35 @@ update_fall_state
                             ld	a,(ix+enemy.state)
                             cp	state_jump
                             ret	z
+                            cp	state_route
+                            jr	z,update_fall_state_route
+                            cp	state_fall
+                            jr	nz,update_fall_state_check_floor
 
+update_fall_state_route
+                            call	select_next_route_point_if_reached
+
+                            ld	a,(ix+enemy.screen_status)
+                            cp	screen_status_online
+                            ret	nz
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_route
+                            jr	z,update_fall_state_route_check_up
+                            cp	state_fall
+                            jr	z,update_fall_state_check_floor
+                            ret
+
+update_fall_state_route_check_up
+                            call	is_upward_route_target
+                            ret	z
+
+update_fall_state_check_floor
                             call	check_floor_below
                             jr	z,update_fall_state_falling
+
+                            cp	objects.roomedge_bottom
+                            jp	z,move_enemy_to_bottom_room
 
                             ld	a,(ix+enemy.state)
                             cp	state_fall
@@ -126,12 +156,39 @@ move_enemy_fall_step
                             ld	(ix+enemy.fall_timer),a
 
                             call	check_floor_below
-                            jp	nz,continue_after_fall
+                            jr	z,move_enemy_fall_down
 
+                            cp	objects.roomedge_bottom
+                            jp	z,move_enemy_to_bottom_room
+
+                            jp	continue_after_fall
+
+move_enemy_fall_down
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             inc	e
                             call	apply_enemy_move
+                            ret
+
+move_enemy_to_bottom_room
+                ; Falling through the bottom edge moves the enemy to the room below.
+                            ld	a,(ix+enemy.room_y)
+                            inc	a
+                            cp	rooms.room_amount_y
+                            jp	z,continue_after_fall
+                            push	af
+
+                            call	select_next_route_point_if_reached
+                            call	add_enemy_position_to_restore
+
+                            pop	af
+                            ld	(ix+enemy.room_y),a
+
+                            xor	a
+                            ld	(ix+enemy.y),a
+
+                            ld	a,screen_status_offline
+                            ld	(ix+enemy.screen_status),a
                             ret
 
 continue_after_fall

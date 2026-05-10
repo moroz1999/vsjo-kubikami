@@ -1,0 +1,47 @@
+route_0_1_right_entry
+                            route_point	{
+                            0,                  ; room_x
+                            1,                  ; room_y
+                            31,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_0_1_right_mid, ; top-left point
+                            route_0_1_right_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_0_1_right_mid
+                            route_point	{
+                            0,                  ; room_x
+                            1,                  ; room_y
+                            24,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_0_1_mid,      ; top-left point
+                            route_0_1_right_entry, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_0_1_mid
+                            route_point	{
+                            0,                  ; room_x
+                            1,                  ; room_y
+                            18,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_0_1_left_mid, ; top-left point
+                            route_0_1_right_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_0_1_left_mid
+                            route_point	{
+                            0,                  ; room_x
+                            1,                  ; room_y
+                            11,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_0_1_mid,      ; top-left point
+                            route_0_1_mid,       ; bottom-right point
+                            0                   ; alternative point
+                            }

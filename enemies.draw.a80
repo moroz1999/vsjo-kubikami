@@ -2,8 +2,10 @@ draw_enemies
                 ; Enemies share one flashing color for the current frame.
                             call	update_flash_color
 
-                ; DEBUG: temporary route point overlay, remove after route tuning.
+                            if	route_points_debug_enabled
+                ; DEBUG: temporary route point overlay, controlled by route_points_debug_enabled.
                             call	draw_route_points
+                            endif
 
                 ; Drawing uses the room-init screen status filter.
                             ld	b,enemy_count

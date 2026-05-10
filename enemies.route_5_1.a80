@@ -1,0 +1,59 @@
+route_5_1_left_entry
+                            route_point	{
+                            5,                  ; room_x
+                            1,                  ; room_y
+                            0,                  ; x
+                            19,                 ; y
+                            route_point_exit,   ; type
+                            route_4_1_right_exit, ; top-left point
+                            route_5_1_bottom_left, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_5_1_bottom_left
+                            route_point	{
+                            5,                  ; room_x
+                            1,                  ; room_y
+                            8,                  ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_5_1_left_entry, ; top-left point
+                            route_5_1_bottom_fork, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_5_1_bottom_fork
+                            route_point	{
+                            5,                  ; room_x
+                            1,                  ; room_y
+                            16,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_5_1_bottom_left, ; top-left point
+                            route_5_1_bottom_right, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_5_1_bottom_right
+                            route_point	{
+                            5,                  ; room_x
+                            1,                  ; room_y
+                            24,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_5_1_bottom_fork, ; top-left point
+                            route_5_1_right_exit, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_5_1_right_exit
+                            route_point	{
+                            5,                  ; room_x
+                            1,                  ; room_y
+                            31,                 ; x
+                            19,                 ; y
+                            route_point_exit,   ; type
+                            route_5_1_bottom_right, ; top-left point
+                            route_6_1_left_entry, ; bottom-right point
+                            0                   ; alternative point
+                            }

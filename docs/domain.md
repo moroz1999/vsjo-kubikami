@@ -9,4 +9,5 @@
 ## Topic Details
 
 - [Enemies](domain.enemies.md)
+- [Items](items.md)
 - [Armors](domain.armors.md)

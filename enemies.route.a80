@@ -7,85 +7,124 @@ route_points_table
                             dw	route_0_0_right
                             dw	route_0_0_basement_end
                             dw	route_0_0_right_return
+                            dw	route_0_1_right_entry
+                            dw	route_0_1_right_mid
+                            dw	route_0_1_mid
+                            dw	route_0_1_left_mid
                             dw	route_1_0_left_entry
+                            dw	route_1_0_arch
+                            dw	route_1_0_lower_walk
+                            dw	route_1_0_right_exit
+                            dw	route_1_1_left_entry
+                            dw	route_1_1_left_mid
+                            dw	route_1_1_left_inner
+                            dw	route_1_1_left_deadend
+                            dw	route_1_1_right_entry
+                            dw	route_1_1_right_mid
+                            dw	route_1_1_right_deadend
+                            dw	route_2_0_left_entry
+                            dw	route_2_0_top_left
+                            dw	route_2_0_top_mid
+                            dw	route_2_0_top_right
+                            dw	route_2_0_basement_entry
+                            dw	route_2_0_basement_mid
+                            dw	route_2_0_basement_end
+                            dw	route_2_0_basement_jump
+                            dw	route_2_1_left_entry
+                            dw	route_2_1_left_mid
+                            dw	route_2_1_right_entry
+                            dw	route_2_1_right_mid
+                            dw	route_2_1_right_deadend
+                            dw	route_3_0_left_entry
+                            dw	route_3_0_left_drop
+                            dw	route_3_1_top_entry
+                            dw	route_3_1_bottom_fork
+                            dw	route_3_1_left_exit
+                            dw	route_3_1_bottom_jump_right
+                            dw	route_3_1_right_jump_left
+                            dw	route_3_1_right_mid
+                            dw	route_3_1_right_far
+                            dw	route_3_1_right_exit
+                            dw	route_4_1_left_entry
+                            dw	route_4_1_left_mid
+                            dw	route_4_1_left_jump
+                            dw	route_4_1_air_low
+                            dw	route_4_1_air_high
+                            dw	route_4_1_air_return
+                            dw	route_4_1_right_mid
+                            dw	route_4_1_right_exit
+                            dw	route_4_2_top_landing
+                            dw	route_4_2_slope_mid
+                            dw	route_4_2_slope_right
+                            dw	route_4_2_lower_right
+                            dw	route_4_2_lower_left
+                            dw	route_4_2_bottom_mid
+                            dw	route_5_1_left_entry
+                            dw	route_5_1_bottom_left
+                            dw	route_5_1_bottom_fork
+                            dw	route_5_1_bottom_right
+                            dw	route_5_1_right_exit
+                            dw	route_6_1_left_entry
+                            dw	route_6_1_shaft_bottom_exit
+                            dw	route_6_1_shaft_bottom_entry
+                            dw	route_6_1_shaft_up_mid
+                            dw	route_6_1_shaft_up_top
+                            dw	route_6_2_shaft_down_top
+                            dw	route_6_2_shaft_down_mid
+                            dw	route_6_2_shaft_down_bottom_exit
+                            dw	route_6_2_shaft_up_bottom
+                            dw	route_6_2_shaft_up_mid
+                            dw	route_6_2_shaft_up_top_exit
+                            dw	route_6_3_shaft_down_top
+                            dw	route_6_3_shaft_down_turn
+                            dw	route_6_3_shaft_down_mid
+                            dw	route_6_3_shaft_down_floor
+                            dw	route_6_3_bottom_right
+                            dw	route_6_3_bottom_mid
+                            dw	route_6_3_bottom_left
+                            dw	route_6_3_shaft_up_floor
+                            dw	route_6_3_shaft_up_mid
+                            dw	route_6_3_shaft_up_shaft
+                            dw	route_6_3_shaft_up_turn
+                            dw	route_6_3_shaft_up_top_exit
 route_points_table_end
 
-route_0_0_left
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            4,                  ; x
-                            9,                  ; y
-                            route_point_normal, ; type
-                            route_0_0_mid_left, ; next route point
-                            route_0_0_mid_left  ; alternative route point
-                            }
+                            include	"enemies.route_0_0.a80"
+                            include	"enemies.route_0_1.a80"
+                            include	"enemies.route_1_0.a80"
+                            include	"enemies.route_1_1.a80"
+                            include	"enemies.route_2_0.a80"
+                            include	"enemies.route_2_1.a80"
+                            include	"enemies.route_3_0.a80"
+                            include	"enemies.route_3_1.a80"
+                            include	"enemies.route_4_1.a80"
+                            include	"enemies.route_4_2.a80"
+                            include	"enemies.route_5_1.a80"
+                            include	"enemies.route_6_1.a80"
+                            include	"enemies.route_6_2.a80"
+                            include	"enemies.route_6_3.a80"
 
-route_0_0_mid_left
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            12,                 ; x
-                            10,                 ; y
-                            route_point_normal, ; type
-                            route_0_0_mid_right, ; next route point
-                            route_0_0_mid_right ; alternative route point
-                            }
+activate_2_0_roof_route
+                            ld	hl,route_2_0_top_mid+route_point.bottom_right_point_ptr
+                            ld	de,route_2_0_basement_entry
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
 
-route_0_0_mid_right
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            20,                 ; x
-                            9,                  ; y
-                            route_point_normal, ; type
-                            route_0_0_right,    ; next route point
-                            route_0_0_right     ; alternative route point
-                            }
+activate_screwdriver_routes
+                            ld	hl,route_4_1_left_mid+route_point.alternative_point_ptr
+                            ld	de,route_4_1_air_low
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
 
-route_0_0_right
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            31,                 ; x
-                            5,                  ; y
-                            route_point_normal, ; type
-                            route_0_0_basement_end, ; next route point
-                            route_0_0_basement_end ; alternative route point
-                            }
-
-route_0_0_basement_end
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            20,                 ; x
-                            16,                 ; y
-                            route_point_normal, ; type
-                            route_0_0_right_return, ; next route point
-                            route_0_0_right_return ; alternative route point
-                            }
-
-route_0_0_right_return
-                            route_point	{
-                            0,                  ; room_x
-                            0,                  ; room_y
-                            31,                 ; x
-                            5,                  ; y
-                            route_point_exit,   ; type
-                            route_1_0_left_entry, ; next route point
-                            route_1_0_left_entry ; alternative route point
-                            }
-
-route_1_0_left_entry
-                            route_point	{
-                            1,                  ; room_x
-                            0,                  ; room_y
-                            0,                  ; x
-                            5,                  ; y
-                            route_point_normal, ; type
-                            route_1_0_left_entry, ; next route point
-                            route_1_0_left_entry ; alternative route point
-                            }
+                            ld	hl,route_6_3_bottom_left+route_point.alternative_point_ptr
+                            ld	de,route_6_3_shaft_up_floor
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
 
 has_route_target
                 ; A non-zero target pointer marks enemies that should return to routing.
@@ -171,12 +210,17 @@ select_next_route_point_if_reached
 move_route_step
                             call	get_target_route_point
                             ret	z
+                            push	hl
+                            ex	de,hl
+                            call	is_route_point_in_enemy_room
+                            pop	hl
+                            ret	nz
 
                             ld	de,route_point.x
                             add	hl,de
                             ld	a,(ix+enemy.x)
                             cp	(hl)
-                            ret	z
+                            jr	z,move_route_step_vertical
                             jr	c,move_route_step_right
 
                             ld	a,direction_left
@@ -188,13 +232,26 @@ move_route_step_right
                             ld	(ix+enemy.direction),a
                             jp	move_enemy_right
 
+move_route_step_vertical
+                            inc	hl
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            ret	z
+                            ret	c
+
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	e
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+                            jp	apply_enemy_move
+
 select_next_route_point
                             call	get_target_route_point
                             ret	z
 
-                            ld	(ix+enemy.last_route_point_ptr),l
-                            ld	(ix+enemy.last_route_point_ptr+1),h
-
+                            push	hl
                             ld	de,route_point.type
                             add	hl,de
                             ld	a,(hl)
@@ -212,28 +269,36 @@ select_next_route_point
                             jr	z,select_next_route_point_exit
 
 select_next_route_point_normal
-                            call	load_route_point_ptr_from_field
+                            call	load_route_point_target
+                            pop	hl
+                            call	store_last_route_point
                             call	store_target_route_point
                             ret
 
 select_next_route_point_jump_left
-                ; Jump points force the next transition to start in the authored direction.
-                            ld	(ix+enemy.direction),direction_left
+                ; Jump points choose their jump direction from the selected neighbor.
                             jr	select_next_route_point_jump
 
 select_next_route_point_jump_right
-                            ld	(ix+enemy.direction),direction_right
 
 select_next_route_point_jump
-                            call	load_route_point_ptr_from_field
+                            call	load_route_point_target
+                            pop	hl
+                            call	store_last_route_point
+                            call	select_jump_direction_to_target
                             call	store_target_route_point
                             call	start_enemy_jump
                             ret
 
 select_next_route_point_exit
-                ; Exit points move the enemy to the linked entry and hide it from this room.
-                            call	load_route_point_ptr_from_field
+                ; Exit points move across rooms only when the selected neighbor is outside.
+                            call	load_route_point_target
+                            pop	hl
+                            call	store_last_route_point
                             call	store_target_route_point
+                            call	is_route_point_in_enemy_room
+                            ret	z
+
                             push	de
                             call	add_enemy_position_to_restore
                             pop	de
@@ -246,10 +311,62 @@ select_next_route_point_exit
                             ld	(ix+enemy.screen_status),a
                             ret
 
-load_route_point_ptr_from_field
+load_route_point_target
+                ; Pick the opposite neighbor from the point the enemy reached before.
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
+                            inc	hl
+                            ld	c,(hl)
+                            inc	hl
+                            ld	b,(hl)
+                            inc	hl
+
+                            ld	a,(ix+enemy.last_route_point_ptr)
+                            cp	e
+                            jr	nz,load_route_point_target_check_bottom
+
+                            ld	a,(ix+enemy.last_route_point_ptr+1)
+                            cp	d
+                            jr	z,load_route_point_target_bottom
+
+load_route_point_target_check_bottom
+                            ld	a,(ix+enemy.last_route_point_ptr)
+                            cp	c
+                            jr	nz,load_route_point_target_bottom
+
+                            ld	a,(ix+enemy.last_route_point_ptr+1)
+                            cp	b
+                            jr	z,load_route_point_target_alternative
+
+load_route_point_target_bottom
+                            ld	e,c
+                            ld	d,b
+
+load_route_point_target_alternative
+                ; A zero high byte means the optional branch is disabled.
+                            ld	c,(hl)
+                            inc	hl
+                            ld	b,(hl)
+                            ld	a,b
+                            or	a
+                            ret	z
+
+                            push	bc
+                            call	next_random
+                            bit	0,a
+                            pop	bc
+                            ret	z
+
+                            ld	e,c
+                            ld	d,b
+                            ret
+
+store_last_route_point
+                            ld	a,l
+                            ld	(ix+enemy.last_route_point_ptr),a
+                            ld	a,h
+                            ld	(ix+enemy.last_route_point_ptr+1),a
                             ret
 
 store_target_route_point
@@ -259,17 +376,59 @@ store_target_route_point
                             ld	(ix+enemy.target_route_point_ptr+1),a
                             ret
 
+select_jump_direction_to_target
+                ; Bidirectional jump points jump toward the selected neighbor.
+                            push	de
+                            push	hl
+                            ld	bc,route_point.x
+                            add	hl,bc
+                            ld	a,(hl)
+                            pop	hl
+                            pop	de
+
+                            push	de
+                            ex	de,hl
+                            ld	bc,route_point.x
+                            add	hl,bc
+                            cp	(hl)
+                            jr	c,select_jump_direction_to_target_right
+
+                            ld	a,direction_left
+                            jr	select_jump_direction_to_target_store
+
+select_jump_direction_to_target_right
+                            ld	a,direction_right
+
+select_jump_direction_to_target_store
+                            ld	(ix+enemy.direction),a
+                            pop	de
+                            ret
+
+is_route_point_in_enemy_room
+                            push	de
+                            ld	a,(de)
+                            cp	(ix+enemy.room_x)
+                            jr	nz,is_route_point_in_enemy_room_done
+
+                            inc	de
+                            ld	a,(de)
+                            cp	(ix+enemy.room_y)
+
+is_route_point_in_enemy_room_done
+                            pop	de
+                            ret
+
 select_next_offline_route_point
                 ; Offline movement follows point links without starting physical point effects.
                             call	get_target_route_point
                             ret	z
 
-                            ld	(ix+enemy.last_route_point_ptr),l
-                            ld	(ix+enemy.last_route_point_ptr+1),h
-
-                            ld	de,route_point.next_route_point_ptr
+                            push	hl
+                            ld	de,route_point.top_left_point_ptr
                             add	hl,de
-                            call	load_route_point_ptr_from_field
+                            call	load_route_point_target
+                            pop	hl
+                            call	store_last_route_point
                             call	store_target_route_point
                             ret
 
@@ -329,6 +488,39 @@ is_target_route_point_reached_check
                             cp	(hl)
                             ret
 
+is_upward_route_target
+                            call	get_target_route_point
+                            jr	nz,is_upward_route_target_check
+
+                            or	1
+                            ret
+
+is_upward_route_target_check
+                            push	hl
+                            ex	de,hl
+                            call	is_route_point_in_enemy_room
+                            pop	hl
+                            jr	nz,is_upward_route_target_false
+
+                            ld	de,route_point.x
+                            add	hl,de
+                            ld	a,(ix+enemy.x)
+                            cp	(hl)
+                            jr	nz,is_upward_route_target_false
+
+                            inc	hl
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            jr	z,is_upward_route_target_false
+                            jr	c,is_upward_route_target_false
+
+                            xor	a
+                            ret
+
+is_upward_route_target_false
+                            or	1
+                            ret
+
 draw_route_points
                 ; DEBUG: temporary route point overlay, remove after route tuning.
                             ld	b,route_point_count
@@ -365,6 +557,6 @@ draw_route_points_skip
 
 draw_route_point
                             call	screen_utils.get_attrs_address
-                            xor	a
+                            ld	a,route_point_debug_color
                             ld	(hl),a
                             ret

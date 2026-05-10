@@ -44,6 +44,8 @@ enemy_color1                equ	%00000010
 enemy_color2                equ	%00010000
 enemy_stand_color           equ	%00000110
 enemy_route_color           equ	%00000100
+route_points_debug_enabled  equ	1
+route_point_debug_color     equ	%01000011
 
                         struct	route_point
 room_x                      byte
@@ -51,7 +53,8 @@ room_y                      byte
 x                           byte
 y                           byte
 type                        byte
-next_route_point_ptr        word
+top_left_point_ptr          word
+bottom_right_point_ptr      word
 alternative_point_ptr       word
                         ends
 
