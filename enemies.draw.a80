@@ -2,20 +2,15 @@ draw_enemies
                 ; Enemies share one flashing color for the current frame.
                             call	update_flash_color
 
-                            if	route_points_debug_enabled
-                ; DEBUG: temporary route point overlay, controlled by route_points_debug_enabled.
-                            call	draw_route_points
-                            endif
-
-                ; Drawing uses the room-init screen status filter.
+                ; Drawing uses the room-init simulation mode filter.
                             ld	b,enemy_count
                             ld	ix,enemies
 draw_enemies_next
                 ; Draw one enemy only while it is online.
                             push	bc
 
-                            ld	a,(ix+enemy.screen_status)
-                            cp	screen_status_online
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
                             jr	nz,draw_enemies_skip
 
                             ld	d,(ix+enemy.x)
@@ -27,22 +22,33 @@ draw_enemies_skip
                             add	ix,de
                             pop	bc
                             djnz	draw_enemies_next
+
+                            if	route_points_debug_enabled
+                            call	draw_route_points
+                            endif
                             ret
 
 draw_enemy
-                ; Paint one enemy cell with a temporary state debug color.
+                ; Paint one enemy cell with the active enemy palette.
                             call	screen_utils.get_attrs_address
+
+                            if	route_points_debug_enabled
                             call	select_enemy_debug_color
+                            else
+                            ld	a,(enemy_flash_color)
+                            endif
                             ld	(hl),a
                             ret
 
+                            if	route_points_debug_enabled
 select_enemy_debug_color
-                ; DEBUG: temporary state color overlay, remove after route tuning.
+                ; Debug builds expose standing and route-following enemies.
                             ld	a,(ix+enemy.state)
                             cp	state_stand
                             jr	z,select_enemy_debug_color_stand
                             cp	state_route
                             jr	z,select_enemy_debug_color_route
+
                             ld	a,(ix+enemy.target_route_point_ptr)
                             ld	c,a
                             ld	a,(ix+enemy.target_route_point_ptr+1)
@@ -59,6 +65,7 @@ select_enemy_debug_color_stand
 select_enemy_debug_color_route
                             ld	a,enemy_route_color
                             ret
+                            endif
 
 update_flash_color
                 ; Enemy color follows the global draw color switch.

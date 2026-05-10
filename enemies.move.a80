@@ -6,18 +6,28 @@ move_next
                 ; Online enemies use physics; offline route followers use a light timer.
                             push	bc
 
-                            ld	a,(ix+enemy.screen_status)
-                            cp	screen_status_online
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
                             jr	z,move_next_online
 
                             call	move_offline_route_enemy
                             jr	move_next_skip
 
 move_next_online
+                            call	advance_online_route_target_if_reached
+
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
+                            jr	nz,move_next_skip
+
+                            call	should_defer_gravity_for_route
+                            jr	z,move_next_after_fall_state
+
                             call	update_fall_state
 
-                            ld	a,(ix+enemy.screen_status)
-                            cp	screen_status_online
+move_next_after_fall_state
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
                             jr	nz,move_next_skip
 
                             ld	a,(ix+enemy.state)
@@ -45,30 +55,7 @@ update_fall_state
                             ld	a,(ix+enemy.state)
                             cp	state_jump
                             ret	z
-                            cp	state_route
-                            jr	z,update_fall_state_route
-                            cp	state_fall
-                            jr	nz,update_fall_state_check_floor
 
-update_fall_state_route
-                            call	select_next_route_point_if_reached
-
-                            ld	a,(ix+enemy.screen_status)
-                            cp	screen_status_online
-                            ret	nz
-
-                            ld	a,(ix+enemy.state)
-                            cp	state_route
-                            jr	z,update_fall_state_route_check_up
-                            cp	state_fall
-                            jr	z,update_fall_state_check_floor
-                            ret
-
-update_fall_state_route_check_up
-                            call	is_upward_route_target
-                            ret	z
-
-update_fall_state_check_floor
                             call	check_floor_below
                             jr	z,update_fall_state_falling
 
@@ -167,7 +154,7 @@ move_enemy_fall_down
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
                             inc	e
-                            call	apply_enemy_move
+                            call	set_enemy_position
                             ret
 
 move_enemy_to_bottom_room
@@ -176,20 +163,16 @@ move_enemy_to_bottom_room
                             inc	a
                             cp	rooms.room_amount_y
                             jp	z,continue_after_fall
-                            push	af
+                            ld	c,a
 
-                            call	select_next_route_point_if_reached
-                            call	add_enemy_position_to_restore
+                            ld	a,(ix+enemy.room_x)
+                            ld	b,a
 
-                            pop	af
-                            ld	(ix+enemy.room_y),a
+                            ld	d,(ix+enemy.x)
 
                             xor	a
-                            ld	(ix+enemy.y),a
-
-                            ld	a,screen_status_offline
-                            ld	(ix+enemy.screen_status),a
-                            ret
+                            ld	e,a
+                            jp	leave_enemy_to_room_coords
 
 continue_after_fall
                 ; After landing, enemies return to their behavior model.
@@ -225,7 +208,7 @@ move_enemy_left
                             call	maybe_turn_around_on_empty_floor
                             ret	z
 
-                            call	apply_enemy_move
+                            call	set_enemy_position
                             ret
 
 move_enemy_right
@@ -242,7 +225,7 @@ move_enemy_right
                             call	maybe_turn_around_on_empty_floor
                             ret	z
 
-                            call	apply_enemy_move
+                            call	set_enemy_position
                             ret
 
 handle_screen_edge
@@ -257,7 +240,7 @@ handle_blocked_course
                             dec	e
                             call	objects.check_coords
                             cp	objects.b_empty
-                            jp	z,apply_enemy_move
+                            jp	z,set_enemy_position
 
                             ld	a,(ix+enemy.direction)
                             xor	1
@@ -346,8 +329,8 @@ check_floor_below
                             cp	objects.b_empty
                             ret
 
-apply_enemy_move
-                ; A successful patrol step moves the enemy and restores the old cell later.
+set_enemy_position
+                ; All visible position changes restore the old cell first.
                             push	de
 
                             ld	d,(ix+enemy.x)
@@ -355,8 +338,33 @@ apply_enemy_move
                             call	draw.add_to_restore
 
                             pop	de
+                            jp	store_enemy_position
+
+store_enemy_position
                             ld	a,d
                             ld	(ix+enemy.x),a
                             ld	a,e
                             ld	(ix+enemy.y),a
+                            ret
+
+leave_enemy_to_room_coords
+                ; BC is the new room, DE is the new room-local position.
+                            push	bc
+                            push	de
+                            call	add_enemy_position_to_restore
+                            pop	de
+                            pop	bc
+
+                            ld	a,b
+                            ld	(ix+enemy.room_x),a
+                            ld	a,c
+                            ld	(ix+enemy.room_y),a
+
+                            call	store_enemy_position
+
+                            ld	a,offline_route_point_delay
+                            ld	(ix+enemy.offline_route_timer),a
+
+                            ld	a,simulation_mode_offline
+                            ld	(ix+enemy.simulation_mode),a
                             ret

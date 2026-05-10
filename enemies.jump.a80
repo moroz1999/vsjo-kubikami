@@ -1,5 +1,5 @@
 start_enemy_jump
-                ; Debug jump uses the current patrol direction and the hero's copied arc.
+                ; Enemy jump uses the current patrol direction and the hero's copied arc.
                             ld	a,state_jump
                             ld	(ix+enemy.state),a
 
@@ -121,7 +121,7 @@ enemy_jump_move_up
                             cp	objects.b_empty
                             ret	nz
 
-                            jp	apply_enemy_move
+                            jp	set_enemy_position
 
 enemy_jump_move_down
                             ld	d,(ix+enemy.x)
@@ -131,7 +131,7 @@ enemy_jump_move_down
                             cp	objects.b_empty
                             ret	nz
 
-                            jp	apply_enemy_move
+                            jp	set_enemy_position
 
 enemy_jump_move_left
                             ld	d,(ix+enemy.x)
@@ -141,7 +141,7 @@ enemy_jump_move_left
                             cp	objects.b_empty
                             ret	nz
 
-                            jp	apply_enemy_move
+                            jp	set_enemy_position
 
 enemy_jump_move_right
                             ld	d,(ix+enemy.x)
@@ -151,4 +151,4 @@ enemy_jump_move_right
                             cp	objects.b_empty
                             ret	nz
 
-                            jp	apply_enemy_move
+                            jp	set_enemy_position

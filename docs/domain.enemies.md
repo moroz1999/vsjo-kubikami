@@ -12,8 +12,8 @@
 - Enemy records use room coordinates as `room_x` and `room_y`, not a linear `room_id`.
 - Enemy positions use room attribute coordinates, not pixel coordinates.
 - Enemies are processed from the global table, without a current-room enemy buffer.
-- Enemy records keep a screen status: online when the enemy belongs to the active room, offline otherwise.
-- Enemy screen status is refreshed during room initialization and can be forced offline by route exits.
+- Enemy records keep a simulation mode: online when the enemy belongs to the active room, offline otherwise.
+- Enemy simulation mode is refreshed during room initialization and can be forced offline by route exits and physical room transitions.
 
 ## Collision
 
@@ -24,10 +24,10 @@
 - All enemies share one flashing color value, `enemies.enemy_flash_color`.
 - The shared enemy flash color is selected from `enemies.enemy_flash_colors` through the common draw color switch.
 - Enemy drawing is connected to the main draw pass through `enemies.draw_enemies`.
-- Enemy drawing checks the current screen status before painting each enemy.
+- Enemy drawing checks the current simulation mode before painting each enemy.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
-- Temporary debug drawing colors standing enemies yellow, free-moving enemies with the existing red flash, and route-following enemies green.
-- Temporary route-point debug drawing paints current-room route points bright magenta when `route_points_debug_enabled` is enabled.
+- Route debug drawing is compile-time gated by `route_points_debug_enabled` and disabled by default.
+- When route debug drawing is enabled, standing enemies are yellow, route-following enemies are green, and current-room route points are bright magenta.
 
 ## Topic Details
 

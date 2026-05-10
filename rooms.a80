@@ -35,7 +35,7 @@ init_current_room
 							call	gather_armors
 							call	gather_teleports
 							call	gather_waterdrops
-							call	enemies.update_screen_status
+							call	enemies.update_simulation_mode
 
 							call	calculate_room_top_y
 							call	calculate_room_bottom_y

@@ -1,27 +1,27 @@
-update_screen_status
-                ; Room entry marks enemies as online only when they belong to the active room.
+update_simulation_mode
+                ; Room entry simulates only enemies that belong to the active room.
                             ld	b,enemy_count
                             ld	ix,enemies
-update_screen_status_next
-                            call	refresh_enemy_screen_status
+update_simulation_mode_next
+                            call	refresh_enemy_simulation_mode
 
                             ld	de,enemy_size
                             add	ix,de
-                            djnz	update_screen_status_next
+                            djnz	update_simulation_mode_next
                             ret
 
-refresh_enemy_screen_status
+refresh_enemy_simulation_mode
                             ld	a,(rooms.room_number_x)
                             cp	(ix+enemy.room_x)
-                            jr	nz,refresh_enemy_screen_status_offline
+                            jr	nz,refresh_enemy_simulation_mode_offline
 
                             ld	a,(rooms.room_number_y)
                             cp	(ix+enemy.room_y)
-                            ld	a,screen_status_online
-                            jr	z,refresh_enemy_screen_status_store
+                            ld	a,simulation_mode_online
+                            jr	z,refresh_enemy_simulation_mode_store
 
-refresh_enemy_screen_status_offline
-                            ld	a,screen_status_offline
-refresh_enemy_screen_status_store
-                            ld	(ix+enemy.screen_status),a
+refresh_enemy_simulation_mode_offline
+                            ld	a,simulation_mode_offline
+refresh_enemy_simulation_mode_store
+                            ld	(ix+enemy.simulation_mode),a
                             ret

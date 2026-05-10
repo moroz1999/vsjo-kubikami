@@ -6,8 +6,8 @@ check_hero_next
                 ; Check one enemy against the hero only while it is online.
                             push	bc
 
-                            ld	a,(ix+enemy.screen_status)
-                            cp	screen_status_online
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
                             jr	nz,check_hero_skip
 
                             ld	a,(ix+enemy.x)

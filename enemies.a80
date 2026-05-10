@@ -11,9 +11,9 @@ state_fall                  equ	2
 state_jump                  equ	3
 state_route                 equ	4
 
-; Enemy screen status is refreshed when the active room changes.
-screen_status_offline       equ	0
-screen_status_online        equ	1
+; Enemy simulation mode is refreshed when the active room changes.
+simulation_mode_offline       equ	0
+simulation_mode_online        equ	1
 
 ; Falling speed is shared by all enemies.
 fall_delay                  equ	1
@@ -42,9 +42,9 @@ random_lfsr_xor_mask        equ	56
 ; Enemies share one blinking visual palette.
 enemy_color1                equ	%00000010
 enemy_color2                equ	%00010000
+route_points_debug_enabled  equ	1
 enemy_stand_color           equ	%00000110
 enemy_route_color           equ	%00000100
-route_points_debug_enabled  equ	1
 route_point_debug_color     equ	%01000011
 
                         struct	route_point
@@ -73,7 +73,7 @@ move_timer                  byte
 fall_timer                  byte
 jump_step                   byte
 jump_phase_delay            byte
-screen_status               byte
+simulation_mode               byte
 last_route_point_ptr        word
 target_route_point_ptr      word
 offline_route_timer         byte
