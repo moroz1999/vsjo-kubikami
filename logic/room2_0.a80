@@ -1,4 +1,12 @@
-    module  room_2_0
+                        module	room_2_0
 logic
-                    ret
-    endmodule
+                            ret
+
+activate_roof_route
+                            ld	hl,enemies.route_2_0_top_mid+enemies.route_point.bottom_right_point_ptr
+                            ld	de,enemies.route_2_0_basement_entry
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+                        endmodule

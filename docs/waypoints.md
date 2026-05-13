@@ -25,6 +25,9 @@ route_point:
 
 - Route points belong to rooms and have room-local coordinates.
 - Route points are authored so that a route-following enemy can physically reach the next target and should not skip over it.
+- Cross-room entry points must sit on a screen edge.
+- Neighboring route points are normally spaced 5-7 cells apart.
+- Shorter or longer links are reserved for jump arcs, fall lanes, and turns into a specific doorway, shaft, or passage.
 - Each route point is 11 bytes.
 
 ## Types
@@ -54,7 +57,7 @@ route_point_exit
 
 ## Exit Points
 
-- Exit points sit on a screen edge and lead to an entry point in a neighboring room.
+- Exit points sit on a screen edge and lead to an edge entry point in a neighboring room.
 - After reaching an exit point, an online route follower moves to the selected neighbor only when that neighbor belongs to another room.
 - Exit points can also act as normal edge entries: when the selected neighbor is in the same room, the enemy keeps routing physically instead of teleporting.
 - Cross-room exit movement takes the selected point's room and position, marks the old cell for restore, and becomes offline immediately.

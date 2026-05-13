@@ -87,5 +87,6 @@ offline_route_timer         byte
                             include	"enemies.draw.a80"
                             include	"enemies.jump.a80"
                             include	"enemies.route.a80"
+                            include	"enemies.elevator.a80"
                             include	"enemies.move.a80"
                         endmodule

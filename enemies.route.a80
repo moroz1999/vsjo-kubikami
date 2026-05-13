@@ -18,10 +18,10 @@ route_points_table
                             dw	route_1_1_left_entry
                             dw	route_1_1_left_mid
                             dw	route_1_1_left_inner
-                            dw	route_1_1_left_deadend
+                            dw	route_1_1_left_jump_right
                             dw	route_1_1_right_entry
                             dw	route_1_1_right_mid
-                            dw	route_1_1_right_deadend
+                            dw	route_1_1_right_jump_left
                             dw	route_2_0_left_entry
                             dw	route_2_0_top_left
                             dw	route_2_0_top_mid
@@ -38,9 +38,15 @@ route_points_table
                             dw	route_3_0_left_entry
                             dw	route_3_0_left_drop
                             dw	route_3_1_top_entry
+                            dw	route_3_1_drop_mid
+                            dw	route_3_1_drop_turn
+                            dw	route_3_1_drop_low
+                            dw	route_3_1_drop_landing
                             dw	route_3_1_bottom_fork
                             dw	route_3_1_left_exit
                             dw	route_3_1_bottom_jump_right
+                            dw	route_3_1_upper_low
+                            dw	route_3_1_upper_high
                             dw	route_3_1_right_jump_left
                             dw	route_3_1_right_mid
                             dw	route_3_1_right_far
@@ -65,10 +71,17 @@ route_points_table
                             dw	route_5_1_bottom_right
                             dw	route_5_1_right_exit
                             dw	route_6_1_left_entry
+                            dw	route_6_1_left_jump_low
+                            dw	route_6_1_left_ledge_low
+                            dw	route_6_1_left_ledge_mid
+                            dw	route_6_1_left_ledge_high
+                            dw	route_6_1_red_door_left
+                            dw	route_6_1_red_door_right
+                            dw	route_6_1_shaft_down_mid
                             dw	route_6_1_shaft_bottom_exit
                             dw	route_6_1_shaft_bottom_entry
+                            dw	route_6_1_shaft_up_low
                             dw	route_6_1_shaft_up_mid
-                            dw	route_6_1_shaft_up_top
                             dw	route_6_2_shaft_down_top
                             dw	route_6_2_shaft_down_mid
                             dw	route_6_2_shaft_down_bottom_exit
@@ -103,28 +116,6 @@ route_points_table_end
                             include	"enemies.route_6_1.a80"
                             include	"enemies.route_6_2.a80"
                             include	"enemies.route_6_3.a80"
-
-activate_2_0_roof_route
-                            ld	hl,route_2_0_top_mid+route_point.bottom_right_point_ptr
-                            ld	de,route_2_0_basement_entry
-                            ld	(hl),e
-                            inc	hl
-                            ld	(hl),d
-                            ret
-
-activate_screwdriver_routes
-                            ld	hl,route_4_1_left_mid+route_point.alternative_point_ptr
-                            ld	de,route_4_1_air_low
-                            ld	(hl),e
-                            inc	hl
-                            ld	(hl),d
-
-                            ld	hl,route_6_3_bottom_left+route_point.alternative_point_ptr
-                            ld	de,route_6_3_shaft_up_floor
-                            ld	(hl),e
-                            inc	hl
-                            ld	(hl),d
-                            ret
 
 has_route_target
                 ; A non-zero target pointer marks enemies that should return to routing.

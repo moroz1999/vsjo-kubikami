@@ -1,0 +1,9 @@
+                        module	room_4_1
+activate_air_route
+                            ld	hl,enemies.route_4_1_left_mid+enemies.route_point.alternative_point_ptr
+                            ld	de,enemies.route_4_1_air_low
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+                        endmodule

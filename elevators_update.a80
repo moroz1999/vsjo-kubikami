@@ -105,13 +105,19 @@ elevator_move_end
                             djnz	elevators_update_next
                             ret
 elevator_move_items
-                ; Move the hero together with the active elevator
+                ; Move riders together with the active elevator.
                 ; IX = elevator data pointer
                             push	hl
                             push	de
                             push	bc
                             push	ix
-                ; Fast exit when the hero is not standing on any elevator this frame
+                            push	iy
+                            push	ix
+                            pop	iy
+                            call	enemies.move_elevator_riders
+                            pop	iy
+
+                ; Hero movement is skipped when he is not riding this elevator.
                             ld	a,(hero.hero_elevator)
                             cp	elevators.item_on_elevator
                             jr	nz,elevator_move_items_end

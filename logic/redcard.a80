@@ -7,7 +7,7 @@ action
                             cp	1
                             jr	nz,redcard_false
 
-                ; hero must be between 9 and 13
+                ; hero must stand at the red door controls
                             ld	a,(hero.hero_x)
                             sub	8
                             jr	c,redcard_false
@@ -15,7 +15,7 @@ action
                             sub	13
                             jr	nc,redcard_false
 
-                ; hero must be on 11 line
+                ; hero must be on the door-control row
                             ld	a,(hero.hero_y)
                             cp	11
                             jr	nz,redcard_false
@@ -28,6 +28,8 @@ action
                             ld	(item_animation + @animation.room_address),hl
                             ld	hl,item_animation
                             call	animate.start
+                            call	logic.room_6_1.activate_red_door_route
+                            call	logic.room_6_2.activate_shaft_up_entry_route
                             call	hero.delete_item_in_pocket
 
                             ld	a,255

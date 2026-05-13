@@ -250,9 +250,7 @@ handle_blocked_course
 maybe_turn_around_on_empty_floor
                 ; Edge handling starts after the down-side cell is known to be empty.
                             push	de
-                            inc	e
-                            call	objects.check_coords
-                            cp	objects.b_empty
+                            call	check_floor_below_at_coords
                             jr	z,maybe_turn_around_on_empty_floor_edge
 
                             pop	de
@@ -275,7 +273,7 @@ maybe_turn_around_on_empty_floor_edge
 maybe_turn_around_on_empty_floor_route_drop
                 ; Route followers step down from ledges, but never roll jump or turn choices.
                             inc	e
-                            call	objects.check_coords
+                            call	check_floor_below_at_coords
                             or	a
                             pop	de
                             jr	nz,maybe_turn_around_on_empty_floor_route_move
@@ -288,7 +286,7 @@ maybe_turn_around_on_empty_floor_route_move
 
 maybe_turn_around_on_empty_floor_drop
                             inc	e
-                            call	objects.check_coords
+                            call	check_floor_below_at_coords
                             or	a
                             pop	de
                             jr	nz,maybe_turn_around_on_empty_floor_deep
@@ -321,13 +319,22 @@ maybe_turn_around_on_empty_floor_turn
                             ret
 
 check_floor_below
-                ; Falling starts or continues while the cell below is empty.
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)
+check_floor_below_at_coords
+                ; Falling starts or continues while neither room geometry nor an elevator is below.
+                            push	de
                             inc	e
                             call	objects.check_coords
                             cp	objects.b_empty
+                            jr	z,check_floor_below_at_coords_elevator
+
+                            pop	de
                             ret
+
+check_floor_below_at_coords_elevator
+                            pop	de
+                            jp	check_elevator_floor_at_coords
 
 set_enemy_position
                 ; All visible position changes restore the old cell first.

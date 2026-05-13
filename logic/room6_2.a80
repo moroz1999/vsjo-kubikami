@@ -1,0 +1,9 @@
+                        module	room_6_2
+activate_shaft_up_entry_route
+                            ld	hl,enemies.route_6_2_shaft_up_top_exit+enemies.route_point.bottom_right_point_ptr
+                            ld	de,enemies.route_6_1_shaft_bottom_entry
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+                        endmodule

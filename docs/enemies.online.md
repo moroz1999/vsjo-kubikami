@@ -29,6 +29,8 @@
 - After reaching an exit point, an online route follower moves to the selected linked entry point, takes that point's room and position, marks its old cell for restore, and becomes offline immediately.
 - Visible enemy position changes mark the previous cell for restore through the shared position setter.
 - Cross-room enemy movement uses a shared leave-room path that marks the old cell for restore, stores the new room-local position, resets the offline route timer, and switches the enemy offline.
+- Online enemies can stand on elevator tops as solid floor while still walking left or right through the normal movement path.
+- Online enemies carried out of the room by an elevator use the shared offline room handoff: bottom riders enter the room below, and top riders enter the room above.
 
 ## Route Point References
 

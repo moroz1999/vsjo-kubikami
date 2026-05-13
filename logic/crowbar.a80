@@ -23,7 +23,7 @@ action
                             ld	(ground_anim + @animation.room_address),hl
                             ld	hl,ground_anim
                             call	animate.start
-                            call	enemies.activate_2_0_roof_route
+                            call	logic.room_2_0.activate_roof_route
                             call	hero.delete_item_in_pocket
 
                             ld	a,255

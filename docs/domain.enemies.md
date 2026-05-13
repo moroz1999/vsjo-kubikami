@@ -5,6 +5,7 @@
 - The `enemies` module should stay split by topic-specific include files.
 - Do not accumulate unrelated enemy functions in `enemies.a80`; put movement, drawing, collision, data, and random helpers into separate `enemies.*.a80` files.
 - Route point records live in per-room include files named `enemies.route_X_Y.a80`; `enemies.route.a80` keeps the route pointer table and shared route logic.
+- Gameplay route rewires caused by room items belong to the corresponding `logic.room_X_Y` module, not to `enemies.route.a80`.
 
 ## Data
 

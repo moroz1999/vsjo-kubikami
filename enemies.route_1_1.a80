@@ -5,7 +5,7 @@ route_1_1_left_entry
                             0,                  ; x
                             19,                 ; y
                             route_point_normal, ; type
-                            route_1_1_left_mid, ; top-left point
+                            route_1_0_right_exit, ; top-left point
                             route_1_1_left_mid,  ; bottom-right point
                             0                   ; alternative point
                             }
@@ -26,34 +26,36 @@ route_1_1_left_inner
                             route_point	{
                             1,                  ; room_x
                             1,                  ; room_y
-                            14,                 ; x
+                            13,                 ; x
                             19,                 ; y
                             route_point_normal, ; type
                             route_1_1_left_mid, ; top-left point
-                            route_1_1_left_deadend, ; bottom-right point
+                            route_1_1_left_mid, ; bottom-right point
                             0                   ; alternative point
                             }
 
-route_1_1_left_deadend
+route_1_1_left_jump_right
                             route_point	{
                             1,                  ; room_x
                             1,                  ; room_y
                             18,                 ; x
                             19,                 ; y
-                            route_point_normal, ; type
+                            route_point_jump_right, ; type
                             route_1_1_left_inner, ; top-left point
-                            route_1_1_left_inner, ; bottom-right point
+                            route_1_1_right_mid, ; bottom-right point
                             0                   ; alternative point
                             }
 
-route_1_1_right_entry
+
+
+route_1_1_right_jump_left
                             route_point	{
                             1,                  ; room_x
                             1,                  ; room_y
-                            31,                 ; x
+                            20,                 ; x
                             19,                 ; y
-                            route_point_normal, ; type
-                            route_1_1_right_mid, ; top-left point
+                            route_point_jump_left, ; type
+                            route_1_1_left_inner, ; top-left point
                             route_1_1_right_mid, ; bottom-right point
                             0                   ; alternative point
                             }
@@ -65,19 +67,18 @@ route_1_1_right_mid
                             23,                 ; x
                             18,                 ; y
                             route_point_normal, ; type
-                            route_1_1_right_deadend, ; top-left point
+                            route_1_1_right_entry, ; top-left point
                             route_1_1_right_entry, ; bottom-right point
                             0                   ; alternative point
-                            }
-
-route_1_1_right_deadend
+                            }                            
+route_1_1_right_entry
                             route_point	{
                             1,                  ; room_x
                             1,                  ; room_y
-                            20,                 ; x
+                            31,                 ; x
                             19,                 ; y
-                            route_point_normal, ; type
+                            route_point_exit,   ; type
                             route_1_1_right_mid, ; top-left point
-                            route_1_1_right_mid, ; bottom-right point
+                            route_2_1_left_entry, ; bottom-right point
                             0                   ; alternative point
                             }

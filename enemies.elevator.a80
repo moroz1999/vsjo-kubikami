@@ -1,0 +1,132 @@
+check_elevator_floor_at_coords
+                ; Treat an elevator top below the tested position as solid enemy floor.
+                ; Input: D = room-local x, E = room-local y.
+                ; Output flags match CP objects.b_empty.
+                            push	ix
+                            push	de
+
+                            ld	a,(rooms.room_top_y)
+                            add	e
+                            ld	e,a
+                            call	elevators_itemcheck.check
+
+                            pop	de
+                            pop	ix
+
+                            cp	elevators.item_on_elevator
+                            jr	z,check_elevator_floor_at_coords_found
+
+                            ld	a,objects.b_empty
+                            cp	objects.b_empty
+                            ret
+
+check_elevator_floor_at_coords_found
+                            ld	a,objects.b_occupied
+                            cp	objects.b_empty
+                            ret
+
+move_elevator_riders
+                ; IY points to the elevator that has just moved one cell.
+                            push	ix
+
+                            ld	b,enemy_count
+                            ld	ix,enemies
+move_elevator_riders_next
+                            push	bc
+
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
+                            jr	nz,move_elevator_riders_skip
+
+                            call	is_enemy_on_moving_elevator
+                            jr	nz,move_elevator_riders_skip
+
+                            ld	a,(iy+elevators.elevator.state)
+                            cp	elevators.state_down
+                            jr	z,move_elevator_riders_down
+
+                            call	move_elevator_rider_up
+                            jr	move_elevator_riders_skip
+
+move_elevator_riders_down
+                            call	move_elevator_rider_down
+
+move_elevator_riders_skip
+                            ld	de,enemy_size
+                            add	ix,de
+                            pop	bc
+                            djnz	move_elevator_riders_next
+                            pop	ix
+                            ret
+
+is_enemy_on_moving_elevator
+                ; Compare the enemy against the moving elevator's previous top row.
+                            ld	a,(iy+elevators.elevator.room_pos_x)
+                            ld	b,a
+
+                            ld	a,(ix+enemy.x)
+                            sub	b
+                            jr	c,is_enemy_on_moving_elevator_miss
+
+                            ld	a,(iy+elevators.elevator.width)
+                            add	b
+                            ld	c,a
+
+                            ld	a,(ix+enemy.x)
+                            sub	c
+                            jr	nc,is_enemy_on_moving_elevator_miss
+
+                            ld	a,(iy+elevators.elevator.y)
+                            dec	a
+                            ld	b,a
+
+                            ld	a,(rooms.room_top_y)
+                            add	(ix+enemy.y)
+                            cp	b
+                            ret
+
+is_enemy_on_moving_elevator_miss
+                            or	1
+                            ret
+
+move_elevator_rider_up
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	e
+                            call	objects.check_coords
+                            cp	objects.roomedge_top
+                            jp	z,move_enemy_to_top_room
+
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	set_enemy_position
+
+move_elevator_rider_down
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	e
+                            call	objects.check_coords
+                            cp	objects.roomedge_bottom
+                            jp	z,move_enemy_to_bottom_room
+
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	set_enemy_position
+
+move_enemy_to_top_room
+                ; Elevator riders can leave through the top edge into the room above.
+                            ld	a,(ix+enemy.room_y)
+                            or	a
+                            ret	z
+                            dec	a
+                            ld	c,a
+
+                            ld	a,(ix+enemy.room_x)
+                            ld	b,a
+
+                            ld	d,(ix+enemy.x)
+
+                            ld	e,rooms.room_h-1
+                            jp	leave_enemy_to_room_coords

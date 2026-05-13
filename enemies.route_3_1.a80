@@ -3,9 +3,57 @@ route_3_1_top_entry
                             3,                  ; room_x
                             1,                  ; room_y
                             2,                  ; x
-                            7,                  ; y
+                            0,                  ; y
                             route_point_normal, ; type
                             route_3_0_left_drop, ; top-left point
+                            route_3_1_drop_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_drop_mid
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            2,                  ; x
+                            7,                  ; y
+                            route_point_normal, ; type
+                            route_3_1_top_entry, ; top-left point
+                            route_3_1_drop_turn, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_drop_turn
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            3,                  ; x
+                            8,                  ; y
+                            route_point_normal, ; type
+                            route_3_1_drop_mid, ; top-left point
+                            route_3_1_drop_low, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_drop_low
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            3,                  ; x
+                            14,                 ; y
+                            route_point_normal, ; type
+                            route_3_1_drop_turn, ; top-left point
+                            route_3_1_drop_landing, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_drop_landing
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            3,                  ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_3_1_drop_low, ; top-left point
                             route_3_1_bottom_fork, ; bottom-right point
                             0                   ; alternative point
                             }
@@ -14,12 +62,12 @@ route_3_1_bottom_fork
                             route_point	{
                             3,                  ; room_x
                             1,                  ; room_y
-                            8,                  ; x
+                            7,                  ; x
                             19,                 ; y
                             route_point_normal, ; type
-                            route_3_1_left_exit, ; top-left point
+                            route_3_1_drop_landing, ; top-left point
                             route_3_1_bottom_jump_right, ; bottom-right point
-                            route_3_1_left_exit ; alternative point
+                            route_3_1_upper_low ; alternative point
                             }
 
 route_3_1_left_exit
@@ -43,6 +91,30 @@ route_3_1_bottom_jump_right
                             route_point_jump_right, ; type
                             route_3_1_bottom_fork, ; top-left point
                             route_3_1_right_mid, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_upper_low
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            7,                  ; x
+                            14,                 ; y
+                            route_point_normal, ; type
+                            route_3_1_bottom_fork, ; top-left point
+                            route_3_1_upper_high, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_3_1_upper_high
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            7,                  ; x
+                            7,                  ; y
+                            route_point_normal, ; type
+                            route_3_1_upper_low, ; top-left point
+                            route_3_1_upper_low, ; bottom-right point
                             0                   ; alternative point
                             }
 
@@ -74,7 +146,7 @@ route_3_1_right_far
                             route_point	{
                             3,                  ; room_x
                             1,                  ; room_y
-                            27,                 ; x
+                            26,                 ; x
                             19,                 ; y
                             route_point_normal, ; type
                             route_3_1_right_mid, ; top-left point

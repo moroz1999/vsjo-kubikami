@@ -82,7 +82,12 @@ empty_item_action
                             xor	a
                             ret
                             include	"logic/room1_0.a80"
+                            include	"logic/room1_1.a80"
                             include	"logic/room2_0.a80"
                             include	"logic/room1_3.a80"
                             include	"logic/room2_1.a80"
+                            include	"logic/room4_1.a80"
+                            include	"logic/room6_1.a80"
+                            include	"logic/room6_2.a80"
+                            include	"logic/room6_3.a80"
                         endmodule
