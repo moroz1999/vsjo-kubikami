@@ -1,6 +1,6 @@
                         module	room_1_1
 activate_glass_route
-                            ld	hl,enemies.route_1_1_left_inner+enemies.route_point.bottom_right_point_ptr
+                            ld	hl,enemies.route_1_1_left_inner+enemies.route_point.top_left_point_ptr
                             ld	de,enemies.route_1_1_left_jump_right
                             ld	(hl),e
                             inc	hl

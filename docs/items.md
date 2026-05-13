@@ -17,7 +17,7 @@
 
 - The red card is used in room `6,1` when the hero stands at `y=11` and `x=8..12`.
 - Using it opens the red door, starts the door animation, removes the item from the pocket, and calls `logic.room_6_1.activate_red_door_route` and `logic.room_6_2.activate_shaft_up_entry_route`.
-- `logic.room_6_1.activate_red_door_route` rewires `route_6_1_red_door_left` from a self-lock into the right-half door route.
+- `logic.room_6_1.activate_red_door_route` rewires `route_6_1_red_door_left` from the closed-door fall-and-exit lane into the right-half door route.
 - `logic.room_6_2.activate_shaft_up_entry_route` rewires `route_6_2_shaft_up_top_exit.bottom_right_point_ptr` to `route_6_1_shaft_bottom_entry`, so the `6,1` right-half route points from below are unavailable until the red card has opened the door.
 
 ## Screwdriver

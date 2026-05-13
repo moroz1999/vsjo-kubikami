@@ -65,8 +65,32 @@ route_6_1_red_door_left
                             8,                  ; x
                             11,                 ; y
                             route_point_normal, ; type
+                            route_6_1_left_ledge_high, ; top-left point
+                            route_6_1_red_door_fall, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_1_red_door_fall
+                            route_point	{
+                            6,                  ; room_x
+                            1,                  ; room_y
+                            1,                  ; x
+                            19,                 ; y
+                            route_point_normal, ; type
                             route_6_1_red_door_left, ; top-left point
-                            route_6_1_red_door_left, ; bottom-right point
+                            route_6_1_red_door_exit, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_1_red_door_exit
+                            route_point	{
+                            6,                  ; room_x
+                            1,                  ; room_y
+                            0,                  ; x
+                            19,                 ; y
+                            route_point_exit,   ; type
+                            route_6_1_red_door_fall, ; top-left point
+                            route_5_1_red_door_entry, ; bottom-right point
                             0                   ; alternative point
                             }
 

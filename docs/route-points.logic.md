@@ -24,10 +24,13 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 ## Room 1,1 Glass
 
+- Room `1,1` left edge `route_1_1_left_entry` and room `0,1` right edge `route_0_1_right_entry` are paired exit points.
+- Room `1,1` right edge `route_1_1_right_entry` and room `2,1` left edge `route_2_1_left_entry` are paired exit points.
 - Room `1,1` left approach points are `(0,19) -> (7,19) -> (13,19)`.
 - Room `1,1` starts with the glass route locked: `route_1_1_left_inner` points back to `route_1_1_left_mid`, and `route_1_1_right_mid` points back to `route_1_1_right_entry`.
 - The glass-edge points are `route_1_1_left_jump_right` at `(18,19)` and `route_1_1_right_jump_left` at `(20,19)`.
-- Applying the stone in room `1,1` activates `logic.room_1_1.activate_glass_route`, rewiring the left inner point into the right-jump point and the right mid point into the left-jump point.
+- Applying the stone in room `1,1` activates `logic.room_1_1.activate_glass_route`, rewiring `route_1_1_left_inner.top_left_point_ptr` into the right-jump point and `route_1_1_right_mid.top_left_point_ptr` into the left-jump point.
+- After the stone route activation, `route_1_1_left_inner.bottom_right_point_ptr` still points to `route_1_1_left_mid`, so enemies arriving there from `route_1_1_right_jump_left` use the fallback to continue left instead of jumping back right.
 - After the stone route activation, room `1,1` can route through the glass area in both directions using the paired jump points.
 
 ## Room 2,1 Elevator Test
@@ -60,8 +63,9 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Room `5,1` has a bottom route from the left side to the right exit into room `6,1`.
 - Room `5,1` has no screwdriver-unlocked route branch.
 - Room `5,1` exits to the left edge entry `(0,19)` in room `6,1`.
+- Room `5,1` has a separate right-to-left closed-door return lane from `route_5_1_red_door_entry` to `route_5_1_red_door_exit`; it is used only by the closed red door path from room `6,1`.
 - Room `6,1` uses jump points on the left side to climb toward the red door: `(0,19) -> (4,17) -> (5,14) -> (1,12) -> (8,11)`.
-- Before the red card is applied, `route_6_1_red_door_left` points back to itself, so the right half of room `6,1` is not reachable from the left-side route.
+- Before the red card is applied, `route_6_1_red_door_left` points down-left to `route_6_1_red_door_fall` at `(1,19)`, then to the dedicated `route_6_1_red_door_exit` at `(0,19)`, so enemies fall from the closed door area and leave toward the separate room `5,1` return lane.
 - Applying the red card calls `logic.room_6_1.activate_red_door_route` and `logic.room_6_2.activate_shaft_up_entry_route`, enabling the door route from `(8,11)` to `(13,11)` and unlocking the upward entry from room `6,2` into `route_6_1_shaft_bottom_entry`.
 - After the red card, the right half of room `6,1` routes down through `(13,11) -> (15,16) -> (15,21)` and up through `(16,21) -> (16,16) -> (16,11) -> (13,11)`.
 - The elevator shaft is the left shaft in rooms `6,1`, `6,2`, and `6,3`.

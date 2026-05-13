@@ -4,9 +4,9 @@ route_0_1_right_entry
                             1,                  ; room_y
                             31,                 ; x
                             19,                 ; y
-                            route_point_normal, ; type
+                            route_point_exit,   ; type
                             route_0_1_right_mid, ; top-left point
-                            route_0_1_right_mid, ; bottom-right point
+                            route_1_1_left_entry, ; bottom-right point
                             0                   ; alternative point
                             }
 

@@ -70,12 +70,19 @@ route_points_table
                             dw	route_5_1_bottom_fork
                             dw	route_5_1_bottom_right
                             dw	route_5_1_right_exit
+                            dw	route_5_1_red_door_entry
+                            dw	route_5_1_red_door_mid_right
+                            dw	route_5_1_red_door_mid_left
+                            dw	route_5_1_red_door_left
+                            dw	route_5_1_red_door_exit
                             dw	route_6_1_left_entry
                             dw	route_6_1_left_jump_low
                             dw	route_6_1_left_ledge_low
                             dw	route_6_1_left_ledge_mid
                             dw	route_6_1_left_ledge_high
                             dw	route_6_1_red_door_left
+                            dw	route_6_1_red_door_fall
+                            dw	route_6_1_red_door_exit
                             dw	route_6_1_red_door_right
                             dw	route_6_1_shaft_down_mid
                             dw	route_6_1_shaft_bottom_exit
