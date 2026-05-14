@@ -1,4 +1,205 @@
                         module	debug
+route_points_debug_enabled  equ	1
+
+initial_broken_glass        equ	0
+initial_red_door_opened     equ	1
+initial_hatch_key_used      equ	0
+initial_generator_started   equ	0
+initial_stairs_unfolded     equ	0
+
+enemy_stand_color           equ	%00000110
+enemy_route_color           equ	%00000100
+route_point_debug_color     equ	%01000011
+
+apply_initial_item_states
+                            if	initial_broken_glass
+                            call	apply_broken_glass
+                            endif
+
+                            if	initial_red_door_opened
+                            call	apply_red_door_opened
+                            endif
+
+                            if	initial_hatch_key_used
+                            call	apply_hatch_key_used
+                            endif
+
+                            if	initial_generator_started
+                            call	apply_generator_started
+                            endif
+
+                            if	initial_stairs_unfolded
+                            call	apply_stairs_unfolded
+                            endif
+                            ret
+
+                            if	initial_broken_glass
+apply_broken_glass
+                            ld	d,12
+                            ld	e,12
+                            ld	b,1
+                            ld	c,1
+                            call	rooms.get_room_pixel_address
+                            ex	de,hl
+                            ld	hl,logic.stone.animation_frame1
+                            ld	b,8
+                            ld	c,8
+                            call	draw.draw_room_sprite
+                            call	logic.room_1_1.activate_glass_route
+                            ld	a,items.stone
+                            call	items.remove_item
+                            ret
+                            endif
+
+                            if	initial_red_door_opened
+apply_red_door_opened
+                            ld	d,11
+                            ld	e,3
+                            ld	b,6
+                            ld	c,1
+                            call	rooms.get_room_pixel_address
+                            ex	de,hl
+                            ld	hl,logic.redcard.animation_frame5
+                            ld	b,2
+                            ld	c,9
+                            call	draw.draw_room_sprite
+                            call	logic.room_6_1.activate_red_door_route
+                            call	logic.room_6_2.activate_shaft_up_entry_route
+                            ld	a,items.redcard
+                            call	items.remove_item
+                            ret
+                            endif
+
+                            if	initial_hatch_key_used
+apply_hatch_key_used
+                            ld	d,17
+                            ld	e,18
+                            ld	b,4
+                            ld	c,1
+                            call	rooms.get_room_pixel_address
+                            ex	de,hl
+                            ld	hl,logic.key.animation_frame1
+                            ld	b,5
+                            ld	c,2
+                            call	draw.draw_room_sprite
+                            ld	a,items.key
+                            call	items.remove_item
+                            ret
+                            endif
+
+                            if	initial_generator_started
+apply_generator_started
+                            ld	a,animate.state_on
+                            ld	(animate.room_animation_6_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_2+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_4+@room_animation.state),a
+
+                            ld	a,elevators.state_up
+                            ld	ix,elevators.elevator_6_3
+                            ld	(ix+elevators.elevator.state),a
+
+                            ld	ix,elevators.elevator_4_1_1
+                            ld	(ix+elevators.elevator.state),a
+
+                            ld	ix,elevators.elevator_4_1_2
+                            ld	(ix+elevators.elevator.state),a
+
+                            ld	ix,elevators.elevator_4_1_3
+                            ld	(ix+elevators.elevator.state),a
+
+                            call	logic.room_4_1.activate_air_route
+                            call	logic.room_6_3.activate_shaft_up_route
+                            ld	a,items.screwdriver
+                            call	items.remove_item
+                            ret
+                            endif
+
+                            if	initial_stairs_unfolded
+apply_stairs_unfolded
+                            ld	d,12
+                            ld	e,10
+                            ld	b,1
+                            ld	c,0
+                            call	rooms.get_room_pixel_address
+                            ex	de,hl
+                            ld	hl,logic.stairs.animation_frame2
+                            ld	b,8
+                            ld	c,4
+                            call	draw.draw_room_sprite
+                            ld	a,items.stairs
+                            call	items.remove_item
+                            ret
+                            endif
+
+                            if	route_points_debug_enabled
+select_enemy_debug_color
+                ; Debug builds expose standing and route-following enemies.
+                            ld	a,(ix+enemies.enemy.state)
+                            cp	enemies.state_stand
+                            jr	z,select_enemy_debug_color_stand
+                            cp	enemies.state_route
+                            jr	z,select_enemy_debug_color_route
+
+                            ld	a,(ix+enemies.enemy.target_route_point_ptr)
+                            ld	c,a
+                            ld	a,(ix+enemies.enemy.target_route_point_ptr+1)
+                            or	c
+                            jr	nz,select_enemy_debug_color_route
+
+                            ld	a,(enemies.enemy_flash_color)
+                            ret
+
+select_enemy_debug_color_stand
+                            ld	a,enemy_stand_color
+                            ret
+
+select_enemy_debug_color_route
+                            ld	a,enemy_route_color
+                            ret
+
+draw_route_points
+                ; Route point overlay for route tuning builds.
+                            ld	b,enemies.route_point_count
+                            ld	hl,enemies.route_points_table
+
+draw_route_points_next
+                            push	bc
+
+                            ld	a,(hl)
+                            ld	ixl,a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	ixh,a
+                            inc	hl
+                            push	hl
+
+                            ld	a,(rooms.room_number_x)
+                            cp	(ix+enemies.route_point.room_x)
+                            jr	nz,draw_route_points_skip
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(ix+enemies.route_point.room_y)
+                            jr	nz,draw_route_points_skip
+
+                            ld	d,(ix+enemies.route_point.x)
+                            ld	e,(ix+enemies.route_point.y)
+                            call	draw_route_point
+
+draw_route_points_skip
+                            pop	hl
+                            pop	bc
+                            djnz	draw_route_points_next
+                            ret
+
+draw_route_point
+                            call	screen_utils.get_attrs_address
+                            ld	a,route_point_debug_color
+                            ld	(hl),a
+                            ret
+                            endif
+
 print_hero_state
                             ld	a,(hero.hero_elevator)
                             cp	elevators.item_on_elevator

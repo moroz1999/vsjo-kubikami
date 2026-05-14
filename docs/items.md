@@ -28,3 +28,10 @@
 - In room `4,1`, `logic.room_4_1.activate_air_route` sets `route_4_1_left_mid.alternative_point_ptr` to `route_4_1_air_low`, enabling the short upward air route as a fork.
 - In room `6,3`, `logic.room_6_3.activate_shaft_up_route` sets `route_6_3_bottom_left.alternative_point_ptr` to `route_6_3_shaft_up_floor`, enabling the repaired left elevator shaft climb back up through `6,2` and toward `6,1`.
 - Room `5,1` has no screwdriver-unlocked route branch; its bottom route stays connected to room `6,1`.
+
+## Debug Initial Item States
+
+- `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
+- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
+- Each enabled flag applies the persistent final effect: final room sprite where the item changes room art, route/elevator/animation state where the item unlocks movement, and removal of the consumed item from `items.all_items`.
+- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `0`, generator started `0`, and stairs unfolded `0`.

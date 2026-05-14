@@ -23,8 +23,8 @@ draw_enemies_skip
                             pop	bc
                             djnz	draw_enemies_next
 
-                            if	route_points_debug_enabled
-                            call	draw_route_points
+                            if	debug.route_points_debug_enabled
+                            call	debug.draw_route_points
                             endif
                             ret
 
@@ -32,40 +32,13 @@ draw_enemy
                 ; Paint one enemy cell with the active enemy palette.
                             call	screen_utils.get_attrs_address
 
-                            if	route_points_debug_enabled
-                            call	select_enemy_debug_color
+                            if	debug.route_points_debug_enabled
+                            call	debug.select_enemy_debug_color
                             else
                             ld	a,(enemy_flash_color)
                             endif
                             ld	(hl),a
                             ret
-
-                            if	route_points_debug_enabled
-select_enemy_debug_color
-                ; Debug builds expose standing and route-following enemies.
-                            ld	a,(ix+enemy.state)
-                            cp	state_stand
-                            jr	z,select_enemy_debug_color_stand
-                            cp	state_route
-                            jr	z,select_enemy_debug_color_route
-
-                            ld	a,(ix+enemy.target_route_point_ptr)
-                            ld	c,a
-                            ld	a,(ix+enemy.target_route_point_ptr+1)
-                            or	c
-                            jr	nz,select_enemy_debug_color_route
-
-                            ld	a,(enemy_flash_color)
-                            ret
-
-select_enemy_debug_color_stand
-                            ld	a,enemy_stand_color
-                            ret
-
-select_enemy_debug_color_route
-                            ld	a,enemy_route_color
-                            ret
-                            endif
 
 update_flash_color
                 ; Enemy color follows the global draw color switch.

@@ -42,10 +42,6 @@ random_lfsr_xor_mask        equ	56
 ; Enemies share one blinking visual palette.
 enemy_color1                equ	%00000010
 enemy_color2                equ	%00010000
-route_points_debug_enabled  equ	1
-enemy_stand_color           equ	%00000110
-enemy_route_color           equ	%00000100
-route_point_debug_color     equ	%01000011
 
                         struct	route_point
 room_x                      byte

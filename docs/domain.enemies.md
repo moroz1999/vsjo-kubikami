@@ -27,7 +27,8 @@
 - Enemy drawing is connected to the main draw pass through `enemies.draw_enemies`.
 - Enemy drawing checks the current simulation mode before painting each enemy.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
-- Route debug drawing is compile-time gated by `route_points_debug_enabled` and disabled by default.
+- Route debug drawing is compile-time gated by `debug.route_points_debug_enabled`.
+- Route debug helpers and colors live in `debug.a80`; enemy drawing only calls them when that flag is enabled.
 - When route debug drawing is enabled, standing enemies are yellow, route-following enemies are green, and current-room route points are bright magenta.
 
 ## Topic Details

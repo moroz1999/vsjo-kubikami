@@ -11,6 +11,7 @@ start                       equ	#6000
                             call	draw.draw_pattern
                             call	draw.draw_panel
                             call	hero.reset_stats
+                            call	debug.apply_initial_item_states
                             call	rooms.init_current_room
                             jp	game_process.loop
                             include	"math.a80"
@@ -34,9 +35,9 @@ start                       equ	#6000
                             include	"teleports.a80"
                             include	"medkits.a80"
                             include	"armors.a80"
+                            include	"debug.a80"
                             include	"enemies.a80"
                             include	"waterdrops.a80"
-                            include	"debug.a80"
 rooms_data
 room_0_0                    incbin	"rooms/room0,0.atr"
 room_1_0                    incbin	"rooms/room1,0.atr"
