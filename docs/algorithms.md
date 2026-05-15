@@ -8,11 +8,11 @@ When an algorithm needs multiplication or division by `2^n`, use bit operations 
 
 ## Room Logic Lifecycle
 
-Room-specific gameplay logic lives in `logic/roomX_Y.a80` modules and is connected through three tables in `logic.a80`.
-- `room_logic_pointers` stores the per-frame callback. The game loop calls it automatically each frame after hero movement and before water drops are updated.
-- `room_onstart_pointers` stores an optional room-enter callback. `rooms.init_current_room` calls it after the current-room buffers are gathered and room bounds are calculated, but before the room is redrawn.
-- `room_onend_pointers` stores an optional room-leave callback. `rooms.goto_*_room` calls it before the room coordinates are changed.
+Room-specific gameplay logic lives in `logic/roomX_Y.a80` modules and is connected through callback pointers in each `rooms.room` entry.
+- `logic_pointer` stores the per-frame callback. The game loop calls it automatically each frame after hero movement and before water drops are updated.
+- `on_enter_pointer` stores the room-enter callback. `rooms.init_current_room` calls it after current-room entity buffers are gathered, room bounds are calculated, and source room data is copied into `rooms.current_room_buf`, but before the room is redrawn.
+- `onend_pointer` stores an optional room-leave callback. `rooms.goto_*_room` calls it before the room coordinates are changed.
 
-Use `dw 0` in the `onstart` or `onend` tables when a room does not need that hook.
+Use `logic.empty_room_on_enter` for rooms that do not need enter-time work. Use `dw 0` only for optional leave hooks that do not need to run.
 
 Keep room mechanics inside the room module whenever the behavior is specific to one screen. Use shared engine modules only for generic helpers that can be reused by multiple rooms.

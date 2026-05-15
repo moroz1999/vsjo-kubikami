@@ -3,6 +3,9 @@ frames                      byte
 current                     byte
 delay                       byte
 room_address                word
+screen_address              word
+room_x                      byte
+room_y                      byte
 width                       byte
 height                      byte
                         ends
@@ -33,7 +36,29 @@ current_delay
                             db	0
 
 start
+                ; Bind the one-shot animation to the current room buffer and screen cell.
                             ld	(current_animation),hl
+                            push	hl
+                            pop	ix
+
+                            xor	a
+                            ld	(ix+@animation.current),a
+                            ld	(current_delay),a
+
+                            ld	a,(rooms.room_number_x)
+                            ld	(ix+@animation.room_x),a
+                            ld	a,(rooms.room_number_y)
+                            ld	(ix+@animation.room_y),a
+
+                            push	de
+                            call	rooms.get_current_room_pixel_address
+                            ld	(ix+@animation.room_address),l
+                            ld	(ix+@animation.room_address+1),h
+                            pop	de
+
+                            call	screen_utils.get_attrs_address
+                            ld	(ix+@animation.screen_address),l
+                            ld	(ix+@animation.screen_address+1),h
                             ret
 
 check
@@ -42,6 +67,15 @@ check
                             ld	a,ixh
                             or	a
                             ret	z
+
+                ; Drop screen-only animations after leaving their source room
+                            ld	a,(rooms.room_number_x)
+                            cp	(ix+@animation.room_x)
+                            jr	nz,clear
+
+                            ld	a,(rooms.room_number_y)
+                            cp	(ix+@animation.room_y)
+                            jr	nz,clear
 
                 ; Wait until the frame delay expires
                             ld	a,(current_delay)
@@ -58,18 +92,17 @@ draw_frame
                             sub	c
                             jr	z,stop
 
-                ; Prepare room address and frame size
+                ; Prepare screen address and frame size
                             ld	a,(ix+@animation.current)
-                            ld	d,(ix+@animation.room_address+1)
-                            ld	e,(ix+@animation.room_address)
+                            ld	d,(ix+@animation.screen_address+1)
+                            ld	e,(ix+@animation.screen_address)
                             ld	b,(ix+@animation.width)
                             ld	c,(ix+@animation.height)
                             call	find_sprite_address
 
 draw_frame_sprite
-                ; Draw the current frame and refresh the room
+                ; Draw the current frame over the already restored room
                             call	draw.draw_room_sprite
-                            call	rooms.redraw_current_room
 
                 ; Advance to the next frame and reload delay
                             ld	ix,(current_animation)
@@ -82,12 +115,43 @@ draw_frame_sprite
                             ret
 
 stop
+                ; Patch the final frame into the mutable room buffer
+                            call	patch_current_animation
+
+clear
                 ; Reset one-shot animation after the last frame
                             xor	a
                             ld	(ix+@animation.current),a
 
                             ld	hl,0
                             ld	(current_animation),hl
+                            ret
+
+patch_last_frame
+    ; input:
+    ; de - room-local patch coordinates
+    ; hl - animation struct pointer
+                            push	hl
+                            call	rooms.get_current_room_pixel_address
+                            ex	de,hl
+                            pop	ix
+                            jr	patch_animation_final_frame
+
+patch_current_animation
+                            ld	d,(ix+@animation.room_address+1)
+                            ld	e,(ix+@animation.room_address)
+                            call	patch_animation_final_frame
+
+                            ld	d,(ix+@animation.screen_address+1)
+                            ld	e,(ix+@animation.screen_address)
+
+patch_animation_final_frame
+                            ld	b,(ix+@animation.width)
+                            ld	c,(ix+@animation.height)
+                            ld	a,(ix+@animation.frames)
+                            dec	a
+                            call	find_sprite_address
+                            call	draw.draw_room_sprite
                             ret
 
 find_sprite_address

@@ -1,2 +1,13 @@
                         module	room_6_1
+on_enter
+                            ld	a,(red_door_opened)
+                            or	a
+                            ret	z
+
+                            ld	d,11
+                            ld	e,3
+                            ld	hl,logic.redcard.item_animation
+                            call	animate.patch_last_frame
+                            ret
+red_door_opened             db	0
                         endmodule

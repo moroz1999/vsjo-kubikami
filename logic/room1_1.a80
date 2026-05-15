@@ -1,4 +1,17 @@
                         module	room_1_1
+on_enter
+                            ld	a,(glass_broken)
+                            or	a
+                            ret	z
+
+                            call	activate_glass_route
+
+                            ld	d,12
+                            ld	e,12
+                            ld	hl,logic.stone.stone_anim
+                            call	animate.patch_last_frame
+                            ret
+
 activate_glass_route
                             ld	hl,enemies.route_1_1_left_inner+enemies.route_point.top_left_point_ptr
                             ld	de,enemies.route_1_1_left_jump_right
@@ -12,4 +25,5 @@ activate_glass_route
                             inc	hl
                             ld	(hl),d
                             ret
+glass_broken                db	0
                         endmodule

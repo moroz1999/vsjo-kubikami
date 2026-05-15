@@ -13,9 +13,9 @@ change_logic_pointer
                             pop	hl
                             push	hl
 
-                            ld	de,rooms.room.onstart_pointer
+                            ld	de,rooms.room.on_enter_pointer
                             call	rooms.get_room_field_pointer
-                            ld	(room_onstart_pointer),hl
+                            ld	(room_on_enter_pointer),hl
 
                             pop	hl
                             ld	de,rooms.room.onend_pointer
@@ -31,11 +31,11 @@ get_logic_pointer
                             call	rooms.get_room_field_pointer
                             ret
 
-get_room_onstart_pointer
+get_room_on_enter_pointer
                 ; output:
-                ; hl - current room onstart callback pointer
+                ; hl - current room on_enter callback pointer
                             call	rooms.get_current_room_struct_pointer
-                            ld	de,rooms.room.onstart_pointer
+                            ld	de,rooms.room.on_enter_pointer
                             call	rooms.get_room_field_pointer
                             ret
 
@@ -47,8 +47,8 @@ get_room_onend_pointer
                             call	rooms.get_room_field_pointer
                             ret
 
-call_room_onstart
-                            ld	hl,(room_onstart_pointer)
+call_room_on_enter
+                            ld	hl,(room_on_enter_pointer)
                             jr	call_room_callback
 
 call_room_onend
@@ -61,7 +61,7 @@ call_room_callback
                             push	hl
                             ret
 
-room_onstart_pointer        dw	0
+room_on_enter_pointer       dw	0
 room_onend_pointer          dw	0
 
                             include	"./logic/crowbar.a80";
@@ -78,12 +78,17 @@ room_onend_pointer          dw	0
                             include	"./logic/poison_bottle.a80";
 empty_room_logic
                             ret
+empty_room_on_enter
+                            ret
 empty_item_action
                             xor	a
                             ret
+                            include	"logic/room4_0.a80"
+                            include	"logic/room5_0.a80"
                             include	"logic/room1_0.a80"
                             include	"logic/room1_1.a80"
                             include	"logic/room2_0.a80"
+                            include	"logic/room2_3.a80"
                             include	"logic/room1_3.a80"
                             include	"logic/room2_1.a80"
                             include	"logic/room4_1.a80"

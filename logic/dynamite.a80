@@ -18,12 +18,10 @@ action
 
                             ld	d,23
                             ld	e,11
-                            ld	b,2
-                            ld	c,3
-                            call	rooms.get_room_pixel_address
-                            ld	(item_animation + @animation.room_address),hl
                             ld	hl,item_animation
                             call	animate.start
+                            ld	a,1
+                            ld	(logic.room_2_3.dynamite_exploded),a
 
                             call	hero.delete_item_in_pocket
 
@@ -39,6 +37,9 @@ item_animation
                             0       ;current
                             8       ;delay
                             0       ;room_address
+                            0       ;screen_address
+                            0       ;room_x
+                            0       ;room_y
                             5       ;width
                             7       ;height
                             }

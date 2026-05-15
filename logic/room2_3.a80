@@ -1,0 +1,13 @@
+                        module	room_2_3
+on_enter
+                            ld	a,(dynamite_exploded)
+                            or	a
+                            ret	z
+
+                            ld	d,23
+                            ld	e,11
+                            ld	hl,logic.dynamite.item_animation
+                            call	animate.patch_last_frame
+                            ret
+dynamite_exploded           db	0
+                        endmodule

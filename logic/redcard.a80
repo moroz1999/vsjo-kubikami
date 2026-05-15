@@ -22,12 +22,10 @@ action
 
                             ld	d,11
                             ld	e,3
-                            ld	b,6
-                            ld	c,1
-                            call	rooms.get_room_pixel_address
-                            ld	(item_animation + @animation.room_address),hl
                             ld	hl,item_animation
                             call	animate.start
+                            ld	a,1
+                            ld	(logic.room_6_1.red_door_opened),a
                             call	hero.delete_item_in_pocket
 
                             ld	a,255
@@ -41,6 +39,9 @@ item_animation
                             0       ;current
                             15      ;delay
                             0       ;room_address
+                            0       ;screen_address
+                            0       ;room_x
+                            0       ;room_y
                             2       ;width
                             9       ;height
                             }

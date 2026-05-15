@@ -17,12 +17,10 @@ action
 
                             ld	d,12
                             ld	e,12
-                            ld	b,1
-                            ld	c,1
-                            call	rooms.get_room_pixel_address
-                            ld	(stone_anim + @animation.room_address),hl
                             ld	hl,stone_anim
                             call	animate.start
+                            ld	a,1
+                            ld	(logic.room_1_1.glass_broken),a
                             call	hero.delete_item_in_pocket
                             call	logic.room_1_1.activate_glass_route
 
@@ -37,6 +35,9 @@ stone_anim
                             0       ;current
                             20      ;delay
                             0       ;room_address
+                            0       ;screen_address
+                            0       ;room_x
+                            0       ;room_y
                             8       ;width
                             8       ;height
                             }

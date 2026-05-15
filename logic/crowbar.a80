@@ -17,12 +17,10 @@ action
 
                             ld	d,18
                             ld	e,8
-                            ld	b,2
-                            ld	c,0
-                            call	rooms.get_room_pixel_address
-                            ld	(ground_anim + @animation.room_address),hl
                             ld	hl,ground_anim
                             call	animate.start
+                            ld	a,1
+                            ld	(logic.room_2_0.roof_broken),a
                             call	logic.room_2_0.activate_roof_route
                             call	hero.delete_item_in_pocket
 
@@ -37,6 +35,9 @@ ground_anim
                             0       ;current
                             1       ;delay
                             0       ;room_address
+                            0       ;screen_address
+                            0       ;room_x
+                            0       ;room_y
                             7       ;width
                             4       ;height
                             }

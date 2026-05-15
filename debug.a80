@@ -35,16 +35,8 @@ apply_initial_item_states
 
                             if	initial_broken_glass
 apply_broken_glass
-                            ld	d,12
-                            ld	e,12
-                            ld	b,1
-                            ld	c,1
-                            call	rooms.get_room_pixel_address
-                            ex	de,hl
-                            ld	hl,logic.stone.animation_frame1
-                            ld	b,8
-                            ld	c,8
-                            call	draw.draw_room_sprite
+                            ld	a,1
+                            ld	(logic.room_1_1.glass_broken),a
                             call	logic.room_1_1.activate_glass_route
                             ld	a,items.stone
                             call	items.remove_item
@@ -53,16 +45,8 @@ apply_broken_glass
 
                             if	initial_red_door_opened
 apply_red_door_opened
-                            ld	d,11
-                            ld	e,3
-                            ld	b,6
-                            ld	c,1
-                            call	rooms.get_room_pixel_address
-                            ex	de,hl
-                            ld	hl,logic.redcard.animation_frame5
-                            ld	b,2
-                            ld	c,9
-                            call	draw.draw_room_sprite
+                            ld	a,1
+                            ld	(logic.room_6_1.red_door_opened),a
                             ld	a,items.redcard
                             call	items.remove_item
                             ret
@@ -70,16 +54,8 @@ apply_red_door_opened
 
                             if	initial_hatch_key_used
 apply_hatch_key_used
-                            ld	d,17
-                            ld	e,18
-                            ld	b,4
-                            ld	c,1
-                            call	rooms.get_room_pixel_address
-                            ex	de,hl
-                            ld	hl,logic.key.animation_frame1
-                            ld	b,5
-                            ld	c,2
-                            call	draw.draw_room_sprite
+                            ld	a,1
+                            ld	(logic.room_4_1.hatch_opened),a
                             ld	a,items.key
                             call	items.remove_item
                             ret
@@ -114,16 +90,8 @@ apply_generator_started
 
                             if	initial_stairs_unfolded
 apply_stairs_unfolded
-                            ld	d,12
-                            ld	e,10
-                            ld	b,1
-                            ld	c,0
-                            call	rooms.get_room_pixel_address
-                            ex	de,hl
-                            ld	hl,logic.stairs.animation_frame2
-                            ld	b,8
-                            ld	c,4
-                            call	draw.draw_room_sprite
+                            ld	a,1
+                            ld	(logic.room_1_0.stairs_unfolded),a
                             ld	a,items.stairs
                             call	items.remove_item
                             ret

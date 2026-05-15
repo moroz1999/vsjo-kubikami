@@ -1,6 +1,5 @@
                         module	game_process
 loop
-                            call	animate.check
                             call	elevators_restore.restore
                             call	hero.save_restore
 

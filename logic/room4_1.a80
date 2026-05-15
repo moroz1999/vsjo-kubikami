@@ -1,2 +1,13 @@
                         module	room_4_1
+on_enter
+                            ld	a,(hatch_opened)
+                            or	a
+                            ret	z
+
+                            ld	d,17
+                            ld	e,18
+                            ld	hl,logic.key.item_animation
+                            call	animate.patch_last_frame
+                            ret
+hatch_opened                db	0
                         endmodule

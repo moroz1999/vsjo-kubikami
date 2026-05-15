@@ -39,9 +39,9 @@ boss_b_start_y              equ	7   ; Start row for joint B.
 boss_c_start_x              equ	14  ; Start column for head joint C.
 boss_c_start_y              equ	15  ; Start row for head joint C.
 
-onstart                    ; Room startup hook.
+on_enter                  ; Room enter hook.
                             call	reset_points ; Reset boss state for the room.
-                            ret     ; Return to room startup dispatcher.
+                            ret     ; Return to room enter dispatcher.
 
 logic                      ; Per-frame room logic.
                             call	update_points ; Advance boss joints and jaws.

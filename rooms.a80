@@ -21,11 +21,12 @@ room_change_abort			equ	255
 						struct	room
 data_address				word
 logic_pointer				word
-onstart_pointer				word
+on_enter_pointer			word
 onend_pointer				word
 						ends
 
 current_room_address		dw	0
+current_room_source_address	dw	0
 init_current_room
 							call	logic.change_logic_pointer
 							call	gather_room_items
@@ -40,16 +41,26 @@ init_current_room
 							call	calculate_room_top_y
 							call	calculate_room_bottom_y
 
-							call	get_current_room_address
-							ld	(current_room_address),hl
+							call	copy_current_room
 
-							call	logic.call_room_onstart
+							call	logic.call_room_on_enter
 
 							call	redraw_current_room
 
 							// update state instantly
 							call	game_process.calculate_state
 
+							ret
+copy_current_room
+                ; Copy immutable room data into the mutable current-room buffer
+							call	get_current_room_address
+							ld	(current_room_source_address),hl
+							ld	de,current_room_buf
+							ld	bc,room_size
+							ldir
+
+							ld	hl,current_room_buf
+							ld	(current_room_address),hl
 							ret
 redraw_current_room
 							ld	hl,(current_room_address)
@@ -140,11 +151,9 @@ get_current_room_pixel_address
                 ; de - coordinates
                 ; output
                 ; hl - address in memory
-							ld	a,(room_number_x)
-							ld	b,a
-							ld	a,(room_number_y)
-							ld	c,a
-							call	get_room_pixel_address
+							call	screen_utils.get_texture_address
+							ld	de,(current_room_address)
+							add	hl,de
 							ret
 get_room_pixel_address
                 ; input:
@@ -270,49 +279,49 @@ room_0_0_info
 							room	{
 							room_0_0,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_1_0_info
 							room	{
 							room_1_0,                 ; data_address
 							logic.room_1_0.logic,     ; logic_pointer
-							logic.room_1_0.onstart,   ; onstart_pointer
+							logic.room_1_0.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_2_0_info
 							room	{
 							room_2_0,                 ; data_address
 							logic.room_2_0.logic,     ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_2_0.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_3_0_info
 							room	{
 							room_3_0,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_4_0_info
 							room	{
 							room_4_0,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_4_0.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_5_0_info
 							room	{
 							room_5_0,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_5_0.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_6_0_info
 							room	{
 							room_6_0,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 
@@ -320,49 +329,49 @@ room_0_1_info
 							room	{
 							room_0_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_1_1_info
 							room	{
 							room_1_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_1_1.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_2_1_info
 							room	{
 							room_2_1,                 ; data_address
 							logic.room_2_1.logic,     ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_3_1_info
 							room	{
 							room_3_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_4_1_info
 							room	{
 							room_4_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_4_1.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_5_1_info
 							room	{
 							room_5_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_6_1_info
 							room	{
 							room_6_1,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_6_1.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 
@@ -370,49 +379,49 @@ room_0_2_info
 							room	{
 							room_0_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_1_2_info
 							room	{
 							room_1_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_2_2_info
 							room	{
 							room_2_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_3_2_info
 							room	{
 							room_3_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_4_2_info
 							room	{
 							room_4_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_5_2_info
 							room	{
 							room_5_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_6_2_info
 							room	{
 							room_6_2,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 
@@ -420,49 +429,49 @@ room_0_3_info
 							room	{
 							room_0_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_1_3_info
 							room	{
 							room_1_3,                 ; data_address
 							logic.room_1_3.logic,     ; logic_pointer
-							logic.room_1_3.onstart,   ; onstart_pointer
+							logic.room_1_3.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_2_3_info
 							room	{
 							room_2_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.room_2_3.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_3_3_info
 							room	{
 							room_3_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_4_3_info
 							room	{
 							room_4_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_5_3_info
 							room	{
 							room_5_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_6_3_info
 							room	{
 							room_6_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							0,                        ; onstart_pointer
+							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 							include	"rooms_elevators.a80"
@@ -495,5 +504,6 @@ calculate_room_bottom_y
 							ret
 room_top_y					db	0
 room_bottom_y				db	0
+current_room_buf			ds	room_size
 
 						endmodule

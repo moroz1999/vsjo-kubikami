@@ -89,6 +89,7 @@ draw_state
                             call	logic.room_1_3.restore_previous
 
                             call	animate.draw_room
+                            call	animate.check
 
                             call	waterdrops.draw_room_waterdrops
 

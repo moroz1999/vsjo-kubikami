@@ -17,7 +17,7 @@ logic
                             call	apply_rain_mask
                             ret
 
-onstart
+on_enter
                             ld	a,rain_mode_wait_start
                             ld	(rain_mode),a
 
@@ -28,6 +28,18 @@ onstart
                             ld	(rain_frames),a
 
                             call	reset_room_waterdrops
+                            call	patch_stairs_if_unfolded
+                            ret
+
+patch_stairs_if_unfolded
+                            ld	a,(stairs_unfolded)
+                            or	a
+                            ret	z
+
+                            ld	d,12
+                            ld	e,10
+                            ld	hl,logic.stairs.item_animation
+                            call	animate.patch_last_frame
                             ret
 
                 ; Restore every buffered room drop to its source state
@@ -240,4 +252,5 @@ is_drop_enabled_yes
 rain_mode                   db	rain_mode_wait_start
 rain_seconds                db	0
 rain_frames                 db	0
+stairs_unfolded             db	0
                         endmodule

@@ -2,6 +2,19 @@
 logic
                             ret
 
+on_enter
+                            ld	a,(roof_broken)
+                            or	a
+                            ret	z
+
+                            call	activate_roof_route
+
+                            ld	d,18
+                            ld	e,8
+                            ld	hl,logic.crowbar.ground_anim
+                            call	animate.patch_last_frame
+                            ret
+
 activate_roof_route
                             ld	hl,enemies.route_2_0_top_mid+enemies.route_point.bottom_right_point_ptr
                             ld	de,enemies.route_2_0_basement_entry
@@ -9,4 +22,5 @@ activate_roof_route
                             inc	hl
                             ld	(hl),d
                             ret
+roof_broken                 db	0
                         endmodule

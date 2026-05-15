@@ -1,0 +1,13 @@
+                        module	room_4_0
+on_enter
+                            ld	a,(handle_used)
+                            or	a
+                            ret	z
+
+                            ld	d,0
+                            ld	e,15
+                            ld	hl,logic.handle.item_animation
+                            call	animate.patch_last_frame
+                            ret
+handle_used                 db	0
+                        endmodule

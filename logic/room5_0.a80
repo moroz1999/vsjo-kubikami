@@ -1,0 +1,13 @@
+                        module	room_5_0
+on_enter
+                            ld	a,(seeds_grown)
+                            or	a
+                            ret	z
+
+                            ld	d,14
+                            ld	e,17
+                            ld	hl,logic.seeds.item_animation
+                            call	animate.patch_last_frame
+                            ret
+seeds_grown                 db	0
+                        endmodule

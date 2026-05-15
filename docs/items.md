@@ -12,6 +12,13 @@
 - The stone is used in room `1,1` when the hero stands at `(20,19)`.
 - Using it starts the glass break animation, removes the item from the pocket, and calls `logic.room_1_1.activate_glass_route`.
 - The enemy route effect enables the two glass-edge jump points, so enemies can cross the room `1,1` glass only after it has been broken.
+- Room `1,1` stores the persistent result in `logic.room_1_1.glass_broken`; `on_enter` applies the final broken-glass frame when this flag is set.
+
+## Stairs
+
+- The stairs are used in room `1,0` when the hero stands at `y=13` and `x=12..17`.
+- Using them starts the unfolding animation and removes the item from the pocket.
+- Room `1,0` stores the persistent result in `logic.room_1_0.stairs_unfolded`; `on_enter` applies the final unfolded-stairs frame when this flag is set.
 
 ## Red Card
 
@@ -32,5 +39,11 @@
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
 - `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
-- Each enabled flag applies the persistent final effect: final room sprite where the item changes room art, route/elevator/animation state where the item unlocks movement, and removal of the consumed item from `items.all_items`.
+- Each enabled flag applies route/elevator/animation state where the item unlocks movement, sets the matching room/effect flag for persistent art, and removes the consumed item from `items.all_items`. Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
 - Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `0`, generator started `0`, and stairs unfolded `0`.
+
+## Persistent Room Art
+
+- One-shot item animations draw their changing frames directly to the screen. They patch only the final frame into `rooms.current_room_buf` when the animation completes.
+- Room `on_enter` callbacks check explicit room/effect flags instead of inferring state from item inventory fields.
+- Persistent final-art flags are `logic.room_2_0.roof_broken`, `logic.room_1_1.glass_broken`, `logic.room_1_0.stairs_unfolded`, `logic.room_6_1.red_door_opened`, `logic.room_4_1.hatch_opened`, `logic.room_4_0.handle_used`, `logic.room_5_0.seeds_grown`, and `logic.room_2_3.dynamite_exploded`.
