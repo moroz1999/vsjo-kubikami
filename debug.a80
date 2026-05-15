@@ -63,8 +63,6 @@ apply_red_door_opened
                             ld	b,2
                             ld	c,9
                             call	draw.draw_room_sprite
-                            call	logic.room_6_1.activate_red_door_route
-                            call	logic.room_6_2.activate_shaft_up_entry_route
                             ld	a,items.redcard
                             call	items.remove_item
                             ret
@@ -109,8 +107,6 @@ apply_generator_started
                             ld	ix,elevators.elevator_4_1_3
                             ld	(ix+elevators.elevator.state),a
 
-                            call	logic.room_4_1.activate_air_route
-                            call	logic.room_6_3.activate_shaft_up_route
                             ld	a,items.screwdriver
                             call	items.remove_item
                             ret

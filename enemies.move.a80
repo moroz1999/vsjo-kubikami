@@ -20,9 +20,6 @@ move_next_online
                             cp	simulation_mode_online
                             jr	nz,move_next_skip
 
-                            call	should_defer_gravity_for_route
-                            jr	z,move_next_after_fall_state
-
                             call	update_fall_state
 
 move_next_after_fall_state

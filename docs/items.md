@@ -16,17 +16,16 @@
 ## Red Card
 
 - The red card is used in room `6,1` when the hero stands at `y=11` and `x=8..12`.
-- Using it opens the red door, starts the door animation, removes the item from the pocket, and calls `logic.room_6_1.activate_red_door_route` and `logic.room_6_2.activate_shaft_up_entry_route`.
-- `logic.room_6_1.activate_red_door_route` rewires `route_6_1_red_door_left` from the closed-door fall-and-exit lane into the right-half door route.
-- `logic.room_6_2.activate_shaft_up_entry_route` rewires `route_6_2_shaft_up_top_exit.bottom_right_point_ptr` to `route_6_1_shaft_bottom_entry`, so the `6,1` right-half route points from below are unavailable until the red card has opened the door.
+- Using it opens the red door, starts the door animation, removes the item from the pocket, and does not change enemy route points.
+- Enemies keep using the fall-and-exit lane from `route_6_1_red_door_left`; they do not go behind the red door after the card is applied.
 
 ## Screwdriver
 
 - The screwdriver is used in room `6,3` when the hero stands between `x=11` and `x=12` at `y=20`.
 - Using it repairs the generator, switches the generator-related room animations on, starts the `6,3` elevator upward, starts the three `4,1` elevators upward, and removes the item from the pocket.
-- The enemy route effects are split between `logic.room_4_1.activate_air_route` and `logic.room_6_3.activate_shaft_up_route`.
-- In room `4,1`, `logic.room_4_1.activate_air_route` sets `route_4_1_left_mid.alternative_point_ptr` to `route_4_1_air_low`, enabling the short upward air route as a fork.
-- In room `6,3`, `logic.room_6_3.activate_shaft_up_route` sets `route_6_3_bottom_left.alternative_point_ptr` to `route_6_3_shaft_up_floor`, enabling the repaired left elevator shaft climb back up through `6,2` and toward `6,1`.
+- Using it does not change enemy route points.
+- Room `4,1` keeps its normal `jump_right` route across the blocked floor gap.
+- Room `6,3` has no screwdriver-unlocked enemy route branch.
 - Room `5,1` has no screwdriver-unlocked route branch; its bottom route stays connected to room `6,1`.
 
 ## Debug Initial Item States

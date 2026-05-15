@@ -1,9 +1,2 @@
                         module	room_6_3
-activate_shaft_up_route
-                            ld	hl,enemies.route_6_3_bottom_left+enemies.route_point.alternative_point_ptr
-                            ld	de,enemies.route_6_3_shaft_up_floor
-                            ld	(hl),e
-                            inc	hl
-                            ld	(hl),d
-                            ret
                         endmodule

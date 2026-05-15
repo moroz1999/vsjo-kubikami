@@ -7,14 +7,15 @@
 - Route-following is a separate behavior model from free roaming; route followers do not use random standing/walking choices while following a route.
 - Online route followers move physically toward the current target and use the regular enemy walking, obstacle, falling, and jump behavior while doing so.
 - When a route target has the same `x` and a lower `y`, the route follower uses normal gravity instead of route-specific downward movement.
-- When a route target has the same `x` and a higher `y`, the route follower moves vertically toward it and defers falling until that upward target is no longer active.
+- Route followers do not self-propel upward toward route targets. A target above the same `x` must be reached by a jump, an elevator, or another external position change.
+- `route_point_wait` points keep route-following active while the enemy stands on an elevator lane and waits for the next target to become reachable.
 
 ## Route Movement
 
 - Online route followers treat a route point as reached only when the enemy's room-local position matches the point.
 - Online route followers move physically only while the selected target belongs to the enemy's current room.
 - When the target `x` differs, horizontal movement takes priority. The route follower sets direction toward the target and uses the normal `move_enemy_left` or `move_enemy_right` path.
-- When the target `x` matches and the target is above, the route follower tries one vertical cell upward if that cell is empty.
+- When the target `x` matches and the target is above, the route follower waits instead of flying upward.
 - When the target `x` matches and the target is below, the route follower lets gravity move it down.
 - Online route followers choose the direct neighbor opposite to `last_route_point_ptr`.
 - If the previous point matches neither direct link, online route followers use `bottom_right_point_ptr`.

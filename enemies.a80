@@ -34,6 +34,7 @@ route_point_normal          equ	0
 route_point_jump_left       equ	1
 route_point_jump_right      equ	2
 route_point_exit            equ	3
+route_point_wait            equ	4
 
 ; Enemy random decisions use a small local sequence.
 random_seed_init            equ	1

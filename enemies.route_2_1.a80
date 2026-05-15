@@ -18,7 +18,7 @@ route_2_1_left_mid
                             19,                 ; y
                             route_point_normal, ; type
                             route_2_1_left_entry, ; top-left point
-                            route_2_1_right_deadend, ; bottom-right point
+                            route_2_1_elevator_jump_left, ; bottom-right point
                             0                   ; alternative point
                             }
 
@@ -41,18 +41,18 @@ route_2_1_right_mid
                             24,                 ; x
                             19,                 ; y
                             route_point_normal, ; type
-                            route_2_1_right_deadend, ; top-left point
+                            route_2_1_elevator_jump_left, ; top-left point
                             route_2_1_right_entry, ; bottom-right point
                             0                   ; alternative point
                             }
 
-route_2_1_right_deadend
+route_2_1_elevator_jump_left
                             route_point	{
                             2,                  ; room_x
                             1,                  ; room_y
                             20,                 ; x
                             19,                 ; y
-                            route_point_normal, ; type
+                            route_point_jump_left, ; type
                             route_2_1_left_mid, ; top-left point
                             route_2_1_right_mid, ; bottom-right point
                             0                   ; alternative point

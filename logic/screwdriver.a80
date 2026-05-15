@@ -42,9 +42,6 @@ action
                             ld ix,elevators.elevator_4_1_3
                             ld (ix+elevators.elevator.state),a 
 
-                            call	logic.room_4_1.activate_air_route
-                            call	logic.room_6_3.activate_shaft_up_route
-
                             call	hero.delete_item_in_pocket
 
                             ld	a,255

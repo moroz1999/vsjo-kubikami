@@ -1,9 +1,2 @@
                         module	room_6_1
-activate_red_door_route
-                            ld	hl,enemies.route_6_1_red_door_left+enemies.route_point.bottom_right_point_ptr
-                            ld	de,enemies.route_6_1_red_door_right
-                            ld	(hl),e
-                            inc	hl
-                            ld	(hl),d
-                            ret
                         endmodule

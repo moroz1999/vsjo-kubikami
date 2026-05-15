@@ -34,7 +34,7 @@ route_points_table
                             dw	route_2_1_left_mid
                             dw	route_2_1_right_entry
                             dw	route_2_1_right_mid
-                            dw	route_2_1_right_deadend
+                            dw	route_2_1_elevator_jump_left
                             dw	route_3_0_left_entry
                             dw	route_3_0_left_drop
                             dw	route_3_1_top_entry
@@ -45,8 +45,8 @@ route_points_table
                             dw	route_3_1_bottom_fork
                             dw	route_3_1_left_exit
                             dw	route_3_1_bottom_jump_right
-                            dw	route_3_1_upper_low
-                            dw	route_3_1_upper_high
+                            dw	route_3_1_elevator_wait
+                            dw	route_3_1_elevator_top_jump_left
                             dw	route_3_1_right_jump_left
                             dw	route_3_1_right_mid
                             dw	route_3_1_right_far
@@ -54,9 +54,6 @@ route_points_table
                             dw	route_4_1_left_entry
                             dw	route_4_1_left_mid
                             dw	route_4_1_left_jump
-                            dw	route_4_1_air_low
-                            dw	route_4_1_air_high
-                            dw	route_4_1_air_return
                             dw	route_4_1_right_mid
                             dw	route_4_1_right_exit
                             dw	route_4_2_top_landing
@@ -83,30 +80,6 @@ route_points_table
                             dw	route_6_1_red_door_left
                             dw	route_6_1_red_door_fall
                             dw	route_6_1_red_door_exit
-                            dw	route_6_1_red_door_right
-                            dw	route_6_1_shaft_down_mid
-                            dw	route_6_1_shaft_bottom_exit
-                            dw	route_6_1_shaft_bottom_entry
-                            dw	route_6_1_shaft_up_low
-                            dw	route_6_1_shaft_up_mid
-                            dw	route_6_2_shaft_down_top
-                            dw	route_6_2_shaft_down_mid
-                            dw	route_6_2_shaft_down_bottom_exit
-                            dw	route_6_2_shaft_up_bottom
-                            dw	route_6_2_shaft_up_mid
-                            dw	route_6_2_shaft_up_top_exit
-                            dw	route_6_3_shaft_down_top
-                            dw	route_6_3_shaft_down_turn
-                            dw	route_6_3_shaft_down_mid
-                            dw	route_6_3_shaft_down_floor
-                            dw	route_6_3_bottom_right
-                            dw	route_6_3_bottom_mid
-                            dw	route_6_3_bottom_left
-                            dw	route_6_3_shaft_up_floor
-                            dw	route_6_3_shaft_up_mid
-                            dw	route_6_3_shaft_up_shaft
-                            dw	route_6_3_shaft_up_turn
-                            dw	route_6_3_shaft_up_top_exit
 route_points_table_end
 
                             include	"enemies.route_0_0.a80"
@@ -171,7 +144,11 @@ move_offline_route_enemy_step
                             ex	de,hl
                             call	move_enemy_to_route_point
                             pop	hl
+                            call	is_route_point_wait
+                            jr	z,move_offline_route_enemy_wait
                             call	select_next_route_target_from_point
+
+move_offline_route_enemy_wait
                             call	refresh_enemy_simulation_mode
                             ret
 
@@ -235,19 +212,8 @@ move_route_step_right
                             jp	move_enemy_right
 
 move_route_step_vertical
-                            inc	hl
-                            ld	a,(ix+enemy.y)
-                            cp	(hl)
-                            ret	z
-                            ret	c
-
-                            ld	d,(ix+enemy.x)
-                            ld	e,(ix+enemy.y)
-                            dec	e
-                            call	objects.check_coords
-                            cp	objects.b_empty
-                            ret	nz
-                            jp	set_enemy_position
+                ; Route followers wait for gravity, jumps, or elevators to change height.
+                            ret
 
 select_next_route_point
                             call	get_target_route_point
@@ -270,10 +236,17 @@ select_next_route_point
                             cp	route_point_exit
                             jr	z,select_next_route_point_exit
 
+                            cp	route_point_wait
+                            jr	z,select_next_route_point_wait
+
 select_next_route_point_normal
                             pop	hl
                             call	select_next_route_target_from_point
                             ret
+
+select_next_route_point_wait
+                ; Wait points keep routing active while the enemy stands in place.
+                            jr	select_next_route_point_normal
 
 select_next_route_point_jump_left
                 ; Jump points choose their jump direction from the selected neighbor.
@@ -296,6 +269,15 @@ select_next_route_point_exit
                             ret	z
 
                             jp	leave_enemy_to_route_point
+
+is_route_point_wait
+                            push	hl
+                            ld	de,route_point.type
+                            add	hl,de
+                            ld	a,(hl)
+                            cp	route_point_wait
+                            pop	hl
+                            ret
 
 select_next_route_target_from_point
                 ; Shared target selection for online and offline route followers.
@@ -486,47 +468,3 @@ is_target_route_point_reached_check
                             ld	a,(ix+enemy.y)
                             cp	(hl)
                             ret
-
-is_upward_route_target
-                            call	get_target_route_point
-                            jr	nz,is_upward_route_target_check
-
-                            or	1
-                            ret
-
-is_upward_route_target_check
-                            push	hl
-                            ex	de,hl
-                            call	is_route_point_in_enemy_room
-                            pop	hl
-                            jr	nz,is_upward_route_target_false
-
-                            ld	de,route_point.x
-                            add	hl,de
-                            ld	a,(ix+enemy.x)
-                            cp	(hl)
-                            jr	nz,is_upward_route_target_false
-
-                            inc	hl
-                            ld	a,(ix+enemy.y)
-                            cp	(hl)
-                            jr	z,is_upward_route_target_false
-                            jr	c,is_upward_route_target_false
-
-                            xor	a
-                            ret
-
-is_upward_route_target_false
-                            or	1
-                            ret
-
-should_defer_gravity_for_route
-                            ld	a,(ix+enemy.state)
-                            cp	state_route
-                            jr	z,should_defer_gravity_for_route_check
-
-                            or	1
-                            ret
-
-should_defer_gravity_for_route_check
-                            jp	is_upward_route_target

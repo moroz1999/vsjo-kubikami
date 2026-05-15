@@ -37,12 +37,14 @@ route_point_normal
 route_point_jump_left
 route_point_jump_right
 route_point_exit
+route_point_wait
 ```
 
 - `route_point_normal` is an ordinary point.
 - `route_point_jump_left` starts the next transition with a left jump.
 - `route_point_jump_right` starts the next transition with a right jump.
 - `route_point_exit` is a room-exit point on a screen edge.
+- `route_point_wait` is an elevator wait point: online enemies keep route-following active and stand until elevator or jump physics reaches the next target.
 
 ## Links
 
