@@ -37,9 +37,9 @@ action_false
 
 item_animation
                             @animation	{
-                            3       ;frames
+                            4       ;frames
                             0       ;current
-                            12      ;delay
+                            10      ;delay
                             0       ;room_address
                             0       ;screen_address
                             0       ;room_x
@@ -50,26 +50,34 @@ item_animation
 black                       equ	rooms.room_bg_color
 sky_color                   equ	rooms.room_bg_color_sky
 gra_color                   equ	rooms.room_bg_color_gray
+door_color                  equ	%01010110
 
 animation_frame0
-                            db	gra_color,black,black
-                            db	gra_color,black,black
-                            db	gra_color,black,black
-                            db	gra_color,black,black
-                            db	gra_color,black,black
-                            db	gra_color,black,black
+                            db	door_color,door_color,black
+                            db	door_color,door_color,black
+                            db	door_color,door_color,black
+                            db	door_color,door_color,black
+                            db	door_color,door_color,black
+                            db	door_color,door_color,black
 animation_frame1
-                            db	gra_color,gra_color,black
-                            db	gra_color,gra_color,black
-                            db	gra_color,gra_color,black
-                            db	gra_color,gra_color,black
-                            db	gra_color,gra_color,black
-                            db	gra_color,gra_color,black
+                            db	sky_color,door_color,black
+                            db	sky_color,door_color,black
+                            db	sky_color,door_color,black
+                            db	sky_color,door_color,black
+                            db	sky_color,door_color,black
+                            db	sky_color,door_color,black
 animation_frame2
-                            db	sky_color,gra_color,black
-                            db	sky_color,gra_color,black
-                            db	sky_color,gra_color,black
-                            db	sky_color,gra_color,black
-                            db	sky_color,gra_color,black
-                            db	sky_color,gra_color,black
+                            db	sky_color,sky_color,door_color
+                            db	sky_color,sky_color,door_color
+                            db	sky_color,sky_color,door_color
+                            db	sky_color,sky_color,door_color
+                            db	sky_color,sky_color,door_color
+                            db	sky_color,sky_color,door_color
+animation_frame3
+                            db	sky_color,sky_color,gra_color
+                            db	sky_color,sky_color,gra_color
+                            db	sky_color,sky_color,gra_color
+                            db	sky_color,sky_color,gra_color
+                            db	sky_color,sky_color,gra_color
+                            db	sky_color,sky_color,gra_color
                         endmodule

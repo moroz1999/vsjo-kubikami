@@ -9,19 +9,19 @@ action
 
                 ; hero must be between 14 and 20 x
                             ld	a,(hero.hero_x)
-                            sub	14
+                            sub	18
                             jr	c,action_false
                             ld	a,(hero.hero_x)
-                            sub	20
+                            sub	25
                             jr	nc,action_false
 
-                ; hero must be on 20 line
+                ; hero must be on 14 line
                             ld	a,(hero.hero_y)
-                            cp	20
+                            cp	14
                             jr	nz,action_false
 
-                            ld	d,14
-                            ld	e,17
+                            ld	d,18
+                            ld	e,8
                             ld	hl,item_animation
                             call	animate.start
                             ld	a,1
@@ -37,30 +37,43 @@ action_false
 
 item_animation
                             @animation	{
-                            3       ;frames
+                            4       ;frames
                             0       ;current
-                            15      ;delay
+                            12      ;delay
                             0       ;room_address
                             0       ;screen_address
                             0       ;room_x
                             0       ;room_y
-                            4       ;width
-                            3       ;height
+                            8       ;width
+                            5       ;height
                             }
 black                       equ	rooms.room_bg_color
+gra_color                   equ	rooms.room_bg_color_gray
 green                       equ	%01100100
 yel_color                   equ	%01110110
 
 animation_frame0
-                            db	black,black,black,black
-                            db	black,black,black,black
-                            db	green,black,green,black
+                            db	black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
 animation_frame1
-                            db	black,black,black,black
-                            db	green,black,green,black
-                            db	green,yel_color,green,yel_color
+                            db	black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	green,green,green,green,gra_color,black,black,black
 animation_frame2
-                            db	green,black,green,black
-                            db	green,yel_color,green,yel_color
-                            db	green,green,green,green
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,green,green,green
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	green,green,green,green,gra_color,black,black,black
+animation_frame3
+                            db	black,black,green,green,gra_color,green,green,black
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,green,green,green
+                            db	black,black,black,black,gra_color,black,black,black
+                            db	green,green,green,green,gra_color,black,black,black
                         endmodule

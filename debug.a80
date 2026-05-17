@@ -13,89 +13,35 @@ route_point_debug_color     equ	%01000011
 
 apply_initial_item_states
                             if	initial_broken_glass
-                            call	apply_broken_glass
-                            endif
-
-                            if	initial_red_door_opened
-                            call	apply_red_door_opened
-                            endif
-
-                            if	initial_hatch_key_used
-                            call	apply_hatch_key_used
-                            endif
-
-                            if	initial_generator_started
-                            call	apply_generator_started
-                            endif
-
-                            if	initial_stairs_unfolded
-                            call	apply_stairs_unfolded
-                            endif
-                            ret
-
-                            if	initial_broken_glass
-apply_broken_glass
-                            ld	a,1
-                            ld	(logic.room_1_1.glass_broken),a
-                            call	logic.room_1_1.activate_glass_route
+                            call	logic.stone.apply_effect
                             ld	a,items.stone
                             call	items.remove_item
-                            ret
                             endif
 
                             if	initial_red_door_opened
-apply_red_door_opened
-                            ld	a,1
-                            ld	(logic.room_6_1.red_door_opened),a
+                            call	logic.redcard.apply_effect
                             ld	a,items.redcard
                             call	items.remove_item
-                            ret
                             endif
 
                             if	initial_hatch_key_used
-apply_hatch_key_used
-                            ld	a,1
-                            ld	(logic.room_4_1.hatch_opened),a
+                            call	logic.key.apply_effect
                             ld	a,items.key
                             call	items.remove_item
-                            ret
                             endif
 
                             if	initial_generator_started
-apply_generator_started
-                            ld	a,animate.state_on
-                            ld	(animate.room_animation_6_3+@room_animation.state),a
-                            ld	(animate.room_animation_5_1+@room_animation.state),a
-                            ld	(animate.room_animation_5_1_2+@room_animation.state),a
-                            ld	(animate.room_animation_5_1_3+@room_animation.state),a
-                            ld	(animate.room_animation_5_1_4+@room_animation.state),a
-
-                            ld	a,elevators.state_up
-                            ld	ix,elevators.elevator_6_3
-                            ld	(ix+elevators.elevator.state),a
-
-                            ld	ix,elevators.elevator_4_1_1
-                            ld	(ix+elevators.elevator.state),a
-
-                            ld	ix,elevators.elevator_4_1_2
-                            ld	(ix+elevators.elevator.state),a
-
-                            ld	ix,elevators.elevator_4_1_3
-                            ld	(ix+elevators.elevator.state),a
-
+                            call	logic.screwdriver.apply_effect
                             ld	a,items.screwdriver
                             call	items.remove_item
-                            ret
                             endif
 
                             if	initial_stairs_unfolded
-apply_stairs_unfolded
-                            ld	a,1
-                            ld	(logic.room_1_0.stairs_unfolded),a
+                            call	logic.stairs.apply_effect
                             ld	a,items.stairs
                             call	items.remove_item
-                            ret
                             endif
+                            ret
 
                             if	route_points_debug_enabled
 select_enemy_debug_color

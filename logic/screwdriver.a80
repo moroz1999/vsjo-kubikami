@@ -21,7 +21,14 @@ action
                             cp	20
                             jr	nz,action_false
 
+                            call	apply_effect
 
+                            call	hero.delete_item_in_pocket
+
+                            ld	a,255
+                            ret
+
+apply_effect
                             ld	a,animate.state_on
                             ld	(animate.room_animation_6_3+@room_animation.state),a
                             ld	(animate.room_animation_5_1+@room_animation.state),a
@@ -29,22 +36,20 @@ action
                             ld	(animate.room_animation_5_1_3+@room_animation.state),a
                             ld	(animate.room_animation_5_1_4+@room_animation.state),a
 
-                            ld a,elevators.state_up
-                            ld ix,elevators.elevator_6_3
-                            ld (ix+elevators.elevator.state),a 
+                            ld	a,elevators.state_up
+                            ld	ix,elevators.elevator_6_3
+                            ld	(ix+elevators.elevator.state),a 
 
-                            ld ix,elevators.elevator_4_1_1
-                            ld (ix+elevators.elevator.state),a 
+                            ld	ix,elevators.elevator_4_1_1
+                            ld	(ix+elevators.elevator.state),a 
 
-                            ld ix,elevators.elevator_4_1_2
-                            ld (ix+elevators.elevator.state),a 
+                            ld	ix,elevators.elevator_4_1_2
+                            ld	(ix+elevators.elevator.state),a 
                             
-                            ld ix,elevators.elevator_4_1_3
-                            ld (ix+elevators.elevator.state),a 
+                            ld	ix,elevators.elevator_4_1_3
+                            ld	(ix+elevators.elevator.state),a 
 
-                            call	hero.delete_item_in_pocket
-
-                            ld	a,255
+                            call	logic.room_4_1.activate_elevator_wait_route
                             ret
 action_false
                             xor	a

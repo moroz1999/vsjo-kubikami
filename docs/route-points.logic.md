@@ -55,22 +55,25 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 ## Room 4,1 Generator Route
 
-- Room `4,1` exits from its right edge into the room `5,1` bottom route.
+- Room `4,1` left edge `route_4_1_left_entry` and room `3,1` right edge `route_3_1_right_exit` are paired exit points.
+- Room `4,1` right edge `route_4_1_right_exit` and room `5,1` left edge `route_5_1_left_entry` are paired exit points.
 - `route_4_1_left_mid` at `(8,19)` continues through `route_4_1_left_jump` at `(16,19)`.
 - `route_4_1_left_jump` is a `jump_right` point for crossing the blocked floor gap toward `(23,19)`.
-- Applying the screwdriver no longer unlocks an enemy route branch in room `4,1`; the old upward air branch was removed with vertical route flight.
+- Applying the screwdriver calls `logic.room_4_1.activate_elevator_wait_route`, enabling `route_4_1_left_mid.alternative_point_ptr = route_4_1_elevator_wait`.
+- `route_4_1_elevator_wait` at `(16,19)` waits on the hatch-screen elevator lane, targets `route_4_1_elevator_top` at `(16,6)`, then returns to `route_4_1_left_jump`.
+- The old upward air points are removed; the hatch-screen branch reaches its high target by elevator wait behavior instead of route-driven vertical climbing.
 
 ## Rooms 5,1 Through 6,3
 
 - Room `5,1` has a bottom route from the left side to the right exit into room `6,1`.
 - Room `5,1` has no screwdriver-unlocked route branch.
-- Room `5,1` exits to the left edge entry `(0,19)` in room `6,1`.
-- Room `5,1` has a separate right-to-left closed-door return lane from `route_5_1_red_door_entry` to `route_5_1_red_door_exit`; it is used only by the closed red door path from room `6,1`.
-- Room `6,1` uses jump points on the left side to climb toward the red door: `(0,19) -> (4,17) -> (5,14) -> (1,12) -> (8,11)`.
-- `route_6_1_red_door_left` always points down-left to `route_6_1_red_door_fall` at `(1,19)`, then to the dedicated `route_6_1_red_door_exit` at `(0,19)`, so enemies fall from the door area and leave toward the separate room `5,1` return lane.
+- Room `5,1` right edge `route_5_1_right_exit` and room `6,1` left edge `route_6_1_left_entry` are paired exit points.
+- Room `5,1` no longer has a separate red-door return lane; its points stay on the main `Y=1` chain.
+- Room `6,1` is a terminal edge room: `route_6_1_left_entry` at `(0,19)` leads to `route_6_1_left_inner` at `(1,19)`, then returns to the paired `5,1` exit.
+- Room `6,1` no longer has jump points that climb toward the red door.
 - Applying the red card opens the door visually but no longer rewires enemy route points; enemies do not go behind the red door.
 - Rooms `6,2` and `6,3` currently have no enemy route points.
-- Applying the screwdriver still starts generator/elevator effects, but it does not unlock an enemy route branch in room `6,3`.
+- Applying the screwdriver starts generator/elevator effects and unlocks the room `4,1` hatch-screen wait branch, but it does not unlock an enemy route branch in room `6,3`.
 
 ## Spacing Notes
 

@@ -24,8 +24,7 @@ action
                             ld	e,3
                             ld	hl,item_animation
                             call	animate.start
-                            ld	a,1
-                            ld	(logic.room_6_1.red_door_opened),a
+                            call	apply_effect
                             call	hero.delete_item_in_pocket
 
                             ld	a,255
@@ -33,6 +32,12 @@ action
 redcard_false
                             xor	a
                             ret
+
+apply_effect
+                            ld	a,1
+                            ld	(logic.room_6_1.red_door_opened),a
+                            ret
+
 item_animation
                             @animation	{
                             6       ;frames

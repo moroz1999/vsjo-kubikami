@@ -27,8 +27,7 @@ action
                             ld	e,18
                             ld	hl,item_animation
                             call	animate.start
-                            ld	a,1
-                            ld	(logic.room_4_1.hatch_opened),a
+                            call	apply_effect
                             call	hero.delete_item_in_pocket
 
                             ld	a,255
@@ -36,6 +35,12 @@ action
 key_false
                             xor	a
                             ret
+
+apply_effect
+                            ld	a,1
+                            ld	(logic.room_4_1.hatch_opened),a
+                            ret
+
 item_animation
                             @animation	{
                             2       ;frames

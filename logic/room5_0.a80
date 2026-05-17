@@ -4,8 +4,8 @@ on_enter
                             or	a
                             ret	z
 
-                            ld	d,14
-                            ld	e,17
+                            ld	d,18
+                            ld	e,8
                             ld	hl,logic.seeds.item_animation
                             call	animate.patch_last_frame
                             ret

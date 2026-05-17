@@ -24,22 +24,37 @@
 
 - The red card is used in room `6,1` when the hero stands at `y=11` and `x=8..12`.
 - Using it opens the red door, starts the door animation, removes the item from the pocket, and does not change enemy route points.
-- Enemies keep using the fall-and-exit lane from `route_6_1_red_door_left`; they do not go behind the red door after the card is applied.
+- Enemies keep using the terminal `route_6_1_left_entry`/`route_6_1_left_inner` edge route; they do not go behind the red door after the card is applied.
 
 ## Screwdriver
 
 - The screwdriver is used in room `6,3` when the hero stands between `x=11` and `x=12` at `y=20`.
-- Using it repairs the generator, switches the generator-related room animations on, starts the `6,3` elevator upward, starts the three `4,1` elevators upward, and removes the item from the pocket.
-- Using it does not change enemy route points.
-- Room `4,1` keeps its normal `jump_right` route across the blocked floor gap.
+- Using it repairs the generator, switches the generator-related room animations on, starts the `6,3` elevator upward, starts the three `4,1` elevators upward, enables the room `4,1` wait branch, and removes the item from the pocket.
+- The enemy route effect is `logic.room_4_1.activate_elevator_wait_route`: it enables `route_4_1_left_mid.alternative_point_ptr = route_4_1_elevator_wait`.
+- Room `4,1` keeps its normal `jump_right` route across the blocked floor gap, while the optional wait branch rides the hatch-screen elevator instead of using upward air points.
 - Room `6,3` has no screwdriver-unlocked enemy route branch.
 - Room `5,1` has no screwdriver-unlocked route branch; its bottom route stays connected to room `6,1`.
+
+## Handle
+
+- The handle is used in room `4,0` when the hero stands at `y=20` and `x=1..4`.
+- Using it opens the balcony door at `(0,15)` with a four-frame screen animation and sets `logic.room_4_0.handle_used`.
+- The final balcony-door patch is passable sky/gray art, so room `4,0` can restore and collide from `rooms.current_room_buf` after the door is open.
+
+## Seeds
+
+- The seeds are used in room `5,0` when the hero stands at `y=14` and `x=18..24`.
+- Using them grows a flower above the pot at `(18,8)` with a four-frame screen animation and sets `logic.room_5_0.seeds_grown`.
+- The final flower is `8x5`: its gray stem column is passable and reaches each leaf row, while its fewer wide green leaves are solid climb steps.
 
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
 - `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
-- Each enabled flag applies route/elevator/animation state where the item unlocks movement, sets the matching room/effect flag for persistent art, and removes the consumed item from `items.all_items`. Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
+- Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
+- Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
+- Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
+- Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
 - Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `0`, generator started `0`, and stairs unfolded `0`.
 
 ## Persistent Room Art

@@ -4,92 +4,20 @@ route_6_1_left_entry
                             1,                  ; room_y
                             0,                  ; x
                             19,                 ; y
-                            route_point_normal, ; type
-                            route_5_1_right_exit, ; top-left point
-                            route_6_1_left_jump_low, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_left_jump_low
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            0,                  ; x
-                            19,                 ; y
-                            route_point_jump_right, ; type
-                            route_6_1_left_entry, ; top-left point
-                            route_6_1_left_ledge_low, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_left_ledge_low
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            4,                  ; x
-                            17,                 ; y
-                            route_point_jump_right, ; type
-                            route_6_1_left_jump_low, ; top-left point
-                            route_6_1_left_ledge_mid, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_left_ledge_mid
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            5,                  ; x
-                            14,                 ; y
-                            route_point_jump_left, ; type
-                            route_6_1_left_ledge_low, ; top-left point
-                            route_6_1_left_ledge_high, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_left_ledge_high
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            1,                  ; x
-                            12,                 ; y
-                            route_point_jump_right, ; type
-                            route_6_1_left_ledge_mid, ; top-left point
-                            route_6_1_red_door_left, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_red_door_left
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            8,                  ; x
-                            11,                 ; y
-                            route_point_normal, ; type
-                            route_6_1_left_ledge_high, ; top-left point
-                            route_6_1_red_door_fall, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_red_door_fall
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            1,                  ; x
-                            19,                 ; y
-                            route_point_normal, ; type
-                            route_6_1_red_door_left, ; top-left point
-                            route_6_1_red_door_exit, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_6_1_red_door_exit
-                            route_point	{
-                            6,                  ; room_x
-                            1,                  ; room_y
-                            0,                  ; x
-                            19,                 ; y
                             route_point_exit,   ; type
-                            route_6_1_red_door_fall, ; top-left point
-                            route_5_1_red_door_entry, ; bottom-right point
+                            route_5_1_right_exit, ; top-left point
+                            route_6_1_left_inner, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
+route_6_1_left_inner
+                            route_point	{
+                            6,                  ; room_x
+                            1,                  ; room_y
+                            1,                  ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_6_1_left_entry, ; top-left point
+                            route_6_1_left_entry, ; bottom-right point
                             0                   ; alternative point
                             }

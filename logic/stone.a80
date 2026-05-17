@@ -19,16 +19,21 @@ action
                             ld	e,12
                             ld	hl,stone_anim
                             call	animate.start
-                            ld	a,1
-                            ld	(logic.room_1_1.glass_broken),a
+                            call	apply_effect
                             call	hero.delete_item_in_pocket
-                            call	logic.room_1_1.activate_glass_route
 
                             ld	a,255
                             ret
 stone_false
                             xor	a
                             ret
+
+apply_effect
+                            ld	a,1
+                            ld	(logic.room_1_1.glass_broken),a
+                            call	logic.room_1_1.activate_glass_route
+                            ret
+
 stone_anim
                             @animation	{
                             2       ;frames

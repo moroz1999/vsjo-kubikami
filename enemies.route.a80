@@ -54,6 +54,8 @@ route_points_table
                             dw	route_4_1_left_entry
                             dw	route_4_1_left_mid
                             dw	route_4_1_left_jump
+                            dw	route_4_1_elevator_wait
+                            dw	route_4_1_elevator_top
                             dw	route_4_1_right_mid
                             dw	route_4_1_right_exit
                             dw	route_4_2_top_landing
@@ -67,19 +69,8 @@ route_points_table
                             dw	route_5_1_bottom_fork
                             dw	route_5_1_bottom_right
                             dw	route_5_1_right_exit
-                            dw	route_5_1_red_door_entry
-                            dw	route_5_1_red_door_mid_right
-                            dw	route_5_1_red_door_mid_left
-                            dw	route_5_1_red_door_left
-                            dw	route_5_1_red_door_exit
                             dw	route_6_1_left_entry
-                            dw	route_6_1_left_jump_low
-                            dw	route_6_1_left_ledge_low
-                            dw	route_6_1_left_ledge_mid
-                            dw	route_6_1_left_ledge_high
-                            dw	route_6_1_red_door_left
-                            dw	route_6_1_red_door_fall
-                            dw	route_6_1_red_door_exit
+                            dw	route_6_1_left_inner
 route_points_table_end
 
                             include	"enemies.route_0_0.a80"

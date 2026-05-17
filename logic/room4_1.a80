@@ -1,4 +1,12 @@
                         module	room_4_1
+activate_elevator_wait_route
+                            ld	hl,enemies.route_4_1_left_mid+enemies.route_point.alternative_point_ptr
+                            ld	de,enemies.route_4_1_elevator_wait
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+
 on_enter
                             ld	a,(hatch_opened)
                             or	a
