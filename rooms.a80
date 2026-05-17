@@ -52,16 +52,30 @@ init_current_room
 
 							ret
 copy_current_room
-                ; Copy immutable room data into the mutable current-room buffer
+                ; Unpack immutable room data into the mutable current-room buffer
 							call	get_current_room_address
 							ld	(current_room_source_address),hl
 							ld	de,current_room_buf
-							ld	bc,room_size
-							ldir
+							call	unpack_current_room
 
 							ld	hl,current_room_buf
 							ld	(current_room_address),hl
 							ret
+unpack_current_room
+							ld	a,(hl)
+							inc	hl
+							or	a
+							ret	z
+
+							ld	b,a
+							ld	a,(hl)
+							inc	hl
+
+unpack_current_room_run
+							ld	(de),a
+							inc	de
+							djnz	unpack_current_room_run
+							jr	unpack_current_room
 redraw_current_room
 							ld	hl,(current_room_address)
 							ld	de,screen_utils.attrs
