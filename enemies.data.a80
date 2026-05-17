@@ -66,6 +66,6 @@ enemy_2
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
                             route_3_1_right_exit, ; last route point
-                            route_3_1_right_far, ; target route point
+                            route_3_1_right_jump_left, ; target route point
                             offline_route_point_delay ; offline route timer
                             }

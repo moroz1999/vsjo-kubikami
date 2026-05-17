@@ -33,23 +33,21 @@ route_points_table
                             dw	route_2_1_left_entry
                             dw	route_2_1_left_mid
                             dw	route_2_1_right_entry
+                            dw	route_2_1_right_top_entry
                             dw	route_2_1_right_mid
                             dw	route_2_1_elevator_jump_left
                             dw	route_3_0_left_entry
                             dw	route_3_0_left_drop
                             dw	route_3_1_top_entry
-                            dw	route_3_1_drop_mid
-                            dw	route_3_1_drop_turn
-                            dw	route_3_1_drop_low
-                            dw	route_3_1_drop_landing
+                            dw	route_3_1_ledge_fork
+                            dw	route_3_1_top_left_exit
                             dw	route_3_1_bottom_fork
                             dw	route_3_1_left_exit
+                            dw	route_3_1_before_hole_fork
                             dw	route_3_1_bottom_jump_right
                             dw	route_3_1_elevator_wait
                             dw	route_3_1_elevator_top_jump_left
                             dw	route_3_1_right_jump_left
-                            dw	route_3_1_right_mid
-                            dw	route_3_1_right_far
                             dw	route_3_1_right_exit
                             dw	route_4_1_left_entry
                             dw	route_4_1_left_mid

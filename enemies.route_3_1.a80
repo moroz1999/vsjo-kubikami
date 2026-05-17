@@ -6,55 +6,31 @@ route_3_1_top_entry
                             0,                  ; y
                             route_point_normal, ; type
                             route_3_0_left_drop, ; top-left point
-                            route_3_1_drop_mid, ; bottom-right point
+                            route_3_1_ledge_fork, ; bottom-right point
                             0                   ; alternative point
                             }
 
-route_3_1_drop_mid
+route_3_1_ledge_fork
                             route_point	{
                             3,                  ; room_x
                             1,                  ; room_y
                             2,                  ; x
                             7,                  ; y
                             route_point_normal, ; type
-                            route_3_1_top_entry, ; top-left point
-                            route_3_1_drop_turn, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_3_1_drop_turn
-                            route_point	{
-                            3,                  ; room_x
-                            1,                  ; room_y
-                            3,                  ; x
-                            8,                  ; y
-                            route_point_normal, ; type
-                            route_3_1_drop_mid, ; top-left point
-                            route_3_1_drop_low, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_3_1_drop_low
-                            route_point	{
-                            3,                  ; room_x
-                            1,                  ; room_y
-                            3,                  ; x
-                            14,                 ; y
-                            route_point_normal, ; type
-                            route_3_1_drop_turn, ; top-left point
-                            route_3_1_drop_landing, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_3_1_drop_landing
-                            route_point	{
-                            3,                  ; room_x
-                            1,                  ; room_y
-                            3,                  ; x
-                            19,                 ; y
-                            route_point_normal, ; type
-                            route_3_1_drop_low, ; top-left point
+                            route_3_1_top_left_exit, ; top-left point
                             route_3_1_bottom_fork, ; bottom-right point
+                            route_3_1_top_left_exit ; alternative point
+                            }
+
+route_3_1_top_left_exit
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            0,                  ; x
+                            7,                  ; y
+                            route_point_exit,   ; type
+                            route_3_1_ledge_fork, ; top-left point
+                            route_2_1_right_top_entry, ; bottom-right point
                             0                   ; alternative point
                             }
 
@@ -65,9 +41,9 @@ route_3_1_bottom_fork
                             7,                  ; x
                             19,                 ; y
                             route_point_normal, ; type
-                            route_3_1_drop_landing, ; top-left point
-                            route_3_1_bottom_jump_right, ; bottom-right point
-                            route_3_1_elevator_wait ; alternative point
+                            route_3_1_left_exit, ; top-left point
+                            route_3_1_before_hole_fork, ; bottom-right point
+                            route_3_1_left_exit ; alternative point
                             }
 
 route_3_1_left_exit
@@ -77,9 +53,21 @@ route_3_1_left_exit
                             0,                  ; x
                             19,                 ; y
                             route_point_exit,   ; type
-                            route_3_1_elevator_top_jump_left, ; top-left point
+                            route_3_1_bottom_fork, ; top-left point
                             route_2_1_right_entry, ; bottom-right point
                             0                   ; alternative point
+                            }
+
+route_3_1_before_hole_fork
+                            route_point	{
+                            3,                  ; room_x
+                            1,                  ; room_y
+                            11,                 ; x
+                            19,                 ; y
+                            route_point_normal, ; type
+                            route_3_1_bottom_fork, ; top-left point
+                            route_3_1_bottom_jump_right, ; bottom-right point
+                            route_3_1_elevator_wait ; alternative point
                             }
 
 route_3_1_bottom_jump_right
@@ -89,8 +77,8 @@ route_3_1_bottom_jump_right
                             12,                 ; x
                             19,                 ; y
                             route_point_jump_right, ; type
-                            route_3_1_bottom_fork, ; top-left point
-                            route_3_1_right_mid, ; bottom-right point
+                            route_3_1_before_hole_fork, ; top-left point
+                            route_3_1_right_exit, ; bottom-right point
                             0                   ; alternative point
                             }
 
@@ -101,7 +89,7 @@ route_3_1_elevator_wait
                             4,                  ; x
                             19,                 ; y
                             route_point_wait,   ; type
-                            route_3_1_bottom_fork, ; top-left point
+                            route_3_1_before_hole_fork, ; top-left point
                             route_3_1_elevator_top_jump_left, ; bottom-right point
                             0                   ; alternative point
                             }
@@ -114,7 +102,7 @@ route_3_1_elevator_top_jump_left
                             7,                  ; y
                             route_point_jump_left, ; type
                             route_3_1_elevator_wait, ; top-left point
-                            route_3_1_left_exit, ; bottom-right point
+                            route_3_1_top_left_exit, ; bottom-right point
                             0                   ; alternative point
                             }
 
@@ -126,30 +114,6 @@ route_3_1_right_jump_left
                             19,                 ; y
                             route_point_jump_left, ; type
                             route_3_1_bottom_fork, ; top-left point
-                            route_3_1_right_mid, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_3_1_right_mid
-                            route_point	{
-                            3,                  ; room_x
-                            1,                  ; room_y
-                            20,                 ; x
-                            19,                 ; y
-                            route_point_normal, ; type
-                            route_3_1_right_jump_left, ; top-left point
-                            route_3_1_right_far, ; bottom-right point
-                            0                   ; alternative point
-                            }
-
-route_3_1_right_far
-                            route_point	{
-                            3,                  ; room_x
-                            1,                  ; room_y
-                            26,                 ; x
-                            19,                 ; y
-                            route_point_normal, ; type
-                            route_3_1_right_mid, ; top-left point
                             route_3_1_right_exit, ; bottom-right point
                             0                   ; alternative point
                             }
@@ -161,7 +125,7 @@ route_3_1_right_exit
                             31,                 ; x
                             19,                 ; y
                             route_point_exit,   ; type
-                            route_3_1_right_far, ; top-left point
+                            route_3_1_right_jump_left, ; top-left point
                             route_4_1_left_entry, ; bottom-right point
                             0                   ; alternative point
                             }

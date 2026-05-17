@@ -38,20 +38,22 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Room `2,1` can show the stopped `elevator_2_3` platform from below; its top sits at local `y=20`, so riders stand at `y=19`.
 - Room `1,1` right entry `(31,19)` and room `2,1` left entry `(0,19)` are paired exit points.
 - Room `2,1` right entry `(31,19)` and room `3,1` left exit `(0,19)` are paired exit points.
+- Room `2,1` upper-right cave entry `(31,7)` and room `3,1` upper-left ledge exit `(0,7)` are paired exit points.
+- The upper-right cave entry in room `2,1` is currently a terminal paired exit point; both direct links return to room `3,1`.
 - The right and left route segments are connected through the elevator lane as `(31,19) -> (24,19) -> (20,19 jump left) -> (7,19) -> (0,19)`.
 - `route_2_1_elevator_jump_left` at `(20,19)` is the top dismount jump toward the left route segment.
 
 ## Room 3,1 Split
 
-- Room `3,1` routes from the top edge `(2,0)` down through `(2,7)`, then shifts to the clear column `(3,8) -> (3,14) -> (3,19)` before entering the bottom split at `(7,19)`.
-- The debug route enemy starts at `route_3_1_right_exit` `(31,19)` and targets `route_3_1_right_far`, so it moves right-to-left first.
-- `route_3_1_bottom_fork.alternative_point_ptr` is enabled and points to `route_3_1_elevator_wait`, so the split can choose the right branch or the elevator branch 50/50.
-- `route_3_1_elevator_wait` at `(4,19)` is a `route_point_wait` point on the elevator's left edge. It targets `route_3_1_elevator_top_jump_left` at `(4,7)` and waits for elevator motion instead of flying upward.
-- `route_3_1_elevator_top_jump_left` starts the left dismount jump toward `route_3_1_left_exit`, which exits into `route_2_1_right_entry`.
-- The left edge of the floor break has only `route_3_1_bottom_jump_right` at `(12,19)`, so enemies reaching that edge start a right jump instead of falling into the break.
-- The right edge of the floor break has `route_3_1_right_jump_left` at `(14,19)` for the return jump.
-- The two break-edge jump points are not linked to each other directly. Each jump targets a normal route point on the opposite side, so route selection can resume before another jump is considered.
-- The right floor route continues through `(20,19)` and `(26,19)` before the right edge exit at `(31,19)`.
+- Room `3,1` routes from the top edge `(2,0)` down to the left ledge fork at `(2,7)`.
+- The ledge fork can exit left into room `2,1` through `(0,7)` or drop right toward the ground fork at `(7,19)`.
+- The ground fork can exit left into room `2,1` through `(0,19)` or continue right to the pre-hole fork at `(11,19)`.
+- The pre-hole fork can continue to the right-jump point at `(12,19)` or branch left to `route_3_1_elevator_wait` at `(4,19)`.
+- `route_3_1_elevator_wait` targets `route_3_1_elevator_top_jump_left` at `(4,7)` and waits for elevator motion instead of flying upward.
+- `route_3_1_elevator_top_jump_left` starts the left dismount jump toward the upper-left ledge exit.
+- The right side of the floor break has only `route_3_1_right_jump_left` at `(14,19)` and `route_3_1_right_exit` at `(31,19)`.
+- The debug route enemy starts at `route_3_1_right_exit` `(31,19)` and targets `route_3_1_right_jump_left`, so it moves right-to-left first.
+- The ledge and ground forks duplicate their left exits in `alternative_point_ptr` so one-way arrivals from a fall or drop still choose between the left exit and the right continuation 50/50 without adding filler points.
 
 ## Room 4,1 Generator Route
 

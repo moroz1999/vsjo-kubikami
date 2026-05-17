@@ -34,6 +34,18 @@ route_2_1_right_entry
                             0                   ; alternative point
                             }
 
+route_2_1_right_top_entry
+                            route_point	{
+                            2,                  ; room_x
+                            1,                  ; room_y
+                            31,                 ; x
+                            7,                  ; y
+                            route_point_exit,   ; type
+                            route_3_1_top_left_exit, ; top-left point
+                            route_3_1_top_left_exit, ; bottom-right point
+                            0                   ; alternative point
+                            }
+
 route_2_1_right_mid
                             route_point	{
                             2,                  ; room_x
