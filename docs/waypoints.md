@@ -68,6 +68,13 @@ route_point_wait
 
 - Room-specific route graph decisions and item-driven rewires are documented in [Route Point Logic](route-points.logic.md).
 
+## Authoring Tools
+
+- `tools/map-viewer/routes.json` can be used as a JSON route point source for the browser map viewer and asm generation.
+- Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files.
+- Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/`; use `--project` only when intentionally replacing the root route asm files.
+- `compile.bat` regenerates the project route asm from `tools/map-viewer/routes.json` before assembling the game.
+
 ## Movement References
 
 - Online route movement is documented in [Enemies Online Movement](enemies.online.md).

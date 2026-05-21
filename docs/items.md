@@ -24,7 +24,7 @@
 
 - The red card is used in room `6,1` when the hero stands at `y=11` and `x=8..12`.
 - Using it opens the red door, starts the door animation, removes the item from the pocket, and does not change enemy route points.
-- Enemies keep using the terminal `route_6_1_left_entry`/`route_6_1_left_inner` edge route; they do not go behind the red door after the card is applied.
+- Enemies can climb from `route_6_1_left_entry` to the red-door approach at `(8,11)`, then fall to `route_6_1_left_return_entry` and leave back to `5,1`; they do not go behind the red door after the card is applied.
 
 ## Screwdriver
 

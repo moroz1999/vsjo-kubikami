@@ -51,21 +51,21 @@ enemy_1
 
 enemy_2
                             enemy	{
-                            3,                  ; start room column
+                            6,                  ; start room column
                             1,                  ; start room row
-                            31,                 ; start cell column
+                            0,                  ; start cell column
                             19,                 ; start cell row
                             state_route,        ; follows route points
                             0,                  ; no behavior reroll while routing
                             0,                  ; no behavior timer while routing
-                            direction_left,     ; initial route direction
+                            direction_right,    ; initial route direction
                             8,                  ; route step pacing
                             8,                  ; first route step delay
                             0,                  ; can fall immediately
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
-                            route_3_1_right_exit, ; last route point
-                            route_3_1_right_jump_left, ; target route point
+                            route_5_1_right_entry, ; last route point
+                            route_6_1_left_entry, ; target route point
                             offline_route_point_delay ; offline route timer
                             }

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Route Map Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="routes-data.js"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <main class="app-shell">
+        <section class="map-pane" aria-label="Game route map">
+            <header class="topbar">
+                <div>
+                    <h1>Route Map</h1>
+                    <p id="summary">Loading data...</p>
+                </div>
+                <button id="clear-selection" type="button">Clear</button>
+            </header>
+            <div class="map-wrap">
+                <svg id="map" role="img" aria-label="Rooms and route points"></svg>
+            </div>
+        </section>
+
+        <aside class="side-pane" aria-label="Route point data">
+            <section class="details-panel" aria-live="polite">
+                <h2>Selected Point</h2>
+                <div id="point-details" class="empty-state">No point selected.</div>
+            </section>
+
+            <section>
+                <h2>Rooms</h2>
+                <div id="room-list" class="room-list"></div>
+            </section>
+
+            <section>
+                <h2>Points</h2>
+                <div id="point-list" class="point-list"></div>
+            </section>
+        </aside>
+    </main>
+</body>
+</html>
