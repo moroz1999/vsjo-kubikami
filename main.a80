@@ -26,6 +26,7 @@ start                       equ	#6000
                             include	"items.a80"
                             include	"print.a80"
                             include	"functions.a80"
+                            include	"dzx0_turbo.asm"
                             include	"rooms.a80"
                             include	"strings.a80"
                             include	"game_ui.a80"
