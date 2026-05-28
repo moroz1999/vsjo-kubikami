@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "generatedAt": "2026-05-21T16:59:26.532Z",
+    "generatedAt": "2026-05-22T19:50:39+00:00",
     "source": {
         "rooms": "rooms.a80",
         "roomsDir": "rooms_unpacked",
@@ -278,6 +278,14 @@
         "route_0_1_right_mid",
         "route_0_1_mid",
         "route_0_1_left_mid",
+        "route_0_1_bottom_entry",
+        "route_0_2_top_entry",
+        "route_0_2_upper_left",
+        "route_0_2_mid_left",
+        "route_0_2_lower_left",
+        "route_0_2_lower_right",
+        "route_0_2_mid_right",
+        "route_0_2_upper_right",
         "route_1_0_left_entry",
         "route_1_0_arch",
         "route_1_0_lower_walk",
@@ -346,6 +354,7 @@
     "includeFiles": [
         "enemies.route_0_0.a80",
         "enemies.route_0_1.a80",
+        "enemies.route_0_2.a80",
         "enemies.route_1_0.a80",
         "enemies.route_1_1.a80",
         "enemies.route_2_0.a80",
@@ -485,10 +494,114 @@
             "y": 19,
             "type": "normal",
             "topLeft": "route_0_1_mid",
-            "bottomRight": "route_0_1_mid",
+            "bottomRight": "route_0_1_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_0_1.a80",
             "sourceLine": 37
+        },
+        {
+            "id": "route_0_1_bottom_entry",
+            "roomX": 0,
+            "roomY": 1,
+            "x": 4,
+            "y": 21,
+            "type": "exit",
+            "topLeft": "route_0_1_left_mid",
+            "bottomRight": "route_0_2_top_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_1.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_0_2_top_entry",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 4,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_0_1_bottom_entry",
+            "bottomRight": "route_0_2_upper_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_0_2_upper_left",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 5,
+            "y": 3,
+            "type": "normal",
+            "topLeft": "route_0_2_top_entry",
+            "bottomRight": "route_0_2_mid_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_0_2_mid_left",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 3,
+            "y": 11,
+            "type": "normal",
+            "topLeft": "route_0_2_upper_left",
+            "bottomRight": "route_0_2_lower_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_0_2_lower_left",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 11,
+            "y": 18,
+            "type": "normal",
+            "topLeft": "route_0_2_mid_left",
+            "bottomRight": "route_0_2_lower_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_0_2_lower_right",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 26,
+            "y": 17,
+            "type": "normal",
+            "topLeft": "route_0_2_lower_left",
+            "bottomRight": "route_0_2_mid_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_0_2_mid_right",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 27,
+            "y": 10,
+            "type": "normal",
+            "topLeft": "route_0_2_lower_right",
+            "bottomRight": "route_0_2_upper_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 61
+        },
+        {
+            "id": "route_0_2_upper_right",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 26,
+            "y": 4,
+            "type": "normal",
+            "topLeft": "route_0_2_mid_right",
+            "bottomRight": "route_0_2_top_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 73
         },
         {
             "id": "route_1_0_left_entry",
@@ -605,7 +718,7 @@
             "bottomRight": "route_2_1_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_1_1.a80",
-            "sourceLine": 74
+            "sourceLine": 49
         },
         {
             "id": "route_1_1_right_mid",
@@ -618,7 +731,7 @@
             "bottomRight": "route_1_1_right_entry",
             "alternative": null,
             "sourceFile": "enemies.route_1_1.a80",
-            "sourceLine": 63
+            "sourceLine": 61
         },
         {
             "id": "route_1_1_right_jump_left",
@@ -631,7 +744,7 @@
             "bottomRight": "route_1_1_right_mid",
             "alternative": null,
             "sourceFile": "enemies.route_1_1.a80",
-            "sourceLine": 51
+            "sourceLine": 73
         },
         {
             "id": "route_2_0_left_entry",

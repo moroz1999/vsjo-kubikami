@@ -6,8 +6,12 @@
 - Enemy movement pacing is controlled by enemy-local movement delay and movement timer fields.
 - Route-following is a separate behavior model from free roaming; route followers do not use random standing/walking choices while following a route.
 - Online route followers move physically toward the current target and use the regular enemy walking, obstacle, falling, and jump behavior while doing so.
-- When a route target has the same `x` and a lower `y`, the route follower uses normal gravity instead of route-specific downward movement.
-- Route followers do not self-propel upward toward route targets. A target above the same `x` must be reached by a jump, an elevator, or another external position change.
+- Outside water, when a route target has the same `x` and a lower `y`, the route follower uses normal gravity instead of route-specific downward movement.
+- Outside water, route followers do not self-propel upward toward route targets. A target above the same `x` must be reached by a jump, an elevator, or another external position change.
+- While occupying a water cell, online enemies use swimming gravity instead of entering the normal falling state.
+- Swimming enemies sink after `swim_delay` frames, matching the hero's water gravity delay.
+- While submerged, route followers can swim vertically toward a same-`x` route target.
+- Route-following swim gravity is suppressed while the current target is horizontally offset or above the enemy; this keeps horizontal and upward swim routes from being pulled downward between route steps.
 - `route_point_wait` points keep route-following active while the enemy stands on an elevator lane and waits for the next target to become reachable.
 
 ## Route Movement
@@ -15,14 +19,16 @@
 - Online route followers treat a route point as reached only when the enemy's room-local position matches the point.
 - Online route followers move physically only while the selected target belongs to the enemy's current room.
 - When the target `x` differs, horizontal movement takes priority. The route follower sets direction toward the target and uses the normal `move_enemy_left` or `move_enemy_right` path.
-- When the target `x` matches and the target is above, the route follower waits instead of flying upward.
-- When the target `x` matches and the target is below, the route follower lets gravity move it down.
+- When the target `x` matches and the target is above, the route follower waits in air and swims upward in water.
+- When the target `x` matches and the target is below, the route follower lets gravity move it down in air and swims downward in water.
 - Online route followers choose the direct neighbor opposite to `last_route_point_ptr`.
 - If the previous point matches neither direct link, online route followers use `bottom_right_point_ptr`.
 - If the reached point has an enabled `alternative_point_ptr`, online route followers choose 50/50 between the direct neighbor and the alternative branch.
 - Online route followers advance their target before gravity is applied; gravity itself does not choose route targets.
+- Online route followers do not advance route targets while `state_jump` is active; jump targets are processed after the arc ends and routing resumes.
 - Route-following enemies return to route-following behavior after fall or jump physics while they still have a route target.
-- Online route followers start a left or right jump immediately after reaching a `route_point_jump_left` or `route_point_jump_right` point.
+- Online route followers wait `route_jump_delay_frames` frames after reaching a `route_point_jump_left` or `route_point_jump_right` point, then start the selected jump.
+- Pending route-jump delay suppresses fall-state checks so edge jump points can wind up before the arc starts.
 - Online route followers step diagonally down on a one-cell ledge and fall from deeper drops; they do not choose jumping or turning back at that ledge.
 - Falling route followers still check whether they reached their current route point, so gravity-driven shaft drops can advance through intermediate route points.
 - Online enemies that reach or stand on the bottom screen edge move to the same `x` at `y=0` in the room below and become offline.

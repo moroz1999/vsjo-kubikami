@@ -11,6 +11,14 @@ route_points_table
                             dw	route_0_1_right_mid
                             dw	route_0_1_mid
                             dw	route_0_1_left_mid
+                            dw	route_0_1_bottom_entry
+                            dw	route_0_2_top_entry
+                            dw	route_0_2_upper_left
+                            dw	route_0_2_mid_left
+                            dw	route_0_2_lower_left
+                            dw	route_0_2_lower_right
+                            dw	route_0_2_mid_right
+                            dw	route_0_2_upper_right
                             dw	route_1_0_left_entry
                             dw	route_1_0_arch
                             dw	route_1_0_lower_walk
@@ -79,6 +87,7 @@ route_points_table_end
 
                             include	"enemies.route_0_0.a80"
                             include	"enemies.route_0_1.a80"
+                            include	"enemies.route_0_2.a80"
                             include	"enemies.route_1_0.a80"
                             include	"enemies.route_1_1.a80"
                             include	"enemies.route_2_0.a80"
@@ -160,11 +169,25 @@ move_route_enemy
                             cp	state_route
                             ret	nz
 
+                            ld	a,(ix+enemy.jump_phase_delay)
+                            or	a
+                            jr	nz,move_route_enemy_jump_delay
+
                             ld	a,(ix+enemy.move_timer)
                             or	a
                             jr	z,move_route_enemy_step
                             dec	a
                             ld	(ix+enemy.move_timer),a
+                            ret
+
+move_route_enemy_jump_delay
+                            dec	a
+                            ld	(ix+enemy.jump_phase_delay),a
+                            jr	z,move_route_enemy_jump_start
+                            ret
+
+move_route_enemy_jump_start
+                            call	start_enemy_jump
                             ret
 
 move_route_enemy_step
@@ -175,6 +198,10 @@ move_route_enemy_step
                             ret
 
 advance_online_route_target_if_reached
+                            ld	a,(ix+enemy.state)
+                            cp	state_jump
+                            ret	z
+
                             call	is_target_route_point_reached
                             ret	nz
 
@@ -207,7 +234,28 @@ move_route_step_right
                             jp	move_enemy_right
 
 move_route_step_vertical
-                ; Route followers wait for gravity, jumps, or elevators to change height.
+                ; Route followers can swim vertically only while submerged.
+                            inc	hl
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            ret	z
+
+                            push	hl
+                            call	is_enemy_in_water
+                            pop	hl
+                            jr	nz,move_route_step_wait_vertical
+
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            jr	c,move_route_step_swim_down
+
+                            jp	swim_enemy_up
+
+move_route_step_swim_down
+                            jp	swim_enemy_down
+
+move_route_step_wait_vertical
+                ; In air, route followers wait for gravity, jumps, or elevators.
                             ret
 
 select_next_route_point
@@ -253,7 +301,8 @@ select_next_route_point_jump
                             pop	hl
                             call	select_next_route_target_from_point
                             call	select_jump_direction_to_target
-                            call	start_enemy_jump
+                            ld	a,route_jump_delay_frames
+                            ld	(ix+enemy.jump_phase_delay),a
                             ret
 
 select_next_route_point_exit

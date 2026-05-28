@@ -40,6 +40,10 @@ move_next_after_fall_state
 move_next_apply
                             call	move_enemy
 
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
+                            call	z,apply_enemy_swim_gravity
+
 move_next_skip
                             ld	de,enemy_size
                             add	ix,de
@@ -52,6 +56,16 @@ update_fall_state
                             ld	a,(ix+enemy.state)
                             cp	state_jump
                             ret	z
+                            cp	state_route
+                            jr	nz,update_fall_state_check_floor
+
+                            ld	a,(ix+enemy.jump_phase_delay)
+                            or	a
+                            ret	nz
+
+update_fall_state_check_floor
+                            call	is_enemy_in_water
+                            jr	z,update_fall_state_swimming
 
                             call	check_floor_below
                             jr	z,update_fall_state_falling
@@ -68,6 +82,10 @@ update_fall_state
 update_fall_state_falling
                             ld	a,state_fall
                             ld	(ix+enemy.state),a
+                            ret
+
+update_fall_state_swimming
+                            call	restore_enemy_from_water
                             ret
 
 update_state_timer
@@ -246,11 +264,18 @@ handle_blocked_course
 
 maybe_turn_around_on_empty_floor
                 ; Edge handling starts after the down-side cell is known to be empty.
+                            call	is_enemy_in_water
+                            jr	z,maybe_turn_around_on_empty_floor_swim
+
                             push	de
                             call	check_floor_below_at_coords
                             jr	z,maybe_turn_around_on_empty_floor_edge
 
                             pop	de
+                            ret
+
+maybe_turn_around_on_empty_floor_swim
+                            or	1
                             ret
 
 maybe_turn_around_on_empty_floor_edge

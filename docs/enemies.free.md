@@ -9,6 +9,8 @@
 - Enemy random movement decisions mix the low bit of the Z80 `R` register into the enemy random sequence.
 - Standing enemies do not move.
 - Walking enemies move horizontally in their selected direction.
+- While occupying a water cell, walking enemies keep their horizontal movement behavior but skip dry ledge decisions.
+- Swimming gravity sinks walking enemies after `swim_delay` frames instead of switching them into the normal falling state.
 
 ## Walking
 

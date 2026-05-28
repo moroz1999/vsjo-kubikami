@@ -1,0 +1,111 @@
+is_enemy_in_water
+                ; Online enemies use the active room buffer for water checks.
+                            push	de
+
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            call	rooms.get_room_color
+                            cp	rooms.room_bg_color_wat
+
+                            pop	de
+                            ret
+
+restore_enemy_from_water
+                ; Water cancels air falling and returns to the enemy behavior model.
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            ret	nz
+
+                            jp	restore_route_or_walk
+
+apply_enemy_swim_gravity
+                ; Swimming enemies sink with the same delay as the hero.
+                            ld	a,(ix+enemy.state)
+                            cp	state_jump
+                            ret	z
+
+                            call	is_enemy_in_water
+                            ret	nz
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_route
+                            jr	nz,apply_enemy_swim_gravity_timer
+
+                            ld	a,(ix+enemy.jump_phase_delay)
+                            or	a
+                            ret	nz
+
+                            call	is_route_swim_gravity_enabled
+                            ret	nz
+
+apply_enemy_swim_gravity_timer
+                            ld	a,(ix+enemy.fall_timer)
+                            or	a
+                            jr	z,apply_enemy_swim_gravity_step
+                            dec	a
+                            ld	(ix+enemy.fall_timer),a
+                            ret
+
+apply_enemy_swim_gravity_step
+                            ld	a,swim_delay
+                            ld	(ix+enemy.fall_timer),a
+
+                            jp	swim_enemy_down
+
+is_route_swim_gravity_enabled
+                ; Route swimmers stay level while the target is horizontal or above.
+                            call	get_target_route_point
+                            jr	z,is_route_swim_gravity_enabled_allow
+
+                            push	hl
+                            ex	de,hl
+                            call	is_route_point_in_enemy_room
+                            pop	hl
+                            jr	nz,is_route_swim_gravity_enabled_block
+
+                            ld	de,route_point.x
+                            add	hl,de
+                            ld	a,(ix+enemy.x)
+                            cp	(hl)
+                            jr	nz,is_route_swim_gravity_enabled_block
+
+                            inc	hl
+                            ld	a,(ix+enemy.y)
+                            cp	(hl)
+                            jr	c,is_route_swim_gravity_enabled_allow
+
+is_route_swim_gravity_enabled_block
+                            or	1
+                            ret
+
+is_route_swim_gravity_enabled_allow
+                            xor	a
+                            ret
+
+swim_enemy_up
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            dec	e
+                            call	objects.check_coords
+                            cp	objects.roomedge_top
+                            jp	z,move_enemy_to_top_room
+                            cp	objects.b_empty
+                            ret	nz
+
+                            call	set_enemy_position
+
+                            ld	a,swim_delay
+                            ld	(ix+enemy.fall_timer),a
+                            ret
+
+swim_enemy_down
+                            ld	d,(ix+enemy.x)
+                            ld	e,(ix+enemy.y)
+                            inc	e
+                            call	objects.check_coords
+                            cp	objects.roomedge_bottom
+                            jp	z,move_enemy_to_bottom_room
+                            cp	objects.b_empty
+                            ret	nz
+
+                            jp	set_enemy_position
