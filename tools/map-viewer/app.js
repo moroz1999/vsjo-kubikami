@@ -316,18 +316,29 @@ function recomputeRelatedPoints() {
 }
 
 function applySelectionClasses() {
+    let selectedGroup = null;
+
     document.querySelectorAll(".point-group").forEach((group) => {
         const pointId = group.dataset.pointId;
         const point = pointsById.get(pointId);
-        group.classList.toggle("is-selected", pointId === selectedPointId);
+        const isSelected = pointId === selectedPointId;
+        group.classList.toggle("is-selected", isSelected);
         group.classList.toggle("is-related", isRelatedPoint(pointId));
 
         const marker = group.querySelector(".point");
-        marker.classList.toggle("is-selected", pointId === selectedPointId);
+        marker.classList.toggle("is-selected", isSelected);
         marker.classList.toggle("is-related", outgoingIds.has(pointId) || rewireIds.has(pointId));
         marker.classList.toggle("is-incoming", incomingIds.has(pointId));
         marker.classList.toggle("is-room-muted", selectedRoomId && roomId(point) !== selectedRoomId);
+
+        if (isSelected) {
+            selectedGroup = group;
+        }
     });
+
+    if (selectedGroup) {
+        selectedGroup.parentNode.append(selectedGroup);
+    }
 
     document.querySelectorAll("[data-point-id].list-button").forEach((button) => {
         const pointId = button.dataset.pointId;

@@ -279,7 +279,11 @@
         "route_0_1_mid",
         "route_0_1_left_mid",
         "route_0_1_bottom_entry",
+        "route_0_1_water_return_entry",
+        "route_0_1_water_jump_right",
         "route_0_2_top_entry",
+        "route_0_2_top_exit_approach",
+        "route_0_2_top_exit",
         "route_0_2_upper_left",
         "route_0_2_mid_left",
         "route_0_2_lower_left",
@@ -503,7 +507,7 @@
             "id": "route_0_1_bottom_entry",
             "roomX": 0,
             "roomY": 1,
-            "x": 4,
+            "x": 10,
             "y": 21,
             "type": "exit",
             "topLeft": "route_0_1_left_mid",
@@ -513,10 +517,36 @@
             "sourceLine": 49
         },
         {
+            "id": "route_0_1_water_return_entry",
+            "roomX": 0,
+            "roomY": 1,
+            "x": 6,
+            "y": 21,
+            "type": "normal",
+            "topLeft": "route_0_2_top_exit",
+            "bottomRight": "route_0_1_water_jump_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_1.a80",
+            "sourceLine": 61
+        },
+        {
+            "id": "route_0_1_water_jump_right",
+            "roomX": 0,
+            "roomY": 1,
+            "x": 6,
+            "y": 20,
+            "type": "jump_right",
+            "topLeft": "route_0_1_water_return_entry",
+            "bottomRight": "route_0_1_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_1.a80",
+            "sourceLine": 73
+        },
+        {
             "id": "route_0_2_top_entry",
             "roomX": 0,
             "roomY": 2,
-            "x": 4,
+            "x": 10,
             "y": 0,
             "type": "exit",
             "topLeft": "route_0_1_bottom_entry",
@@ -526,17 +556,43 @@
             "sourceLine": 1
         },
         {
-            "id": "route_0_2_upper_left",
+            "id": "route_0_2_top_exit_approach",
             "roomX": 0,
             "roomY": 2,
             "x": 5,
+            "y": 3,
+            "type": "normal",
+            "topLeft": "route_0_2_upper_right",
+            "bottomRight": "route_0_2_top_exit",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_0_2_top_exit",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 6,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_0_2_top_exit_approach",
+            "bottomRight": "route_0_1_water_return_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_0_2.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_0_2_upper_left",
+            "roomX": 0,
+            "roomY": 2,
+            "x": 4,
             "y": 3,
             "type": "normal",
             "topLeft": "route_0_2_top_entry",
             "bottomRight": "route_0_2_mid_left",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 13
+            "sourceLine": 37
         },
         {
             "id": "route_0_2_mid_left",
@@ -549,7 +605,7 @@
             "bottomRight": "route_0_2_lower_left",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 25
+            "sourceLine": 49
         },
         {
             "id": "route_0_2_lower_left",
@@ -562,7 +618,7 @@
             "bottomRight": "route_0_2_lower_right",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 37
+            "sourceLine": 61
         },
         {
             "id": "route_0_2_lower_right",
@@ -575,7 +631,7 @@
             "bottomRight": "route_0_2_mid_right",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 49
+            "sourceLine": 73
         },
         {
             "id": "route_0_2_mid_right",
@@ -588,7 +644,7 @@
             "bottomRight": "route_0_2_upper_right",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 61
+            "sourceLine": 85
         },
         {
             "id": "route_0_2_upper_right",
@@ -598,10 +654,10 @@
             "y": 4,
             "type": "normal",
             "topLeft": "route_0_2_mid_right",
-            "bottomRight": "route_0_2_top_entry",
+            "bottomRight": "route_0_2_top_exit_approach",
             "alternative": null,
             "sourceFile": "enemies.route_0_2.a80",
-            "sourceLine": 73
+            "sourceLine": 97
         },
         {
             "id": "route_1_0_left_entry",

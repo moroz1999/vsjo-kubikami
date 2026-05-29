@@ -6,7 +6,8 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 - The route starts in room `0,0` at `(4,9)`, continues through `(12,10)`, `(20,9)`, `(27,9)`, and the right edge `(31,5)`.
 - Room `0,0` also has a branch from `route_0_0_right` down through `(20,16)` before returning to the right edge `(31,5)`.
-- Room `0,1` connects its left-side route to the bottom entry `(4,21)`, paired with room `0,2` top entry `(4,0)`.
+- Room `0,1` connects its left-side route to the right-bank descent entry `(10,21)`, paired with room `0,2` top entry `(10,0)`.
+- Room `0,2` returns upward through `(6,0)`, paired with room `0,1` water return entry `(6,21)`.
 - Room `1,0` continues from `(0,5)` through `(10,3)`, `(20,13)`, and the right entry `(31,7)`.
 - Room `2,0` continues the default top path through `(0,7)`, `(8,7)`, `(17,7)`, and the top-right entry `(31,7)` to room `3,0`.
 - Room `3,0` continues from the room `2,0` top-right entry with a gravity-driven vertical fall route `(0,7) -> (2,21)`.
@@ -14,8 +15,13 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 ## Room 0,2 Water Loop
 
-- Room `0,2` starts from the top entry `(4,0)`, which is paired with room `0,1` bottom entry `(4,21)`.
-- The room `0,2` water route loops around the air-bubble sky pockets through `(5,3) -> (3,11) -> (11,18) -> (26,17) -> (27,10) -> (26,4) -> (4,0)`.
+- Room `0,2` starts from the top entry `(10,0)`, which is paired with room `0,1` bottom entry `(10,21)`.
+- The room `0,2` water route travels around the air-bubble sky pockets through `(4,3) -> (3,11) -> (11,18) -> (26,17) -> (27,10) -> (26,4) -> (5,3) -> (6,0)`.
+- Room `0,1` uses `route_0_1_bottom_entry` as the only right-bank descent point; enemies coming from `route_0_1_left_mid` dive from there into room `0,2`.
+- Room `0,2` uses `route_0_2_upper_left` at `(4,3)` for the incoming descent and `route_0_2_top_exit_approach` at `(5,3)` to approach the upward exit while staying in water.
+- `route_0_2_top_exit` at `(6,0)` returns from `route_0_2_top_exit_approach` to `route_0_1_water_return_entry`.
+- `route_0_1_water_return_entry` receives the enemy at `(6,21)`, then routes up to `route_0_1_water_jump_right` at the water surface `(6,20)`.
+- `route_0_1_water_jump_right` starts a right jump after surfacing from `0,2`, and targets `route_0_1_mid` on the dry floor so the enemy continues right instead of diving again.
 - The `0,2` loop depends on enemy swimming: route followers swim vertically while submerged instead of waiting for jumps or elevators.
 - The debug route enemy starts at `route_0_1_right_entry` `(31,19)` with that same right entry as its last point and `route_0_1_right_mid` as its target, so reaching `route_0_1_right_mid` selects `route_0_1_mid` instead of turning back.
 
