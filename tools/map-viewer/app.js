@@ -51,7 +51,7 @@ async function loadData() {
         try {
             const response = await fetch(`routes.json?time=${Date.now()}`);
             if (response.ok) {
-                return response.json();
+                return hydrateRouteData(await response.json());
             }
         } catch (_error) {
             // The generated script below keeps the viewer usable from file URLs.
@@ -59,10 +59,36 @@ async function loadData() {
     }
 
     if (window.ROUTE_MAP_DATA) {
-        return window.ROUTE_MAP_DATA;
+        return hydrateRouteData(window.ROUTE_MAP_DATA);
     }
 
     throw new Error("Route data is unavailable.");
+}
+
+async function hydrateRouteData(routeData) {
+    if (Array.isArray(routeData.points)) {
+        return routeData;
+    }
+
+    if (!Array.isArray(routeData.routeFiles)) {
+        throw new Error("Route data has neither points nor routeFiles.");
+    }
+
+    const rooms = await Promise.all(routeData.routeFiles.map(loadRouteFile));
+    return {
+        ...routeData,
+        points: rooms.flatMap((room) => room.points ?? []),
+    };
+}
+
+async function loadRouteFile(routeFile) {
+    const file = typeof routeFile === "string" ? routeFile : routeFile.file;
+    const response = await fetch(`${file}?time=${Date.now()}`);
+    if (!response.ok) {
+        throw new Error(`Cannot load route file: ${file}`);
+    }
+
+    return response.json();
 }
 
 function countEdges() {

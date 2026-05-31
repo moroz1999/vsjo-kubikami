@@ -1,0 +1,59 @@
+route_5_2_left_entry
+                            route_point	{
+                            5,                           ; room_x
+                            2,                           ; room_y
+                            0,                           ; x
+                            14,                          ; y
+                            route_point_exit,            ; type
+                            route_4_2_slope_right,       ; top-left point
+                            route_5_2_floor_mid,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_2_floor_mid
+                            route_point	{
+                            5,                           ; room_x
+                            2,                           ; room_y
+                            8,                           ; x
+                            14,                          ; y
+                            route_point_normal,          ; type
+                            route_5_2_left_entry,        ; top-left point
+                            route_5_2_floor_right,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_2_floor_right
+                            route_point	{
+                            5,                           ; room_x
+                            2,                           ; room_y
+                            16,                          ; x
+                            14,                          ; y
+                            route_point_normal,          ; type
+                            route_5_2_floor_mid,         ; top-left point
+                            route_5_2_gap_jump,          ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_2_gap_jump
+                            route_point	{
+                            5,                           ; room_x
+                            2,                           ; room_y
+                            22,                          ; x
+                            14,                          ; y
+                            route_point_jump_right,      ; type
+                            route_5_2_floor_right,       ; top-left point
+                            route_5_2_far_floor,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_2_far_floor
+                            route_point	{
+                            5,                           ; room_x
+                            2,                           ; room_y
+                            30,                          ; x
+                            14,                          ; y
+                            route_point_normal,          ; type
+                            route_5_2_gap_jump,          ; top-left point
+                            route_5_2_gap_jump,          ; bottom-right point
+                            0                            ; alternative point
+                            }

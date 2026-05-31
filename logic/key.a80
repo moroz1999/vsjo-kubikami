@@ -39,6 +39,7 @@ key_false
 apply_effect
                             ld	a,1
                             ld	(logic.room_4_1.hatch_opened),a
+                            call	logic.room_4_1.activate_hatch_route
                             ret
 
 item_animation

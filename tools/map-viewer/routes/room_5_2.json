@@ -1,0 +1,71 @@
+{
+    "roomX": 5,
+    "roomY": 2,
+    "points": [
+        {
+            "id": "route_5_2_left_entry",
+            "roomX": 5,
+            "roomY": 2,
+            "x": 0,
+            "y": 14,
+            "type": "exit",
+            "topLeft": "route_4_2_slope_right",
+            "bottomRight": "route_5_2_floor_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_2.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_5_2_floor_mid",
+            "roomX": 5,
+            "roomY": 2,
+            "x": 8,
+            "y": 14,
+            "type": "normal",
+            "topLeft": "route_5_2_left_entry",
+            "bottomRight": "route_5_2_floor_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_2.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_5_2_floor_right",
+            "roomX": 5,
+            "roomY": 2,
+            "x": 16,
+            "y": 14,
+            "type": "normal",
+            "topLeft": "route_5_2_floor_mid",
+            "bottomRight": "route_5_2_gap_jump",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_2.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_5_2_gap_jump",
+            "roomX": 5,
+            "roomY": 2,
+            "x": 22,
+            "y": 14,
+            "type": "jump_right",
+            "topLeft": "route_5_2_floor_right",
+            "bottomRight": "route_5_2_far_floor",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_2.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_5_2_far_floor",
+            "roomX": 5,
+            "roomY": 2,
+            "x": 30,
+            "y": 14,
+            "type": "normal",
+            "topLeft": "route_5_2_gap_jump",
+            "bottomRight": "route_5_2_gap_jump",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_2.a80",
+            "sourceLine": 49
+        }
+    ]
+}

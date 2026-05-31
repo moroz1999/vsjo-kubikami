@@ -18,6 +18,18 @@ route_4_1_left_mid
                             19,                          ; y
                             route_point_normal,          ; type
                             route_4_1_left_entry,        ; top-left point
+                            route_4_1_hatch_fork,        ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_1_hatch_fork
+                            route_point	{
+                            4,                           ; room_x
+                            1,                           ; room_y
+                            15,                          ; x
+                            19,                          ; y
+                            route_point_normal,          ; type
+                            route_4_1_left_mid,          ; top-left point
                             route_4_1_left_jump,         ; bottom-right point
                             0                            ; alternative point
                             }
@@ -29,8 +41,20 @@ route_4_1_left_jump
                             16,                          ; x
                             19,                          ; y
                             route_point_jump_right,      ; type
-                            route_4_1_left_mid,          ; top-left point
+                            route_4_1_hatch_fork,        ; top-left point
                             route_4_1_right_mid,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_1_hatch_drop
+                            route_point	{
+                            4,                           ; room_x
+                            1,                           ; room_y
+                            18,                          ; x
+                            21,                          ; y
+                            route_point_exit,            ; type
+                            route_4_1_hatch_fork,        ; top-left point
+                            route_4_2_top_entry,         ; bottom-right point
                             0                            ; alternative point
                             }
 

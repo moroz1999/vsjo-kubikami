@@ -1,0 +1,84 @@
+{
+    "roomX": 2,
+    "roomY": 1,
+    "points": [
+        {
+            "id": "route_2_1_left_entry",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 0,
+            "y": 19,
+            "type": "exit",
+            "topLeft": "route_1_1_right_entry",
+            "bottomRight": "route_2_1_left_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_2_1_left_mid",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 7,
+            "y": 19,
+            "type": "normal",
+            "topLeft": "route_2_1_left_entry",
+            "bottomRight": "route_2_1_elevator_jump_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_2_1_right_entry",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 31,
+            "y": 19,
+            "type": "exit",
+            "topLeft": "route_2_1_right_mid",
+            "bottomRight": "route_3_1_left_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_2_1_right_top_entry",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 31,
+            "y": 7,
+            "type": "exit",
+            "topLeft": "route_3_1_top_left_entry",
+            "bottomRight": "route_3_1_top_left_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_2_1_right_mid",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 24,
+            "y": 19,
+            "type": "normal",
+            "topLeft": "route_2_1_elevator_jump_left",
+            "bottomRight": "route_2_1_right_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_2_1_elevator_jump_left",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 20,
+            "y": 19,
+            "type": "jump_left",
+            "topLeft": "route_2_1_left_mid",
+            "bottomRight": "route_2_1_right_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 61
+        }
+    ]
+}

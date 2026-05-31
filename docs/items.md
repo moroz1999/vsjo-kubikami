@@ -26,6 +26,13 @@
 - Using it opens the red door, starts the door animation, removes the item from the pocket, and does not change enemy route points.
 - Enemies can climb from `route_6_1_left_entry` to the red-door approach at `(8,11)`, then fall to `route_6_1_left_return_entry` and leave back to `5,1`; they do not go behind the red door after the card is applied.
 
+## Key
+
+- The key is used in room `4,1` when the hero stands at `x=17..22` and `y=16..19`.
+- Using it opens the hatch, starts the hatch animation, removes the item from the pocket, and sets `logic.room_4_1.hatch_opened`.
+- The enemy route effect is `logic.room_4_1.activate_hatch_route`: it enables `route_4_1_hatch_fork.alternative_point_ptr = route_4_1_hatch_drop`.
+- The hatch branch lets route followers drop from room `4,1` into room `4,2` only after the hatch has been opened.
+
 ## Screwdriver
 
 - The screwdriver is used in room `6,3` when the hero stands between `x=11` and `x=12` at `y=20`.
@@ -55,7 +62,7 @@
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `0`, generator started `0`, and stairs unfolded `0`.
+- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `1`, generator started `0`, and stairs unfolded `0`.
 
 ## Persistent Room Art
 

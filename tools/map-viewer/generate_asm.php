@@ -21,7 +21,7 @@ foreach (array_slice($argv, 1) as $arg) {
     fail("Unknown argument: {$arg}");
 }
 
-$data = read_json($dataPath);
+$data = read_route_data($dataPath, $toolDir);
 $pointsById = index_points($data['points'] ?? []);
 $orderedIds = order_ids($data['tableOrder'] ?? [], $pointsById);
 $includeFiles = collect_include_files($data['includeFiles'] ?? [], $pointsById);
@@ -40,6 +40,46 @@ printf(
     count($includeFiles),
     $outputDir
 );
+
+function read_route_data(string $path, string $baseDir): array
+{
+    $data = read_json($path);
+
+    if (isset($data['points']) && is_array($data['points'])) {
+        return $data;
+    }
+
+    if (!isset($data['routeFiles']) || !is_array($data['routeFiles'])) {
+        fail("Route data has neither points nor routeFiles: {$path}");
+    }
+
+    $data['points'] = read_route_file_points($data['routeFiles'], $baseDir);
+
+    return $data;
+}
+
+function read_route_file_points(array $routeFiles, string $baseDir): array
+{
+    $points = [];
+
+    foreach ($routeFiles as $routeFile) {
+        $file = is_array($routeFile) ? ($routeFile['file'] ?? null) : $routeFile;
+        if (!is_string($file) || $file === '') {
+            fail('routeFiles contains an entry without file');
+        }
+
+        $roomData = read_json(make_absolute_path($file, $baseDir));
+        if (!isset($roomData['points']) || !is_array($roomData['points'])) {
+            fail("Route file misses points: {$file}");
+        }
+
+        foreach ($roomData['points'] as $point) {
+            $points[] = $point;
+        }
+    }
+
+    return $points;
+}
 
 function read_json(string $path): array
 {

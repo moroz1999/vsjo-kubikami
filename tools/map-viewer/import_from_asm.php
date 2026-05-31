@@ -13,6 +13,8 @@ $routeTable = read_route_table($projectRoot . DIRECTORY_SEPARATOR . 'enemies.rou
 $includeFiles = read_route_includes($projectRoot . DIRECTORY_SEPARATOR . 'enemies.route.a80');
 $points = read_route_points($projectRoot, $includeFiles);
 $rewires = read_route_rewires($projectRoot);
+$orderedPoints = order_points($points, $routeTable);
+$routeFiles = write_room_route_files($toolDir, $orderedPoints);
 
 $data = [
     'version' => 1,
@@ -27,17 +29,21 @@ $data = [
     'rooms' => $rooms,
     'tableOrder' => $routeTable,
     'includeFiles' => $includeFiles,
-    'points' => order_points($points, $routeTable),
+    'routeFiles' => $routeFiles,
     'rewires' => $rewires,
 ];
 
+$viewerData = $data;
+$viewerData['points'] = $orderedPoints;
+
 write_json($toolDir . DIRECTORY_SEPARATOR . 'routes.json', $data);
-write_viewer_data($toolDir . DIRECTORY_SEPARATOR . 'routes-data.js', $data);
+write_viewer_data($toolDir . DIRECTORY_SEPARATOR . 'routes-data.js', $viewerData);
 
 printf(
-    "Imported %d rooms, %d route points, %d logic rewires\n",
+    "Imported %d rooms, %d route points, %d room route files, %d logic rewires\n",
     count($rooms),
-    count($data['points']),
+    count($orderedPoints),
+    count($routeFiles),
     count($rewires)
 );
 
@@ -216,6 +222,57 @@ function order_points(array $points, array $routeTable): array
     }
 
     return $ordered;
+}
+
+function write_room_route_files(string $toolDir, array $points): array
+{
+    $routesDir = $toolDir . DIRECTORY_SEPARATOR . 'routes';
+    if (!is_dir($routesDir) && !mkdir($routesDir, 0777, true)) {
+        fail("Cannot create {$routesDir}");
+    }
+
+    foreach (glob($routesDir . DIRECTORY_SEPARATOR . 'room_*.json') ?: [] as $path) {
+        if (!unlink($path)) {
+            fail("Cannot remove stale route file: {$path}");
+        }
+    }
+
+    $pointsByRoom = [];
+    foreach ($points as $point) {
+        $key = room_key((int) $point['roomX'], (int) $point['roomY']);
+        $pointsByRoom[$key]['roomX'] = (int) $point['roomX'];
+        $pointsByRoom[$key]['roomY'] = (int) $point['roomY'];
+        $pointsByRoom[$key]['points'][] = $point;
+    }
+
+    uasort($pointsByRoom, static function (array $left, array $right): int {
+        return room_sort_key($left['roomX'], $left['roomY']) <=> room_sort_key($right['roomX'], $right['roomY']);
+    });
+
+    $routeFiles = [];
+    foreach ($pointsByRoom as $roomData) {
+        $file = sprintf('routes/room_%d_%d.json', $roomData['roomX'], $roomData['roomY']);
+        write_json($toolDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $file), $roomData);
+
+        $routeFiles[] = [
+            'roomX' => $roomData['roomX'],
+            'roomY' => $roomData['roomY'],
+            'file' => $file,
+            'points' => count($roomData['points']),
+        ];
+    }
+
+    return $routeFiles;
+}
+
+function room_key(int $roomX, int $roomY): string
+{
+    return $roomX . ',' . $roomY;
+}
+
+function room_sort_key(int $roomX, int $roomY): int
+{
+    return $roomY * 100 + $roomX;
 }
 
 function read_route_rewires(string $projectRoot): array

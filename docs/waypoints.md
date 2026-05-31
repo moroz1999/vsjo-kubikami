@@ -70,10 +70,11 @@ route_point_wait
 
 ## Authoring Tools
 
-- `tools/map-viewer/routes.json` can be used as a JSON route point source for the browser map viewer and asm generation.
+- `tools/map-viewer/routes.json` is the route manifest for the browser map viewer and asm generation.
+- Route points are split by room under `tools/map-viewer/routes/room_X_Y.json`.
 - Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files.
 - Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/`; use `--project` only when intentionally replacing the root route asm files.
-- `compile.bat` regenerates the project route asm from `tools/map-viewer/routes.json` before assembling the game.
+- `compile.bat` regenerates the project route asm from the split route JSON data before assembling the game.
 
 ## Movement References
 

@@ -1,0 +1,45 @@
+{
+    "roomX": 3,
+    "roomY": 2,
+    "points": [
+        {
+            "id": "route_3_2_right_inner",
+            "roomX": 3,
+            "roomY": 2,
+            "x": 24,
+            "y": 13,
+            "type": "normal",
+            "topLeft": "route_3_2_right_inner",
+            "bottomRight": "route_3_2_right_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_2.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_3_2_right_mid",
+            "roomX": 3,
+            "roomY": 2,
+            "x": 29,
+            "y": 15,
+            "type": "normal",
+            "topLeft": "route_3_2_right_inner",
+            "bottomRight": "route_3_2_right_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_2.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_3_2_right_entry",
+            "roomX": 3,
+            "roomY": 2,
+            "x": 31,
+            "y": 16,
+            "type": "exit",
+            "topLeft": "route_3_2_right_mid",
+            "bottomRight": "route_4_2_left_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_2.a80",
+            "sourceLine": 25
+        }
+    ]
+}

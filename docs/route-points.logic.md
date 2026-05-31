@@ -72,11 +72,24 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 - Room `4,1` left edge `route_4_1_left_entry` and room `3,1` right edge `route_3_1_right_entry` are paired entry points.
 - Room `4,1` right edge `route_4_1_right_entry` and room `5,1` left edge `route_5_1_left_entry` are paired entry points.
-- `route_4_1_left_mid` at `(8,19)` continues through `route_4_1_left_jump` at `(16,19)`.
+- The debug route enemy starts in room `4,1` at the left edge and targets `route_4_1_left_mid`, so it tests the room from left to right.
+- `route_4_1_left_mid` at `(8,19)` continues through the hatch fork at `(15,19)` to `route_4_1_left_jump` at `(16,19)`.
 - `route_4_1_left_jump` is a `jump_right` point for crossing the blocked floor gap toward `(23,19)`.
+- Applying the key opens the hatch and calls `logic.room_4_1.activate_hatch_route`, enabling `route_4_1_hatch_fork.alternative_point_ptr = route_4_1_hatch_drop`.
+- `route_4_1_hatch_drop` at `(18,21)` exits down into room `4,2` through `route_4_2_top_entry` at `(18,0)`.
 - Applying the screwdriver calls `logic.room_4_1.activate_elevator_wait_route`, enabling `route_4_1_left_mid.alternative_point_ptr = route_4_1_elevator_wait`.
 - `route_4_1_elevator_wait` at `(16,19)` waits on the hatch-screen elevator lane, targets `route_4_1_elevator_top` at `(16,6)`, then returns to `route_4_1_left_jump`.
 - The old upward air points are removed; the hatch-screen branch reaches its high target by elevator wait behavior instead of route-driven vertical climbing.
+
+## Room 4,2 Slope And Exits
+
+- Room `4,2` top entry `route_4_2_top_entry` receives enemies from the opened hatch in room `4,1`, then gravity carries them to `route_4_2_top_landing` at `(18,7)`.
+- The main slope path is `(18,7) -> (24,13) -> (31,14) -> (23,15) -> (16,18) -> (18,20) -> (19,21)`.
+- `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path continues down the slope, and its alternative branch exits right to `route_5_2_left_entry`.
+- `route_4_2_lower_left` at `(16,18)` can branch left through `(15,17) -> (12,15) -> (7,18 jump right) -> (6,18) -> (0,16)` and exits to `route_3_2_right_entry`.
+- `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which falls to the top platform at `(19,7)`.
+- Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
+- Room `5,2` has a left-floor route from `(0,14)` through the floor gap jump at `(22,14)` to `(30,14)`.
 
 ## Rooms 5,1 Through 6,3
 

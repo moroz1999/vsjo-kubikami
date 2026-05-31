@@ -3,7 +3,7 @@ route_points_debug_enabled  equ	1
 
 initial_broken_glass        equ	0
 initial_red_door_opened     equ	1
-initial_hatch_key_used      equ	0
+initial_hatch_key_used      equ	1
 initial_generator_started   equ	0
 initial_stairs_unfolded     equ	0
 

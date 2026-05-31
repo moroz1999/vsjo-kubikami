@@ -1,0 +1,32 @@
+{
+    "roomX": 3,
+    "roomY": 0,
+    "points": [
+        {
+            "id": "route_3_0_left_entry",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 0,
+            "y": 7,
+            "type": "exit",
+            "topLeft": "route_2_0_top_right_entry",
+            "bottomRight": "route_3_0_left_drop",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_3_0_left_drop",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 2,
+            "y": 21,
+            "type": "normal",
+            "topLeft": "route_3_0_left_entry",
+            "bottomRight": "route_3_1_top_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 13
+        }
+    ]
+}

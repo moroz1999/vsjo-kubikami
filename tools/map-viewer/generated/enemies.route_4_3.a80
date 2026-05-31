@@ -1,0 +1,35 @@
+route_4_3_top_entry
+                            route_point	{
+                            4,                           ; room_x
+                            3,                           ; room_y
+                            19,                          ; x
+                            0,                           ; y
+                            route_point_exit,            ; type
+                            route_4_2_bottom_exit,       ; top-left point
+                            route_4_3_top_landing,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_3_top_landing
+                            route_point	{
+                            4,                           ; room_x
+                            3,                           ; room_y
+                            19,                          ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_4_3_top_entry,         ; top-left point
+                            route_4_3_top_right,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_3_top_right
+                            route_point	{
+                            4,                           ; room_x
+                            3,                           ; room_y
+                            27,                          ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_4_3_top_landing,       ; top-left point
+                            route_4_3_top_landing,       ; bottom-right point
+                            0                            ; alternative point
+                            }

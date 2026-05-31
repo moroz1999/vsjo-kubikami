@@ -5,10 +5,11 @@ Wheel over the map zooms from `1x` to `4x`.
 
 ## Files
 
-- `routes.json` is the route point data used by the viewer and generator.
-- `routes-data.js` is generated from the same JSON so `index.html` also works from a direct file open.
+- `routes.json` is the route manifest used by the viewer and generator.
+- `routes/room_X_Y.json` files store editable route points split by room.
+- `routes-data.js` is generated from the split JSON data so `index.html` also works from a direct file open.
 - `import_from_asm.php` imports current project route data from `enemies.route*.a80`, `rooms.a80`, `rooms_unpacked/`, and route rewires in `logic/*.a80`.
-- `generate_asm.php` generates `enemies.route.a80` and `enemies.route_X_Y.a80` files from `routes.json`.
+- `generate_asm.php` generates `enemies.route.a80` and `enemies.route_X_Y.a80` files from `routes.json` and `routes/room_X_Y.json`.
 
 ## Commands
 

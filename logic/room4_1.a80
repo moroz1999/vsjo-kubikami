@@ -7,6 +7,14 @@ activate_elevator_wait_route
                             ld	(hl),d
                             ret
 
+activate_hatch_route
+                            ld	hl,enemies.route_4_1_hatch_fork+enemies.route_point.alternative_point_ptr
+                            ld	de,enemies.route_4_1_hatch_drop
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+
 on_enter
                             ld	a,(hatch_opened)
                             or	a
