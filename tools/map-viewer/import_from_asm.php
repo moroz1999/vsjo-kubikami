@@ -14,7 +14,7 @@ $includeFiles = read_route_includes($projectRoot . DIRECTORY_SEPARATOR . 'enemie
 $points = read_route_points($projectRoot, $includeFiles);
 $rewires = read_route_rewires($projectRoot);
 $orderedPoints = order_points($points, $routeTable);
-$routeFiles = write_room_route_files($toolDir, $orderedPoints);
+$routeFiles = write_room_route_files($projectRoot, $orderedPoints);
 
 $data = [
     'version' => 1,
@@ -36,7 +36,7 @@ $data = [
 $viewerData = $data;
 $viewerData['points'] = $orderedPoints;
 
-write_json($toolDir . DIRECTORY_SEPARATOR . 'routes.json', $data);
+write_json($projectRoot . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'manifest.json', $data);
 write_viewer_data($toolDir . DIRECTORY_SEPARATOR . 'routes-data.js', $viewerData);
 
 printf(
@@ -224,9 +224,9 @@ function order_points(array $points, array $routeTable): array
     return $ordered;
 }
 
-function write_room_route_files(string $toolDir, array $points): array
+function write_room_route_files(string $projectRoot, array $points): array
 {
-    $routesDir = $toolDir . DIRECTORY_SEPARATOR . 'routes';
+    $routesDir = $projectRoot . DIRECTORY_SEPARATOR . 'routes';
     if (!is_dir($routesDir) && !mkdir($routesDir, 0777, true)) {
         fail("Cannot create {$routesDir}");
     }
@@ -251,8 +251,8 @@ function write_room_route_files(string $toolDir, array $points): array
 
     $routeFiles = [];
     foreach ($pointsByRoom as $roomData) {
-        $file = sprintf('routes/room_%d_%d.json', $roomData['roomX'], $roomData['roomY']);
-        write_json($toolDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $file), $roomData);
+        $file = sprintf('room_%d_%d.json', $roomData['roomX'], $roomData['roomY']);
+        write_json($routesDir . DIRECTORY_SEPARATOR . $file, $roomData);
 
         $routeFiles[] = [
             'roomX' => $roomData['roomX'],

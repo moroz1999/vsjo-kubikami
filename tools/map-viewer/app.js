@@ -9,12 +9,17 @@ const mapWrap = document.querySelector(".map-wrap");
 const minZoom = 1;
 const maxZoom = 4;
 const zoomStep = 0.25;
+const routeManifestUrls = [
+    "../../routes/manifest.json",
+    "routes.json",
+];
 
 let data = null;
 let pointsById = new Map();
 let selectedPointId = null;
 let selectedRoomId = null;
 let outgoingIds = new Set();
+let outgoingRoleLabels = new Map();
 let incomingIds = new Set();
 let rewireIds = new Set();
 let mapZoom = 1;
@@ -48,24 +53,26 @@ async function init() {
 
 async function loadData() {
     if (location.protocol !== "file:") {
-        try {
-            const response = await fetch(`routes.json?time=${Date.now()}`);
-            if (response.ok) {
-                return hydrateRouteData(await response.json());
+        for (const url of routeManifestUrls) {
+            try {
+                const response = await fetch(cacheBustedUrl(url));
+                if (response.ok) {
+                    return hydrateRouteData(await response.json(), response.url);
+                }
+            } catch (_error) {
+                // The generated script below keeps the viewer usable from file URLs.
             }
-        } catch (_error) {
-            // The generated script below keeps the viewer usable from file URLs.
         }
     }
 
     if (window.ROUTE_MAP_DATA) {
-        return hydrateRouteData(window.ROUTE_MAP_DATA);
+        return hydrateRouteData(window.ROUTE_MAP_DATA, "../../routes/manifest.json");
     }
 
     throw new Error("Route data is unavailable.");
 }
 
-async function hydrateRouteData(routeData) {
+async function hydrateRouteData(routeData, manifestUrl) {
     if (Array.isArray(routeData.points)) {
         return routeData;
     }
@@ -74,21 +81,26 @@ async function hydrateRouteData(routeData) {
         throw new Error("Route data has neither points nor routeFiles.");
     }
 
-    const rooms = await Promise.all(routeData.routeFiles.map(loadRouteFile));
+    const rooms = await Promise.all(routeData.routeFiles.map((routeFile) => loadRouteFile(routeFile, manifestUrl)));
     return {
         ...routeData,
         points: rooms.flatMap((room) => room.points ?? []),
     };
 }
 
-async function loadRouteFile(routeFile) {
+async function loadRouteFile(routeFile, manifestUrl) {
     const file = typeof routeFile === "string" ? routeFile : routeFile.file;
-    const response = await fetch(`${file}?time=${Date.now()}`);
+    const response = await fetch(cacheBustedUrl(new URL(file, manifestUrl).href));
     if (!response.ok) {
         throw new Error(`Cannot load route file: ${file}`);
     }
 
     return response.json();
+}
+
+function cacheBustedUrl(url) {
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}time=${Date.now()}`;
 }
 
 function countEdges() {
@@ -212,7 +224,13 @@ function renderMap() {
         });
         label.textContent = shortPointName(point.id);
 
-        group.append(marker, label);
+        const roleLabel = svgElement("text", {
+            class: "point-link-role",
+            x: globalX(point),
+            y: globalY(point),
+        });
+
+        group.append(marker, roleLabel, label);
         group.addEventListener("click", () => selectPoint(point.id));
         group.addEventListener("keydown", (event) => {
             if (event.key === "Enter" || event.key === " ") {
@@ -311,6 +329,7 @@ function selectPoint(pointId) {
 
 function recomputeRelatedPoints() {
     outgoingIds = new Set();
+    outgoingRoleLabels = new Map();
     incomingIds = new Set();
     rewireIds = new Set();
 
@@ -319,11 +338,9 @@ function recomputeRelatedPoints() {
     }
 
     const selected = pointsById.get(selectedPointId);
-    for (const target of [selected.topLeft, selected.bottomRight, selected.alternative]) {
-        if (target) {
-            outgoingIds.add(target);
-        }
-    }
+    addOutgoingRole(selected.topLeft, "L");
+    addOutgoingRole(selected.bottomRight, "R");
+    addOutgoingRole(selected.alternative, "A");
 
     for (const point of data.points) {
         if ([point.topLeft, point.bottomRight, point.alternative].includes(selectedPointId)) {
@@ -338,6 +355,19 @@ function recomputeRelatedPoints() {
         if (rewire.to === selectedPointId) {
             rewireIds.add(rewire.from);
         }
+    }
+}
+
+function addOutgoingRole(pointId, label) {
+    if (!pointId) {
+        return;
+    }
+
+    outgoingIds.add(pointId);
+
+    const existingLabel = outgoingRoleLabels.get(pointId) ?? "";
+    if (!existingLabel.includes(label)) {
+        outgoingRoleLabels.set(pointId, `${existingLabel}${label}`);
     }
 }
 
@@ -356,6 +386,11 @@ function applySelectionClasses() {
         marker.classList.toggle("is-related", outgoingIds.has(pointId) || rewireIds.has(pointId));
         marker.classList.toggle("is-incoming", incomingIds.has(pointId));
         marker.classList.toggle("is-room-muted", selectedRoomId && roomId(point) !== selectedRoomId);
+
+        const roleLabel = group.querySelector(".point-link-role");
+        const roleText = outgoingRoleLabels.get(pointId) ?? "";
+        roleLabel.textContent = roleText;
+        roleLabel.classList.toggle("is-active", roleText !== "");
 
         if (isSelected) {
             selectedGroup = group;

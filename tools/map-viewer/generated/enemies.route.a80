@@ -10,6 +10,7 @@ route_points_table
                             dw	route_0_1_right_entry
                             dw	route_0_1_right_mid
                             dw	route_0_1_mid
+                            dw	route_0_1_teleport_right
                             dw	route_0_1_left_mid
                             dw	route_0_1_bottom_entry
                             dw	route_0_1_water_return_entry
@@ -34,6 +35,13 @@ route_points_table
                             dw	route_1_1_right_entry
                             dw	route_1_1_right_mid
                             dw	route_1_1_right_jump_left
+                            dw	route_1_2_right_teleport
+                            dw	route_1_2_water_right
+                            dw	route_1_2_water_mid_right
+                            dw	route_1_2_water_mid
+                            dw	route_1_2_water_mid_left
+                            dw	route_1_2_water_left_surface
+                            dw	route_1_2_left_teleport
                             dw	route_2_0_left_entry
                             dw	route_2_0_top_left
                             dw	route_2_0_top_mid
@@ -79,17 +87,18 @@ route_points_table
                             dw	route_4_2_slope_right
                             dw	route_4_2_lower_right
                             dw	route_4_2_lower_left
-                            dw	route_4_2_left_mid
                             dw	route_4_2_left_upper
                             dw	route_4_2_left_jump_right
                             dw	route_4_2_left_floor
                             dw	route_4_2_left_entry
-                            dw	route_4_2_bottom_mid
                             dw	route_4_2_bottom_exit
                             dw	route_5_2_left_entry
                             dw	route_5_2_floor_mid
                             dw	route_5_2_floor_right
                             dw	route_5_2_gap_jump
+                            dw	route_5_2_gap_jump_left
+                            dw	route_5_2_gap_exit
+                            dw	route_5_2_gap_exit_jump_left
                             dw	route_5_2_far_floor
                             dw	route_4_3_top_entry
                             dw	route_4_3_top_landing
@@ -114,6 +123,7 @@ route_points_table_end
                             include	"enemies.route_0_2.a80"
                             include	"enemies.route_1_0.a80"
                             include	"enemies.route_1_1.a80"
+                            include	"enemies.route_1_2.a80"
                             include	"enemies.route_2_0.a80"
                             include	"enemies.route_2_1.a80"
                             include	"enemies.route_3_0.a80"

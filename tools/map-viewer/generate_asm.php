@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $toolDir = __DIR__;
 $projectRoot = dirname($toolDir, 2);
-$dataPath = $toolDir . DIRECTORY_SEPARATOR . 'routes.json';
+$dataPath = $projectRoot . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'manifest.json';
 $outputDir = $toolDir . DIRECTORY_SEPARATOR . 'generated';
 
 foreach (array_slice($argv, 1) as $arg) {
@@ -21,7 +21,7 @@ foreach (array_slice($argv, 1) as $arg) {
     fail("Unknown argument: {$arg}");
 }
 
-$data = read_route_data($dataPath, $toolDir);
+$data = read_route_data($dataPath);
 $pointsById = index_points($data['points'] ?? []);
 $orderedIds = order_ids($data['tableOrder'] ?? [], $pointsById);
 $includeFiles = collect_include_files($data['includeFiles'] ?? [], $pointsById);
@@ -41,7 +41,7 @@ printf(
     $outputDir
 );
 
-function read_route_data(string $path, string $baseDir): array
+function read_route_data(string $path): array
 {
     $data = read_json($path);
 
@@ -53,7 +53,7 @@ function read_route_data(string $path, string $baseDir): array
         fail("Route data has neither points nor routeFiles: {$path}");
     }
 
-    $data['points'] = read_route_file_points($data['routeFiles'], $baseDir);
+    $data['points'] = read_route_file_points($data['routeFiles'], dirname($path));
 
     return $data;
 }
@@ -126,7 +126,7 @@ function index_points(array $points): array
 
     foreach ($points as $point) {
         if (!isset($point['id'])) {
-            fail('Point without id in routes.json');
+            fail('Point without id in route data');
         }
 
         $indexed[$point['id']] = $point;

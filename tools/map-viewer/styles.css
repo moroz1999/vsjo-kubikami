@@ -184,6 +184,23 @@ h2 {
     opacity: 0;
 }
 
+.point-link-role {
+    fill: var(--panel);
+    stroke: var(--ink);
+    stroke-width: 0.08;
+    font-size: 1.8px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+}
+
+.point-link-role.is-active {
+    opacity: 1;
+}
+
 .point-group:hover .point-label,
 .point-group.is-selected .point-label,
 .point-group.is-related .point-label {
