@@ -25,6 +25,14 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The `0,2` loop depends on enemy swimming: route followers swim vertically while submerged instead of waiting for jumps or elevators.
 - The debug route enemy starts at `route_0_1_right_entry` `(31,19)` with that same right entry as its last point and `route_0_1_right_mid` as its target, so reaching `route_0_1_right_mid` selects `route_0_1_mid` instead of turning back.
 
+## Room 1,2 Teleports
+
+- Room `1,2` routes enemies from `route_1_2_right_teleport` at the right teleport landing `(28,9)` into water at `(25,11)`, then left through `(19,13) -> (13,13) -> (7,13)`.
+- Along the underwater chain in room `1,2`, `topLeft`/`L` points leftward and `bottomRight`/`R` points back rightward.
+- `route_1_2_right_teleport` is an exit point paired with `route_5_2_gap_exit`: arrivals from `5,2` continue left into water, and returns from water exit back to `5,2`.
+- The room `1,2` underwater route surfaces at `(5,9)` and reaches `route_1_2_left_teleport` at the left teleport `(2,9)`, which exits to `route_0_1_teleport_right`.
+- `route_0_1_teleport_right` sits to the right of the room `0,1` teleport at `(19,9)` and routes to `route_0_1_right_mid` at `(24,19)`, closing the teleport route back into the room `0,1` floor route.
+
 ## Room 2,0 Roof
 
 - `route_2_0_top_mid` at `(17,7)` is the roof rewire point.
@@ -84,12 +92,17 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 ## Room 4,2 Slope And Exits
 
 - Room `4,2` top entry `route_4_2_top_entry` receives enemies from the opened hatch in room `4,1`, then gravity carries them to `route_4_2_top_landing` at `(18,7)`.
-- The main slope path is `(18,7) -> (24,13) -> (31,14) -> (23,15) -> (16,18) -> (18,20) -> (19,21)`.
-- `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path continues down the slope, and its alternative branch exits right to `route_5_2_left_entry`.
-- `route_4_2_lower_left` at `(16,18)` can branch left through `(15,17) -> (12,15) -> (7,18 jump right) -> (6,18) -> (0,16)` and exits to `route_3_2_right_entry`.
+- The slope path reaches the right-edge fork as `(18,7) -> (24,13) -> (31,14)`; the down branch continues through `(23,15) -> (16,18) -> (19,21)`.
+- `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path exits right to `route_5_2_left_entry`, and its alternative branch continues down the slope.
+- Room `4,2` right edge `route_4_2_slope_right` and room `5,2` left edge `route_5_2_left_entry` are paired entry points at local `y=14`.
+- `route_4_2_lower_right` at `(23,15)` uses `topLeft` for the descent toward `route_4_2_lower_left` and `bottomRight` for returning up toward `route_4_2_slope_right`.
+- `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.
 - `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which falls to the top platform at `(19,7)`.
 - Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
-- Room `5,2` has a left-floor route from `(0,14)` through the floor gap jump at `(22,14)` to `(30,14)`.
+- Room `5,2` has a left-floor fork at `route_5_2_floor_right` `(16,14)`: the direct path jumps right across the gap from `(22,14)`, and the alternative path falls into the gap.
+- `route_5_2_gap_exit` at the room `5,2` teleport `(23,17)` exits to `route_1_2_right_teleport` at `(28,9)`, one cell left of the room `1,2` right teleport destination `(29,9)`.
+- `route_5_2_gap_exit` uses `route_5_2_gap_exit_jump_left` at `(24,17)` as its same-room return from the pit; that jump point targets `route_5_2_floor_right` so the enemy jumps out and continues left.
+- The room `5,2` right side uses `route_5_2_gap_jump_left` at `(25,14)` to jump left across the gap.
 
 ## Rooms 5,1 Through 6,3
 

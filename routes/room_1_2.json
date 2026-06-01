@@ -1,0 +1,97 @@
+{
+    "roomX": 1,
+    "roomY": 2,
+    "points": [
+        {
+            "id": "route_1_2_right_teleport",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 28,
+            "y": 9,
+            "type": "exit",
+            "topLeft": "route_1_2_water_right",
+            "bottomRight": "route_5_2_gap_exit",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_1_2_water_right",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 25,
+            "y": 11,
+            "type": "normal",
+            "topLeft": "route_1_2_water_mid_right",
+            "bottomRight": "route_1_2_right_teleport",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_1_2_water_mid_right",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 19,
+            "y": 13,
+            "type": "normal",
+            "topLeft": "route_1_2_water_mid",
+            "bottomRight": "route_1_2_water_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_1_2_water_mid",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 13,
+            "y": 13,
+            "type": "normal",
+            "topLeft": "route_1_2_water_mid_left",
+            "bottomRight": "route_1_2_water_mid_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_1_2_water_mid_left",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 7,
+            "y": 13,
+            "type": "normal",
+            "topLeft": "route_1_2_water_left_surface",
+            "bottomRight": "route_1_2_water_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_1_2_water_left_surface",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 5,
+            "y": 9,
+            "type": "normal",
+            "topLeft": "route_1_2_left_teleport",
+            "bottomRight": "route_1_2_water_mid_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 61
+        },
+        {
+            "id": "route_1_2_left_teleport",
+            "roomX": 1,
+            "roomY": 2,
+            "x": 2,
+            "y": 9,
+            "type": "exit",
+            "topLeft": "route_1_2_water_left_surface",
+            "bottomRight": "route_0_1_teleport_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_2.a80",
+            "sourceLine": 73
+        }
+    ]
+}

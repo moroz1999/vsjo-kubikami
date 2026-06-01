@@ -59,7 +59,8 @@ route_point_wait
 
 ## Exit Points
 
-- Exit points sit on a screen edge and lead to an edge entry point in a neighboring room.
+- Exit points normally sit on a screen edge and lead to an edge entry point in a neighboring room.
+- Teleport route handoff points can also use `route_point_exit` inside a room when the selected neighbor belongs to another room.
 - After reaching an exit point, an online route follower moves to the selected neighbor only when that neighbor belongs to another room.
 - Exit points can also act as normal edge entries: when the selected neighbor is in the same room, the enemy keeps routing physically instead of teleporting.
 - Cross-room exit movement takes the selected point's room and position, marks the old cell for restore, and becomes offline immediately.
@@ -70,8 +71,8 @@ route_point_wait
 
 ## Authoring Tools
 
-- `tools/map-viewer/routes.json` is the route manifest for the browser map viewer and asm generation.
-- Route points are split by room under `tools/map-viewer/routes/room_X_Y.json`.
+- `routes/manifest.json` is the route manifest for enemy route asm generation and the browser map viewer.
+- Route points are split by room under `routes/room_X_Y.json`.
 - Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files.
 - Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/`; use `--project` only when intentionally replacing the root route asm files.
 - `compile.bat` regenerates the project route asm from the split route JSON data before assembling the game.

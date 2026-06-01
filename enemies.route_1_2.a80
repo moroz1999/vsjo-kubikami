@@ -1,0 +1,83 @@
+route_1_2_right_teleport
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            28,                          ; x
+                            9,                           ; y
+                            route_point_exit,            ; type
+                            route_1_2_water_right,       ; top-left point
+                            route_5_2_gap_exit,          ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_water_right
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            25,                          ; x
+                            11,                          ; y
+                            route_point_normal,          ; type
+                            route_1_2_water_mid_right,   ; top-left point
+                            route_1_2_right_teleport,    ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_water_mid_right
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            19,                          ; x
+                            13,                          ; y
+                            route_point_normal,          ; type
+                            route_1_2_water_mid,         ; top-left point
+                            route_1_2_water_right,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_water_mid
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            13,                          ; x
+                            13,                          ; y
+                            route_point_normal,          ; type
+                            route_1_2_water_mid_left,    ; top-left point
+                            route_1_2_water_mid_right,   ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_water_mid_left
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            7,                           ; x
+                            13,                          ; y
+                            route_point_normal,          ; type
+                            route_1_2_water_left_surface, ; top-left point
+                            route_1_2_water_mid,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_water_left_surface
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            5,                           ; x
+                            9,                           ; y
+                            route_point_normal,          ; type
+                            route_1_2_left_teleport,     ; top-left point
+                            route_1_2_water_mid_left,    ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_2_left_teleport
+                            route_point	{
+                            1,                           ; room_x
+                            2,                           ; room_y
+                            2,                           ; x
+                            9,                           ; y
+                            route_point_exit,            ; type
+                            route_1_2_water_left_surface, ; top-left point
+                            route_0_1_teleport_right,    ; bottom-right point
+                            0                            ; alternative point
+                            }
