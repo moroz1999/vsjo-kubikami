@@ -647,7 +647,7 @@ window.ROUTE_MAP_DATA = {
             "id": "route_0_1_right_mid",
             "roomX": 0,
             "roomY": 1,
-            "x": 24,
+            "x": 25,
             "y": 19,
             "type": "normal",
             "topLeft": "route_0_1_mid",

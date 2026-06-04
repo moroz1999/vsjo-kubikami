@@ -23,16 +23,16 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - `route_0_1_water_return_entry` receives the enemy at `(6,21)`, then routes up to `route_0_1_water_jump_right` at the water surface `(6,20)`.
 - `route_0_1_water_jump_right` starts a right jump after surfacing from `0,2`, and targets `route_0_1_mid` on the dry floor so the enemy continues right instead of diving again.
 - The `0,2` loop depends on enemy swimming: route followers swim vertically while submerged instead of waiting for jumps or elevators.
-- The debug route enemy starts at `route_0_1_right_entry` `(31,19)` with that same right entry as its last point and `route_0_1_right_mid` as its target, so reaching `route_0_1_right_mid` selects `route_0_1_mid` instead of turning back.
 
 ## Room 1,2 Teleports
 
 - Room `1,2` routes enemies from `route_1_2_right_teleport` at the right teleport landing `(28,9)` into water at `(25,11)`, then left through `(19,13) -> (13,13) -> (7,13)`.
+- The last route enemy starts at `route_1_2_right_teleport` `(28,9)` with that point as its last point and `route_1_2_water_right` as its target, so it begins moving left.
 - Along the underwater chain in room `1,2`, `topLeft`/`L` points leftward and `bottomRight`/`R` points back rightward.
 - `route_1_2_right_teleport` is an exit point paired with `route_5_2_gap_exit`: arrivals from `5,2` continue left into water, and returns from water exit back to `5,2`.
 - The room `1,2` underwater route surfaces at `(5,9)` and reaches `route_1_2_left_teleport` at the left teleport `(2,9)`, which exits to `route_0_1_teleport_right`.
 - `route_1_2_left_teleport` uses `topLeft`/`L` for the room `0,1` teleport handoff and `bottomRight`/`R` for the return toward `route_1_2_water_left_surface`.
-- `route_0_1_teleport_right` sits to the right of the room `0,1` teleport at `(19,9)` and routes to `route_0_1_right_mid` at `(24,19)`, closing the teleport route back into the room `0,1` floor route.
+- `route_0_1_teleport_right` sits to the right of the room `0,1` teleport at `(19,9)` and routes to `route_0_1_right_mid` at `(25,19)`, closing the teleport route back into the room `0,1` floor route.
 
 ## Room 2,0 Roof
 
@@ -101,7 +101,6 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.
 - `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which falls to the top platform at `(19,7)`.
 - Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
-- A route-following enemy starts at room `5,2` left entry `(0,14)` with `route_4_2_slope_right` as its last point and `route_5_2_floor_mid` as its target, so it begins moving right.
 - Room `5,2` has a left-floor fork at `route_5_2_floor_right` `(16,14)`: the direct path jumps right across the gap from `(22,14)`, and the alternative path falls into the gap.
 - Returning from `route_5_2_gap_jump_left` or `route_5_2_gap_exit_jump_left` to `route_5_2_floor_right` preserves the enemy's leftward direction and selects `route_5_2_floor_mid` as the direct continuation; the optional gap-exit branch remains eligible for its normal 50/50 selection.
 - `route_5_2_gap_exit` at the room `5,2` teleport `(23,17)` exits to `route_1_2_right_teleport` at `(28,9)`, one cell left of the room `1,2` right teleport destination `(29,9)`.
