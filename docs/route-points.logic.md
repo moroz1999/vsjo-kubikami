@@ -31,6 +31,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Along the underwater chain in room `1,2`, `topLeft`/`L` points leftward and `bottomRight`/`R` points back rightward.
 - `route_1_2_right_teleport` is an exit point paired with `route_5_2_gap_exit`: arrivals from `5,2` continue left into water, and returns from water exit back to `5,2`.
 - The room `1,2` underwater route surfaces at `(5,9)` and reaches `route_1_2_left_teleport` at the left teleport `(2,9)`, which exits to `route_0_1_teleport_right`.
+- `route_1_2_left_teleport` uses `topLeft`/`L` for the room `0,1` teleport handoff and `bottomRight`/`R` for the return toward `route_1_2_water_left_surface`.
 - `route_0_1_teleport_right` sits to the right of the room `0,1` teleport at `(19,9)` and routes to `route_0_1_right_mid` at `(24,19)`, closing the teleport route back into the room `0,1` floor route.
 
 ## Room 2,0 Roof
@@ -41,6 +42,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The roof rewire is not an alternative branch; after the crowbar it is the direct bottom-right route.
 - Room `2,0` has two route points at `(21,12)`.
 - `route_2_0_basement_entry` is a normal entry from the broken roof and continues toward `(15,16)`.
+- `route_2_0_basement_mid` at `(15,16)` keeps `topLeft` / viewer `L` toward `route_2_0_basement_end` on the left and `bottomRight` / viewer `R` back toward `route_2_0_basement_entry`.
 - `route_2_0_basement_jump` is a separate `jump_right` point for returning from the lower path toward `route_2_0_top_right_entry`.
 - The lower path is `(21,12 normal entry) -> (15,16) -> (6,16) -> (21,12 jump right) -> (31,7)`.
 
@@ -51,8 +53,8 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Room `1,1` left approach points are `(0,19) -> (7,19) -> (13,19)`.
 - Room `1,1` starts with the glass route locked: `route_1_1_left_inner` points back to `route_1_1_left_mid`, and `route_1_1_right_mid` points back to `route_1_1_right_entry`.
 - The glass-edge points are `route_1_1_left_jump_right` at `(18,19)` and `route_1_1_right_jump_left` at `(20,19)`.
-- Applying the stone in room `1,1` activates `logic.room_1_1.activate_glass_route`, rewiring `route_1_1_left_inner.top_left_point_ptr` into the right-jump point and `route_1_1_right_mid.top_left_point_ptr` into the left-jump point.
-- After the stone route activation, `route_1_1_left_inner.bottom_right_point_ptr` still points to `route_1_1_left_mid`, so enemies arriving there from `route_1_1_right_jump_left` use the fallback to continue left instead of jumping back right.
+- Applying the stone in room `1,1` activates `logic.room_1_1.activate_glass_route`, rewiring `route_1_1_left_inner.bottom_right_point_ptr` into the right-jump point and `route_1_1_right_mid.top_left_point_ptr` into the left-jump point.
+- After the stone route activation, `route_1_1_left_inner.top_left_point_ptr` still points to `route_1_1_left_mid`, so enemies arriving there from `route_1_1_right_jump_left` continue left through the direction-preserving fallback.
 - After the stone route activation, room `1,1` can route through the glass area in both directions using the paired jump points.
 
 ## Room 2,1 Elevator Test
@@ -99,9 +101,11 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.
 - `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which falls to the top platform at `(19,7)`.
 - Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
+- A route-following enemy starts at room `5,2` left entry `(0,14)` with `route_4_2_slope_right` as its last point and `route_5_2_floor_mid` as its target, so it begins moving right.
 - Room `5,2` has a left-floor fork at `route_5_2_floor_right` `(16,14)`: the direct path jumps right across the gap from `(22,14)`, and the alternative path falls into the gap.
+- Returning from `route_5_2_gap_jump_left` or `route_5_2_gap_exit_jump_left` to `route_5_2_floor_right` preserves the enemy's leftward direction and selects `route_5_2_floor_mid` as the direct continuation; the optional gap-exit branch remains eligible for its normal 50/50 selection.
 - `route_5_2_gap_exit` at the room `5,2` teleport `(23,17)` exits to `route_1_2_right_teleport` at `(28,9)`, one cell left of the room `1,2` right teleport destination `(29,9)`.
-- `route_5_2_gap_exit` uses `route_5_2_gap_exit_jump_left` at `(24,17)` as its same-room return from the pit; that jump point targets `route_5_2_floor_right` so the enemy jumps out and continues left.
+- `route_5_2_gap_exit` uses `route_5_2_gap_exit_jump_left` at `(24,17)` as its same-room return from the pit; that jump point targets `route_5_2_floor_right`.
 - The room `5,2` right side uses `route_5_2_gap_jump_left` at `(25,14)` to jump left across the gap.
 
 ## Rooms 5,1 Through 6,3

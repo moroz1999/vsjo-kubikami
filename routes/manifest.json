@@ -512,7 +512,7 @@
     "rewires": [
         {
             "from": "route_1_1_left_inner",
-            "field": "topLeft",
+            "field": "bottomRight",
             "to": "route_1_1_left_jump_right",
             "sourceFile": "logic/room1_1.a80",
             "sourceLine": 16,

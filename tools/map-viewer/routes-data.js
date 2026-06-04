@@ -512,7 +512,7 @@ window.ROUTE_MAP_DATA = {
     "rewires": [
         {
             "from": "route_1_1_left_inner",
-            "field": "topLeft",
+            "field": "bottomRight",
             "to": "route_1_1_left_jump_right",
             "sourceFile": "logic/room1_1.a80",
             "sourceLine": 16,
@@ -1079,8 +1079,8 @@ window.ROUTE_MAP_DATA = {
             "x": 2,
             "y": 9,
             "type": "exit",
-            "topLeft": "route_1_2_water_left_surface",
-            "bottomRight": "route_0_1_teleport_right",
+            "topLeft": "route_0_1_teleport_right",
+            "bottomRight": "route_1_2_water_left_surface",
             "alternative": null,
             "sourceFile": "enemies.route_1_2.a80",
             "sourceLine": 73
@@ -1157,8 +1157,8 @@ window.ROUTE_MAP_DATA = {
             "x": 15,
             "y": 16,
             "type": "normal",
-            "topLeft": "route_2_0_basement_entry",
-            "bottomRight": "route_2_0_basement_end",
+            "topLeft": "route_2_0_basement_end",
+            "bottomRight": "route_2_0_basement_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_0.a80",
             "sourceLine": 61

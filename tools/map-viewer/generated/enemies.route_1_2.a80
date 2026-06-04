@@ -77,7 +77,7 @@ route_1_2_left_teleport
                             2,                           ; x
                             9,                           ; y
                             route_point_exit,            ; type
-                            route_1_2_water_left_surface, ; top-left point
-                            route_0_1_teleport_right,    ; bottom-right point
+                            route_0_1_teleport_right,    ; top-left point
+                            route_1_2_water_left_surface, ; bottom-right point
                             0                            ; alternative point
                             }

@@ -372,7 +372,7 @@ select_next_route_target_from_point
                             ret
 
 load_route_point_target
-                ; Pick the opposite neighbor from the point the enemy reached before.
+                ; Pick the opposite neighbor, or preserve direction after an unmatched arrival.
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
@@ -393,10 +393,14 @@ load_route_point_target
 load_route_point_target_check_bottom
                             ld	a,(ix+enemy.last_route_point_ptr)
                             cp	c
-                            jr	nz,load_route_point_target_bottom
+                            jr	nz,load_route_point_target_direction
 
                             ld	a,(ix+enemy.last_route_point_ptr+1)
                             cp	b
+                            jr	z,load_route_point_target_alternative
+
+load_route_point_target_direction
+                            bit	0,(ix+enemy.direction)
                             jr	z,load_route_point_target_alternative
 
 load_route_point_target_bottom

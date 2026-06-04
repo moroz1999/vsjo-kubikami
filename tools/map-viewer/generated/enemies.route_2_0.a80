@@ -65,8 +65,8 @@ route_2_0_basement_mid
                             15,                          ; x
                             16,                          ; y
                             route_point_normal,          ; type
-                            route_2_0_basement_entry,    ; top-left point
-                            route_2_0_basement_end,      ; bottom-right point
+                            route_2_0_basement_end,      ; top-left point
+                            route_2_0_basement_entry,    ; bottom-right point
                             0                            ; alternative point
                             }
 

@@ -7,6 +7,7 @@
 - Offline route movement pacing is controlled by an enemy-local offline route timer.
 - Offline route followers spend 50 frames per route point through an enemy-local timer.
 - Offline route followers use the same top-left/bottom-right and optional alternative branch selection as online route followers, but without physical point effects.
+- When an offline route follower's previous point matches neither direct link, the shared selector uses its stored horizontal movement direction.
 - Offline route followers stop on `route_point_wait` instead of advancing past it; when the room becomes active, online physics can carry them from that wait point.
 - Enemies that physically fell through the bottom edge are forced offline in the room below; route followers continue from their selected target.
 - Offline and online route followers share the same target-selection helper after a route point is reached.

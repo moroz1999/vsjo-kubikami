@@ -69,3 +69,24 @@ enemy_2
                             route_4_1_left_mid, ; target route point
                             offline_route_point_delay ; offline route timer
                             }
+
+enemy_3
+                            enemy	{
+                            5,                  ; start room column
+                            2,                  ; start room row
+                            0,                  ; start cell column
+                            14,                 ; start cell row
+                            state_route,        ; follows route points
+                            0,                  ; no behavior reroll while routing
+                            0,                  ; no behavior timer while routing
+                            direction_right,    ; initial route direction
+                            8,                  ; route step pacing
+                            8,                  ; first route step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            route_4_2_slope_right, ; last route point
+                            route_5_2_floor_mid, ; target route point
+                            offline_route_point_delay ; offline route timer
+                            }

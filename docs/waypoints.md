@@ -53,7 +53,7 @@ route_point_wait
 - A point with only one physical neighbor stores the same neighbor in both link fields.
 - `alternative_point_ptr` is an optional branch. A zero high byte disables the alternative branch.
 - Route selection first compares `last_route_point_ptr` with the two direct links and selects the opposite direct neighbor.
-- When `last_route_point_ptr` matches neither direct link, route selection falls back to `bottom_right_point_ptr`.
+- When `last_route_point_ptr` matches neither direct link, route selection preserves horizontal movement direction: left selects `top_left_point_ptr`, and right selects `bottom_right_point_ptr`.
 - If `alternative_point_ptr` is enabled, route selection chooses 50/50 between the direct neighbor and the alternative branch.
 - Correctly authored point links make two-way lines, dead ends, item rewires, random forks, and exits work without special point types.
 

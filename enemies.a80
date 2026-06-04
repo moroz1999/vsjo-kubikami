@@ -1,6 +1,6 @@
                         module	enemies
 ; Enemy constants describe gameplay behavior shared by all enemy records.
-enemy_count                 equ	3
+enemy_count                 equ	4
 enemy_size                  equ	enemy
 enemy_damage_amount         equ	32
 

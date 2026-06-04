@@ -378,6 +378,7 @@ function applySelectionClasses() {
         const pointId = group.dataset.pointId;
         const point = pointsById.get(pointId);
         const isSelected = pointId === selectedPointId;
+        const roleText = outgoingRoleLabels.get(pointId) ?? "";
         group.classList.toggle("is-selected", isSelected);
         group.classList.toggle("is-related", isRelatedPoint(pointId));
 
@@ -385,10 +386,10 @@ function applySelectionClasses() {
         marker.classList.toggle("is-selected", isSelected);
         marker.classList.toggle("is-related", outgoingIds.has(pointId) || rewireIds.has(pointId));
         marker.classList.toggle("is-incoming", incomingIds.has(pointId));
+        marker.classList.toggle("is-direct-outgoing", roleText.includes("L") || roleText.includes("R"));
         marker.classList.toggle("is-room-muted", selectedRoomId && roomId(point) !== selectedRoomId);
 
         const roleLabel = group.querySelector(".point-link-role");
-        const roleText = outgoingRoleLabels.get(pointId) ?? "";
         roleLabel.textContent = roleText;
         roleLabel.classList.toggle("is-active", roleText !== "");
 

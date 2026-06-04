@@ -87,8 +87,8 @@
             "x": 2,
             "y": 9,
             "type": "exit",
-            "topLeft": "route_1_2_water_left_surface",
-            "bottomRight": "route_0_1_teleport_right",
+            "topLeft": "route_0_1_teleport_right",
+            "bottomRight": "route_1_2_water_left_surface",
             "alternative": null,
             "sourceFile": "enemies.route_1_2.a80",
             "sourceLine": 73
