@@ -31,6 +31,18 @@ route_4_3_upper_right_exit
                             route_point_exit,            ; type
                             route_4_3_after_stairs,      ; top-left point
                             route_5_3_upper_left_entry,  ; bottom-right point
+                            route_4_3_upper_jump_left    ; alternative point
+                            }
+
+route_4_3_upper_jump_left
+                            route_point	{
+                            4,                           ; room_x
+                            3,                           ; room_y
+                            29,                          ; x
+                            7,                           ; y
+                            route_point_jump_left,       ; type
+                            route_4_3_top_entry,         ; top-left point
+                            route_4_3_upper_right_exit,  ; bottom-right point
                             0                            ; alternative point
                             }
 

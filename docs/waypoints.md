@@ -64,6 +64,7 @@ route_point_wait
 - After reaching an exit point, an online route follower moves to the selected neighbor only when that neighbor belongs to another room.
 - Exit points can also act as normal edge entries: when the selected neighbor is in the same room, the enemy keeps routing physically instead of teleporting.
 - Cross-room exit movement takes the selected point's room and position, marks the old cell for restore, and becomes offline immediately.
+- After a cross-room exit movement, route selection immediately recalculates from the new room's entry point so the stored target belongs to the new room instead of the room that was just left.
 
 ## Room Logic
 

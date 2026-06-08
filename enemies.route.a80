@@ -524,7 +524,9 @@ leave_enemy_to_route_point
                             ld	d,(hl)
                             inc	hl
                             ld	e,(hl)
-                            jp	leave_enemy_to_room_coords
+                            call	leave_enemy_to_room_coords
+                            call	select_next_route_point
+                            ret
 
 move_enemy_to_route_point
                 ; DE points to the route point that becomes the enemy's new placement.

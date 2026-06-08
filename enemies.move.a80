@@ -170,6 +170,7 @@ move_enemy_fall_down
                             ld	e,(ix+enemy.y)
                             inc	e
                             call	set_enemy_position
+                            call	advance_online_route_target_if_reached
                             ret
 
 move_enemy_to_bottom_room
