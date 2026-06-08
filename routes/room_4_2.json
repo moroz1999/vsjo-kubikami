@@ -48,11 +48,24 @@
             "x": 31,
             "y": 14,
             "type": "exit",
-            "topLeft": "route_4_2_slope_mid",
+            "topLeft": "route_4_2_slope_jump_left",
             "bottomRight": "route_5_2_left_entry",
             "alternative": "route_4_2_lower_right",
             "sourceFile": "enemies.route_4_2.a80",
             "sourceLine": 37
+        },
+        {
+            "id": "route_4_2_slope_jump_left",
+            "roomX": 4,
+            "roomY": 2,
+            "x": 30,
+            "y": 14,
+            "type": "jump_left",
+            "topLeft": "route_4_2_slope_mid",
+            "bottomRight": "route_4_2_slope_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_4_2.a80",
+            "sourceLine": 49
         },
         {
             "id": "route_4_2_lower_right",
@@ -65,7 +78,7 @@
             "bottomRight": "route_4_2_slope_right",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 49
+            "sourceLine": 61
         },
         {
             "id": "route_4_2_lower_left",
@@ -78,7 +91,7 @@
             "bottomRight": "route_4_2_lower_right",
             "alternative": "route_4_2_bottom_exit",
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 61
+            "sourceLine": 73
         },
         {
             "id": "route_4_2_left_upper",
@@ -91,7 +104,7 @@
             "bottomRight": "route_4_2_lower_left",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 73
+            "sourceLine": 85
         },
         {
             "id": "route_4_2_left_jump_right",
@@ -104,7 +117,7 @@
             "bottomRight": "route_4_2_left_upper",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 85
+            "sourceLine": 97
         },
         {
             "id": "route_4_2_left_floor",
@@ -117,7 +130,7 @@
             "bottomRight": "route_4_2_left_jump_right",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 97
+            "sourceLine": 109
         },
         {
             "id": "route_4_2_left_entry",
@@ -130,7 +143,7 @@
             "bottomRight": "route_4_2_left_floor",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 109
+            "sourceLine": 121
         },
         {
             "id": "route_4_2_bottom_exit",
@@ -143,7 +156,7 @@
             "bottomRight": "route_4_3_top_entry",
             "alternative": null,
             "sourceFile": "enemies.route_4_2.a80",
-            "sourceLine": 121
+            "sourceLine": 133
         }
     ]
 }

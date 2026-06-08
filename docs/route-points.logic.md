@@ -27,11 +27,11 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 ## Room 1,2 Teleports
 
 - Room `1,2` routes enemies from `route_1_2_right_teleport` at the right teleport landing `(28,9)` into water at `(25,11)`, then left through `(19,13) -> (13,13) -> (7,13)`.
-- The last route enemy starts at `route_1_2_right_teleport` `(28,9)` with that point as its last point and `route_1_2_water_right` as its target, so it begins moving left.
+- No authored starting route enemy currently begins in room `1,2`; the teleport chain remains connected for arrivals from room `5,2` and returns from room `0,1`.
 - Along the underwater chain in room `1,2`, `topLeft`/`L` points leftward and `bottomRight`/`R` points back rightward.
 - `route_1_2_right_teleport` is an exit point paired with `route_5_2_gap_exit`: arrivals from `5,2` continue left into water, and returns from water exit back to `5,2`.
 - The room `1,2` underwater route surfaces at `(5,9)` and reaches `route_1_2_left_teleport` at the left teleport `(2,9)`, which exits to `route_0_1_teleport_right`.
-- `route_1_2_left_teleport` uses `topLeft`/`L` for the room `0,1` teleport handoff and `bottomRight`/`R` for the return toward `route_1_2_water_left_surface`.
+- `route_1_2_left_teleport` uses `topLeft`/`L` for the return toward `route_1_2_water_left_surface` and `bottomRight`/`R` for the room `0,1` teleport handoff.
 - `route_0_1_teleport_right` sits to the right of the room `0,1` teleport at `(19,9)` and routes to `route_0_1_right_mid` at `(25,19)`, closing the teleport route back into the room `0,1` floor route.
 
 ## Room 2,0 Roof
@@ -95,17 +95,34 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 - Room `4,2` top entry `route_4_2_top_entry` receives enemies from the opened hatch in room `4,1`, then gravity carries them to `route_4_2_top_landing` at `(18,7)`.
 - The slope path reaches the right-edge fork as `(18,7) -> (24,13) -> (31,14)`; the down branch continues through `(23,15) -> (16,18) -> (19,21)`.
-- `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path exits right to `route_5_2_left_entry`, and its alternative branch continues down the slope.
+- `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path exits right to `route_5_2_left_entry`, its left return goes through `route_4_2_slope_jump_left` at `(30,14)`, and its alternative branch continues down the slope.
+- `route_4_2_slope_jump_left` is a right-side `jump_left` point that jumps back to `route_4_2_slope_mid` at `(24,13)`.
+- The last route enemy starts at `route_4_2_slope_right` `(31,14)` with that point as its last point and `route_4_2_slope_jump_left` as its target, so it begins moving left from the right edge of room `4,2`.
 - Room `4,2` right edge `route_4_2_slope_right` and room `5,2` left edge `route_5_2_left_entry` are paired entry points at local `y=14`.
 - `route_4_2_lower_right` at `(23,15)` uses `topLeft` for the descent toward `route_4_2_lower_left` and `bottomRight` for returning up toward `route_4_2_slope_right`.
 - `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.
-- `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which falls to the top platform at `(19,7)`.
+- `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which descends the room `4,3` steps to `route_4_3_after_stairs` at `(25,7)`.
 - Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
 - Room `5,2` has a left-floor fork at `route_5_2_floor_right` `(16,14)`: the direct path jumps right across the gap from `(22,14)`, and the alternative path falls into the gap.
-- Returning from `route_5_2_gap_jump_left` or `route_5_2_gap_exit_jump_left` to `route_5_2_floor_right` preserves the enemy's leftward direction and selects `route_5_2_floor_mid` as the direct continuation; the optional gap-exit branch remains eligible for its normal 50/50 selection.
+- Returning from `route_5_2_gap_jump_left` to `route_5_2_floor_right` preserves the enemy's leftward direction and selects `route_5_2_floor_mid` as the direct continuation; the optional gap-exit branch remains eligible for its normal 50/50 selection.
 - `route_5_2_gap_exit` at the room `5,2` teleport `(23,17)` exits to `route_1_2_right_teleport` at `(28,9)`, one cell left of the room `1,2` right teleport destination `(29,9)`.
-- `route_5_2_gap_exit` uses `route_5_2_gap_exit_jump_left` at `(24,17)` as its same-room return from the pit; that jump point targets `route_5_2_floor_right`.
+- `route_5_2_gap_exit` uses `route_5_2_gap_exit_jump_left` at `(24,17)` as its same-room return from the pit; that jump point targets `route_5_2_floor_mid` to bypass the optional gap-exit branch on `route_5_2_floor_right`.
 - The room `5,2` right side uses `route_5_2_gap_jump_left` at `(25,14)` to jump left across the gap.
+
+## Rooms 4,3 And 5,3 Water Elevator Loop
+
+- Room `4,3` receives the downward route from room `4,2` at `route_4_3_top_entry` `(19,0)`, then follows the shifted steps rightward to `route_4_3_after_stairs` `(25,7)`.
+- `route_4_3_after_stairs` keeps `topLeft` toward the left water drop and `bottomRight` toward the upper-right exit into room `5,3`.
+- The upper route exits room `4,3` through `route_4_3_upper_right_exit` `(31,7)` to `route_5_3_upper_left_entry` `(0,7)`.
+- `route_4_3_upper_right_exit` also has the alternative `route_4_3_upper_jump_left` at `(29,7)`, two cells left of the exit, which starts a left jump and links back to `route_4_3_top_entry`.
+- Room `5,3` upper route walks along `y=7` through `(0,7) -> (8,7) -> (16,7) -> (24,7) -> (29,7)`, where the right-wall point is a dead end and reverses back to room `4,3`.
+- Returning from room `5,3` upper route to `route_4_3_upper_right_exit` walks left to `route_4_3_after_stairs`, then continues through the left water branch.
+- The left water branch in room `4,3` drops from the upper route into `route_4_3_water_drop_entry` `(17,9)` without using the elevator, then swims right through `(23,10) -> (29,10) -> (31,10)`.
+- `route_4_3_lower_water_exit` `(31,10)` exits to the lower water entry `route_5_3_lower_left_entry` `(0,10)`.
+- Room `5,3` lower water route swims through `(0,10) -> (8,10) -> (16,10) -> (24,10)`, then the terminal point reverses back to room `4,3`.
+- Returning from room `5,3` lower water at `route_4_3_lower_water_exit` targets `route_4_3_elevator_wait` `(17,20)` on the bottom elevator lane.
+- `route_4_3_elevator_wait` targets `route_4_3_elevator_top_jump_right` `(17,7)`, which starts a local right jump toward `route_4_3_after_stairs` and rejoins the upper route.
+- Do not use a long right jump to cross room `4,3` and climb upward in one arc: enemy jumps are fixed short arcs, and upward movement outside water must come from a jump, elevator, or room geometry.
 
 ## Rooms 5,1 Through 6,3
 

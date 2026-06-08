@@ -1,0 +1,107 @@
+route_5_3_upper_left_entry
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            0,                           ; x
+                            7,                           ; y
+                            route_point_exit,            ; type
+                            route_4_3_upper_right_exit,  ; top-left point
+                            route_5_3_upper_mid_left,    ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_upper_mid_left
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            8,                           ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_5_3_upper_left_entry,  ; top-left point
+                            route_5_3_upper_mid,         ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_upper_mid
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            16,                          ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_5_3_upper_mid_left,    ; top-left point
+                            route_5_3_upper_mid_right,   ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_upper_mid_right
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            24,                          ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_5_3_upper_mid,         ; top-left point
+                            route_5_3_upper_right,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_upper_right
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            29,                          ; x
+                            7,                           ; y
+                            route_point_normal,          ; type
+                            route_5_3_upper_mid_right,   ; top-left point
+                            route_5_3_upper_mid_right,   ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_lower_left_entry
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            0,                           ; x
+                            10,                          ; y
+                            route_point_exit,            ; type
+                            route_4_3_lower_water_exit,  ; top-left point
+                            route_5_3_lower_water_mid,   ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_lower_water_mid
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            8,                           ; x
+                            10,                          ; y
+                            route_point_normal,          ; type
+                            route_5_3_lower_left_entry,  ; top-left point
+                            route_5_3_lower_water_right, ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_lower_water_right
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            16,                          ; x
+                            10,                          ; y
+                            route_point_normal,          ; type
+                            route_5_3_lower_water_mid,   ; top-left point
+                            route_5_3_lower_water_end,   ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_5_3_lower_water_end
+                            route_point	{
+                            5,                           ; room_x
+                            3,                           ; room_y
+                            24,                          ; x
+                            10,                          ; y
+                            route_point_normal,          ; type
+                            route_5_3_lower_water_right, ; top-left point
+                            route_5_3_lower_water_right, ; bottom-right point
+                            0                            ; alternative point
+                            }

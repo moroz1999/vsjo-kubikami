@@ -85,6 +85,7 @@ route_points_table
                             dw	route_4_2_top_landing
                             dw	route_4_2_slope_mid
                             dw	route_4_2_slope_right
+                            dw	route_4_2_slope_jump_left
                             dw	route_4_2_lower_right
                             dw	route_4_2_lower_left
                             dw	route_4_2_left_upper
@@ -101,8 +102,23 @@ route_points_table
                             dw	route_5_2_gap_exit_jump_left
                             dw	route_5_2_far_floor
                             dw	route_4_3_top_entry
-                            dw	route_4_3_top_landing
-                            dw	route_4_3_top_right
+                            dw	route_4_3_after_stairs
+                            dw	route_4_3_upper_right_exit
+                            dw	route_4_3_water_drop_entry
+                            dw	route_4_3_water_mid
+                            dw	route_4_3_water_right
+                            dw	route_4_3_lower_water_exit
+                            dw	route_4_3_elevator_wait
+                            dw	route_4_3_elevator_top_jump_right
+                            dw	route_5_3_upper_left_entry
+                            dw	route_5_3_upper_mid_left
+                            dw	route_5_3_upper_mid
+                            dw	route_5_3_upper_mid_right
+                            dw	route_5_3_upper_right
+                            dw	route_5_3_lower_left_entry
+                            dw	route_5_3_lower_water_mid
+                            dw	route_5_3_lower_water_right
+                            dw	route_5_3_lower_water_end
                             dw	route_5_1_left_entry
                             dw	route_5_1_bottom_left
                             dw	route_5_1_bottom_fork
@@ -133,6 +149,7 @@ route_points_table_end
                             include	"enemies.route_4_2.a80"
                             include	"enemies.route_5_2.a80"
                             include	"enemies.route_4_3.a80"
+                            include	"enemies.route_5_3.a80"
                             include	"enemies.route_5_1.a80"
                             include	"enemies.route_6_1.a80"
                             include	"enemies.route_6_2.a80"
@@ -372,7 +389,7 @@ select_next_route_target_from_point
                             ret
 
 load_route_point_target
-                ; Pick the opposite neighbor from the point the enemy reached before.
+                ; Pick the opposite neighbor, or preserve direction after an unmatched arrival.
                             ld	e,(hl)
                             inc	hl
                             ld	d,(hl)
@@ -393,10 +410,14 @@ load_route_point_target
 load_route_point_target_check_bottom
                             ld	a,(ix+enemy.last_route_point_ptr)
                             cp	c
-                            jr	nz,load_route_point_target_bottom
+                            jr	nz,load_route_point_target_direction
 
                             ld	a,(ix+enemy.last_route_point_ptr+1)
                             cp	b
+                            jr	z,load_route_point_target_alternative
+
+load_route_point_target_direction
+                            bit	0,(ix+enemy.direction)
                             jr	z,load_route_point_target_alternative
 
 load_route_point_target_bottom

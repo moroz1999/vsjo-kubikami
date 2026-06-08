@@ -78,7 +78,7 @@ route_5_2_gap_exit_jump_left
                             17,                          ; y
                             route_point_jump_left,       ; type
                             route_5_2_gap_exit,          ; top-left point
-                            route_5_2_floor_right,       ; bottom-right point
+                            route_5_2_floor_mid,         ; bottom-right point
                             0                            ; alternative point
                             }
 

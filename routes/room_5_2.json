@@ -88,7 +88,7 @@
             "y": 17,
             "type": "jump_left",
             "topLeft": "route_5_2_gap_exit",
-            "bottomRight": "route_5_2_floor_right",
+            "bottomRight": "route_5_2_floor_mid",
             "alternative": null,
             "sourceFile": "enemies.route_5_2.a80",
             "sourceLine": 73

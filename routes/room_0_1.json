@@ -65,7 +65,7 @@
             "bottomRight": "route_0_1_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_0_1.a80",
-            "sourceLine": 37
+            "sourceLine": 49
         },
         {
             "id": "route_0_1_bottom_entry",
@@ -78,7 +78,7 @@
             "bottomRight": "route_0_2_top_entry",
             "alternative": null,
             "sourceFile": "enemies.route_0_1.a80",
-            "sourceLine": 49
+            "sourceLine": 61
         },
         {
             "id": "route_0_1_water_return_entry",
@@ -91,7 +91,7 @@
             "bottomRight": "route_0_1_water_jump_right",
             "alternative": null,
             "sourceFile": "enemies.route_0_1.a80",
-            "sourceLine": 61
+            "sourceLine": 73
         },
         {
             "id": "route_0_1_water_jump_right",
@@ -104,7 +104,7 @@
             "bottomRight": "route_0_1_mid",
             "alternative": null,
             "sourceFile": "enemies.route_0_1.a80",
-            "sourceLine": 73
+            "sourceLine": 85
         }
     ]
 }
