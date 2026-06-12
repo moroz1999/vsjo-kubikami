@@ -27,6 +27,32 @@
             "alternative": null,
             "sourceFile": "enemies.route_3_0.a80",
             "sourceLine": 13
+        },
+        {
+            "id": "route_3_0_lift_bottom_entry",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 5,
+            "y": 21,
+            "type": "exit",
+            "topLeft": "route_3_0_lift_jump_left",
+            "bottomRight": "route_3_0_lift_jump_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_3_0_lift_jump_left",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 5,
+            "y": 7,
+            "type": "jump_left",
+            "topLeft": "route_3_0_left_entry",
+            "bottomRight": "route_3_0_lift_bottom_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 37
         }
     ]
 }

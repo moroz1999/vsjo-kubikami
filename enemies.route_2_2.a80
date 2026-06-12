@@ -51,7 +51,7 @@ route_2_2_left_lift_bottom_entry
                             2,                           ; room_x
                             2,                           ; room_y
                             9,                           ; x
-                            20,                          ; y
+                            21,                          ; y
                             route_point_exit,            ; type
                             route_2_2_left_lift_mid,     ; top-left point
                             route_2_3_left_lift_top_exit, ; bottom-right point
@@ -87,7 +87,7 @@ route_2_2_right_lift_bottom_entry
                             2,                           ; room_x
                             2,                           ; room_y
                             18,                          ; x
-                            20,                          ; y
+                            21,                          ; y
                             route_point_exit,            ; type
                             route_2_2_right_lift_mid,    ; top-left point
                             route_2_3_right_lift_top_exit, ; bottom-right point

@@ -349,11 +349,14 @@ window.ROUTE_MAP_DATA = {
         "route_2_3_right_lift_top_exit",
         "route_3_0_left_entry",
         "route_3_0_left_drop",
+        "route_3_0_lift_bottom_entry",
+        "route_3_0_lift_jump_left",
         "route_3_1_top_entry",
         "route_3_1_ledge_fork",
         "route_3_1_top_left_entry",
         "route_3_1_bottom_fork",
         "route_3_1_left_entry",
+        "route_3_1_elevator_wait_right",
         "route_3_1_before_hole_fork",
         "route_3_1_bottom_jump_right",
         "route_3_1_elevator_wait",
@@ -472,7 +475,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 3,
             "roomY": 0,
             "file": "room_3_0.json",
-            "points": 2
+            "points": 4
         },
         {
             "roomX": 0,
@@ -496,7 +499,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 3,
             "roomY": 1,
             "file": "room_3_1.json",
-            "points": 11
+            "points": 13
         },
         {
             "roomX": 4,
@@ -1480,7 +1483,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 2,
             "roomY": 2,
             "x": 9,
-            "y": 20,
+            "y": 21,
             "type": "exit",
             "topLeft": "route_2_2_left_lift_mid",
             "bottomRight": "route_2_3_left_lift_top_exit",
@@ -1519,7 +1522,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 2,
             "roomY": 2,
             "x": 18,
-            "y": 20,
+            "y": 21,
             "type": "exit",
             "topLeft": "route_2_2_right_lift_mid",
             "bottomRight": "route_2_3_right_lift_top_exit",
@@ -1684,6 +1687,32 @@ window.ROUTE_MAP_DATA = {
             "sourceLine": 13
         },
         {
+            "id": "route_3_0_lift_bottom_entry",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 5,
+            "y": 21,
+            "type": "exit",
+            "topLeft": "route_3_0_lift_jump_left",
+            "bottomRight": "route_3_0_lift_jump_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_3_0_lift_jump_left",
+            "roomX": 3,
+            "roomY": 0,
+            "x": 5,
+            "y": 7,
+            "type": "jump_left",
+            "topLeft": "route_3_0_left_entry",
+            "bottomRight": "route_3_0_lift_bottom_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_0.a80",
+            "sourceLine": 37
+        },
+        {
             "id": "route_3_1_top_entry",
             "roomX": 3,
             "roomY": 1,
@@ -1744,9 +1773,22 @@ window.ROUTE_MAP_DATA = {
             "type": "exit",
             "topLeft": "route_3_1_bottom_fork",
             "bottomRight": "route_2_1_right_entry",
-            "alternative": null,
+            "alternative": "route_3_1_elevator_wait_right",
             "sourceFile": "enemies.route_3_1.a80",
             "sourceLine": 49
+        },
+        {
+            "id": "route_3_1_elevator_wait_right",
+            "roomX": 3,
+            "roomY": 1,
+            "x": 5,
+            "y": 19,
+            "type": "wait",
+            "topLeft": "route_3_1_left_entry",
+            "bottomRight": "route_3_0_lift_bottom_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_1.a80",
+            "sourceLine": 61
         },
         {
             "id": "route_3_1_before_hole_fork",

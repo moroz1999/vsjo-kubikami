@@ -71,12 +71,12 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The repaired right descent mirrors it on shaft edge `x=19`: `route_2_1_right_fall_exit` `(19,21)` -> `route_2_2_right_top_entry` `(19,0)` -> `route_2_2_right_bottom_exit` `(19,21)` -> `route_2_3_right_top_entry` `(19,0)` -> `route_2_3_right_fall_landing` `(19,19)`.
 - The bottom wait points sit one cell inside the descent lanes so they do not overlap the fall path: left lane waits at `route_2_3_left_lift_wait` `(9,19)`, and right lane waits at `route_2_3_right_lift_wait` `(18,19)`.
 - `route_2_3_left_fall_landing` goes right to `route_2_3_right_lift_wait`, and `route_2_3_right_fall_landing` goes left to `route_2_3_left_lift_wait`.
-- In room `2,2`, `elevator_2_3` is not drawn while its global top is below the room bottom. Its first visible platform row is local `y=21`, so enemies standing on it belong at local `y=20`.
+- In room `2,2`, `elevator_2_3` is not drawn while its global top is below the room bottom. Lift handoff entries use local `y=21`; the enemy floor check now tests for an elevator below the lower screen edge before treating that edge as a fall.
 - After a lift route exit hands an enemy from room `2,3` into room `2,2`, the enemy is forced offline. If room `2,2` is not active, offline route steps can still advance it upward through one point per offline route timer, without elevator physics.
-- The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,20)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
-- The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,20)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
+- The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,21)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
+- The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,21)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
 - At the top stop, `route_2_1_left_elevator_top_jump_left` jumps left to `route_2_1_left_entry`, and `route_2_1_right_elevator_top_jump_right` jumps right to `route_2_1_right_mid`.
-- The current route test starts `enemy_2` at `route_2_1_left_entry` `(0,19)` with `route_1_1_right_entry` as the previous point and `route_2_1_left_mid` as the target.
+- The current route test starts `enemy_2` at `route_2_1_right_mid` `(24,19)` with `route_2_1_right_mid` as the previous point and `route_2_1_right_entry` as the target, so it enters room `3,1` through `route_3_1_left_entry` and can roll that point's alternative branch.
 
 ## Room 3,1 Split
 
@@ -86,6 +86,9 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The pre-hole fork can continue to the right-jump point at `(12,19)` or branch left to `route_3_1_elevator_wait` at `(4,19)`.
 - `route_3_1_elevator_wait` targets `route_3_1_elevator_top_jump_left` at `(4,7)` and waits for elevator motion instead of flying upward.
 - `route_3_1_elevator_top_jump_left` starts the left dismount jump toward the upper-left ledge entry.
+- `route_3_1_left_entry` can alternatively branch to the right elevator wait point `route_3_1_elevator_wait_right` at `(5,19)`, which targets the upper-room lift entry while the physical elevator carries the enemy through the top screen edge.
+- `elevator_3_1` starts at `cur_height=0`, placing its platform top at room `3,1` local `y=20`; its `end_height=34` carries riders to room `3,0` local `y=7`.
+- The right elevator branch currently enters room `3,0` through the temporary lower-edge test point `route_3_0_lift_bottom_entry` `(5,21)`, then keeps riding to `route_3_0_lift_jump_left` `(5,7)` for a left dismount toward `route_3_0_left_entry`.
 - The right side of the floor break has only `route_3_1_right_jump_left` at `(14,19)` and `route_3_1_right_entry` at `(31,19)`.
 - The ledge and ground forks duplicate their left entries in `alternative_point_ptr` so one-way arrivals from a fall or drop still choose between the left entry and the right continuation 50/50 without adding filler points.
 

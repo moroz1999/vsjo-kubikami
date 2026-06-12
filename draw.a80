@@ -87,6 +87,9 @@ draw_state
                             call	restore_pixels
 
                             call	logic.room_1_3.restore_previous
+                            
+                            //todo: remove after debug
+                            call	hero.draw_hero
 
                             call	animate.draw_room
                             call	animate.check

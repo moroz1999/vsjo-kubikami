@@ -349,11 +349,14 @@
         "route_2_3_right_lift_top_exit",
         "route_3_0_left_entry",
         "route_3_0_left_drop",
+        "route_3_0_lift_bottom_entry",
+        "route_3_0_lift_jump_left",
         "route_3_1_top_entry",
         "route_3_1_ledge_fork",
         "route_3_1_top_left_entry",
         "route_3_1_bottom_fork",
         "route_3_1_left_entry",
+        "route_3_1_elevator_wait_right",
         "route_3_1_before_hole_fork",
         "route_3_1_bottom_jump_right",
         "route_3_1_elevator_wait",
@@ -472,7 +475,7 @@
             "roomX": 3,
             "roomY": 0,
             "file": "room_3_0.json",
-            "points": 2
+            "points": 4
         },
         {
             "roomX": 0,
@@ -496,7 +499,7 @@
             "roomX": 3,
             "roomY": 1,
             "file": "room_3_1.json",
-            "points": 11
+            "points": 13
         },
         {
             "roomX": 4,

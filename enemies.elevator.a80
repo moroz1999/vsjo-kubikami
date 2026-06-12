@@ -95,7 +95,7 @@ move_elevator_rider_up
                             dec	e
                             call	objects.check_coords
                             cp	objects.roomedge_top
-                            jp	z,move_enemy_to_top_room
+                            jp	z,move_elevator_enemy_to_top_room
 
                             cp	objects.b_empty
                             ret	nz
@@ -116,7 +116,7 @@ move_elevator_rider_down
                             jp	set_enemy_position
 
 move_enemy_to_top_room
-                ; Elevator riders can leave through the top edge into the room above.
+                ; Enemies can leave through the top edge into the room above.
                             ld	a,(ix+enemy.room_y)
                             or	a
                             ret	z
@@ -130,3 +130,20 @@ move_enemy_to_top_room
 
                             ld	e,rooms.room_h-1
                             jp	leave_enemy_to_room_coords
+
+move_elevator_enemy_to_top_room
+                ; Elevator riders enter the upper room one row above the bottom edge.
+                            ld	a,(ix+enemy.room_y)
+                            or	a
+                            ret	z
+                            dec	a
+                            ld	c,a
+
+                            ld	a,(ix+enemy.room_x)
+                            ld	b,a
+
+                            ld	d,(ix+enemy.x)
+
+                            ld	e,rooms.room_h-1
+                            call	leave_enemy_to_room_coords
+                            jp	advance_online_route_target_if_reached

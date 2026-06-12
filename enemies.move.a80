@@ -352,12 +352,24 @@ check_floor_below_at_coords
                             cp	objects.b_empty
                             jr	z,check_floor_below_at_coords_elevator
 
+                            cp	objects.roomedge_bottom
+                            jr	z,check_floor_below_at_coords_bottom_edge
+
                             pop	de
                             ret
 
 check_floor_below_at_coords_elevator
                             pop	de
                             jp	check_elevator_floor_at_coords
+
+check_floor_below_at_coords_bottom_edge
+                            pop	de
+                            call	check_elevator_floor_at_coords
+                            ret	nz
+
+                            ld	a,objects.roomedge_bottom
+                            cp	objects.b_empty
+                            ret
 
 set_enemy_position
                 ; All visible position changes restore the old cell first.

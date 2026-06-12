@@ -63,9 +63,22 @@
             "type": "exit",
             "topLeft": "route_3_1_bottom_fork",
             "bottomRight": "route_2_1_right_entry",
-            "alternative": null,
+            "alternative": "route_3_1_elevator_wait_right",
             "sourceFile": "enemies.route_3_1.a80",
             "sourceLine": 49
+        },
+        {
+            "id": "route_3_1_elevator_wait_right",
+            "roomX": 3,
+            "roomY": 1,
+            "x": 5,
+            "y": 19,
+            "type": "wait",
+            "topLeft": "route_3_1_left_entry",
+            "bottomRight": "route_3_0_lift_bottom_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_1.a80",
+            "sourceLine": 61
         },
         {
             "id": "route_3_1_before_hole_fork",

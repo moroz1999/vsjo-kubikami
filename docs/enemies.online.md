@@ -35,6 +35,7 @@
 - Online enemies that reach or stand on the bottom screen edge move to the same `x` at `y=0` in the room below and become offline.
 - Route followers use the same bottom-edge handoff from `state_route`; they do not need to enter `state_fall` first.
 - After reaching an exit point, an online route follower moves to the selected linked entry point, takes that point's room and position, marks its old cell for restore, and becomes offline immediately.
+- Online route followers process reached screen-exit points on the same movement tick, so an enemy that steps onto an exit point is spawned at the linked entry without waiting for the next frame.
 - The route-exit handoff immediately treats the linked entry point as reached and selects the next target from that new room before offline simulation continues.
 - Visible enemy position changes mark the previous cell for restore through the shared position setter.
 - Cross-room enemy movement uses a shared leave-room path that marks the old cell for restore, stores the new room-local position, resets the offline route timer, and switches the enemy offline.

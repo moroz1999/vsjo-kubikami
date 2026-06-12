@@ -55,6 +55,18 @@ route_3_1_left_entry
                             route_point_exit,            ; type
                             route_3_1_bottom_fork,       ; top-left point
                             route_2_1_right_entry,       ; bottom-right point
+                            route_3_1_elevator_wait_right ; alternative point
+                            }
+
+route_3_1_elevator_wait_right
+                            route_point	{
+                            3,                           ; room_x
+                            1,                           ; room_y
+                            5,                           ; x
+                            19,                          ; y
+                            route_point_wait,            ; type
+                            route_3_1_left_entry,        ; top-left point
+                            route_3_0_lift_bottom_entry, ; bottom-right point
                             0                            ; alternative point
                             }
 

@@ -15,3 +15,5 @@ This preserves the old frame order that already worked with room transitions.
 - Elevator movement carries the hero and online enemies through `elevator_move_items`.
 - Enemies treat elevator tops as solid floor during fall checks and ledge checks, so they can stand on elevators and walk left or right along them while the platform itself stays outside room geometry.
 - Enemy elevator riders use the shared bottom-room handoff when carried below the screen and a matching top-room handoff when carried above it.
+- Enemy top-room elevator handoff places riders on the lower edge at `y=21`. Enemy floor checks test for an elevator below the lower screen edge before treating that edge as a fall into the room below.
+- Upward elevator routes should target the upper-room entry point directly. A `route_point_exit` at the top row of the lower room fires before the platform crosses the screen edge, forcing the enemy offline and making it skip the visible elevator ride on the upper screen.

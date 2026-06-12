@@ -82,11 +82,14 @@ route_points_table
                             dw	route_2_3_right_lift_top_exit
                             dw	route_3_0_left_entry
                             dw	route_3_0_left_drop
+                            dw	route_3_0_lift_bottom_entry
+                            dw	route_3_0_lift_jump_left
                             dw	route_3_1_top_entry
                             dw	route_3_1_ledge_fork
                             dw	route_3_1_top_left_entry
                             dw	route_3_1_bottom_fork
                             dw	route_3_1_left_entry
+                            dw	route_3_1_elevator_wait_right
                             dw	route_3_1_before_hole_fork
                             dw	route_3_1_bottom_jump_right
                             dw	route_3_1_elevator_wait
@@ -229,11 +232,8 @@ move_offline_route_enemy_step
                             ex	de,hl
                             call	move_enemy_to_route_point
                             pop	hl
-                            call	is_route_point_wait
-                            jr	z,move_offline_route_enemy_wait
                             call	select_next_route_target_from_point
 
-move_offline_route_enemy_wait
                             call	refresh_enemy_simulation_mode
                             ret
 
@@ -276,6 +276,7 @@ move_route_enemy_step
                             ld	(ix+enemy.move_timer),a
 
                             call	move_route_step
+                            call	advance_online_route_exit_if_reached
                             ret
 
 advance_online_route_target_if_reached
@@ -288,6 +289,24 @@ advance_online_route_target_if_reached
 
                             call	select_next_route_point
                             ret
+
+advance_online_route_exit_if_reached
+                ; Screen exits should hand off on the same online movement tick.
+                            call	is_target_route_point_reached
+                            ret	nz
+
+                            call	get_target_route_point
+                            ret	z
+
+                            push	hl
+                            ld	de,route_point.type
+                            add	hl,de
+                            ld	a,(hl)
+                            pop	hl
+                            cp	route_point_exit
+                            ret	nz
+
+                            jp	select_next_route_point
 
 move_route_step
                             call	get_target_route_point
