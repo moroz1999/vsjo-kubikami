@@ -42,6 +42,14 @@ patch_stairs_if_unfolded
                             call	animate.patch_last_frame
                             ret
 
+activate_stairs_route
+                            ld	hl,enemies.route_1_0_lower_walk+enemies.route_point.top_left_point_ptr
+                            ld	de,enemies.route_1_0_stairs_lower_jump_left
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
+
                 ; Restore every buffered room drop to its source state
 reset_room_waterdrops
                             ld	a,(rooms.room_waterdrops_count)

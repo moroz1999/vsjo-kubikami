@@ -13,6 +13,14 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Room `3,0` continues from the room `2,0` top-right entry with a gravity-driven vertical fall route `(0,7) -> (2,21)`.
 - When the `3,0` fall reaches the bottom edge, the enemy moves offline into room `3,1` at the top edge `(2,0)`.
 
+## Room 1,0 Stairs
+
+- Room `1,0` keeps its default route connected as `(0,5) -> (10,3) -> (20,13) -> (31,7)`.
+- The unfolded stairs enable a right-to-left jump chain from `route_1_0_lower_walk` through `(19,12 jump_left) -> (15,9 jump_left) -> (12,7 jump_left)` back to `route_1_0_arch`.
+- The stair jump points exist in the route table, but they are not connected to the main route until `logic.room_1_0.activate_stairs_route` rewires `route_1_0_lower_walk.top_left_point_ptr` to `route_1_0_stairs_lower_jump_left`.
+- The debug stairs key is `debug.initial_stairs_unfolded`; when enabled it calls `logic.stairs.apply_effect`, so the final room art and enemy route rewire both start already applied.
+- The current route test starts `enemy_2` in room `1,0` at `route_1_0_right_entry` `(31,7)` with `route_2_0_left_entry` as the previous point, so it immediately moves right-to-left toward the stair branch.
+
 ## Room 0,2 Water Loop
 
 - Room `0,2` starts from the top entry `(10,0)`, which is paired with room `0,1` bottom entry `(10,21)`.
@@ -76,7 +84,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,21)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
 - The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,21)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
 - At the top stop, `route_2_1_left_elevator_top_jump_left` jumps left to `route_2_1_left_entry`, and `route_2_1_right_elevator_top_jump_right` jumps right to `route_2_1_right_mid`.
-- The current route test starts `enemy_2` at `route_2_1_right_mid` `(24,19)` with `route_2_1_right_mid` as the previous point and `route_2_1_right_entry` as the target, so it enters room `3,1` through `route_3_1_left_entry` and can roll that point's alternative branch.
+- No current route test enemy starts in room `2,1`; `enemy_2` has been moved to room `1,0` for the stairs route test.
 
 ## Room 3,1 Split
 

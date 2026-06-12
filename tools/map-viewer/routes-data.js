@@ -294,6 +294,9 @@ window.ROUTE_MAP_DATA = {
         "route_1_0_left_entry",
         "route_1_0_arch",
         "route_1_0_lower_walk",
+        "route_1_0_stairs_lower_jump_left",
+        "route_1_0_stairs_upper_jump_left",
+        "route_1_0_stairs_wall_jump_left",
         "route_1_0_right_entry",
         "route_1_1_left_entry",
         "route_1_1_left_mid",
@@ -463,7 +466,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 1,
             "roomY": 0,
             "file": "room_1_0.json",
-            "points": 4
+            "points": 7
         },
         {
             "roomX": 2,
@@ -972,6 +975,45 @@ window.ROUTE_MAP_DATA = {
             "sourceLine": 25
         },
         {
+            "id": "route_1_0_stairs_lower_jump_left",
+            "roomX": 1,
+            "roomY": 0,
+            "x": 19,
+            "y": 12,
+            "type": "jump_left",
+            "topLeft": "route_1_0_stairs_upper_jump_left",
+            "bottomRight": "route_1_0_lower_walk",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_0.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_1_0_stairs_upper_jump_left",
+            "roomX": 1,
+            "roomY": 0,
+            "x": 15,
+            "y": 9,
+            "type": "jump_left",
+            "topLeft": "route_1_0_stairs_wall_jump_left",
+            "bottomRight": "route_1_0_stairs_lower_jump_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_0.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_1_0_stairs_wall_jump_left",
+            "roomX": 1,
+            "roomY": 0,
+            "x": 12,
+            "y": 7,
+            "type": "jump_left",
+            "topLeft": "route_1_0_arch",
+            "bottomRight": "route_1_0_stairs_upper_jump_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_1_0.a80",
+            "sourceLine": 61
+        },
+        {
             "id": "route_1_0_right_entry",
             "roomX": 1,
             "roomY": 0,
@@ -982,7 +1024,7 @@ window.ROUTE_MAP_DATA = {
             "bottomRight": "route_2_0_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_1_0.a80",
-            "sourceLine": 37
+            "sourceLine": 73
         },
         {
             "id": "route_1_1_left_entry",

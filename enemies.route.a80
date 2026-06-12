@@ -27,6 +27,9 @@ route_points_table
                             dw	route_1_0_left_entry
                             dw	route_1_0_arch
                             dw	route_1_0_lower_walk
+                            dw	route_1_0_stairs_lower_jump_left
+                            dw	route_1_0_stairs_upper_jump_left
+                            dw	route_1_0_stairs_wall_jump_left
                             dw	route_1_0_right_entry
                             dw	route_1_1_left_entry
                             dw	route_1_1_left_mid

@@ -37,6 +37,7 @@ stairs_false
 apply_effect
                             ld	a,1
                             ld	(logic.room_1_0.stairs_unfolded),a
+                            call	logic.room_1_0.activate_stairs_route
                             ret
 
 item_animation

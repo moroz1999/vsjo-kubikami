@@ -26,6 +26,7 @@
 - The stairs are used in room `1,0` when the hero stands at `y=13` and `x=12..17`.
 - Using them starts the unfolding animation and removes the item from the pocket.
 - Room `1,0` stores the persistent result in `logic.room_1_0.stairs_unfolded`; `on_enter` applies the final unfolded-stairs frame when this flag is set.
+- The enemy route effect is `logic.room_1_0.activate_stairs_route`: it rewires `route_1_0_lower_walk.top_left_point_ptr` to `route_1_0_stairs_lower_jump_left`, enabling the right-to-left stair jump chain only after the stairs are unfolded.
 
 ## Red Card
 
