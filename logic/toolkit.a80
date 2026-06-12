@@ -21,13 +21,20 @@ action
                             cp	19
                             jr	nz,toolkit_false
 
-                            ld	a,elevators.state_down
-                            ld	(elevators.elevator_2_3+elevators.elevator.state),a
+                            call	apply_effect
 
                             call	hero.delete_item_in_pocket
 
                             ld	a,255
                             ret
+
+apply_effect
+                            ld	a,elevators.state_down
+                            ld	(elevators.elevator_2_3+elevators.elevator.state),a
+
+                            call	logic.room_2_1.activate_elevator_route
+                            ret
+
 toolkit_false
                             xor	a
                             ret

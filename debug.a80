@@ -4,6 +4,7 @@ route_points_debug_enabled  equ	1
 initial_broken_glass        equ	0
 initial_red_door_opened     equ	1
 initial_hatch_key_used      equ	1
+initial_elevator_repaired   equ	1
 initial_generator_started   equ	0
 initial_stairs_unfolded     equ	0
 
@@ -27,6 +28,12 @@ apply_initial_item_states
                             if	initial_hatch_key_used
                             call	logic.key.apply_effect
                             ld	a,items.key
+                            call	items.remove_item
+                            endif
+
+                            if	initial_elevator_repaired
+                            call	logic.toolkit.apply_effect
+                            ld	a,items.toolkit
                             call	items.remove_item
                             endif
 

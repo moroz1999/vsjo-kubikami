@@ -33,12 +33,17 @@ if (!is_dir($outputDir) && !mkdir($outputDir, 0777, true)) {
 
 write_route_table($outputDir . DIRECTORY_SEPARATOR . 'enemies.route.a80', $orderedIds, $includeFiles, $routeLogicTail);
 write_route_files($outputDir, $includeFiles, $pointsById, $orderedIds);
+write_viewer_data(
+    $toolDir . DIRECTORY_SEPARATOR . 'routes-data.js',
+    build_viewer_data($data, $pointsById, $orderedIds)
+);
 
 printf(
-    "Generated %s and %d route include files in %s\n",
+    "Generated %s, %d route include files in %s, and %s\n",
     'enemies.route.a80',
     count($includeFiles),
-    $outputDir
+    $outputDir,
+    'routes-data.js'
 );
 
 function read_route_data(string $path): array
@@ -236,6 +241,29 @@ function write_route_files(string $outputDir, array $includeFiles, array $points
         $blocks = array_map('route_point_block', $points);
         write_text($path, implode(PHP_EOL . PHP_EOL, $blocks) . PHP_EOL);
     }
+}
+
+function build_viewer_data(array $data, array $pointsById, array $orderedIds): array
+{
+    $points = [];
+    foreach ($orderedIds as $id) {
+        $points[] = $pointsById[$id];
+    }
+
+    $viewerData = $data;
+    $viewerData['points'] = $points;
+
+    return $viewerData;
+}
+
+function write_viewer_data(string $path, array $data): void
+{
+    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if ($json === false) {
+        fail('Cannot encode viewer data: ' . json_last_error_msg());
+    }
+
+    write_text($path, "window.ROUTE_MAP_DATA = {$json};" . PHP_EOL);
 }
 
 function route_file_from_room(array $point): string

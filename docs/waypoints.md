@@ -54,6 +54,7 @@ route_point_wait
 - `alternative_point_ptr` is an optional branch. A zero high byte disables the alternative branch.
 - Route selection first compares `last_route_point_ptr` with the two direct links and selects the opposite direct neighbor.
 - When `last_route_point_ptr` matches neither direct link, route selection preserves horizontal movement direction: left selects `top_left_point_ptr`, and right selects `bottom_right_point_ptr`.
+- `route_point_wait` is the exception to direction fallback: an unmatched arrival selects `top_left_point_ptr` so elevator wait points keep targeting their lift/top exit instead of walking onward.
 - If `alternative_point_ptr` is enabled, route selection chooses 50/50 between the direct neighbor and the alternative branch.
 - Correctly authored point links make two-way lines, dead ends, item rewires, random forks, and exits work without special point types.
 
@@ -75,7 +76,7 @@ route_point_wait
 - `routes/manifest.json` is the route manifest for enemy route asm generation and the browser map viewer.
 - Route points are split by room under `routes/room_X_Y.json`.
 - Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files.
-- Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/`; use `--project` only when intentionally replacing the root route asm files.
+- Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/` and refresh `tools/map-viewer/routes-data.js`; use `--project` only when intentionally replacing the root route asm files.
 - `compile.bat` regenerates the project route asm from the split route JSON data before assembling the game.
 
 ## Movement References

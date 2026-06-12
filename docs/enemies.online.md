@@ -23,6 +23,7 @@
 - When the target `x` matches and the target is below, the route follower lets gravity move it down in air and swims downward in water.
 - Online route followers choose the direct neighbor opposite to `last_route_point_ptr`.
 - If the previous point matches neither direct link, online route followers preserve horizontal movement direction: left selects `top_left_point_ptr`, and right selects `bottom_right_point_ptr`.
+- `route_point_wait` points do not use that direction fallback; unmatched arrivals select `top_left_point_ptr` and keep waiting for elevator or jump physics to reach the lift/top target.
 - If the reached point has an enabled `alternative_point_ptr`, online route followers choose 50/50 between the direct neighbor and the alternative branch.
 - Online route followers advance their target before gravity is applied; gravity itself does not choose route targets.
 - Online route followers do not advance route targets while `state_jump` is active; jump targets are processed after the arc ends and routing resumes.

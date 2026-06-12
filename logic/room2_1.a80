@@ -20,5 +20,19 @@ logic
                             ld	(stone_fallen),a
 
                             ret
+
+activate_elevator_route
+                            ld	hl,enemies.route_2_1_left_mid+enemies.route_point.bottom_right_point_ptr
+                            ld	de,enemies.route_2_1_left_fall_exit
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+
+                            ld	hl,enemies.route_2_1_right_mid+enemies.route_point.top_left_point_ptr
+                            ld	de,enemies.route_2_1_right_fall_exit
+                            ld	(hl),e
+                            inc	hl
+                            ld	(hl),d
+                            ret
 stone_fallen                db	0
                         endmodule

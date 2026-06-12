@@ -1,0 +1,110 @@
+{
+    "roomX": 2,
+    "roomY": 3,
+    "points": [
+        {
+            "id": "route_2_3_left_top_entry",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 8,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_2_2_left_bottom_exit",
+            "bottomRight": "route_2_3_left_fall_landing",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_2_3_left_fall_landing",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 8,
+            "y": 19,
+            "type": "normal",
+            "topLeft": "route_2_3_left_top_entry",
+            "bottomRight": "route_2_3_right_lift_wait",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_2_3_left_lift_wait",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 9,
+            "y": 19,
+            "type": "wait",
+            "topLeft": "route_2_3_left_lift_top_exit",
+            "bottomRight": "route_2_3_left_fall_landing",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_2_3_left_lift_top_exit",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 9,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_2_2_left_lift_bottom_entry",
+            "bottomRight": "route_2_3_left_lift_wait",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_2_3_right_top_entry",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 19,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_2_2_right_bottom_exit",
+            "bottomRight": "route_2_3_right_fall_landing",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 49
+        },
+        {
+            "id": "route_2_3_right_fall_landing",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 19,
+            "y": 19,
+            "type": "normal",
+            "topLeft": "route_2_3_left_lift_wait",
+            "bottomRight": "route_2_3_right_lift_wait",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 61
+        },
+        {
+            "id": "route_2_3_right_lift_wait",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 18,
+            "y": 19,
+            "type": "wait",
+            "topLeft": "route_2_3_right_lift_top_exit",
+            "bottomRight": "route_2_3_right_fall_landing",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 73
+        },
+        {
+            "id": "route_2_3_right_lift_top_exit",
+            "roomX": 2,
+            "roomY": 3,
+            "x": 18,
+            "y": 0,
+            "type": "exit",
+            "topLeft": "route_2_2_right_lift_bottom_entry",
+            "bottomRight": "route_2_3_right_lift_wait",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_3.a80",
+            "sourceLine": 85
+        }
+    ]
+}

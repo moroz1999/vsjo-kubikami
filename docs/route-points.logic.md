@@ -57,15 +57,26 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - After the stone route activation, `route_1_1_left_inner.top_left_point_ptr` still points to `route_1_1_left_mid`, so enemies arriving there from `route_1_1_right_jump_left` continue left through the direction-preserving fallback.
 - After the stone route activation, room `1,1` can route through the glass area in both directions using the paired jump points.
 
-## Room 2,1 Elevator Test
+## Rooms 2,1 Through 2,3 Elevator Repair Route
 
 - Room `2,1` can show the stopped `elevator_2_3` platform from below; its top sits at local `y=20`, so riders stand at `y=19`.
 - Room `1,1` right entry `(31,19)` and room `2,1` left entry `(0,19)` are paired entry points.
 - Room `2,1` right entry `(31,19)` and room `3,1` left entry `(0,19)` are paired entry points.
 - Room `2,1` upper-right cave entry `(31,7)` and room `3,1` upper-left ledge entry `(0,7)` are paired entry points.
 - The upper-right cave entry in room `2,1` is currently a terminal paired entry point; both direct links return to room `3,1`.
-- The right and left route segments are connected through the elevator lane as `(31,19) -> (24,19) -> (20,19 jump left) -> (7,19) -> (0,19)`.
-- `route_2_1_elevator_jump_left` at `(20,19)` is the top dismount jump toward the left route segment.
+- Before the toolkit repair, the right and left route segments are connected through the stopped elevator lane as `(31,19) -> (24,19) -> (20,19 normal) -> (7,19) -> (0,19)`.
+- `route_2_1_elevator_jump_left` keeps its historical label at `(20,19)`, but it is a normal route point rather than a jump point.
+- Applying the toolkit in room `2,1` calls `logic.room_2_1.activate_elevator_route`, starts `elevator_2_3` downward, rewires `route_2_1_left_mid.bottom_right_point_ptr` to `route_2_1_left_fall_exit`, and rewires `route_2_1_right_mid.top_left_point_ptr` to `route_2_1_right_fall_exit`.
+- The repaired left descent uses shaft edge `x=8`: `route_2_1_left_fall_exit` `(8,21)` -> `route_2_2_left_top_entry` `(8,0)` -> `route_2_2_left_bottom_exit` `(8,21)` -> `route_2_3_left_top_entry` `(8,0)` -> `route_2_3_left_fall_landing` `(8,19)`.
+- The repaired right descent mirrors it on shaft edge `x=19`: `route_2_1_right_fall_exit` `(19,21)` -> `route_2_2_right_top_entry` `(19,0)` -> `route_2_2_right_bottom_exit` `(19,21)` -> `route_2_3_right_top_entry` `(19,0)` -> `route_2_3_right_fall_landing` `(19,19)`.
+- The bottom wait points sit one cell inside the descent lanes so they do not overlap the fall path: left lane waits at `route_2_3_left_lift_wait` `(9,19)`, and right lane waits at `route_2_3_right_lift_wait` `(18,19)`.
+- `route_2_3_left_fall_landing` goes right to `route_2_3_right_lift_wait`, and `route_2_3_right_fall_landing` goes left to `route_2_3_left_lift_wait`.
+- In room `2,2`, `elevator_2_3` is not drawn while its global top is below the room bottom. Its first visible platform row is local `y=21`, so enemies standing on it belong at local `y=20`.
+- After a lift route exit hands an enemy from room `2,3` into room `2,2`, the enemy is forced offline. If room `2,2` is not active, offline route steps can still advance it upward through one point per offline route timer, without elevator physics.
+- The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,20)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
+- The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,20)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
+- At the top stop, `route_2_1_left_elevator_top_jump_left` jumps left to `route_2_1_left_entry`, and `route_2_1_right_elevator_top_jump_right` jumps right to `route_2_1_right_mid`.
+- The current route test starts `enemy_2` at `route_2_1_left_entry` `(0,19)` with `route_1_1_right_entry` as the previous point and `route_2_1_left_mid` as the target.
 
 ## Room 3,1 Split
 

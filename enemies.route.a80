@@ -56,6 +56,30 @@ route_points_table
                             dw	route_2_1_right_top_entry
                             dw	route_2_1_right_mid
                             dw	route_2_1_elevator_jump_left
+                            dw	route_2_1_left_fall_exit
+                            dw	route_2_1_right_fall_exit
+                            dw	route_2_1_left_lift_bottom_entry
+                            dw	route_2_1_left_elevator_top_jump_left
+                            dw	route_2_1_right_lift_bottom_entry
+                            dw	route_2_1_right_elevator_top_jump_right
+                            dw	route_2_2_left_top_entry
+                            dw	route_2_2_left_bottom_exit
+                            dw	route_2_2_right_top_entry
+                            dw	route_2_2_right_bottom_exit
+                            dw	route_2_2_left_lift_bottom_entry
+                            dw	route_2_2_left_lift_mid
+                            dw	route_2_2_left_lift_top_exit
+                            dw	route_2_2_right_lift_bottom_entry
+                            dw	route_2_2_right_lift_mid
+                            dw	route_2_2_right_lift_top_exit
+                            dw	route_2_3_left_top_entry
+                            dw	route_2_3_left_fall_landing
+                            dw	route_2_3_left_lift_wait
+                            dw	route_2_3_left_lift_top_exit
+                            dw	route_2_3_right_top_entry
+                            dw	route_2_3_right_fall_landing
+                            dw	route_2_3_right_lift_wait
+                            dw	route_2_3_right_lift_top_exit
                             dw	route_3_0_left_entry
                             dw	route_3_0_left_drop
                             dw	route_3_1_top_entry
@@ -143,6 +167,8 @@ route_points_table_end
                             include	"enemies.route_1_2.a80"
                             include	"enemies.route_2_0.a80"
                             include	"enemies.route_2_1.a80"
+                            include	"enemies.route_2_2.a80"
+                            include	"enemies.route_2_3.a80"
                             include	"enemies.route_3_0.a80"
                             include	"enemies.route_3_1.a80"
                             include	"enemies.route_4_1.a80"
@@ -343,8 +369,10 @@ select_next_route_point_normal
                             ret
 
 select_next_route_point_wait
-                ; Wait points keep routing active while the enemy stands in place.
-                            jr	select_next_route_point_normal
+                ; Wait points do not use direction fallback after unmatched arrivals.
+                            pop	hl
+                            call	select_wait_route_target_from_point
+                            ret
 
 select_next_route_point_jump_left
                 ; Jump points choose their jump direction from the selected neighbor.
@@ -388,6 +416,43 @@ select_next_route_target_from_point
                             call	store_last_route_point
                             call	store_target_route_point
                             ret
+
+select_wait_route_target_from_point
+                ; Wait points default to the lift/top-left branch when arrival is unmatched.
+                            push	hl
+                            ld	de,route_point.top_left_point_ptr
+                            add	hl,de
+                            call	load_wait_route_point_target
+                            pop	hl
+                            call	store_last_route_point
+                            call	store_target_route_point
+                            ret
+
+load_wait_route_point_target
+                ; Pick the opposite direct neighbor, but never fall back to direction.
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            ld	c,(hl)
+                            inc	hl
+                            ld	b,(hl)
+                            inc	hl
+
+                            ld	a,(ix+enemy.last_route_point_ptr)
+                            cp	e
+                            jr	nz,load_wait_route_point_target_alternative
+
+                            ld	a,(ix+enemy.last_route_point_ptr+1)
+                            cp	d
+                            jr	nz,load_wait_route_point_target_alternative
+
+load_wait_route_point_target_bottom
+                            ld	e,c
+                            ld	d,b
+
+load_wait_route_point_target_alternative
+                            jr	load_route_point_target_alternative
 
 load_route_point_target
                 ; Pick the opposite neighbor, or preserve direction after an unmatched arrival.

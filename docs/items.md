@@ -7,6 +7,13 @@
 - The enemy route effect is `logic.room_2_0.activate_roof_route`: it rewires `route_2_0_top_mid.bottom_right_point_ptr` to the normal `route_2_0_basement_entry`.
 - After the rewire, enemies can enter the lower room path through the broken roof route without starting a jump, then use the separate basement jump point to climb back right.
 
+## Toolkit
+
+- The toolkit is used in room `2,1` when the hero stands at `y=19` and `x=8..19`.
+- Using it starts `elevator_2_3` downward, calls `logic.room_2_1.activate_elevator_route`, and removes the item from the pocket.
+- The enemy route effect breaks the pre-repair route across the stopped elevator: `route_2_1_left_mid.bottom_right_point_ptr` goes to `route_2_1_left_fall_exit`, and `route_2_1_right_mid.top_left_point_ptr` goes to `route_2_1_right_fall_exit`.
+- After the rewire, route followers fall down the `2,1 -> 2,2 -> 2,3` shaft lanes and use the bottom wait points to ride the repaired elevator back up.
+
 ## Stone
 
 - The stone is used in room `1,1` when the hero stands at `(20,19)`.
@@ -57,12 +64,12 @@
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
-- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
+- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
 - Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `1`, generator started `0`, and stairs unfolded `0`.
+- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `1`, elevator repaired by toolkit `1`, generator started `0`, and stairs unfolded `0`.
 
 ## Persistent Room Art
 

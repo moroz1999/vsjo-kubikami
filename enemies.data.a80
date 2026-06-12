@@ -51,7 +51,7 @@ enemy_1
 
 enemy_2
                             enemy	{
-                            4,                  ; start room column
+                            2,                  ; start room column
                             1,                  ; start room row
                             0,                  ; start cell column
                             19,                 ; start cell row
@@ -65,8 +65,8 @@ enemy_2
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
-                            route_3_1_right_entry, ; last route point
-                            route_4_1_left_mid, ; target route point
+                            route_1_1_right_entry, ; last route point
+                            route_2_1_left_mid, ; target route point
                             offline_route_point_delay ; offline route timer
                             }
 
