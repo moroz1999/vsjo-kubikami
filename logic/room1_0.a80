@@ -43,7 +43,7 @@ patch_stairs_if_unfolded
                             ret
 
 activate_stairs_route
-                            ld	hl,enemies.route_1_0_lower_walk+enemies.route_point.top_left_point_ptr
+                            ld	hl,enemies.route_1_0_lower_walk+enemies.route_point.alternative_point_ptr
                             ld	de,enemies.route_1_0_stairs_lower_jump_left
                             ld	(hl),e
                             inc	hl
@@ -69,7 +69,7 @@ reset_room_waterdrops_next
 
                             ld	h,d
                             ld	l,e
-                            call	waterdrops.reset_drop
+                            call	waterdrops.reset_drop_after_restore
 
                             pop	hl
                             pop	bc
@@ -214,7 +214,7 @@ apply_rain_mask_next
 
                             ld	h,d
                             ld	l,e
-                            call	waterdrops.reset_drop
+                            call	waterdrops.reset_drop_after_restore
 
 apply_rain_mask_restore
                             pop	hl

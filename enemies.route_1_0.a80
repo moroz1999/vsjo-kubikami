@@ -29,8 +29,56 @@ route_1_0_lower_walk
                             20,                          ; x
                             13,                          ; y
                             route_point_normal,          ; type
-                            route_1_0_arch,              ; top-left point
+                            route_1_0_basement_upper,    ; top-left point
                             route_1_0_right_entry,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_0_basement_upper
+                            route_point	{
+                            1,                           ; room_x
+                            0,                           ; room_y
+                            14,                          ; x
+                            13,                          ; y
+                            route_point_normal,          ; type
+                            route_1_0_basement_slope_top, ; top-left point
+                            route_1_0_lower_walk,        ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_0_basement_slope_top
+                            route_point	{
+                            1,                           ; room_x
+                            0,                           ; room_y
+                            8,                           ; x
+                            13,                          ; y
+                            route_point_normal,          ; type
+                            route_1_0_basement_slope_bottom, ; top-left point
+                            route_1_0_basement_upper,    ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_0_basement_slope_bottom
+                            route_point	{
+                            1,                           ; room_x
+                            0,                           ; room_y
+                            4,                           ; x
+                            17,                          ; y
+                            route_point_normal,          ; type
+                            route_1_0_basement_wall,     ; top-left point
+                            route_1_0_basement_slope_top, ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_1_0_basement_wall
+                            route_point	{
+                            1,                           ; room_x
+                            0,                           ; room_y
+                            1,                           ; x
+                            18,                          ; y
+                            route_point_normal,          ; type
+                            route_1_0_basement_slope_bottom, ; top-left point
+                            route_1_0_basement_slope_bottom, ; bottom-right point
                             0                            ; alternative point
                             }
 

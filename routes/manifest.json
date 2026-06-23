@@ -294,6 +294,10 @@
         "route_1_0_left_entry",
         "route_1_0_arch",
         "route_1_0_lower_walk",
+        "route_1_0_basement_upper",
+        "route_1_0_basement_slope_top",
+        "route_1_0_basement_slope_bottom",
+        "route_1_0_basement_wall",
         "route_1_0_stairs_lower_jump_left",
         "route_1_0_stairs_upper_jump_left",
         "route_1_0_stairs_wall_jump_left",
@@ -373,6 +377,8 @@
         "route_4_1_hatch_drop",
         "route_4_1_elevator_wait",
         "route_4_1_elevator_top",
+        "route_4_1_upper_right_exit",
+        "route_4_1_elevator_drop_landing",
         "route_4_1_right_mid",
         "route_4_1_right_entry",
         "route_3_2_right_inner",
@@ -422,6 +428,32 @@
         "route_5_1_bottom_fork",
         "route_5_1_bottom_right",
         "route_5_1_right_entry",
+        "route_5_1_upper_left_entry",
+        "route_5_1_upper_left_mid",
+        "route_5_1_upper_mid",
+        "route_5_1_upper_gap_jump_right",
+        "route_5_1_upper_high_right",
+        "route_5_1_upper_gap_drop",
+        "route_5_1_upper_high_jump_left",
+        "route_5_1_upper_high_mid",
+        "route_5_1_upper_high_left",
+        "route_5_1_upper_left_jump_up",
+        "route_5_1_upper_top_left",
+        "route_5_1_upper_top_drop",
+        "route_5_1_upper_top_mid",
+        "route_5_1_upper_top_approach",
+        "route_5_1_upper_top_jump_right",
+        "route_5_1_top_exit",
+        "route_5_1_upper_top_return",
+        "route_5_0_bottom_entry",
+        "route_5_0_bottom_right",
+        "route_5_0_bottom_mid",
+        "route_5_0_bottom_left",
+        "route_5_0_left_exit",
+        "route_4_0_right_entry",
+        "route_4_0_floor_right",
+        "route_4_0_floor_mid",
+        "route_4_0_floor_left",
         "route_6_1_left_entry",
         "route_6_1_left_jump_low",
         "route_6_1_left_ledge_low",
@@ -451,6 +483,8 @@
         "enemies.route_4_3.a80",
         "enemies.route_5_3.a80",
         "enemies.route_5_1.a80",
+        "enemies.route_5_0.a80",
+        "enemies.route_4_0.a80",
         "enemies.route_6_1.a80",
         "enemies.route_6_2.a80",
         "enemies.route_6_3.a80"
@@ -466,7 +500,7 @@
             "roomX": 1,
             "roomY": 0,
             "file": "room_1_0.json",
-            "points": 7
+            "points": 11
         },
         {
             "roomX": 2,
@@ -479,6 +513,18 @@
             "roomY": 0,
             "file": "room_3_0.json",
             "points": 4
+        },
+        {
+            "roomX": 4,
+            "roomY": 0,
+            "file": "room_4_0.json",
+            "points": 4
+        },
+        {
+            "roomX": 5,
+            "roomY": 0,
+            "file": "room_5_0.json",
+            "points": 5
         },
         {
             "roomX": 0,
@@ -508,13 +554,13 @@
             "roomX": 4,
             "roomY": 1,
             "file": "room_4_1.json",
-            "points": 9
+            "points": 11
         },
         {
             "roomX": 5,
             "roomY": 1,
             "file": "room_5_1.json",
-            "points": 5
+            "points": 22
         },
         {
             "roomX": 6,
@@ -579,6 +625,14 @@
     ],
     "rewires": [
         {
+            "from": "route_1_0_lower_walk",
+            "field": "alternative",
+            "to": "route_1_0_stairs_lower_jump_left",
+            "sourceFile": "logic/room1_0.a80",
+            "sourceLine": 46,
+            "routine": "activate_stairs_route"
+        },
+        {
             "from": "route_1_1_left_inner",
             "field": "bottomRight",
             "to": "route_1_1_left_jump_right",
@@ -619,7 +673,7 @@
             "routine": "activate_elevator_route"
         },
         {
-            "from": "route_4_1_left_mid",
+            "from": "route_4_1_right_mid",
             "field": "alternative",
             "to": "route_4_1_elevator_wait",
             "sourceFile": "logic/room4_1.a80",

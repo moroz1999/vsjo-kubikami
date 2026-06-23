@@ -1,0 +1,58 @@
+{
+    "roomX": 4,
+    "roomY": 0,
+    "points": [
+        {
+            "id": "route_4_0_right_entry",
+            "roomX": 4,
+            "roomY": 0,
+            "x": 31,
+            "y": 20,
+            "type": "exit",
+            "topLeft": "route_5_0_left_exit",
+            "bottomRight": "route_4_0_floor_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_4_0.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_4_0_floor_right",
+            "roomX": 4,
+            "roomY": 0,
+            "x": 24,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_4_0_floor_mid",
+            "bottomRight": "route_4_0_right_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_4_0.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_4_0_floor_mid",
+            "roomX": 4,
+            "roomY": 0,
+            "x": 16,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_4_0_floor_left",
+            "bottomRight": "route_4_0_floor_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_4_0.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_4_0_floor_left",
+            "roomX": 4,
+            "roomY": 0,
+            "x": 8,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_4_0_floor_mid",
+            "bottomRight": "route_4_0_floor_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_4_0.a80",
+            "sourceLine": 37
+        }
+    ]
+}

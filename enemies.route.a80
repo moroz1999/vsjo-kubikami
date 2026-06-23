@@ -27,6 +27,10 @@ route_points_table
                             dw	route_1_0_left_entry
                             dw	route_1_0_arch
                             dw	route_1_0_lower_walk
+                            dw	route_1_0_basement_upper
+                            dw	route_1_0_basement_slope_top
+                            dw	route_1_0_basement_slope_bottom
+                            dw	route_1_0_basement_wall
                             dw	route_1_0_stairs_lower_jump_left
                             dw	route_1_0_stairs_upper_jump_left
                             dw	route_1_0_stairs_wall_jump_left
@@ -106,6 +110,8 @@ route_points_table
                             dw	route_4_1_hatch_drop
                             dw	route_4_1_elevator_wait
                             dw	route_4_1_elevator_top
+                            dw	route_4_1_upper_right_exit
+                            dw	route_4_1_elevator_drop_landing
                             dw	route_4_1_right_mid
                             dw	route_4_1_right_entry
                             dw	route_3_2_right_inner
@@ -155,6 +161,32 @@ route_points_table
                             dw	route_5_1_bottom_fork
                             dw	route_5_1_bottom_right
                             dw	route_5_1_right_entry
+                            dw	route_5_1_upper_left_entry
+                            dw	route_5_1_upper_left_mid
+                            dw	route_5_1_upper_mid
+                            dw	route_5_1_upper_gap_jump_right
+                            dw	route_5_1_upper_high_right
+                            dw	route_5_1_upper_gap_drop
+                            dw	route_5_1_upper_high_jump_left
+                            dw	route_5_1_upper_high_mid
+                            dw	route_5_1_upper_high_left
+                            dw	route_5_1_upper_left_jump_up
+                            dw	route_5_1_upper_top_left
+                            dw	route_5_1_upper_top_drop
+                            dw	route_5_1_upper_top_mid
+                            dw	route_5_1_upper_top_approach
+                            dw	route_5_1_upper_top_jump_right
+                            dw	route_5_1_top_exit
+                            dw	route_5_1_upper_top_return
+                            dw	route_5_0_bottom_entry
+                            dw	route_5_0_bottom_right
+                            dw	route_5_0_bottom_mid
+                            dw	route_5_0_bottom_left
+                            dw	route_5_0_left_exit
+                            dw	route_4_0_right_entry
+                            dw	route_4_0_floor_right
+                            dw	route_4_0_floor_mid
+                            dw	route_4_0_floor_left
                             dw	route_6_1_left_entry
                             dw	route_6_1_left_jump_low
                             dw	route_6_1_left_ledge_low
@@ -184,6 +216,8 @@ route_points_table_end
                             include	"enemies.route_4_3.a80"
                             include	"enemies.route_5_3.a80"
                             include	"enemies.route_5_1.a80"
+                            include	"enemies.route_5_0.a80"
+                            include	"enemies.route_4_0.a80"
                             include	"enemies.route_6_1.a80"
                             include	"enemies.route_6_2.a80"
                             include	"enemies.route_6_3.a80"

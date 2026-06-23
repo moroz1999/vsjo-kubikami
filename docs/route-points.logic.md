@@ -15,11 +15,12 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 ## Room 1,0 Stairs
 
-- Room `1,0` keeps its default route connected as `(0,5) -> (10,3) -> (20,13) -> (31,7)`.
-- The unfolded stairs enable a right-to-left jump chain from `route_1_0_lower_walk` through `(19,12 jump_left) -> (15,9 jump_left) -> (12,7 jump_left)` back to `route_1_0_arch`.
-- The stair jump points exist in the route table, but they are not connected to the main route until `logic.room_1_0.activate_stairs_route` rewires `route_1_0_lower_walk.top_left_point_ptr` to `route_1_0_stairs_lower_jump_left`.
+- Room `1,0` keeps its left-to-right route connected as `(0,5) -> (10,3) -> (20,13) -> (31,7)`.
+- The lower right-to-left route extends into the house basement as `(20,13) -> (14,13) -> (8,13) -> (4,17) -> (1,18)`, then turns back from the left wall.
+- The unfolded stairs enable an optional upward jump chain from `route_1_0_lower_walk` through `(19,12 jump_left) -> (15,9 jump_left) -> (12,7 jump_left)` back to `route_1_0_arch`.
+- The stair jump points exist in the route table, but they are not connected to the main route until `logic.room_1_0.activate_stairs_route` sets `route_1_0_lower_walk.alternative_point_ptr` to `route_1_0_stairs_lower_jump_left`.
 - The debug stairs key is `debug.initial_stairs_unfolded`; when enabled it calls `logic.stairs.apply_effect`, so the final room art and enemy route rewire both start already applied.
-- The current route test starts `enemy_2` in room `1,0` at `route_1_0_right_entry` `(31,7)` with `route_2_0_left_entry` as the previous point, so it immediately moves right-to-left toward the stair branch.
+- No current route test enemy starts in room `1,0`; the stairs branch remains reachable from `route_1_0_lower_walk` when an enemy enters the lower right-to-left route.
 
 ## Room 0,2 Water Loop
 
@@ -84,7 +85,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,21)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
 - The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,21)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
 - At the top stop, `route_2_1_left_elevator_top_jump_left` jumps left to `route_2_1_left_entry`, and `route_2_1_right_elevator_top_jump_right` jumps right to `route_2_1_right_mid`.
-- No current route test enemy starts in room `2,1`; `enemy_2` has been moved to room `1,0` for the stairs route test.
+- No current route test enemy starts in room `2,1`; `enemy_2` is currently assigned to room `4,1` for the generator route test.
 
 ## Room 3,1 Split
 
@@ -104,13 +105,15 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 - Room `4,1` left edge `route_4_1_left_entry` and room `3,1` right edge `route_3_1_right_entry` are paired entry points.
 - Room `4,1` right edge `route_4_1_right_entry` and room `5,1` left edge `route_5_1_left_entry` are paired entry points.
-- The debug route enemy starts in room `4,1` at the left edge and targets `route_4_1_left_mid`, so it tests the room from left to right.
+- The debug route enemy `enemy_2` starts in room `4,1` at `route_4_1_left_entry` `(0,19)` with `route_3_1_right_entry` as the previous point, so its first in-room target is `route_4_1_left_mid` and it tests the room from left to right.
 - `route_4_1_left_mid` at `(8,19)` continues through the hatch fork at `(15,19)` to `route_4_1_left_jump` at `(16,19)`.
 - `route_4_1_left_jump` is a `jump_right` point for crossing the blocked floor gap toward `(23,19)`.
 - Applying the key opens the hatch and calls `logic.room_4_1.activate_hatch_route`, enabling `route_4_1_hatch_fork.alternative_point_ptr = route_4_1_hatch_drop`.
 - `route_4_1_hatch_drop` at `(18,21)` exits down into room `4,2` through `route_4_2_top_entry` at `(18,0)`.
-- Applying the screwdriver calls `logic.room_4_1.activate_elevator_wait_route`, enabling `route_4_1_left_mid.alternative_point_ptr = route_4_1_elevator_wait`.
-- `route_4_1_elevator_wait` at `(16,19)` waits on the hatch-screen elevator lane, targets `route_4_1_elevator_top` at `(16,6)`, then returns to `route_4_1_left_jump`.
+- Applying the screwdriver calls `logic.room_4_1.activate_elevator_wait_route`, enabling `route_4_1_right_mid.alternative_point_ptr = route_4_1_elevator_wait`.
+- `route_4_1_elevator_wait` at `(25,19)` waits on the right hatch-screen elevator lane, targets `route_4_1_elevator_top` at `(25,6)`, then walks right to `route_4_1_upper_right_exit`.
+- The upper right exit in room `4,1` is paired with `route_5_1_upper_left_entry` at `(0,6)`, so the repaired elevator branch leads into the upper route of room `5,1`.
+- Returning left from room `5,1` uses `route_4_1_elevator_drop_landing` at `(28,19)`, on the right edge of `elevator_4_1_3`, instead of the elevator wait point, so the descent route is separate from the screwdriver-enabled ascent wait.
 - The old upward air points are removed; the hatch-screen branch reaches its high target by elevator wait behavior instead of route-driven vertical climbing.
 
 ## Room 4,2 Slope And Exits
@@ -149,14 +152,19 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 ## Rooms 5,1 Through 6,3
 
 - Room `5,1` has a bottom route from the left side to the right entry into room `6,1`.
-- Room `5,1` has no screwdriver-unlocked route branch.
+- Room `5,1` upper-left entry `(0,6)` and room `4,1` upper-right exit `(31,6)` are paired entry points.
+- The room `5,1` upper route covers the upper floor at `y=6`, jumps through the gap from `(19,6 jump_right)` to `(26,4)`, jumps left across the high gap from `(22,4 jump_left)` to `(15,4)`, jumps up from `(3,4 jump_right)` to `(10,2)`, walks through `(22,2)`, then jumps from `(25,2 jump_right)` to the top exit `(29,0)`.
+- The leftward return through room `5,1` uses normal return points instead of jump points: `(29,0)` -> `(26,2 normal)` -> `(22,2 normal)` -> `(16,2)` -> `(10,2)` -> `(3,4 normal)` -> `(15,4)` -> `(20,6)` -> `(16,6)` -> `(8,6)` -> `(0,6)`.
+- `route_5_1_top_exit` exits into room `5,0` at `route_5_0_bottom_entry` `(27,20)`. The receiving point is one row above the bottom edge so the enemy stands on room floor instead of immediately falling back to `5,1`.
+- Room `5,0` routes left across its bottom floor through `(27,20) -> (20,20) -> (13,20) -> (6,20) -> (0,20)`.
+- Room `5,0` left exit `(0,20)` and room `4,0` right entry `(31,20)` are paired entry points; room `4,0` then covers the bottom floor through `(31,20) -> (24,20) -> (16,20) -> (8,20)`.
 - Room `5,1` right edge `route_5_1_right_entry` and room `6,1` left edge `route_6_1_left_entry` are paired entry points.
 - Room `5,1` no longer has a separate red-door return lane; its points stay on the main `Y=1` chain.
 - Room `6,1` climbs from `route_6_1_left_entry` through the left ledges to `route_6_1_red_door_left` at `(8,11)`, then falls through `route_6_1_red_door_fall` to `route_6_1_left_return_entry` and exits back to `route_5_1_right_entry`.
 - Room `6,1` keeps the old shaft route removed; enemies approach the red door but do not continue into the shaft or behind the door.
 - Applying the red card opens the door visually but no longer rewires enemy route points; enemies do not go behind the red door.
 - Rooms `6,2` and `6,3` currently have no enemy route points.
-- Applying the screwdriver starts generator/elevator effects and unlocks the room `4,1` hatch-screen wait branch, but it does not unlock an enemy route branch in room `6,3`.
+- Applying the screwdriver starts generator/elevator effects and unlocks the room `4,1` right-elevator wait branch, but it does not unlock an enemy route branch in room `6,3`.
 
 ## Spacing Notes
 

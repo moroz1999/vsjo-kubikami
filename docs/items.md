@@ -26,7 +26,7 @@
 - The stairs are used in room `1,0` when the hero stands at `y=13` and `x=12..17`.
 - Using them starts the unfolding animation and removes the item from the pocket.
 - Room `1,0` stores the persistent result in `logic.room_1_0.stairs_unfolded`; `on_enter` applies the final unfolded-stairs frame when this flag is set.
-- The enemy route effect is `logic.room_1_0.activate_stairs_route`: it rewires `route_1_0_lower_walk.top_left_point_ptr` to `route_1_0_stairs_lower_jump_left`, enabling the right-to-left stair jump chain only after the stairs are unfolded.
+- The enemy route effect is `logic.room_1_0.activate_stairs_route`: it enables `route_1_0_lower_walk.alternative_point_ptr = route_1_0_stairs_lower_jump_left`, making the stair climb an optional branch after the stairs are unfolded.
 
 ## Red Card
 
@@ -45,10 +45,10 @@
 
 - The screwdriver is used in room `6,3` when the hero stands between `x=11` and `x=12` at `y=20`.
 - Using it repairs the generator, switches the generator-related room animations on, starts the `6,3` elevator upward, starts the three `4,1` elevators upward, enables the room `4,1` wait branch, and removes the item from the pocket.
-- The enemy route effect is `logic.room_4_1.activate_elevator_wait_route`: it enables `route_4_1_left_mid.alternative_point_ptr = route_4_1_elevator_wait`.
-- Room `4,1` keeps its normal `jump_right` route across the blocked floor gap, while the optional wait branch rides the hatch-screen elevator instead of using upward air points.
+- The enemy route effect is `logic.room_4_1.activate_elevator_wait_route`: it enables `route_4_1_right_mid.alternative_point_ptr = route_4_1_elevator_wait`.
+- Room `4,1` keeps its normal `jump_right` route across the blocked floor gap, while the optional wait branch rides the right hatch-screen elevator to the upper exit into room `5,1`.
 - Room `6,3` has no screwdriver-unlocked enemy route branch.
-- Room `5,1` has no screwdriver-unlocked route branch; its bottom route stays connected to room `6,1`.
+- Room `5,1` has no local screwdriver-unlocked route branch; its upper route is reached through the repaired room `4,1` elevator branch, and its bottom route stays connected to room `6,1`.
 
 ## Handle
 

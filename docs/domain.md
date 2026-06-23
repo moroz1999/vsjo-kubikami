@@ -9,6 +9,7 @@
 - Room art in `rooms/` is stored as ZX0 streams of the first 22 attribute rows. `rooms.init_current_room` unpacks the selected stream into `rooms.current_room_buf` before room `on_enter` callbacks run.
 - Permanent item-driven room art is applied to `rooms.current_room_buf`, either when a one-shot animation finishes or from the room `on_enter` callback when the room's explicit effect flag is set.
 - Water wave visuals are background room animations drawn one attribute row above the physical water surface in rooms `0,1`, `1,2`, and `4,3`; the physical water remains in room data for movement checks.
+- Timed rain in room `1,0` uses room waterdrops with a phase mask; disabling a visible rain drop must queue its last attribute point for restore before parking it at the source.
 
 ## Topic Details
 

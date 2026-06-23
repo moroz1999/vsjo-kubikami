@@ -1,0 +1,71 @@
+{
+    "roomX": 5,
+    "roomY": 0,
+    "points": [
+        {
+            "id": "route_5_0_bottom_entry",
+            "roomX": 5,
+            "roomY": 0,
+            "x": 27,
+            "y": 20,
+            "type": "exit",
+            "topLeft": "route_5_1_top_exit",
+            "bottomRight": "route_5_0_bottom_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_0.a80",
+            "sourceLine": 1
+        },
+        {
+            "id": "route_5_0_bottom_right",
+            "roomX": 5,
+            "roomY": 0,
+            "x": 20,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_5_0_bottom_mid",
+            "bottomRight": "route_5_0_bottom_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_0.a80",
+            "sourceLine": 13
+        },
+        {
+            "id": "route_5_0_bottom_mid",
+            "roomX": 5,
+            "roomY": 0,
+            "x": 13,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_5_0_bottom_left",
+            "bottomRight": "route_5_0_bottom_right",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_0.a80",
+            "sourceLine": 25
+        },
+        {
+            "id": "route_5_0_bottom_left",
+            "roomX": 5,
+            "roomY": 0,
+            "x": 6,
+            "y": 20,
+            "type": "normal",
+            "topLeft": "route_5_0_left_exit",
+            "bottomRight": "route_5_0_bottom_mid",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_0.a80",
+            "sourceLine": 37
+        },
+        {
+            "id": "route_5_0_left_exit",
+            "roomX": 5,
+            "roomY": 0,
+            "x": 0,
+            "y": 20,
+            "type": "exit",
+            "topLeft": "route_4_0_right_entry",
+            "bottomRight": "route_5_0_bottom_left",
+            "alternative": null,
+            "sourceFile": "enemies.route_5_0.a80",
+            "sourceLine": 49
+        }
+    ]
+}

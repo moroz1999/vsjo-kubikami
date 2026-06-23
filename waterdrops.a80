@@ -37,6 +37,32 @@ reset_drop
                             ld	(hl),state_delay
                             ret
 
+reset_drop_after_restore
+                ; Reset and queue the old visible point for erase.
+                ; input:
+                ; hl - waterdrop struct pointer
+                            inc	hl
+                            inc	hl
+                            ld	a,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            ld	e,(hl)
+                            ld	(hl),a
+                            inc	hl
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(hl),a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	(hl),state_delay
+                            inc	hl
+                            or	(hl)
+                            ret	z
+
+                            call	draw.add_to_restore
+                            ret
+
 draw_room_waterdrops
                             ld	a,(rooms.room_waterdrops_count)
                             or	a
