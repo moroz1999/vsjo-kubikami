@@ -328,6 +328,7 @@
         "route_2_1_left_mid",
         "route_2_1_right_entry",
         "route_2_1_right_top_entry",
+        "route_2_1_cave_wall",
         "route_2_1_right_mid",
         "route_2_1_elevator_jump_left",
         "route_2_1_left_fall_exit",
@@ -381,9 +382,18 @@
         "route_4_1_elevator_drop_landing",
         "route_4_1_right_mid",
         "route_4_1_right_entry",
+        "route_3_2_teleport_exit",
         "route_3_2_right_inner",
         "route_3_2_right_mid",
         "route_3_2_right_entry",
+        "route_0_3_teleport",
+        "route_0_3_right_climb",
+        "route_0_3_center_jump_left",
+        "route_0_3_center_return_right",
+        "route_0_3_center_floor",
+        "route_0_3_left_jump_left",
+        "route_0_3_left_edge",
+        "route_0_3_left_return_jump_right",
         "route_4_2_top_entry",
         "route_4_2_top_landing",
         "route_4_2_slope_mid",
@@ -467,6 +477,7 @@
         "enemies.route_0_0.a80",
         "enemies.route_0_1.a80",
         "enemies.route_0_2.a80",
+        "enemies.route_0_3.a80",
         "enemies.route_1_0.a80",
         "enemies.route_1_1.a80",
         "enemies.route_1_2.a80",
@@ -542,7 +553,7 @@
             "roomX": 2,
             "roomY": 1,
             "file": "room_2_1.json",
-            "points": 12
+            "points": 13
         },
         {
             "roomX": 3,
@@ -590,7 +601,7 @@
             "roomX": 3,
             "roomY": 2,
             "file": "room_3_2.json",
-            "points": 3
+            "points": 4
         },
         {
             "roomX": 4,
@@ -602,6 +613,12 @@
             "roomX": 5,
             "roomY": 2,
             "file": "room_5_2.json",
+            "points": 8
+        },
+        {
+            "roomX": 0,
+            "roomY": 3,
+            "file": "room_0_3.json",
             "points": 8
         },
         {

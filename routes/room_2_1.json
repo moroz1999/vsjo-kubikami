@@ -48,11 +48,24 @@
             "x": 31,
             "y": 7,
             "type": "exit",
-            "topLeft": "route_3_1_top_left_entry",
+            "topLeft": "route_2_1_cave_wall",
             "bottomRight": "route_3_1_top_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
             "sourceLine": 37
+        },
+        {
+            "id": "route_2_1_cave_wall",
+            "roomX": 2,
+            "roomY": 1,
+            "x": 24,
+            "y": 7,
+            "type": "normal",
+            "topLeft": "route_2_1_right_top_entry",
+            "bottomRight": "route_2_1_right_top_entry",
+            "alternative": null,
+            "sourceFile": "enemies.route_2_1.a80",
+            "sourceLine": 49
         },
         {
             "id": "route_2_1_right_mid",
@@ -65,7 +78,7 @@
             "bottomRight": "route_2_1_right_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 49
+            "sourceLine": 61
         },
         {
             "id": "route_2_1_elevator_jump_left",
@@ -78,7 +91,7 @@
             "bottomRight": "route_2_1_right_mid",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 61
+            "sourceLine": 73
         },
         {
             "id": "route_2_1_left_fall_exit",
@@ -91,7 +104,7 @@
             "bottomRight": "route_2_2_left_top_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 73
+            "sourceLine": 85
         },
         {
             "id": "route_2_1_right_fall_exit",
@@ -104,7 +117,7 @@
             "bottomRight": "route_2_1_right_mid",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 85
+            "sourceLine": 97
         },
         {
             "id": "route_2_1_left_lift_bottom_entry",
@@ -117,7 +130,7 @@
             "bottomRight": "route_2_2_left_lift_top_exit",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 97
+            "sourceLine": 109
         },
         {
             "id": "route_2_1_left_elevator_top_jump_left",
@@ -130,7 +143,7 @@
             "bottomRight": "route_2_1_left_lift_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 109
+            "sourceLine": 121
         },
         {
             "id": "route_2_1_right_lift_bottom_entry",
@@ -143,7 +156,7 @@
             "bottomRight": "route_2_2_right_lift_top_exit",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 121
+            "sourceLine": 133
         },
         {
             "id": "route_2_1_right_elevator_top_jump_right",
@@ -156,7 +169,7 @@
             "bottomRight": "route_2_1_right_mid",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
-            "sourceLine": 133
+            "sourceLine": 145
         }
     ]
 }

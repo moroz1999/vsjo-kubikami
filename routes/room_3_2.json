@@ -3,17 +3,30 @@
     "roomY": 2,
     "points": [
         {
+            "id": "route_3_2_teleport_exit",
+            "roomX": 3,
+            "roomY": 2,
+            "x": 17,
+            "y": 11,
+            "type": "exit",
+            "topLeft": "route_0_3_teleport",
+            "bottomRight": "route_3_2_right_inner",
+            "alternative": null,
+            "sourceFile": "enemies.route_3_2.a80",
+            "sourceLine": 1
+        },
+        {
             "id": "route_3_2_right_inner",
             "roomX": 3,
             "roomY": 2,
             "x": 24,
             "y": 13,
             "type": "normal",
-            "topLeft": "route_3_2_right_inner",
+            "topLeft": "route_3_2_teleport_exit",
             "bottomRight": "route_3_2_right_mid",
             "alternative": null,
             "sourceFile": "enemies.route_3_2.a80",
-            "sourceLine": 1
+            "sourceLine": 13
         },
         {
             "id": "route_3_2_right_mid",
@@ -26,7 +39,7 @@
             "bottomRight": "route_3_2_right_entry",
             "alternative": null,
             "sourceFile": "enemies.route_3_2.a80",
-            "sourceLine": 13
+            "sourceLine": 25
         },
         {
             "id": "route_3_2_right_entry",
@@ -39,7 +52,7 @@
             "bottomRight": "route_4_2_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_3_2.a80",
-            "sourceLine": 25
+            "sourceLine": 37
         }
     ]
 }

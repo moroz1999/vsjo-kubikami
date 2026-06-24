@@ -1,0 +1,95 @@
+route_0_3_teleport
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            30,                          ; x
+                            19,                          ; y
+                            route_point_exit,            ; type
+                            route_0_3_right_climb,       ; top-left point
+                            route_3_2_teleport_exit,     ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_right_climb
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            23,                          ; x
+                            19,                          ; y
+                            route_point_normal,          ; type
+                            route_0_3_center_jump_left,  ; top-left point
+                            route_0_3_teleport,          ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_center_jump_left
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            18,                          ; x
+                            18,                          ; y
+                            route_point_jump_left,       ; type
+                            route_0_3_center_floor,      ; top-left point
+                            route_0_3_right_climb,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_center_return_right
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            18,                          ; x
+                            18,                          ; y
+                            route_point_normal,          ; type
+                            route_0_3_center_floor,      ; top-left point
+                            route_0_3_right_climb,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_center_floor
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            12,                          ; x
+                            16,                          ; y
+                            route_point_normal,          ; type
+                            route_0_3_left_jump_left,    ; top-left point
+                            route_0_3_center_return_right, ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_left_jump_left
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            7,                           ; x
+                            16,                          ; y
+                            route_point_normal,          ; type
+                            route_0_3_left_edge,         ; top-left point
+                            route_0_3_center_floor,      ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_left_edge
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            1,                           ; x
+                            19,                          ; y
+                            route_point_normal,          ; type
+                            route_0_3_left_return_jump_right, ; top-left point
+                            route_0_3_left_return_jump_right, ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_0_3_left_return_jump_right
+                            route_point	{
+                            0,                           ; room_x
+                            3,                           ; room_y
+                            5,                           ; x
+                            19,                          ; y
+                            route_point_jump_right,      ; type
+                            route_0_3_left_edge,         ; top-left point
+                            route_0_3_center_floor,      ; bottom-right point
+                            0                            ; alternative point
+                            }

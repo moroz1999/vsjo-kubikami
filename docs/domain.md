@@ -10,6 +10,9 @@
 - Permanent item-driven room art is applied to `rooms.current_room_buf`, either when a one-shot animation finishes or from the room `on_enter` callback when the room's explicit effect flag is set.
 - Water wave visuals are background room animations drawn one attribute row above the physical water surface in rooms `0,1`, `1,2`, and `4,3`; the physical water remains in room data for movement checks.
 - Timed rain in room `1,0` uses room waterdrops with a phase mask; disabling a visible rain drop must queue its last attribute point for restore before parking it at the source.
+- `objects.check_coords` treats water as passable, but hero state checks must also treat water below the hero as non-solid; otherwise the water surface becomes jumpable ground.
+- Hero floor checks at the bottom row must go through the room-edge-aware coordinate check instead of reading `rooms.current_room_buf` past row `21`.
+- Swimming upward from water into a non-water passable cell starts a hero jump arc in the requested direction; swimming inside water remains swim movement.
 
 ## Topic Details
 

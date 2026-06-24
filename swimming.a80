@@ -5,10 +5,7 @@ swim_up
 
                             ld	de,(hero.hero_coords)
                             dec	e
-                            call	objects.check_coords
-
-                            ld	a,(objects.current_bg_color)
-                            cp	rooms.room_bg_color
+                            call	is_jump_destination_air
                             jp	z,hero.hero_jump_top
 
                             jp	hero.move_hero_up
@@ -20,12 +17,7 @@ swim_up_left
                             ld	de,(hero.hero_coords)
                             dec	d
                             dec	e
-                            
-                            call	objects.check_coords
-
-                            ld	a,(objects.current_bg_color)
-                            cp	rooms.room_bg_color
-
+                            call	is_jump_destination_air
                             jp	z,hero.hero_jump_left
 
                             call	hero.move_hero_left
@@ -38,15 +30,26 @@ swim_up_right
                             ld	de,(hero.hero_coords)
                             inc	d
                             dec	e
-
-                            call	objects.check_coords
-
-                            ld	a,(objects.current_bg_color)
-                            cp	rooms.room_bg_color
-
+                            call	is_jump_destination_air
                             jp	z,hero.hero_jump_right
 
                             call	hero.move_hero_right
                             jp	hero.move_hero_up
+
+is_jump_destination_air
+                            call	objects.check_coords
+                            cp	objects.b_empty
+                            ret	nz
+
+                            ld	a,(objects.current_bg_color)
+                            cp	rooms.room_bg_color_wat
+                            jr	z,is_jump_destination_water
+
+                            xor	a
+                            ret
+
+is_jump_destination_water
+                            or	1
+                            ret
 
                         endmodule

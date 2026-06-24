@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>32x24 Simple Bezier Tentacle</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: #111111;
+            color: #dddddd;
+            font-family: system-ui, sans-serif;
+        }
+
+        body {
+            display: grid;
+            place-items: center;
+        }
+
+        .layout {
+            display: grid;
+            gap: 12px;
+        }
+
+        .panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            background: #1b1b1b;
+            border: 1px solid #333333;
+        }
+
+        canvas {
+            width: 768px;
+            height: 576px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            background: #000000;
+            border: 1px solid #333333;
+        }
+
+        select,
+        button {
+            background: #222222;
+            color: #eeeeee;
+            border: 1px solid #555555;
+            padding: 5px 8px;
+        }
+
+        label {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <div class="panel">
+        <label>
+            Точек на сегмент:
+            <select id="samplesPerSegmentSelect">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </label>
+
+        <label>
+            <input id="showControlPointsCheckbox" type="checkbox" checked>
+            контрольные точки
+        </label>
+
+        <label>
+            <input id="showBezierControlsCheckbox" type="checkbox">
+            bezier controls
+        </label>
+
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <canvas id="screenCanvas" width="32" height="24"></canvas>
+</div>
+
+<script>
+'use strict';
+
+const logicalWidth = 32;
+const logicalHeight = 24;
+
+const canvas = document.getElementById('screenCanvas');
+const renderingContext = canvas.getContext('2d');
+renderingContext.imageSmoothingEnabled = false;
+
+const samplesPerSegmentSelect = document.getElementById('samplesPerSegmentSelect');
+const showControlPointsCheckbox = document.getElementById('showControlPointsCheckbox');
+const showBezierControlsCheckbox = document.getElementById('showBezierControlsCheckbox');
+const resetButton = document.getElementById('resetButton');
+
+const imageData = renderingContext.createImageData(logicalWidth, logicalHeight);
+const pixels = imageData.data;
+
+const colors = {
+    black: [0, 0, 0, 255],
+    red: [210, 0, 0, 255],
+    darkRed: [95, 0, 0, 255],
+    green: [0, 255, 0, 255],
+    yellow: [255, 230, 0, 255],
+    white: [245, 245, 245, 255],
+    blue: [80, 130, 255, 255]
+};
+
+const anchorPoint = { x: 29, y: 13 };
+const pointCount = 6;
+const controlLift = 3;
+
+let controlPoints = [];
+
+function resetControlPoints() {
+    controlPoints = [
+        { x: 29, y: 13 },
+        { x: 24, y: 13 },
+        { x: 19, y: 14 },
+        { x: 14, y: 15 },
+        { x: 9, y: 16 },
+        { x: 4, y: 17 }
+    ];
+}
+
+function clearScreen() {
+    for (let index = 0; index < pixels.length; index += 4) {
+        pixels[index] = colors.black[0];
+        pixels[index + 1] = colors.black[1];
+        pixels[index + 2] = colors.black[2];
+        pixels[index + 3] = colors.black[3];
+    }
+}
+
+function setPixel(x, y, color) {
+    const roundedX = Math.round(x);
+    const roundedY = Math.round(y);
+
+    if (
+        roundedX < 0 ||
+        roundedY < 0 ||
+        roundedX >= logicalWidth ||
+        roundedY >= logicalHeight
+    ) {
+        return;
+    }
+
+    const pixelIndex = (roundedY * logicalWidth + roundedX) * 4;
+
+    pixels[pixelIndex] = color[0];
+    pixels[pixelIndex + 1] = color[1];
+    pixels[pixelIndex + 2] = color[2];
+    pixels[pixelIndex + 3] = color[3];
+}
+
+function setDitheredPixel(x, y, firstColor, secondColor) {
+    const roundedX = Math.round(x);
+    const roundedY = Math.round(y);
+    const color = ((roundedX ^ roundedY) & 1) === 0 ? firstColor : secondColor;
+
+    setPixel(roundedX, roundedY, color);
+}
+
+function drawDitheredRectangle(left, top, width, height, firstColor, secondColor) {
+    const right = left + width;
+    const bottom = top + height;
+
+    for (let y = top; y < bottom; y++) {
+        for (let x = left; x < right; x++) {
+            setDitheredPixel(x, y, firstColor, secondColor);
+        }
+    }
+}
+
+function drawLevel() {
+    drawDitheredRectangle(0, 0, 32, 1, colors.red, colors.darkRed);
+    drawDitheredRectangle(0, 23, 32, 1, colors.red, colors.darkRed);
+
+    drawDitheredRectangle(30, 0, 2, 24, colors.red, colors.darkRed);
+    drawDitheredRectangle(26, 20, 6, 4, colors.red, colors.darkRed);
+    drawDitheredRectangle(29, 6, 3, 5, colors.red, colors.darkRed);
+    drawDitheredRectangle(24, 0, 4, 2, colors.red, colors.darkRed);
+    drawDitheredRectangle(15, 0, 2, 3, colors.red, colors.darkRed);
+}
+
+function updateControlPoints(time) {
+    controlPoints[0].x = anchorPoint.x;
+    controlPoints[0].y = anchorPoint.y;
+
+    controlPoints[pointCount - 1].x = 4 + Math.sin(time * 0.0018) * 2;
+    controlPoints[pointCount - 1].y = 17 + Math.sin(time * 0.0024) * 3;
+
+    for (let index = 1; index < pointCount - 1; index++) {
+        const progress = index / (pointCount - 1);
+        const baseX = anchorPoint.x + (controlPoints[pointCount - 1].x - anchorPoint.x) * progress;
+        const baseY = anchorPoint.y + (controlPoints[pointCount - 1].y - anchorPoint.y) * progress;
+        const wave = Math.sin(time * 0.004 + index * 1.7) * 2;
+
+        controlPoints[index].x = baseX;
+        controlPoints[index].y = baseY - Math.sin(progress * Math.PI) * 4 + wave;
+    }
+}
+
+function buildBezierPath(points, samplesPerSegment) {
+    const path = [];
+
+    for (let index = 0; index < points.length - 1; index++) {
+        const startPoint = points[index];
+        const endPoint = points[index + 1];
+        const controlPoint = {
+            x: (startPoint.x + endPoint.x) * 0.5,
+            y: (startPoint.y + endPoint.y) * 0.5 - controlLift
+        };
+
+        for (let step = 0; step <= samplesPerSegment; step++) {
+            if (index > 0 && step === 0) {
+                continue;
+            }
+
+            const progress = step / samplesPerSegment;
+            const reverseProgress = 1 - progress;
+
+            path.push({
+                x:
+                    reverseProgress * reverseProgress * startPoint.x +
+                    2 * reverseProgress * progress * controlPoint.x +
+                    progress * progress * endPoint.x,
+                y:
+                    reverseProgress * reverseProgress * startPoint.y +
+                    2 * reverseProgress * progress * controlPoint.y +
+                    progress * progress * endPoint.y
+            });
+        }
+    }
+
+    return path;
+}
+
+function drawPathPoints(path) {
+    for (const point of path) {
+        setPixel(point.x, point.y, colors.green);
+    }
+}
+
+function drawControlPoints(points) {
+    for (const point of points) {
+        setPixel(point.x, point.y, colors.white);
+    }
+}
+
+function drawBezierControlPoints(points) {
+    for (let index = 0; index < points.length - 1; index++) {
+        const startPoint = points[index];
+        const endPoint = points[index + 1];
+
+        setPixel(
+            (startPoint.x + endPoint.x) * 0.5,
+            (startPoint.y + endPoint.y) * 0.5 - controlLift,
+            colors.blue
+        );
+    }
+}
+
+function render(time) {
+    clearScreen();
+    drawLevel();
+
+    updateControlPoints(time);
+
+    const samplesPerSegment = Number(samplesPerSegmentSelect.value);
+    const path = buildBezierPath(controlPoints, samplesPerSegment);
+
+    drawPathPoints(path);
+
+    if (showBezierControlsCheckbox.checked) {
+        drawBezierControlPoints(controlPoints);
+    }
+
+    if (showControlPointsCheckbox.checked) {
+        drawControlPoints(controlPoints);
+    }
+
+    renderingContext.putImageData(imageData, 0, 0);
+    requestAnimationFrame(render);
+}
+
+resetButton.addEventListener('click', resetControlPoints);
+
+resetControlPoints();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

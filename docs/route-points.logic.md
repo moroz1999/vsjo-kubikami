@@ -72,7 +72,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - Room `1,1` right entry `(31,19)` and room `2,1` left entry `(0,19)` are paired entry points.
 - Room `2,1` right entry `(31,19)` and room `3,1` left entry `(0,19)` are paired entry points.
 - Room `2,1` upper-right cave entry `(31,7)` and room `3,1` upper-left ledge entry `(0,7)` are paired entry points.
-- The upper-right cave entry in room `2,1` is currently a terminal paired entry point; both direct links return to room `3,1`.
+- The upper-right cave in room `2,1` is a dead end: the entry `(31,7)` walks left to `route_2_1_cave_wall` `(24,7)`, the wall point returns to the entry, and the entry then exits back to room `3,1`.
 - Before the toolkit repair, the right and left route segments are connected through the stopped elevator lane as `(31,19) -> (24,19) -> (20,19 normal) -> (7,19) -> (0,19)`.
 - `route_2_1_elevator_jump_left` keeps its historical label at `(20,19)`, but it is a normal route point rather than a jump point.
 - Applying the toolkit in room `2,1` calls `logic.room_2_1.activate_elevator_route`, starts `elevator_2_3` downward, rewires `route_2_1_left_mid.bottom_right_point_ptr` to `route_2_1_left_fall_exit`, and rewires `route_2_1_right_mid.top_left_point_ptr` to `route_2_1_right_fall_exit`.
@@ -122,12 +122,15 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The slope path reaches the right-edge fork as `(18,7) -> (24,13) -> (31,14)`; the down branch continues through `(23,15) -> (16,18) -> (19,21)`.
 - `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path exits right to `route_5_2_left_entry`, its left return goes through `route_4_2_slope_jump_left` at `(30,14)`, and its alternative branch continues down the slope.
 - `route_4_2_slope_jump_left` is a right-side `jump_left` point that jumps back to `route_4_2_slope_mid` at `(24,13)`.
-- The last route enemy starts at `route_4_2_slope_right` `(31,14)` with that point as its last point and `route_4_2_slope_jump_left` as its target, so it begins moving left from the right edge of room `4,2`.
+- The last route enemy starts at `route_3_2_right_entry` `(31,16)` with that point as its last point and `route_3_2_right_mid` as its target, so it begins moving left from the right edge of room `3,2`.
 - Room `4,2` right edge `route_4_2_slope_right` and room `5,2` left edge `route_5_2_left_entry` are paired entry points at local `y=14`.
 - `route_4_2_lower_right` at `(23,15)` uses `topLeft` for the descent toward `route_4_2_lower_left` and `bottomRight` for returning up toward `route_4_2_slope_right`.
 - `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.
 - `route_4_2_bottom_exit` at `(19,21)` exits down to `route_4_3_top_entry`, which descends the room `4,3` steps to `route_4_3_after_stairs` at `(25,7)`.
-- Room `3,2` has a short right-edge receiving route from `(31,16)` toward `(24,13)`.
+- Room `3,2` has a right-side route from `(31,16)` through `(29,15) -> (24,13) -> (17,11)`, where `route_3_2_teleport_exit` hands the enemy to room `0,3`.
+- Room `0,3` receives that teleport route at `route_0_3_teleport` `(30,19)`, climbs the one-cell step from `(23,19)` to `(18,18)`, then descends left as `(18,18 jump left) -> (12,16) -> (7,16 normal) -> (1,19 normal dead end)`.
+- The room `0,3` return route uses the separate lower jump `(5,19 jump right) -> (12,16)`, then walks through `(18,18 normal)` back to `(23,19)` so the descent jump points are not used in reverse.
+- The room `3,2` right edge remains paired with room `4,2` through `route_3_2_right_entry` and `route_4_2_left_entry`; the new teleport branch extends the left side of `route_3_2_right_inner` without removing that edge pair.
 - Room `5,2` has a left-floor fork at `route_5_2_floor_right` `(16,14)`: the direct path jumps right across the gap from `(22,14)`, and the alternative path falls into the gap.
 - Returning from `route_5_2_gap_jump_left` to `route_5_2_floor_right` preserves the enemy's leftward direction and selects `route_5_2_floor_mid` as the direct continuation; the optional gap-exit branch remains eligible for its normal 50/50 selection.
 - `route_5_2_gap_exit` at the room `5,2` teleport `(23,17)` exits to `route_1_2_right_teleport` at `(28,9)`, one cell left of the room `1,2` right teleport destination `(29,9)`.
