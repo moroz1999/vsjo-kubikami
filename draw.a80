@@ -87,6 +87,7 @@ draw_state
                             call	restore_pixels
 
                             call	logic.room_1_3.restore_previous
+                            call	logic.room_3_3.restore_previous
                             
                             //todo: remove after debug
                             call	hero.draw_hero
@@ -111,6 +112,7 @@ draw_state
                             ld a,0
                             call draw.border
                             call	logic.room_1_3.draw_current
+                            call	logic.room_3_3.draw_current
 
                             call	hero.draw_hero
 

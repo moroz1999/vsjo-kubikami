@@ -1,0 +1,682 @@
+                        module	room_3_3
+boss_room_x                 equ	3
+boss_room_y                 equ	3
+boss_anchor_x               equ	30
+boss_anchor_y               equ	12
+boss_end_base_x             equ	5
+boss_end_base_y             equ	16
+boss_end_x_min              equ	2
+boss_end_y_min              equ	14
+boss_control_amount         equ	6
+boss_segment_amount         equ	boss_control_amount-1
+boss_segment_point_amount   equ	5
+boss_path_point_amount      equ	1+boss_segment_amount*boss_segment_point_amount
+boss_double_segment_first   equ	1
+boss_double_segment_amount  equ	2
+boss_double_point_start     equ	1+boss_double_segment_first*boss_segment_point_amount
+boss_double_point_end       equ	boss_double_point_start+boss_double_segment_amount*boss_segment_point_amount
+boss_double_point_amount    equ	boss_double_point_end-boss_double_point_start
+boss_draw_point_amount      equ	boss_path_point_amount+boss_double_point_amount
+boss_wave_mask              equ	31
+boss_end_x_delay            equ	4
+boss_end_y_delay            equ	3
+boss_wave_delay             equ	1
+boss_hunt_move_delay        equ	3
+boss_curve_lift_sample      equ	1
+boss_control_inner_lift     equ	4
+boss_control_outer_lift     equ	2
+boss_mode_idle              equ	0
+boss_mode_hunt              equ	1
+boss_hunt_x_max             equ	29
+boss_head_x_max             equ	boss_anchor_x
+boss_head_y_min             equ	1
+boss_head_y_max             equ	21
+boss_control_1_wave_offset  equ	9
+boss_control_2_wave_offset  equ	17
+boss_control_3_wave_offset  equ	26
+boss_control_4_wave_offset  equ	3
+boss_color1                 equ	%01101100
+boss_color2                 equ	%01100101
+
+boss_color                  db	boss_color1,boss_color2
+
+on_enter
+                            call	reset
+                            ret
+
+logic
+                            call	update_phases
+                            call	update_mode_and_head
+                            call	update_control_points
+                            call	build_path_points
+                            ret
+
+restore_previous
+                            call	is_current_room
+                            ret	nz
+
+                            ld	hl,boss_prev_path_attrs_buf
+                            ld	b,boss_draw_point_amount
+restore_previous_loop
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            push	hl
+                            ex	de,hl
+                            xor	a
+                            ld	(hl),a
+                            pop	hl
+                            djnz	restore_previous_loop
+                            ret
+
+draw_current
+                            call	is_current_room
+                            ret	nz
+
+                            call	prepare_boss_draw_color
+
+                            ld	hl,boss_prev_path_attrs_buf
+                            ld	(store_previous_attr_address_pointer),hl
+
+                            ld	hl,boss_path_points_buf
+                            ld	b,boss_path_point_amount
+                            ld	c,0
+draw_current_loop
+                            ld	d,(hl)
+                            inc	hl
+                            ld	e,(hl)
+                            inc	hl
+                            push	bc
+                            push	hl
+                            push	de
+                            call	draw_path_point
+                            pop	de
+                            pop	hl
+                            pop	bc
+                            ld	a,c
+                            cp	boss_double_point_start
+                            jr	c,draw_current_single_point
+                            cp	boss_double_point_end
+                            jr	nc,draw_current_single_point
+
+                            inc	e
+                            push	bc
+                            push	hl
+                            call	draw_path_point
+                            pop	hl
+                            pop	bc
+
+draw_current_single_point
+                            inc	c
+                            djnz	draw_current_loop
+                            ret
+
+is_current_room
+                            ld	a,(rooms.room_number_x)
+                            cp	boss_room_x
+                            ret	nz
+
+                            ld	a,(rooms.room_number_y)
+                            cp	boss_room_y
+                            ret
+
+reset
+                            xor	a
+                            ld	(boss_end_x_phase),a
+                            ld	(boss_end_y_phase),a
+                            ld	(boss_wave_phase),a
+
+                            ld	a,boss_end_x_delay
+                            ld	(boss_end_x_timer),a
+                            ld	a,boss_end_y_delay
+                            ld	(boss_end_y_timer),a
+                            ld	a,boss_wave_delay
+                            ld	(boss_wave_timer),a
+                            ld	a,boss_hunt_move_delay
+                            ld	(boss_hunt_move_timer),a
+
+                            ld	a,boss_end_base_x
+                            ld	(boss_head_x),a
+                            ld	(boss_head_target_x),a
+                            ld	a,boss_end_base_y
+                            ld	(boss_head_y),a
+                            ld	(boss_head_target_y),a
+
+                            xor	a
+                            ld	(boss_mode),a
+
+                            call	update_control_points
+                            call	build_path_points
+                            call	copy_path_addresses_to_previous
+                            ret
+
+update_phases
+                            ld	hl,boss_end_x_timer
+                            ld	de,boss_end_x_phase
+                            ld	a,boss_end_x_delay
+                            call	update_phase
+
+                            ld	hl,boss_end_y_timer
+                            ld	de,boss_end_y_phase
+                            ld	a,boss_end_y_delay
+                            call	update_phase
+
+                            ld	hl,boss_wave_timer
+                            ld	de,boss_wave_phase
+                            ld	a,boss_wave_delay
+                            call	update_phase
+                            ret
+
+update_phase
+                ; A small timer keeps each sine-backed value close to the HTML prototype speed.
+                            ld	c,a
+                            ld	a,(hl)
+                            or	a
+                            jr	z,update_phase_step
+
+                            dec	(hl)
+                            ret
+
+update_phase_step
+                            ld	(hl),c
+                            ex	de,hl
+                            inc	(hl)
+                            ld	a,(hl)
+                            and	boss_wave_mask
+                            ld	(hl),a
+                            ret
+
+update_mode_and_head
+                            call	select_mode
+
+                            ld	a,(boss_mode)
+                            cp	boss_mode_hunt
+                            jp	z,update_hunt_head
+
+                            jp	update_idle_head
+
+select_mode
+                            ld	a,(hero.hero_x)
+                            cp	boss_hunt_x_max+1
+                            jr	nc,select_mode_idle
+
+                            ld	a,boss_mode_hunt
+                            ld	(boss_mode),a
+                            ret
+
+select_mode_idle
+                            xor	a
+                            ld	(boss_mode),a
+                            ret
+
+update_idle_head
+                            ld	a,(boss_end_x_phase)
+                            call	read_wave2
+                            add	a,boss_end_base_x
+                            ld	(boss_head_target_x),a
+
+                            ld	a,(boss_end_y_phase)
+                            call	read_wave3
+                            add	a,boss_end_base_y
+                            ld	(boss_head_target_y),a
+                            jp	update_head_to_target
+
+update_hunt_head
+                            ld	a,(hero.hero_x)
+                            call	clamp_head_target_x
+                            ld	(boss_head_target_x),a
+
+                            ld	a,(hero.hero_y)
+                            call	clamp_head_target_y
+                            ld	(boss_head_target_y),a
+
+update_head_to_target
+                            ld	hl,boss_hunt_move_timer
+                            ld	a,(hl)
+                            or	a
+                            jr	z,update_head_to_target_step
+
+                            dec	(hl)
+                            ret
+
+update_head_to_target_step
+                            ld	(hl),boss_hunt_move_delay
+                            call	move_head_x_to_target
+                            call	move_head_y_to_target
+                            ret
+
+move_head_x_to_target
+                            ld	a,(boss_head_target_x)
+                            ld	hl,boss_head_x
+                            cp	(hl)
+                            ret	z
+                            jr	c,move_head_x_left
+
+                            inc	(hl)
+                            ret
+
+move_head_x_left
+                            dec	(hl)
+                            ret
+
+move_head_y_to_target
+                            ld	a,(boss_head_target_y)
+                            ld	hl,boss_head_y
+                            cp	(hl)
+                            ret	z
+                            jr	c,move_head_y_up
+
+                            inc	(hl)
+                            ret
+
+move_head_y_up
+                            dec	(hl)
+                            ret
+
+clamp_head_target_x
+                            cp	boss_head_x_max+1
+                            ret	c
+
+                            ld	a,boss_head_x_max
+                            ret
+
+clamp_head_target_y
+                            cp	boss_head_y_min
+                            jr	nc,clamp_head_target_y_max
+
+                            ld	a,boss_head_y_min
+                            ret
+
+clamp_head_target_y_max
+                            cp	boss_head_y_max+1
+                            ret	c
+
+                            ld	a,boss_head_y_max
+                            ret
+
+update_control_points
+                ; The right anchor is fixed; the left endpoint and inner points are recalculated each tick.
+                            ld	a,boss_anchor_x
+                            ld	(boss_control_x_buf),a
+                            ld	a,boss_anchor_y
+                            ld	(boss_control_y_buf),a
+
+                            ld	a,(boss_head_x)
+                            ld	(boss_control_x_buf+5),a
+                            call	update_control_x_points
+
+                            ld	a,(boss_head_y)
+                            ld	(boss_control_y_buf+5),a
+                            call	update_control_y_points
+                            ret
+
+update_control_x_points
+                            ld	a,(boss_head_x)
+                            add	a,boss_anchor_x*4
+                            call	read_div5
+                            ld	(boss_control_x_buf+1),a
+
+                            ld	a,(boss_head_x)
+                            add	a,a
+                            add	a,boss_anchor_x*3
+                            call	read_div5
+                            ld	(boss_control_x_buf+2),a
+
+                            ld	a,(boss_head_x)
+                            ld	c,a
+                            add	a,a
+                            add	a,c
+                            add	a,boss_anchor_x*2
+                            call	read_div5
+                            ld	(boss_control_x_buf+3),a
+
+                            ld	a,(boss_head_x)
+                            add	a,a
+                            add	a,a
+                            add	a,boss_anchor_x
+                            call	read_div5
+                            ld	(boss_control_x_buf+4),a
+                            ret
+
+update_control_y_points
+                            ld	a,(boss_head_y)
+                            add	a,boss_anchor_y*4
+                            call	read_div5
+                            sub	boss_control_outer_lift
+                            ld	c,boss_control_1_wave_offset
+                            call	apply_control_wave
+                            ld	(boss_control_y_buf+1),a
+
+                            ld	a,(boss_head_y)
+                            add	a,a
+                            add	a,boss_anchor_y*3
+                            call	read_div5
+                            sub	boss_control_inner_lift
+                            ld	c,boss_control_2_wave_offset
+                            call	apply_control_wave
+                            ld	(boss_control_y_buf+2),a
+
+                            ld	a,(boss_head_y)
+                            ld	b,a
+                            add	a,a
+                            add	a,b
+                            add	a,boss_anchor_y*2
+                            call	read_div5
+                            sub	boss_control_inner_lift
+                            ld	c,boss_control_3_wave_offset
+                            call	apply_control_wave
+                            ld	(boss_control_y_buf+3),a
+
+                            ld	a,(boss_head_y)
+                            add	a,a
+                            add	a,a
+                            add	a,boss_anchor_y
+                            call	read_div5
+                            sub	boss_control_outer_lift
+                            ld	c,boss_control_4_wave_offset
+                            call	apply_control_wave
+                            ld	(boss_control_y_buf+4),a
+                            ret
+
+apply_control_wave
+                            ld	b,a
+                            ld	a,(boss_wave_phase)
+                            add	a,c
+                            and	boss_wave_mask
+                            call	read_wave2
+                            add	a,b
+                            jp	p,apply_control_wave_max
+
+                            ld	a,boss_head_y_min
+                            ret
+
+apply_control_wave_max
+                            cp	boss_head_y_max+1
+                            ret	c
+
+                            ld	a,boss_head_y_max
+                            ret
+
+build_path_points
+                ; Each Bezier segment stores four inner samples and the next control point.
+                            ld	hl,boss_path_points_buf
+                            ld	(boss_path_write_pointer),hl
+                            ld	d,boss_anchor_x
+                            ld	e,boss_anchor_y
+                            call	store_path_point
+
+                            ld	hl,boss_control_x_buf
+                            ld	de,boss_control_y_buf
+                            ld	b,boss_segment_amount
+
+build_path_points_loop
+                            push	bc
+                            push	hl
+                            push	de
+                            call	build_path_segment
+                            pop	de
+                            pop	hl
+                            inc	hl
+                            inc	de
+                            pop	bc
+                            djnz	build_path_points_loop
+                            ret
+
+build_path_segment
+                            ld	a,(hl)
+                            ld	(boss_segment_start_x),a
+                            inc	hl
+                            ld	a,(hl)
+                            ld	(boss_segment_end_x),a
+
+                            ld	a,(de)
+                            ld	(boss_segment_start_y),a
+                            inc	de
+                            ld	a,(de)
+                            ld	(boss_segment_end_y),a
+
+                            call	calc_segment_first_sample
+                            call	store_path_point
+                            call	calc_segment_second_sample
+                            call	store_path_point
+                            call	calc_segment_third_sample
+                            call	store_path_point
+                            call	calc_segment_fourth_sample
+                            call	store_path_point
+
+                            ld	a,(boss_segment_end_x)
+                            ld	d,a
+                            ld	a,(boss_segment_end_y)
+                            ld	e,a
+                            call	store_path_point
+                            ret
+
+calc_segment_first_sample
+                            ld	a,(boss_segment_start_x)
+                            add	a,a
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_end_x)
+                            add	a,c
+                            call	read_div5
+                            ld	d,a
+
+                            ld	a,(boss_segment_start_y)
+                            add	a,a
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_end_y)
+                            add	a,c
+                            call	read_div5
+                            sub	boss_curve_lift_sample
+                            ld	e,a
+                            ret
+
+calc_segment_second_sample
+                            ld	a,(boss_segment_start_x)
+                            ld	c,a
+                            add	a,a
+                            add	a,c
+                            ld	c,a
+                            ld	a,(boss_segment_end_x)
+                            add	a,a
+                            add	a,c
+                            call	read_div5
+                            ld	d,a
+
+                            ld	a,(boss_segment_start_y)
+                            ld	c,a
+                            add	a,a
+                            add	a,c
+                            ld	c,a
+                            ld	a,(boss_segment_end_y)
+                            add	a,a
+                            add	a,c
+                            call	read_div5
+                            sub	boss_curve_lift_sample
+                            ld	e,a
+                            ret
+
+calc_segment_third_sample
+                            ld	a,(boss_segment_start_x)
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_end_x)
+                            ld	b,a
+                            add	a,a
+                            add	a,b
+                            add	a,c
+                            call	read_div5
+                            ld	d,a
+
+                            ld	a,(boss_segment_start_y)
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_end_y)
+                            ld	b,a
+                            add	a,a
+                            add	a,b
+                            add	a,c
+                            call	read_div5
+                            sub	boss_curve_lift_sample
+                            ld	e,a
+                            ret
+
+calc_segment_fourth_sample
+                            ld	a,(boss_segment_end_x)
+                            add	a,a
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_start_x)
+                            add	a,c
+                            call	read_div5
+                            ld	d,a
+
+                            ld	a,(boss_segment_end_y)
+                            add	a,a
+                            add	a,a
+                            ld	c,a
+                            ld	a,(boss_segment_start_y)
+                            add	a,c
+                            call	read_div5
+                            sub	boss_curve_lift_sample
+                            ld	e,a
+                            ret
+
+store_path_point
+                            ld	hl,(boss_path_write_pointer)
+                            ld	(hl),d
+                            inc	hl
+                            ld	(hl),e
+                            inc	hl
+                            ld	(boss_path_write_pointer),hl
+                            ret
+
+draw_path_point
+                            call	screen_utils.get_attrs_address
+draw_path_point_color       equ	$+1
+                            ld	a,boss_color1
+                            ld	(hl),a
+
+store_previous_attr_address
+store_previous_attr_address_pointer equ	$+1
+                            ld	de,boss_prev_path_attrs_buf
+                            ld	a,l
+                            ld	(de),a
+                            inc	de
+                            ld	a,h
+                            ld	(de),a
+                            inc	de
+                            ld	(store_previous_attr_address_pointer),de
+                            ret
+
+load_boss_color
+                            ld	hl,boss_color
+                            call	draw.select_color
+                            ret
+
+prepare_boss_draw_color
+                            call	load_boss_color
+                            ld	(draw_path_point_color),a
+                            ret
+
+copy_path_addresses_to_previous
+                            ld	hl,boss_prev_path_attrs_buf
+                            ld	(store_previous_attr_address_pointer),hl
+
+                            ld	hl,boss_path_points_buf
+                            ld	b,boss_path_point_amount
+                            ld	c,0
+
+copy_path_addresses_to_previous_loop
+                            ld	d,(hl)
+                            inc	hl
+                            ld	e,(hl)
+                            inc	hl
+                            push	bc
+                            push	hl
+                            push	de
+                            call	screen_utils.get_attrs_address
+                            call	store_previous_attr_address
+                            pop	de
+                            pop	hl
+                            pop	bc
+                            ld	a,c
+                            cp	boss_double_point_start
+                            jr	c,copy_path_addresses_single_point
+                            cp	boss_double_point_end
+                            jr	nc,copy_path_addresses_single_point
+
+                            inc	e
+                            push	bc
+                            push	hl
+                            call	screen_utils.get_attrs_address
+                            call	store_previous_attr_address
+                            pop	hl
+                            pop	bc
+
+copy_path_addresses_single_point
+                            inc	c
+                            djnz	copy_path_addresses_to_previous_loop
+                            ret
+
+read_div5
+                            ld	h,boss_lookup_page/#100
+                            ld	l,a
+                            ld	a,(hl)
+                            ret
+
+read_wave2
+                            add	a,boss_wave2_table-boss_lookup_page
+                            ld	h,boss_lookup_page/#100
+                            ld	l,a
+                            ld	a,(hl)
+                            ret
+
+read_wave3
+                            add	a,boss_wave3_table-boss_lookup_page
+                            ld	h,boss_lookup_page/#100
+                            ld	l,a
+                            ld	a,(hl)
+                            ret
+
+                            align	256
+boss_lookup_page
+boss_div5_table             db	0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3
+                            db	3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6
+                            db	6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9
+                            db	10,10,10,10,10,11,11,11,11,11,12,12,12,12,12,13
+                            db	13,13,13,13,14,14,14,14,14,15,15,15,15,15,16,16
+                            db	16,16,16,17,17,17,17,17,18,18,18,18,18,19,19,19
+                            db	19,19,20,20,20,20,20,21,21,21,21,21,22,22,22,22
+                            db	22,23,23,23,23,23,24,24,24,24,24,25,25,25,25,25
+                            db	26,26,26,26,26,27,27,27,27,27,28,28,28,28,28,29
+                            db	29,29,29,29,30,30,30,30,30,31,31,31
+boss_wave2_table            db	0,0,1,1,1,2,2,2,2,2,2,2,1,1,1,0
+                            db	0,0,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,0
+boss_wave3_table            db	0,1,1,2,2,2,3,3,3,3,3,2,2,2,1,1
+                            db	0,-1,-1,-2,-2,-2,-3,-3,-3,-3,-3,-2,-2,-2,-1,-1
+
+boss_end_x_phase            db	0
+boss_end_y_phase            db	0
+boss_wave_phase             db	0
+boss_end_x_timer            db	boss_end_x_delay
+boss_end_y_timer            db	boss_end_y_delay
+boss_wave_timer             db	boss_wave_delay
+boss_hunt_move_timer        db	boss_hunt_move_delay
+boss_mode                   db	boss_mode_idle
+boss_head_x                 db	boss_end_base_x
+boss_head_y                 db	boss_end_base_y
+boss_head_target_x          db	boss_end_base_x
+boss_head_target_y          db	boss_end_base_y
+boss_control_x_buf          ds	boss_control_amount
+boss_control_y_buf          ds	boss_control_amount
+boss_path_points_buf        ds	boss_path_point_amount*2
+boss_prev_path_attrs_buf    ds	boss_draw_point_amount*2
+boss_path_write_pointer     dw	boss_path_points_buf
+boss_segment_start_x        db	0
+boss_segment_start_y        db	0
+boss_segment_end_x          db	0
+boss_segment_end_y          db	0
+                        endmodule

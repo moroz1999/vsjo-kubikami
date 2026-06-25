@@ -109,28 +109,21 @@ erase_previous_lines       ; Erase the old boss segment lines.
                             ret     ; Finish line erase.
 
 erase_previous_points      ; Erase the old moving joint squares.
-                            ld	a,(boss_prev_a_x) ; Load previous joint A column.
-                            ld	d,a ; Set marker column to previous joint A.
-                            ld	a,(boss_prev_a_y) ; Load previous joint A row.
-                            ld	e,a ; Set marker row to previous joint A.
-                            call	erase_point_square ; Erase previous joint A marker.
+                            ld	hl,(boss_point_addr_a) ; Load previous joint A marker address.
+                            call	erase_point_square_at_address ; Erase previous joint A marker.
 
-                            ld	a,(boss_prev_b_x) ; Load previous joint B column.
-                            ld	d,a ; Set marker column to previous joint B.
-                            ld	a,(boss_prev_b_y) ; Load previous joint B row.
-                            ld	e,a ; Set marker row to previous joint B.
-                            call	erase_point_square ; Erase previous joint B marker.
+                            ld	hl,(boss_point_addr_b) ; Load previous joint B marker address.
+                            call	erase_point_square_at_address ; Erase previous joint B marker.
 
-                            ld	a,(boss_prev_c_x) ; Load previous head column.
-                            ld	d,a ; Set marker column to previous head.
-                            ld	a,(boss_prev_c_y) ; Load previous head row.
-                            ld	e,a ; Set marker row to previous head.
-                            call	erase_point_square ; Erase previous head marker.
+                            ld	hl,(boss_point_addr_c) ; Load previous head marker address.
+                            call	erase_point_square_at_address ; Erase previous head marker.
                             ret     ; Finish marker erase.
 
 erase_point_square         ; Erase one 2x2 boss marker at DE.
                 ; Paint a fixed 2x2 black marker with the point coordinate as its top-left corner.
                             call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+
+erase_point_square_at_address ; Erase one 2x2 boss marker at HL.
                             xor	a ; Load black attribute color.
                             ld	(hl),a ; Paint top-left marker cell black.
                             inc	l ; Advance to top-right marker cell.
@@ -150,7 +143,18 @@ erase_previous_jaws        ; Erase the old jaw area around the previous head.
                             ld	a,(boss_prev_c_y) ; Load previous head row.
                             dec	a ; Move to the highest possible jaw row.
                             ld	e,a ; Set top jaw row.
-                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	h,0 ; Start HL from the top jaw row.
+                            ld	l,e ; Put jaw row into L.
+                            add	hl,hl ; Multiply row by 2.
+                            add	hl,hl ; Multiply row by 4.
+                            add	hl,hl ; Multiply row by 8.
+                            add	hl,hl ; Multiply row by 16.
+                            add	hl,hl ; Multiply row by 32.
+                            ld	e,d ; Move jaw column into E.
+                            ld	d,0 ; Clear D for the column add.
+                            add	hl,de ; Add jaw column.
+                            ld	de,screen_utils.attrs ; Load attribute base address.
+                            add	hl,de ; Convert DE to an attribute address in HL.
                             xor	a ; Load black attribute color.
                             ld	(hl),a ; Paint the top jaw cell black.
 
@@ -179,6 +183,7 @@ draw_current               ; Draw the current boss frame.
                             call	is_current_room ; Check whether room 1,3 is active.
                             ret	nz ; Skip when another room is active.
 
+                            call	prepare_boss_draw_color ; Prepare the frame-switched color once.
                             call	draw_lines ; Draw the arm segments.
                             call	draw_points ; Draw anchor and joint markers.
                             call	restore_floor_under_current_jaws ; Restore red floor before the current jaw draw touches it.
@@ -276,6 +281,7 @@ reset_points               ; Reset boss runtime state.
 
                             ld	a,boss_jaw_anim_delay ; Load jaw animation delay.
                             ld	(boss_jaw_timer),a ; Reset jaw animation timer.
+                            call	init_previous_point_addresses ; Initialize marker erase addresses.
                             ret     ; Finish boss reset.
 
 update_head_position       ; Select and approach the current head target.
@@ -497,7 +503,8 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint A.
                             ld	a,(boss_a_y) ; Load joint A row.
                             ld	c,a ; Set line end row to joint A.
-                            call	load_boss_color ; Load the frame-switched line color.
+draw_line_color_1          equ	$+1
+                            ld	a,boss_color1 ; Load prepared line color.
                             call	bresenham.draw_line ; Draw wall anchor 1 to joint A.
 
                             ld	d,boss_w2_x ; Set line start column to wall anchor 2.
@@ -506,7 +513,8 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint A.
                             ld	a,(boss_a_y) ; Load joint A row.
                             ld	c,a ; Set line end row to joint A.
-                            call	load_boss_color ; Load the frame-switched line color.
+draw_line_color_2          equ	$+1
+                            ld	a,boss_color1 ; Load prepared line color.
                             call	bresenham.draw_line ; Draw wall anchor 2 to joint A.
 
                             ld	a,(boss_a_x) ; Load joint A column.
@@ -517,7 +525,8 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to joint B.
                             ld	a,(boss_b_y) ; Load joint B row.
                             ld	c,a ; Set line end row to joint B.
-                            call	load_boss_color ; Load the frame-switched line color.
+draw_line_color_3          equ	$+1
+                            ld	a,boss_color1 ; Load prepared line color.
                             call	bresenham.draw_line ; Draw joint A to joint B.
 
                             ld	a,(boss_b_x) ; Load joint B column.
@@ -528,11 +537,14 @@ draw_lines                 ; Draw all boss segment lines.
                             ld	b,a ; Set line end column to head.
                             ld	a,(boss_c_y) ; Load head row.
                             ld	c,a ; Set line end row to head.
-                            call	load_boss_color ; Load the frame-switched line color.
+draw_line_color_4          equ	$+1
+                            ld	a,boss_color1 ; Load prepared line color.
                             call	bresenham.draw_line ; Draw joint B to head.
                             ret     ; Finish line drawing.
 
 draw_points                ; Draw all boss anchor and joint squares.
+                            ld	hl,boss_point_addr_w1 ; Reset draw-time marker address storage.
+                            ld	(draw_point_square_addr_pointer),hl ; Store marker address output pointer.
                             ld	d,boss_w1_x ; Set marker column to wall anchor 1.
                             ld	e,boss_w1_y ; Set marker row to wall anchor 1.
                             call	draw_point_square ; Draw wall anchor 1 marker.
@@ -562,10 +574,18 @@ draw_points                ; Draw all boss anchor and joint squares.
 
 draw_point_square          ; Draw one 2x2 boss marker at DE.
                 ; Paint a 2x2 marker with the point coordinate as its top-left corner.
-                            call	load_boss_color ; Load the frame-switched marker color.
-                            push	af ; Preserve marker color across address lookup.
                             call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
-                            pop	af ; Restore marker color.
+draw_point_square_addr_pointer equ	$+1
+                            ld	de,boss_point_addr_w1 ; Load next marker address output slot.
+                            ld	a,l ; Store low byte of marker address.
+                            ld	(de),a ; Write low byte.
+                            inc	de ; Move to high byte slot.
+                            ld	a,h ; Store high byte of marker address.
+                            ld	(de),a ; Write high byte.
+                            inc	de ; Move to next marker address slot.
+                            ld	(draw_point_square_addr_pointer),de ; Save next marker address output slot.
+draw_point_square_color    equ	$+1
+                            ld	a,boss_color1 ; Load prepared marker color.
 
                             push	hl ; Save top-left marker address.
                             ld	(hl),a ; Paint top-left marker cell.
@@ -584,6 +604,16 @@ load_boss_color            ; Load the boss color chosen by the current frame pal
                             ld	hl,boss_color ; Point HL at the two boss palette entries.
                             call	draw.select_color ; Pick the color for the current frame.
                             ret     ; Return the selected boss color in A.
+
+prepare_boss_draw_color    ; Store the frame color into draw placeholders.
+                            call	load_boss_color ; Pick the color once for this frame.
+                            ld	(draw_line_color_1),a ; Store line 1 color byte.
+                            ld	(draw_line_color_2),a ; Store line 2 color byte.
+                            ld	(draw_line_color_3),a ; Store line 3 color byte.
+                            ld	(draw_line_color_4),a ; Store line 4 color byte.
+                            ld	(draw_point_square_color),a ; Store point color byte.
+                            ld	(draw_jaw_pixel_color),a ; Store jaw color byte.
+                            ret     ; Finish color preparation.
 
 draw_jaws                  ; Draw the jaw pixels for the current jaw state.
                             ld	a,(boss_jaw_state) ; Load current jaw state.
@@ -619,10 +649,9 @@ draw_jaws_apply            ; Draw both jaw pixels from the chosen offsets.
                             ret     ; Finish jaw drawing.
 
 draw_jaw_pixel             ; Draw one jaw pixel at DE.
-                            call	load_boss_color ; Load the frame-switched jaw color.
-                            push	af ; Preserve jaw color across address lookup.
                             call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
-                            pop	af ; Restore jaw color.
+draw_jaw_pixel_color       equ	$+1
+                            ld	a,boss_color1 ; Load prepared jaw color.
                             ld	(hl),a ; Paint the jaw attribute cell.
                             ret     ; Finish jaw pixel drawing.
 
@@ -731,6 +760,29 @@ copy_current_to_previous   ; Save current boss coordinates for the next restore 
                             ld	(boss_prev_c_y),a ; Store previous head row.
                             ret     ; Finish previous coordinate copy.
 
+init_previous_point_addresses ; Seed marker erase addresses before the first draw.
+                            ld	a,(boss_a_x) ; Load joint A column.
+                            ld	d,a ; Set marker column to joint A.
+                            ld	a,(boss_a_y) ; Load joint A row.
+                            ld	e,a ; Set marker row to joint A.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	(boss_point_addr_a),hl ; Store joint A marker address.
+
+                            ld	a,(boss_b_x) ; Load joint B column.
+                            ld	d,a ; Set marker column to joint B.
+                            ld	a,(boss_b_y) ; Load joint B row.
+                            ld	e,a ; Set marker row to joint B.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	(boss_point_addr_b),hl ; Store joint B marker address.
+
+                            ld	a,(boss_c_x) ; Load head column.
+                            ld	d,a ; Set marker column to head.
+                            ld	a,(boss_c_y) ; Load head row.
+                            ld	e,a ; Set marker row to head.
+                            call	screen_utils.get_attrs_address ; Convert DE to an attribute address in HL.
+                            ld	(boss_point_addr_c),hl ; Store head marker address.
+                            ret     ; Finish marker address initialization.
+
 boss_a_x                    db	boss_a_start_x  ; Current joint A column.
 boss_a_y                    db	boss_a_start_y  ; Current joint A row.
 boss_b_x                    db	boss_b_start_x  ; Current joint B column.
@@ -743,6 +795,11 @@ boss_prev_b_x               db	boss_b_start_x  ; Previous joint B column.
 boss_prev_b_y               db	boss_b_start_y  ; Previous joint B row.
 boss_prev_c_x               db	boss_c_start_x  ; Previous head column.
 boss_prev_c_y               db	boss_c_start_y  ; Previous head row.
+boss_point_addr_w1          dw	0   ; Last wall anchor 1 marker address.
+boss_point_addr_w2          dw	0   ; Last wall anchor 2 marker address.
+boss_point_addr_a           dw	0   ; Last joint A marker address.
+boss_point_addr_b           dw	0   ; Last joint B marker address.
+boss_point_addr_c           dw	0   ; Last head marker address.
 boss_c_dx                   db	0   ; Head X delta from its start column.
 boss_c_dy                   db	0   ; Head Y delta from its start row.
 boss_head_move_timer        db	0   ; Head movement delay countdown.
