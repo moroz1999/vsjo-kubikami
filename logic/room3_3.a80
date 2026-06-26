@@ -1,62 +1,149 @@
                         module	room_3_3
+; Room 3,3 boss.
+; The boss is a dotted flexible chain fixed to the right wall.
+; The left endpoint is the gameplay head: idle and hunting both move this same point.
+
+; Room identity used by global draw/restore callbacks.
 boss_room_x                 equ	3
 boss_room_y                 equ	3
+
+; Fixed wall anchor and idle head center.
 boss_anchor_x               equ	30
 boss_anchor_y               equ	12
 boss_end_base_x             equ	5
 boss_end_base_y             equ	16
 boss_end_x_min              equ	2
 boss_end_y_min              equ	14
+
+; Chain topology: six control points make five segments.
+; Each segment contributes four inner samples plus its end control point.
 boss_control_amount         equ	6
 boss_segment_amount         equ	boss_control_amount-1
 boss_segment_point_amount   equ	5
 boss_path_point_amount      equ	1+boss_segment_amount*boss_segment_point_amount
+
+; The middle two segments are drawn one cell thicker by duplicating each point vertically.
+; Extra draw points are not stored in the logical path buffer, only in the restore list.
 boss_double_segment_first   equ	1
 boss_double_segment_amount  equ	2
 boss_double_point_start     equ	1+boss_double_segment_first*boss_segment_point_amount
 boss_double_point_end       equ	boss_double_point_start+boss_double_segment_amount*boss_segment_point_amount
 boss_double_point_amount    equ	boss_double_point_end-boss_double_point_start
 boss_draw_point_amount      equ	boss_path_point_amount+boss_double_point_amount
+
+; Timers control idle sine motion, body wave drift, and delayed head stepping.
 boss_wave_mask              equ	31
 boss_end_x_delay            equ	4
 boss_end_y_delay            equ	3
 boss_wave_delay             equ	1
 boss_hunt_move_delay        equ	3
+
+; Shape offsets: segment samples are lifted slightly; inner controls arch the body upward.
 boss_curve_lift_sample      equ	1
 boss_control_inner_lift     equ	4
 boss_control_outer_lift     equ	2
+
+; Mode and movement bounds.
 boss_mode_idle              equ	0
 boss_mode_hunt              equ	1
 boss_hunt_x_max             equ	29
 boss_head_x_max             equ	boss_anchor_x
 boss_head_y_min             equ	1
 boss_head_y_max             equ	21
+boss_state_alive            equ	0
+boss_state_dissolve         equ	1
+boss_state_gone             equ	2
+
+; Per-control wave phase offsets keep the body from moving as one rigid line.
 boss_control_1_wave_offset  equ	9
 boss_control_2_wave_offset  equ	17
 boss_control_3_wave_offset  equ	26
 boss_control_4_wave_offset  equ	3
+
+; Two close green-cyan variants are swapped by the common flicker selector.
 boss_color1                 equ	%01101100
 boss_color2                 equ	%01100101
 
 boss_color                  db	boss_color1,boss_color2
 
 on_enter
-                            call	reset
+; Room enter resets the boss pose, rebuilds the initial path, and seeds restore addresses.
+                            ld	a,(boss_state)
+                            cp	boss_state_gone
+                            jr	z,on_enter_gone
+                            cp	boss_state_dissolve
+                            jr	z,on_enter_dissolve
+
+                            call	reset_alive
+                            ret
+
+on_enter_dissolve
+                            call	reset_pose
+                            ret
+
+on_enter_gone
+                            xor	a
+                            ld	(boss_prev_draw_point_amount),a
                             ret
 
 logic
+; Per-frame gameplay update:
+; advance idle/body phases, pick the active target, move the head, then rebuild the path.
+                            ld	a,(boss_state)
+                            cp	boss_state_gone
+                            ret	z
+                            cp	boss_state_dissolve
+                            jr	nz,logic_update
+
+                            call	update_dissolve
+                            ld	a,(boss_state)
+                            cp	boss_state_gone
+                            ret	z
+
+logic_update
                             call	update_phases
                             call	update_mode_and_head
                             call	update_control_points
                             call	build_path_points
                             ret
 
+start_dissolve
+; The bug jar starts a permanent point-count fade-out.
+                            ld	a,(boss_state)
+                            cp	boss_state_gone
+                            ret	z
+
+                            ld	a,boss_state_dissolve
+                            ld	(boss_state),a
+                            ret
+
+update_dissolve
+                            ld	a,(boss_visible_point_amount)
+                            or	a
+                            jr	z,update_dissolve_done
+
+                            dec	a
+                            ld	(boss_visible_point_amount),a
+                            ret	nz
+
+update_dissolve_done
+                            ld	a,boss_state_gone
+                            ld	(boss_state),a
+                            ret
+
 restore_previous
+; Global restore hook.
+; Only acts in room 3,3 and clears cells painted by the previous draw pass to black.
                             call	is_current_room
                             ret	nz
 
+; Restore uses stored screen addresses, avoiding x/y to attribute conversion on erase.
+                            ld	a,(boss_prev_draw_point_amount)
+                            or	a
+                            ret	z
+                            ld	b,a
+
                             ld	hl,boss_prev_path_attrs_buf
-                            ld	b,boss_draw_point_amount
 restore_previous_loop
                             ld	e,(hl)
                             inc	hl
@@ -68,21 +155,42 @@ restore_previous_loop
                             ld	(hl),a
                             pop	hl
                             djnz	restore_previous_loop
+
+                            xor	a
+                            ld	(boss_prev_draw_point_amount),a
                             ret
 
 draw_current
+; Global draw hook.
+; Paints the current dotted chain and writes every painted attribute address for next erase.
                             call	is_current_room
                             ret	nz
 
+                            ld	a,(boss_state)
+                            cp	boss_state_gone
+                            ret	z
+
+                            ld	a,(boss_visible_point_amount)
+                            or	a
+                            ret	z
+                            ld	(boss_draw_point_budget),a
+
+                            xor	a
+                            ld	(boss_prev_draw_point_amount),a
+
+; Choose the flicker color once per frame and patch the draw instruction immediate byte.
                             call	prepare_boss_draw_color
 
+; Start a new restore-address stream for this frame.
                             ld	hl,boss_prev_path_attrs_buf
                             ld	(store_previous_attr_address_pointer),hl
 
+; Draw all logical path points. C is the logical point index used to detect thick segments.
                             ld	hl,boss_path_points_buf
                             ld	b,boss_path_point_amount
                             ld	c,0
 draw_current_loop
+; Draw the logical point and keep its coordinates for possible vertical duplication.
                             ld	d,(hl)
                             inc	hl
                             ld	e,(hl)
@@ -90,7 +198,7 @@ draw_current_loop
                             push	bc
                             push	hl
                             push	de
-                            call	draw_path_point
+                            call	draw_budgeted_path_point
                             pop	de
                             pop	hl
                             pop	bc
@@ -100,10 +208,11 @@ draw_current_loop
                             cp	boss_double_point_end
                             jr	nc,draw_current_single_point
 
+; Middle segments get one extra dot directly below the logical point.
                             inc	e
                             push	bc
                             push	hl
-                            call	draw_path_point
+                            call	draw_budgeted_path_point
                             pop	hl
                             pop	bc
 
@@ -113,6 +222,7 @@ draw_current_single_point
                             ret
 
 is_current_room
+; Draw and restore are called globally; this guard keeps the boss local to room 3,3.
                             ld	a,(rooms.room_number_x)
                             cp	boss_room_x
                             ret	nz
@@ -121,12 +231,21 @@ is_current_room
                             cp	boss_room_y
                             ret
 
-reset
+reset_alive
+                            xor	a
+                            ld	(boss_state),a
+                            ld	a,boss_draw_point_amount
+                            ld	(boss_visible_point_amount),a
+
+reset_pose
+; Reset all runtime state to the idle start pose.
+; The head position and target are the same point, so the first frame has no jump.
                             xor	a
                             ld	(boss_end_x_phase),a
                             ld	(boss_end_y_phase),a
                             ld	(boss_wave_phase),a
 
+; Reset timers so idle waves and head stepping start from deterministic phases.
                             ld	a,boss_end_x_delay
                             ld	(boss_end_x_timer),a
                             ld	a,boss_end_y_delay
@@ -136,6 +255,7 @@ reset
                             ld	a,boss_hunt_move_delay
                             ld	(boss_hunt_move_timer),a
 
+; Place the moving head at the idle center and target the same cell.
                             ld	a,boss_end_base_x
                             ld	(boss_head_x),a
                             ld	(boss_head_target_x),a
@@ -146,12 +266,17 @@ reset
                             xor	a
                             ld	(boss_mode),a
 
+; Build an initial path and matching restore addresses before the first draw hook runs.
                             call	update_control_points
                             call	build_path_points
                             call	copy_path_addresses_to_previous
+                            ld	a,(boss_visible_point_amount)
+                            ld	(boss_prev_draw_point_amount),a
                             ret
 
 update_phases
+; Advance the three independent phase counters:
+; idle X, idle Y, and the body wave applied to inner control points.
                             ld	hl,boss_end_x_timer
                             ld	de,boss_end_x_phase
                             ld	a,boss_end_x_delay
@@ -170,6 +295,7 @@ update_phases
 
 update_phase
                 ; A small timer keeps each sine-backed value close to the HTML prototype speed.
+; HL points to the countdown timer, DE points to the phase byte, A is the reload delay.
                             ld	c,a
                             ld	a,(hl)
                             or	a
@@ -179,6 +305,7 @@ update_phase
                             ret
 
 update_phase_step
+; Timer expired: reload it, advance phase, and wrap to the 32-entry wave tables.
                             ld	(hl),c
                             ex	de,hl
                             inc	(hl)
@@ -188,6 +315,7 @@ update_phase_step
                             ret
 
 update_mode_and_head
+; Choose idle or hunting target first, then move the same head point toward that target.
                             call	select_mode
 
                             ld	a,(boss_mode)
@@ -197,6 +325,7 @@ update_mode_and_head
                             jp	update_idle_head
 
 select_mode
+; Hunting is active while the hero is not past the right-side hunt limit.
                             ld	a,(hero.hero_x)
                             cp	boss_hunt_x_max+1
                             jr	nc,select_mode_idle
@@ -206,11 +335,14 @@ select_mode
                             ret
 
 select_mode_idle
+; When the hero is lost, only the target changes; the head keeps moving smoothly.
                             xor	a
                             ld	(boss_mode),a
                             ret
 
 update_idle_head
+; Idle target comes from two wave tables around the idle center.
+; This is a target only; the real head approaches it through update_head_to_target.
                             ld	a,(boss_end_x_phase)
                             call	read_wave2
                             add	a,boss_end_base_x
@@ -223,6 +355,8 @@ update_idle_head
                             jp	update_head_to_target
 
 update_hunt_head
+; Hunting target is the hero position, clamped to the head movement bounds.
+; Other control points react indirectly because they are rebuilt from the moved head.
                             ld	a,(hero.hero_x)
                             call	clamp_head_target_x
                             ld	(boss_head_target_x),a
@@ -232,6 +366,7 @@ update_hunt_head
                             ld	(boss_head_target_y),a
 
 update_head_to_target
+; Delay-gated movement: every N frames the head may step one cell on each axis.
                             ld	hl,boss_hunt_move_timer
                             ld	a,(hl)
                             or	a
@@ -241,12 +376,14 @@ update_head_to_target
                             ret
 
 update_head_to_target_step
+; One movement tick can update both X and Y, giving diagonal approach when needed.
                             ld	(hl),boss_hunt_move_delay
                             call	move_head_x_to_target
                             call	move_head_y_to_target
                             ret
 
 move_head_x_to_target
+; Move the head one column toward the current target, or keep it if already aligned.
                             ld	a,(boss_head_target_x)
                             ld	hl,boss_head_x
                             cp	(hl)
@@ -261,6 +398,7 @@ move_head_x_left
                             ret
 
 move_head_y_to_target
+; Move the head one row toward the current target, or keep it if already aligned.
                             ld	a,(boss_head_target_y)
                             ld	hl,boss_head_y
                             cp	(hl)
@@ -275,6 +413,7 @@ move_head_y_up
                             ret
 
 clamp_head_target_x
+; Right bound prevents hunting target from moving beyond the fixed wall anchor.
                             cp	boss_head_x_max+1
                             ret	c
 
@@ -282,6 +421,7 @@ clamp_head_target_x
                             ret
 
 clamp_head_target_y
+; Lower bound keeps the head away from invalid top-room coordinates.
                             cp	boss_head_y_min
                             jr	nc,clamp_head_target_y_max
 
@@ -289,6 +429,7 @@ clamp_head_target_y
                             ret
 
 clamp_head_target_y_max
+; Upper bound keeps the head inside the visible gameplay area.
                             cp	boss_head_y_max+1
                             ret	c
 
@@ -297,6 +438,8 @@ clamp_head_target_y_max
 
 update_control_points
                 ; The right anchor is fixed; the left endpoint and inner points are recalculated each tick.
+; Control 0 is the wall anchor, control 5 is the moving head.
+; Controls 1..4 are rebuilt between them so the entire chain follows head movement.
                             ld	a,boss_anchor_x
                             ld	(boss_control_x_buf),a
                             ld	a,boss_anchor_y
@@ -312,6 +455,8 @@ update_control_points
                             ret
 
 update_control_x_points
+; X controls are evenly distributed along the anchor-to-head span:
+; 1/5, 2/5, 3/5, and 4/5 from the wall anchor toward the head.
                             ld	a,(boss_head_x)
                             add	a,boss_anchor_x*4
                             call	read_div5
@@ -340,6 +485,8 @@ update_control_x_points
                             ret
 
 update_control_y_points
+; Y controls are also distributed along the span, then lifted and wave-offset.
+; The lifts create the hanging body shape before per-control wave motion is applied.
                             ld	a,(boss_head_y)
                             add	a,boss_anchor_y*4
                             call	read_div5
@@ -380,6 +527,7 @@ update_control_y_points
                             ret
 
 apply_control_wave
+; Add a small signed wave to an inner control and clamp it into legal head bounds.
                             ld	b,a
                             ld	a,(boss_wave_phase)
                             add	a,c
@@ -400,6 +548,8 @@ apply_control_wave_max
 
 build_path_points
                 ; Each Bezier segment stores four inner samples and the next control point.
+; The logical path starts with the wall anchor, then appends five dots per segment.
+; The buffer contains x,y byte pairs and is rebuilt every gameplay frame.
                             ld	hl,boss_path_points_buf
                             ld	(boss_path_write_pointer),hl
                             ld	d,boss_anchor_x
@@ -411,6 +561,7 @@ build_path_points
                             ld	b,boss_segment_amount
 
 build_path_points_loop
+; Walk neighboring control point pairs: 0-1, 1-2, 2-3, 3-4, 4-5.
                             push	bc
                             push	hl
                             push	de
@@ -424,6 +575,8 @@ build_path_points_loop
                             ret
 
 build_path_segment
+; Cache one segment's endpoints, calculate four interpolated samples, then store the end.
+; This keeps the path dotted but still tied to the control-point chain.
                             ld	a,(hl)
                             ld	(boss_segment_start_x),a
                             inc	hl
@@ -453,6 +606,8 @@ build_path_segment
                             ret
 
 calc_segment_first_sample
+; Segment sample at 1/5 from start to end: (4*start + end) / 5.
+; Y samples are lifted by one row to keep the dotted curve slightly arched.
                             ld	a,(boss_segment_start_x)
                             add	a,a
                             add	a,a
@@ -474,6 +629,7 @@ calc_segment_first_sample
                             ret
 
 calc_segment_second_sample
+; Segment sample at 2/5 from start to end: (3*start + 2*end) / 5.
                             ld	a,(boss_segment_start_x)
                             ld	c,a
                             add	a,a
@@ -499,6 +655,7 @@ calc_segment_second_sample
                             ret
 
 calc_segment_third_sample
+; Segment sample at 3/5 from start to end: (2*start + 3*end) / 5.
                             ld	a,(boss_segment_start_x)
                             add	a,a
                             ld	c,a
@@ -524,6 +681,7 @@ calc_segment_third_sample
                             ret
 
 calc_segment_fourth_sample
+; Segment sample at 4/5 from start to end: (start + 4*end) / 5.
                             ld	a,(boss_segment_end_x)
                             add	a,a
                             add	a,a
@@ -545,6 +703,7 @@ calc_segment_fourth_sample
                             ret
 
 store_path_point
+; Append the D,E point to the logical path buffer and advance the write pointer.
                             ld	hl,(boss_path_write_pointer)
                             ld	(hl),d
                             inc	hl
@@ -553,13 +712,28 @@ store_path_point
                             ld	(boss_path_write_pointer),hl
                             ret
 
+draw_budgeted_path_point
+; Draw one point only while the dissolve budget still has visible dots.
+                            ld	a,(boss_draw_point_budget)
+                            or	a
+                            ret	z
+
+                            dec	a
+                            ld	(boss_draw_point_budget),a
+                            ld	hl,boss_prev_draw_point_amount
+                            inc	(hl)
+                            jp	draw_path_point
+
 draw_path_point
+; Draw one logical or extra-thickness point.
+; The screen address is stored immediately so the next restore pass can erase by address.
                             call	screen_utils.get_attrs_address
 draw_path_point_color       equ	$+1
                             ld	a,boss_color1
                             ld	(hl),a
 
 store_previous_attr_address
+; Self-modifying output pointer writes consecutive low/high address bytes.
 store_previous_attr_address_pointer equ	$+1
                             ld	de,boss_prev_path_attrs_buf
                             ld	a,l
@@ -572,16 +746,21 @@ store_previous_attr_address_pointer equ	$+1
                             ret
 
 load_boss_color
+; Use the shared frame color selector to flicker between the two boss attributes.
                             ld	hl,boss_color
                             call	draw.select_color
                             ret
 
 prepare_boss_draw_color
+; Store the selected color into the immediate byte used by draw_path_point.
+; This avoids re-running color selection for every dot.
                             call	load_boss_color
                             ld	(draw_path_point_color),a
                             ret
 
 copy_path_addresses_to_previous
+; Room-enter seeding mirrors draw_current without painting.
+; It prevents the first restore pass from reading empty restore addresses.
                             ld	hl,boss_prev_path_attrs_buf
                             ld	(store_previous_attr_address_pointer),hl
 
@@ -590,6 +769,7 @@ copy_path_addresses_to_previous
                             ld	c,0
 
 copy_path_addresses_to_previous_loop
+; Convert each logical point into a restore address, including doubled middle-segment dots.
                             ld	d,(hl)
                             inc	hl
                             ld	e,(hl)
@@ -608,6 +788,7 @@ copy_path_addresses_to_previous_loop
                             cp	boss_double_point_end
                             jr	nc,copy_path_addresses_single_point
 
+; The extra central-segment dot is one row lower than the logical path point.
                             inc	e
                             push	bc
                             push	hl
@@ -622,12 +803,14 @@ copy_path_addresses_single_point
                             ret
 
 read_div5
+; Division-by-5 lookup. The table page is aligned so only L changes per read.
                             ld	h,boss_lookup_page/#100
                             ld	l,a
                             ld	a,(hl)
                             ret
 
 read_wave2
+; Signed wave with amplitude two, used for idle X and body control movement.
                             add	a,boss_wave2_table-boss_lookup_page
                             ld	h,boss_lookup_page/#100
                             ld	l,a
@@ -635,6 +818,7 @@ read_wave2
                             ret
 
 read_wave3
+; Signed wave with amplitude three, used for idle Y target motion.
                             add	a,boss_wave3_table-boss_lookup_page
                             ld	h,boss_lookup_page/#100
                             ld	l,a
@@ -643,6 +827,7 @@ read_wave3
 
                             align	256
 boss_lookup_page
+; All lookup data shares one aligned page so reads can set H once and index with L.
 boss_div5_table             db	0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3
                             db	3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6
                             db	6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9
@@ -658,6 +843,8 @@ boss_wave2_table            db	0,0,1,1,1,2,2,2,2,2,2,2,1,1,1,0
 boss_wave3_table            db	0,1,1,2,2,2,3,3,3,3,3,2,2,2,1,1
                             db	0,-1,-1,-2,-2,-2,-3,-3,-3,-3,-3,-2,-2,-2,-1,-1
 
+; Runtime state.
+; Phases and timers drive motion, head state drives gameplay, buffers hold generated geometry.
 boss_end_x_phase            db	0
 boss_end_y_phase            db	0
 boss_wave_phase             db	0
@@ -666,6 +853,10 @@ boss_end_y_timer            db	boss_end_y_delay
 boss_wave_timer             db	boss_wave_delay
 boss_hunt_move_timer        db	boss_hunt_move_delay
 boss_mode                   db	boss_mode_idle
+boss_state                  db	boss_state_alive
+boss_visible_point_amount   db	boss_draw_point_amount
+boss_draw_point_budget      db	boss_draw_point_amount
+boss_prev_draw_point_amount db	boss_draw_point_amount
 boss_head_x                 db	boss_end_base_x
 boss_head_y                 db	boss_end_base_y
 boss_head_target_x          db	boss_end_base_x

@@ -1,13 +1,13 @@
-                        module	poison_bottle
+                        module	bug_jar
 action
                             ld	a,(rooms.room_number_x)
-                            cp	1
+                            cp	3
                             jr	nz,action_false
                             ld	a,(rooms.room_number_y)
                             cp	3
                             jr	nz,action_false
 
-                            call	logic.room_1_3.poison_boss
+                            call	logic.room_3_3.start_dissolve
                             call	hero.delete_item_in_pocket
 
                             ld	a,255

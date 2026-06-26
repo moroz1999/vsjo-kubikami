@@ -94,5 +94,5 @@ health_label
 armor_label
                             db	"a",255
 empty_item_name
-                            db	"             ",255
+                            db	"              ",255
                         endmodule

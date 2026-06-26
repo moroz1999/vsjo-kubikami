@@ -76,6 +76,7 @@ room_onend_pointer          dw	0
                             include	"./logic/seeds.a80";
                             include	"./logic/bottle.a80";
                             include	"./logic/poison_bottle.a80";
+                            include	"./logic/bug_jar.a80";
 empty_room_logic
                             ret
 empty_room_on_enter

@@ -7,18 +7,23 @@ action
                             cp	0
                             jr	nz,action_false
 
-                ; hero must be between 14 and 20 x
+                ; hero must be between 18 and 25 x
                             ld	a,(hero.hero_x)
                             sub	18
                             jr	c,action_false
+                            
                             ld	a,(hero.hero_x)
                             sub	25
                             jr	nc,action_false
 
-                ; hero must be on 14 line
+                ; hero must be on 11 and 14 line
                             ld	a,(hero.hero_y)
-                            cp	14
-                            jr	nz,action_false
+                            sub	11
+                            jr	c,action_false
+
+                            ld	a,(hero.hero_y)
+                            sub	15
+                            jr	nc,action_false
 
                             ld	d,18
                             ld	e,8
@@ -51,29 +56,30 @@ black                       equ	rooms.room_bg_color
 gra_color                   equ	rooms.room_bg_color_gray
 green                       equ	%01100100
 yel_color                   equ	%01110110
+orange                      equ	%00010110
 
 animation_frame0
-                            db	black,black,black,black,black,black,black,black
+                            db	orange,black,black,black,black,black,black,black
                             db	black,black,black,black,black,black,black,black
                             db	black,black,black,black,black,black,black,black
                             db	black,black,black,black,gra_color,black,black,black
                             db	black,black,black,black,gra_color,black,black,black
 animation_frame1
+                            db	orange,black,black,black,black,black,black,black
                             db	black,black,black,black,black,black,black,black
-                            db	black,black,black,black,black,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
                             db	black,black,black,black,gra_color,black,black,black
                             db	green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
 animation_frame2
-                            db	black,black,black,black,gra_color,black,black,black
+                            db	orange,black,black,black,gra_color,black,black,black
                             db	black,black,black,black,gra_color,black,black,black
                             db	black,black,black,black,gra_color,green,green,green
-                            db	black,black,black,black,gra_color,black,black,black
                             db	green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
 animation_frame3
-                            db	black,black,green,green,gra_color,green,green,black
+                            db	orange,green,green,green,gra_color,black,black,black
                             db	black,black,black,black,gra_color,black,black,black
                             db	black,black,black,black,gra_color,green,green,green
-                            db	black,black,black,black,gra_color,black,black,black
                             db	green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,gra_color,black,black,black
                         endmodule

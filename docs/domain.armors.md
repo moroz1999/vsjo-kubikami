@@ -18,3 +18,7 @@
 
 - Collected armor switches to `state_off`.
 - After collection, the armor rectangle is restored from the current room data.
+
+## Placement
+
+- Room `6,0` has a small armor at `(23,9)`.

@@ -82,6 +82,7 @@ seeds                       equ	8
 screwdriver                 equ	9
 bottle                      equ	10
 poison_bottle               equ	11
+bug_jar                     equ	12
 
 all_items
 item_0
@@ -177,8 +178,8 @@ item_7
                             14                      // room_pos_y
                             strings.handle          // name
                             logic.handle.action     // logic
-                            %01000111               // color1
-                            %01110110               // color2
+                            %00000111               // color1
+                            %00101101               // color2
                             }
 item_8
                             item	{
@@ -208,10 +209,10 @@ item_9
 item_10
                             item	{
                             bottle                  // type_id
-                            6                       // room_x
-                            3                       // room_y
-                            8                      // room_pos_x
-                            5                      // room_pos_y
+                            3                       // room_x
+                            0                       // room_y
+                            29                      // room_pos_x
+                            19                      // room_pos_y
                             strings.bottle          // name
                             logic.bottle.action     // logic
                             %01001101               // color1
@@ -226,8 +227,20 @@ item_11
                             0                       // room_pos_y
                             strings.poison_bottle   // name
                             logic.poison_bottle.action ; logic
-                            %01001101               // color1
-                            %01010010               // color2
+                            %00100110               // color1
+                            %01100111               // color2
+                            }
+item_12
+                            item	{
+                            bug_jar                 // type_id
+                            5                       // room_x
+                            0                       // room_y
+                            6                       // room_pos_x
+                            7                       // room_pos_y
+                            strings.bug_jar         // name
+                            logic.bug_jar.action    // logic
+                            %00100100               // color1
+                            %01100110               // color2
                             }
 items_end
                             db	items_end_marker

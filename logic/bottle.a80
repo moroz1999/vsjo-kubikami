@@ -7,15 +7,14 @@ action
                             cp	3
                             jr	nz,action_false
 
-                ; hero must be between 8 and 12 x
+                ; hero must be on the pool ledge left of the lift.
                             ld	a,(hero.hero_x)
                             sub	8
                             jr	c,action_false
                             ld	a,(hero.hero_x)
-                            sub	12
+                            sub	13
                             jr	nc,action_false
 
-                ; hero must be on 5 line
                             ld	a,(hero.hero_y)
                             cp	5
                             jr	nz,action_false

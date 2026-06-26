@@ -53,8 +53,8 @@
 ## Handle
 
 - The handle is used in room `4,0` when the hero stands at `y=20` and `x=1..4`.
-- Using it opens the balcony door at `(0,15)` with a four-frame screen animation and sets `logic.room_4_0.handle_used`.
-- The final balcony-door patch is passable sky/gray art, so room `4,0` can restore and collide from `rooms.current_room_buf` after the door is open.
+- Using it opens the balcony door at `(0,16)` with a six-frame screen animation and sets `logic.room_4_0.handle_used`.
+- The dark green/cyan door (`%00100101`) is one attribute cell wide: it first moves whole one cell right, then rises five cells parallel to the left wall; the final two-column patch keeps the raised door at `x=1`, `y=11..15`, changes `x=0`, `y=16..20` to gray balcony background, and leaves `x=1`, `y=16..20` black.
 
 ## Seeds
 
@@ -62,15 +62,40 @@
 - Using them grows a flower above the pot at `(18,8)` with a four-frame screen animation and sets `logic.room_5_0.seeds_grown`.
 - The final flower is `8x5`: its gray stem column is passable and reaches each leaf row, while its fewer wide green leaves are solid climb steps.
 
+## Bug Jar
+
+- The bug jar lies under the upper bed in room `5,0` at `(6,7)`, reachable after the seeds grow the flower climb.
+- The bug jar is used in boss room `3,3`; for now, the whole screen is an active use zone.
+- Using the bug jar removes it from the pocket and starts `logic.room_3_3.start_dissolve`.
+- Room `3,3` removes the boss by decrementing the visible boss point budget each frame. When the budget reaches zero, the boss state becomes gone, the last drawn points are restored once, and future boss drawing stays disabled.
+
+## Dynamite
+
+- The dynamite is used in room `2,3` when the hero stands at `x=20..22`.
+- Using it starts the explosion animation at `(23,11)`, sets `logic.room_2_3.dynamite_exploded`, and removes the item from the pocket.
+- Room `2,3` applies the final black explosion patch on enter when `logic.room_2_3.dynamite_exploded` is set.
+
+## Bottle
+
+- The empty bottle lies on the lower balcony in room `3,0` at `(29,19)`.
+- The empty bottle is used in room `6,3` on the ledge by the poison pool left of the lift, when the hero stands at `y=5` and `x=8..12`.
+- Using the empty bottle removes it from the pocket and immediately puts `items.poison_bottle` into the pocket.
+- The poison bottle inventory colors use the room `6,3` poison-pool animation palette: `%00100110` and `%01100111`.
+
+## Poison Bottle
+
+- The poison bottle is used in boss room `1,3`; for now, the whole screen is an active use zone.
+- Using the poison bottle removes it from the pocket, sets `logic.room_1_3.boss_poisoned`, restores the last boss footprint, and stops the boss from updating or drawing.
+
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
-- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, and `debug.initial_stairs_unfolded` are compile-time 0/1 flags for item effects that should start already applied.
+- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, and `debug.initial_dynamite_exploded` are compile-time 0/1 flags for item effects that should start already applied.
 - Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `1`, hatch key used `1`, elevator repaired by toolkit `1`, generator started `0`, and stairs unfolded `0`.
+- Current defaults are broken glass `1`, red door opened by red card `1`, hatch key used `1`, elevator repaired by toolkit `1`, generator started `1`, stairs unfolded `1`, and dynamite exploded `1`.
 
 ## Persistent Room Art
 

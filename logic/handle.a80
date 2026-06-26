@@ -21,7 +21,7 @@ action
                             jr	nz,action_false
 
                             ld	d,0
-                            ld	e,15
+                            ld	e,10
                             ld	hl,item_animation
                             call	animate.start
                             ld	a,1
@@ -37,47 +37,91 @@ action_false
 
 item_animation
                             @animation	{
-                            4       ;frames
+                            6       ;frames
                             0       ;current
-                            10      ;delay
+                            6       ;delay
                             0       ;room_address
                             0       ;screen_address
                             0       ;room_x
                             0       ;room_y
-                            3       ;width
-                            6       ;height
+                            2       ;width
+                            11      ;height
                             }
 black                       equ	rooms.room_bg_color
-sky_color                   equ	rooms.room_bg_color_sky
 gra_color                   equ	rooms.room_bg_color_gray
-door_color                  equ	%01010110
+wall_color                  equ	%01010110
+door_color                  equ	%00100101
 
 animation_frame0
-                            db	door_color,door_color,black
-                            db	door_color,door_color,black
-                            db	door_color,door_color,black
-                            db	door_color,door_color,black
-                            db	door_color,door_color,black
-                            db	door_color,door_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
 animation_frame1
-                            db	sky_color,door_color,black
-                            db	sky_color,door_color,black
-                            db	sky_color,door_color,black
-                            db	sky_color,door_color,black
-                            db	sky_color,door_color,black
-                            db	sky_color,door_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,black
 animation_frame2
-                            db	sky_color,sky_color,door_color
-                            db	sky_color,sky_color,door_color
-                            db	sky_color,sky_color,door_color
-                            db	sky_color,sky_color,door_color
-                            db	sky_color,sky_color,door_color
-                            db	sky_color,sky_color,door_color
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,black
+                            db	gra_color,black
 animation_frame3
-                            db	sky_color,sky_color,gra_color
-                            db	sky_color,sky_color,gra_color
-                            db	sky_color,sky_color,gra_color
-                            db	sky_color,sky_color,gra_color
-                            db	sky_color,sky_color,gra_color
-                            db	sky_color,sky_color,gra_color
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
+animation_frame4
+                            db	wall_color,black
+                            db	wall_color,black
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	gra_color,door_color
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
+animation_frame5
+                            db	wall_color,black
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	wall_color,door_color
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
+                            db	gra_color,black
                         endmodule

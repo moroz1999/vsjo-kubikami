@@ -5,7 +5,7 @@ on_enter
                             ret	z
 
                             ld	d,0
-                            ld	e,15
+                            ld	e,10
                             ld	hl,logic.handle.item_animation
                             call	animate.patch_last_frame
                             ret

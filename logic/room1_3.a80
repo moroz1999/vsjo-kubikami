@@ -40,10 +40,18 @@ boss_c_start_x              equ	14  ; Start column for head joint C.
 boss_c_start_y              equ	15  ; Start row for head joint C.
 
 on_enter                  ; Room enter hook.
+                            ld	a,(boss_poisoned) ; Keep the boss hidden after poison.
+                            or	a
+                            ret	nz
+
                             call	reset_points ; Reset boss state for the room.
                             ret     ; Return to room enter dispatcher.
 
 logic                      ; Per-frame room logic.
+                            ld	a,(boss_poisoned) ; Poisoned boss no longer moves or bites.
+                            or	a
+                            ret	nz
+
                             call	update_points ; Advance boss joints and jaws.
 
                             ld	a,(hero.hero_x) ; Read hero column.
@@ -55,6 +63,12 @@ logic                      ; Per-frame room logic.
                             ret	nz ; Leave if the row is not the exit.
 
                             jp	game_process.endgame ; Start the endgame sequence.
+
+poison_boss                ; Hide the boss and stop its room logic.
+                            call	restore_previous
+                            ld	a,1
+                            ld	(boss_poisoned),a
+                            ret
 
 restore_previous           ; Erase the old boss drawing area.
                             call	is_current_room ; Check whether room 1,3 is active.
@@ -182,6 +196,10 @@ restore_floor_under_previous_jaws ; Restore the red floor when the old jaw erase
 draw_current               ; Draw the current boss frame.
                             call	is_current_room ; Check whether room 1,3 is active.
                             ret	nz ; Skip when another room is active.
+
+                            ld	a,(boss_poisoned) ; Keep the boss hidden after poison.
+                            or	a
+                            ret	nz
 
                             call	prepare_boss_draw_color ; Prepare the frame-switched color once.
                             call	draw_lines ; Draw the arm segments.
@@ -810,4 +828,5 @@ boss_idle_seed              db	boss_idle_seed_init  ; Idle pseudo-random seed.
 boss_mode                   db	boss_mode_idle  ; Current boss targeting mode.
 boss_jaw_timer              db	boss_jaw_anim_delay  ; Jaw animation countdown.
 boss_jaw_state              db	boss_jaw_state_open  ; Current jaw open/closed state.
+boss_poisoned               db	0   ; Non-zero after the poison bottle removes the boss.
                         endmodule               ; End room 1,3 boss logic module.
