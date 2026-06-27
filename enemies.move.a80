@@ -14,6 +14,7 @@ move_next
                             jr	move_next_skip
 
 move_next_online
+                            call	try_switch_online_free_to_route
                             call	advance_online_route_target_if_reached
 
                             ld	a,(ix+enemy.simulation_mode)
@@ -32,7 +33,11 @@ move_next_after_fall_state
                             jr	z,move_next_apply
                             cp	state_jump
                             jr	z,move_next_apply
-                            cp	state_route
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
+                            jr	z,move_next_apply
+                            cp	behavior_aggressive
                             jr	z,move_next_apply
 
                             call	update_state_timer
@@ -56,7 +61,9 @@ update_fall_state
                             ld	a,(ix+enemy.state)
                             cp	state_jump
                             ret	z
-                            cp	state_route
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             jr	nz,update_fall_state_check_floor
 
                             ld	a,(ix+enemy.jump_phase_delay)
@@ -128,8 +135,12 @@ move_enemy
                             jr	z,move_enemy_fall
                             cp	state_jump
                             jp	z,move_enemy_jump
-                            cp	state_route
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             jp	z,move_route_enemy
+                            cp	behavior_aggressive
+                            ret	z
 
                 ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
@@ -192,7 +203,7 @@ move_enemy_to_bottom_room
 
 continue_after_fall
                 ; After landing, enemies return to their behavior model.
-                            call	restore_route_or_walk
+                            call	restore_behavior_state
 
                             ld	a,(ix+enemy.state_delay)
                             ld	(ix+enemy.state_timer),a
@@ -281,8 +292,8 @@ maybe_turn_around_on_empty_floor_swim
 
 maybe_turn_around_on_empty_floor_edge
                 ; Edge decisions can jump early before a step-down check.
-                            ld	a,(ix+enemy.state)
-                            cp	state_route
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             jr	z,maybe_turn_around_on_empty_floor_route_drop
 
                             call	next_random
@@ -409,4 +420,9 @@ leave_enemy_to_room_coords
 
                             ld	a,simulation_mode_offline
                             ld	(ix+enemy.simulation_mode),a
+
+                            ld	a,behavior_route
+                            ld	(ix+enemy.behavior_mode),a
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
                             ret

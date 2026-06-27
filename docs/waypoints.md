@@ -3,7 +3,14 @@
 ## Enemy Data
 
 - Route following is a path-based enemy model that exists beside free roaming instead of replacing it.
-- Switching rules between free roaming and route following are not decided yet; the current work only proves the route mechanism itself.
+- A targetless enemy can attach to route following when offline routing starts or after a successful online free-to-route timer roll.
+- Offline attachment is attempted once; online timer-driven attachment can retry after later rolls when no point was in range.
+- Each attachment search selects the first same-room point within the inclusive `x +/- 7`, `y +/- 2` window.
+- The initial target search leaves `last_route_point_ptr` unchanged, so normal direction fallback chooses the next link after the target is reached.
+- Route pointers are retained while an online enemy uses free behavior.
+- A free online enemy gets a `1/8` route-behavior roll when its individual behavior timer expires.
+- Online route behavior can switch to free behavior with a `1/8` chance at each reached route point.
+- Online/offline simulation mode is determined only by whether the enemy belongs to the active room.
 - A route-following enemy remembers the last point it reached and the point it is currently trying to reach.
 - `last_route_point_ptr` is the last reached route point.
 - `target_route_point_ptr` is the route point the enemy is currently moving toward.
@@ -24,6 +31,7 @@ route_point:
 ```
 
 - Route points belong to rooms and have room-local coordinates.
+- The route generator emits a counted pointer table for every room, preserving global authored point order inside each room.
 - Route points are authored so that a route-following enemy can physically reach the next target and should not skip over it.
 - Cross-room entry points must sit on a screen edge.
 - Neighboring route points are normally spaced 5-7 cells apart.

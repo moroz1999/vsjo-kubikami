@@ -1,0 +1,47 @@
+route_4_0_right_entry
+                            route_point	{
+                            4,                           ; room_x
+                            0,                           ; room_y
+                            31,                          ; x
+                            20,                          ; y
+                            route_point_exit,            ; type
+                            route_5_0_left_exit,         ; top-left point
+                            route_4_0_floor_right,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_0_floor_right
+                            route_point	{
+                            4,                           ; room_x
+                            0,                           ; room_y
+                            24,                          ; x
+                            20,                          ; y
+                            route_point_normal,          ; type
+                            route_4_0_floor_mid,         ; top-left point
+                            route_4_0_right_entry,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_0_floor_mid
+                            route_point	{
+                            4,                           ; room_x
+                            0,                           ; room_y
+                            16,                          ; x
+                            20,                          ; y
+                            route_point_normal,          ; type
+                            route_4_0_floor_left,        ; top-left point
+                            route_4_0_floor_right,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_0_floor_left
+                            route_point	{
+                            4,                           ; room_x
+                            0,                           ; room_y
+                            8,                           ; x
+                            20,                          ; y
+                            route_point_normal,          ; type
+                            route_4_0_floor_mid,         ; top-left point
+                            route_4_0_floor_mid,         ; bottom-right point
+                            0                            ; alternative point
+                            }

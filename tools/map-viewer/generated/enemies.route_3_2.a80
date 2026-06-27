@@ -1,3 +1,15 @@
+route_3_2_teleport_exit
+                            route_point	{
+                            3,                           ; room_x
+                            2,                           ; room_y
+                            17,                          ; x
+                            11,                          ; y
+                            route_point_exit,            ; type
+                            route_0_3_teleport,          ; top-left point
+                            route_3_2_right_inner,       ; bottom-right point
+                            0                            ; alternative point
+                            }
+
 route_3_2_right_inner
                             route_point	{
                             3,                           ; room_x
@@ -5,7 +17,7 @@ route_3_2_right_inner
                             24,                          ; x
                             13,                          ; y
                             route_point_normal,          ; type
-                            route_3_2_right_inner,       ; top-left point
+                            route_3_2_teleport_exit,     ; top-left point
                             route_3_2_right_mid,         ; bottom-right point
                             0                            ; alternative point
                             }

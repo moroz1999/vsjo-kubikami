@@ -63,7 +63,8 @@ select_enemy_debug_color
                             ld	a,(ix+enemies.enemy.state)
                             cp	enemies.state_stand
                             jr	z,select_enemy_debug_color_stand
-                            cp	enemies.state_route
+                            ld	a,(ix+enemies.enemy.behavior_mode)
+                            cp	enemies.behavior_route
                             jr	z,select_enemy_debug_color_route
 
                             ld	a,(ix+enemies.enemy.target_route_point_ptr)

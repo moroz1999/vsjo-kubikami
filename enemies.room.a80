@@ -1,5 +1,5 @@
 update_simulation_mode
-                ; Room entry simulates only enemies that belong to the active room.
+                ; Room membership alone determines online and offline simulation.
                             ld	b,enemy_count
                             ld	ix,enemies
 update_simulation_mode_next
@@ -11,17 +11,28 @@ update_simulation_mode_next
                             ret
 
 refresh_enemy_simulation_mode
+                            call	is_enemy_in_current_room
+                            jr	z,refresh_enemy_simulation_mode_online
+
+                            ld	a,simulation_mode_offline
+                            ld	(ix+enemy.simulation_mode),a
+
+                            ld	a,behavior_route
+                            ld	(ix+enemy.behavior_mode),a
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+                            ret
+
+refresh_enemy_simulation_mode_online
+                            ld	a,simulation_mode_online
+                            ld	(ix+enemy.simulation_mode),a
+                            ret
+
+is_enemy_in_current_room
                             ld	a,(rooms.room_number_x)
                             cp	(ix+enemy.room_x)
-                            jr	nz,refresh_enemy_simulation_mode_offline
+                            ret	nz
 
                             ld	a,(rooms.room_number_y)
                             cp	(ix+enemy.room_y)
-                            ld	a,simulation_mode_online
-                            jr	z,refresh_enemy_simulation_mode_store
-
-refresh_enemy_simulation_mode_offline
-                            ld	a,simulation_mode_offline
-refresh_enemy_simulation_mode_store
-                            ld	(ix+enemy.simulation_mode),a
                             ret

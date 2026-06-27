@@ -62,10 +62,10 @@ route_4_1_elevator_wait
                             route_point	{
                             4,                           ; room_x
                             1,                           ; room_y
-                            16,                          ; x
+                            25,                          ; x
                             19,                          ; y
                             route_point_wait,            ; type
-                            route_4_1_left_mid,          ; top-left point
+                            route_4_1_right_mid,         ; top-left point
                             route_4_1_elevator_top,      ; bottom-right point
                             0                            ; alternative point
                             }
@@ -74,11 +74,35 @@ route_4_1_elevator_top
                             route_point	{
                             4,                           ; room_x
                             1,                           ; room_y
-                            16,                          ; x
+                            25,                          ; x
                             6,                           ; y
                             route_point_normal,          ; type
                             route_4_1_elevator_wait,     ; top-left point
-                            route_4_1_left_jump,         ; bottom-right point
+                            route_4_1_upper_right_exit,  ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_1_upper_right_exit
+                            route_point	{
+                            4,                           ; room_x
+                            1,                           ; room_y
+                            31,                          ; x
+                            6,                           ; y
+                            route_point_exit,            ; type
+                            route_4_1_elevator_drop_landing, ; top-left point
+                            route_5_1_upper_left_entry,  ; bottom-right point
+                            0                            ; alternative point
+                            }
+
+route_4_1_elevator_drop_landing
+                            route_point	{
+                            4,                           ; room_x
+                            1,                           ; room_y
+                            28,                          ; x
+                            19,                          ; y
+                            route_point_normal,          ; type
+                            route_4_1_right_mid,         ; top-left point
+                            route_4_1_upper_right_exit,  ; bottom-right point
                             0                            ; alternative point
                             }
 

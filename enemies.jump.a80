@@ -107,7 +107,7 @@ enemy_jump_process_dec
 
 enemy_jump_stop
                 ; Normal fall checks resume on the next enemy update after the arc ends.
-                            call	restore_route_or_walk
+                            call	restore_behavior_state
 
                             ld	a,(ix+enemy.state_delay)
                             ld	(ix+enemy.state_timer),a

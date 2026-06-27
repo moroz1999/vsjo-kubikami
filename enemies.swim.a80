@@ -16,7 +16,7 @@ restore_enemy_from_water
                             cp	state_fall
                             ret	nz
 
-                            jp	restore_route_or_walk
+                            jp	restore_behavior_state
 
 apply_enemy_swim_gravity
                 ; Swimming enemies sink with the same delay as the hero.
@@ -27,8 +27,8 @@ apply_enemy_swim_gravity
                             call	is_enemy_in_water
                             ret	nz
 
-                            ld	a,(ix+enemy.state)
-                            cp	state_route
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             jr	nz,apply_enemy_swim_gravity_timer
 
                             ld	a,(ix+enemy.jump_phase_delay)

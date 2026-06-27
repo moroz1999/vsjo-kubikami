@@ -3,14 +3,14 @@ draw_enemies
                             call	update_flash_color
 
                 ; Drawing uses the room-init simulation mode filter.
+                ; Current status drawing instead filters by stored room coordinates.
                             ld	b,enemy_count
                             ld	ix,enemies
 draw_enemies_next
-                ; Draw one enemy only while it is online.
+                ; Draw every enemy whose stored room is the active room.
                             push	bc
 
-                            ld	a,(ix+enemy.simulation_mode)
-                            cp	simulation_mode_online
+                            call	is_enemy_in_current_room
                             jr	nz,draw_enemies_skip
 
                             ld	d,(ix+enemy.x)
@@ -32,12 +32,35 @@ draw_enemy
                 ; Paint one enemy cell with the active enemy palette.
                             call	screen_utils.get_attrs_address
 
-                            if	debug.route_points_debug_enabled
-                            call	debug.select_enemy_debug_color
-                            else
-                            ld	a,(enemy_flash_color)
-                            endif
+                            call	select_enemy_color
                             ld	(hl),a
+                            ret
+
+select_enemy_color
+                ; Behavior color is independent from online and offline simulation.
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_aggressive
+                            jr	z,select_enemy_color_aggressive
+                            cp	behavior_route
+                            jr	z,select_enemy_color_route
+
+                            ld	a,(ix+enemy.state)
+                            cp	state_stand
+                            jr	z,select_enemy_color_stand
+
+                            ld	a,enemy_online_color
+                            ret
+
+select_enemy_color_route
+                            ld	a,enemy_route_color
+                            ret
+
+select_enemy_color_aggressive
+                            ld	a,enemy_aggressive_color
+                            ret
+
+select_enemy_color_stand
+                            ld	a,enemy_stand_color
                             ret
 
 update_flash_color

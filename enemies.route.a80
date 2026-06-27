@@ -207,6 +207,325 @@ route_points_table
                             dw	route_6_1_left_return_entry
 route_points_table_end
 
+route_room_point_tables
+                            dw	route_room_0_0_points
+                            dw	route_room_1_0_points
+                            dw	route_room_2_0_points
+                            dw	route_room_3_0_points
+                            dw	route_room_4_0_points
+                            dw	route_room_5_0_points
+                            dw	route_room_6_0_points
+                            dw	route_room_0_1_points
+                            dw	route_room_1_1_points
+                            dw	route_room_2_1_points
+                            dw	route_room_3_1_points
+                            dw	route_room_4_1_points
+                            dw	route_room_5_1_points
+                            dw	route_room_6_1_points
+                            dw	route_room_0_2_points
+                            dw	route_room_1_2_points
+                            dw	route_room_2_2_points
+                            dw	route_room_3_2_points
+                            dw	route_room_4_2_points
+                            dw	route_room_5_2_points
+                            dw	route_room_6_2_points
+                            dw	route_room_0_3_points
+                            dw	route_room_1_3_points
+                            dw	route_room_2_3_points
+                            dw	route_room_3_3_points
+                            dw	route_room_4_3_points
+                            dw	route_room_5_3_points
+                            dw	route_room_6_3_points
+route_room_point_tables_end
+
+route_room_0_0_points
+                            db	6
+                            dw	route_0_0_left
+                            dw	route_0_0_mid_left
+                            dw	route_0_0_mid_right
+                            dw	route_0_0_right
+                            dw	route_0_0_basement_end
+                            dw	route_0_0_right_entry
+
+route_room_1_0_points
+                            db	11
+                            dw	route_1_0_left_entry
+                            dw	route_1_0_arch
+                            dw	route_1_0_lower_walk
+                            dw	route_1_0_basement_upper
+                            dw	route_1_0_basement_slope_top
+                            dw	route_1_0_basement_slope_bottom
+                            dw	route_1_0_basement_wall
+                            dw	route_1_0_stairs_lower_jump_left
+                            dw	route_1_0_stairs_upper_jump_left
+                            dw	route_1_0_stairs_wall_jump_left
+                            dw	route_1_0_right_entry
+
+route_room_2_0_points
+                            db	8
+                            dw	route_2_0_left_entry
+                            dw	route_2_0_top_left
+                            dw	route_2_0_top_mid
+                            dw	route_2_0_top_right_entry
+                            dw	route_2_0_basement_entry
+                            dw	route_2_0_basement_mid
+                            dw	route_2_0_basement_end
+                            dw	route_2_0_basement_jump
+
+route_room_3_0_points
+                            db	4
+                            dw	route_3_0_left_entry
+                            dw	route_3_0_left_drop
+                            dw	route_3_0_lift_bottom_entry
+                            dw	route_3_0_lift_jump_left
+
+route_room_4_0_points
+                            db	4
+                            dw	route_4_0_right_entry
+                            dw	route_4_0_floor_right
+                            dw	route_4_0_floor_mid
+                            dw	route_4_0_floor_left
+
+route_room_5_0_points
+                            db	5
+                            dw	route_5_0_bottom_entry
+                            dw	route_5_0_bottom_right
+                            dw	route_5_0_bottom_mid
+                            dw	route_5_0_bottom_left
+                            dw	route_5_0_left_exit
+
+route_room_6_0_points
+                            db	0
+
+route_room_0_1_points
+                            db	8
+                            dw	route_0_1_right_entry
+                            dw	route_0_1_right_mid
+                            dw	route_0_1_mid
+                            dw	route_0_1_teleport_right
+                            dw	route_0_1_left_mid
+                            dw	route_0_1_bottom_entry
+                            dw	route_0_1_water_return_entry
+                            dw	route_0_1_water_jump_right
+
+route_room_1_1_points
+                            db	7
+                            dw	route_1_1_left_entry
+                            dw	route_1_1_left_mid
+                            dw	route_1_1_left_inner
+                            dw	route_1_1_left_jump_right
+                            dw	route_1_1_right_entry
+                            dw	route_1_1_right_mid
+                            dw	route_1_1_right_jump_left
+
+route_room_2_1_points
+                            db	13
+                            dw	route_2_1_left_entry
+                            dw	route_2_1_left_mid
+                            dw	route_2_1_right_entry
+                            dw	route_2_1_right_top_entry
+                            dw	route_2_1_cave_wall
+                            dw	route_2_1_right_mid
+                            dw	route_2_1_elevator_jump_left
+                            dw	route_2_1_left_fall_exit
+                            dw	route_2_1_right_fall_exit
+                            dw	route_2_1_left_lift_bottom_entry
+                            dw	route_2_1_left_elevator_top_jump_left
+                            dw	route_2_1_right_lift_bottom_entry
+                            dw	route_2_1_right_elevator_top_jump_right
+
+route_room_3_1_points
+                            db	12
+                            dw	route_3_1_top_entry
+                            dw	route_3_1_ledge_fork
+                            dw	route_3_1_top_left_entry
+                            dw	route_3_1_bottom_fork
+                            dw	route_3_1_left_entry
+                            dw	route_3_1_elevator_wait_right
+                            dw	route_3_1_before_hole_fork
+                            dw	route_3_1_bottom_jump_right
+                            dw	route_3_1_elevator_wait
+                            dw	route_3_1_elevator_top_jump_left
+                            dw	route_3_1_right_jump_left
+                            dw	route_3_1_right_entry
+
+route_room_4_1_points
+                            db	11
+                            dw	route_4_1_left_entry
+                            dw	route_4_1_left_mid
+                            dw	route_4_1_hatch_fork
+                            dw	route_4_1_left_jump
+                            dw	route_4_1_hatch_drop
+                            dw	route_4_1_elevator_wait
+                            dw	route_4_1_elevator_top
+                            dw	route_4_1_upper_right_exit
+                            dw	route_4_1_elevator_drop_landing
+                            dw	route_4_1_right_mid
+                            dw	route_4_1_right_entry
+
+route_room_5_1_points
+                            db	22
+                            dw	route_5_1_left_entry
+                            dw	route_5_1_bottom_left
+                            dw	route_5_1_bottom_fork
+                            dw	route_5_1_bottom_right
+                            dw	route_5_1_right_entry
+                            dw	route_5_1_upper_left_entry
+                            dw	route_5_1_upper_left_mid
+                            dw	route_5_1_upper_mid
+                            dw	route_5_1_upper_gap_jump_right
+                            dw	route_5_1_upper_high_right
+                            dw	route_5_1_upper_gap_drop
+                            dw	route_5_1_upper_high_jump_left
+                            dw	route_5_1_upper_high_mid
+                            dw	route_5_1_upper_high_left
+                            dw	route_5_1_upper_left_jump_up
+                            dw	route_5_1_upper_top_left
+                            dw	route_5_1_upper_top_drop
+                            dw	route_5_1_upper_top_mid
+                            dw	route_5_1_upper_top_approach
+                            dw	route_5_1_upper_top_jump_right
+                            dw	route_5_1_top_exit
+                            dw	route_5_1_upper_top_return
+
+route_room_6_1_points
+                            db	8
+                            dw	route_6_1_left_entry
+                            dw	route_6_1_left_jump_low
+                            dw	route_6_1_left_ledge_low
+                            dw	route_6_1_left_ledge_mid
+                            dw	route_6_1_left_ledge_high
+                            dw	route_6_1_red_door_left
+                            dw	route_6_1_red_door_fall
+                            dw	route_6_1_left_return_entry
+
+route_room_0_2_points
+                            db	9
+                            dw	route_0_2_top_entry
+                            dw	route_0_2_top_exit_approach
+                            dw	route_0_2_top_exit
+                            dw	route_0_2_upper_left
+                            dw	route_0_2_mid_left
+                            dw	route_0_2_lower_left
+                            dw	route_0_2_lower_right
+                            dw	route_0_2_mid_right
+                            dw	route_0_2_upper_right
+
+route_room_1_2_points
+                            db	7
+                            dw	route_1_2_right_teleport
+                            dw	route_1_2_water_right
+                            dw	route_1_2_water_mid_right
+                            dw	route_1_2_water_mid
+                            dw	route_1_2_water_mid_left
+                            dw	route_1_2_water_left_surface
+                            dw	route_1_2_left_teleport
+
+route_room_2_2_points
+                            db	10
+                            dw	route_2_2_left_top_entry
+                            dw	route_2_2_left_bottom_exit
+                            dw	route_2_2_right_top_entry
+                            dw	route_2_2_right_bottom_exit
+                            dw	route_2_2_left_lift_bottom_entry
+                            dw	route_2_2_left_lift_mid
+                            dw	route_2_2_left_lift_top_exit
+                            dw	route_2_2_right_lift_bottom_entry
+                            dw	route_2_2_right_lift_mid
+                            dw	route_2_2_right_lift_top_exit
+
+route_room_3_2_points
+                            db	4
+                            dw	route_3_2_teleport_exit
+                            dw	route_3_2_right_inner
+                            dw	route_3_2_right_mid
+                            dw	route_3_2_right_entry
+
+route_room_4_2_points
+                            db	12
+                            dw	route_4_2_top_entry
+                            dw	route_4_2_top_landing
+                            dw	route_4_2_slope_mid
+                            dw	route_4_2_slope_right
+                            dw	route_4_2_slope_jump_left
+                            dw	route_4_2_lower_right
+                            dw	route_4_2_lower_left
+                            dw	route_4_2_left_upper
+                            dw	route_4_2_left_jump_right
+                            dw	route_4_2_left_floor
+                            dw	route_4_2_left_entry
+                            dw	route_4_2_bottom_exit
+
+route_room_5_2_points
+                            db	8
+                            dw	route_5_2_left_entry
+                            dw	route_5_2_floor_mid
+                            dw	route_5_2_floor_right
+                            dw	route_5_2_gap_jump
+                            dw	route_5_2_gap_jump_left
+                            dw	route_5_2_gap_exit
+                            dw	route_5_2_gap_exit_jump_left
+                            dw	route_5_2_far_floor
+
+route_room_6_2_points
+                            db	0
+
+route_room_0_3_points
+                            db	8
+                            dw	route_0_3_teleport
+                            dw	route_0_3_right_climb
+                            dw	route_0_3_center_jump_left
+                            dw	route_0_3_center_return_right
+                            dw	route_0_3_center_floor
+                            dw	route_0_3_left_jump_left
+                            dw	route_0_3_left_edge
+                            dw	route_0_3_left_return_jump_right
+
+route_room_1_3_points
+                            db	0
+
+route_room_2_3_points
+                            db	8
+                            dw	route_2_3_left_top_entry
+                            dw	route_2_3_left_fall_landing
+                            dw	route_2_3_left_lift_wait
+                            dw	route_2_3_left_lift_top_exit
+                            dw	route_2_3_right_top_entry
+                            dw	route_2_3_right_fall_landing
+                            dw	route_2_3_right_lift_wait
+                            dw	route_2_3_right_lift_top_exit
+
+route_room_3_3_points
+                            db	0
+
+route_room_4_3_points
+                            db	10
+                            dw	route_4_3_top_entry
+                            dw	route_4_3_after_stairs
+                            dw	route_4_3_upper_right_exit
+                            dw	route_4_3_upper_jump_left
+                            dw	route_4_3_water_drop_entry
+                            dw	route_4_3_water_mid
+                            dw	route_4_3_water_right
+                            dw	route_4_3_lower_water_exit
+                            dw	route_4_3_elevator_wait
+                            dw	route_4_3_elevator_top_jump_right
+
+route_room_5_3_points
+                            db	9
+                            dw	route_5_3_upper_left_entry
+                            dw	route_5_3_upper_mid_left
+                            dw	route_5_3_upper_mid
+                            dw	route_5_3_upper_mid_right
+                            dw	route_5_3_upper_right
+                            dw	route_5_3_lower_left_entry
+                            dw	route_5_3_lower_water_mid
+                            dw	route_5_3_lower_water_right
+                            dw	route_5_3_lower_water_end
+
+route_room_6_3_points
+                            db	0
+
                             include	"enemies.route_0_0.a80"
                             include	"enemies.route_0_1.a80"
                             include	"enemies.route_0_2.a80"
@@ -235,31 +554,114 @@ route_points_table_end
 
 has_route_target
                 ; A non-zero target pointer marks enemies that should return to routing.
+                ; Behavior mode decides movement; this pointer only makes route return available.
                             ld	a,(ix+enemy.target_route_point_ptr)
                             ld	h,a
                             ld	a,(ix+enemy.target_route_point_ptr+1)
                             or	h
                             ret
 
-restore_route_or_walk
-                            call	has_route_target
-                            jr	z,restore_route_or_walk_walk
-
-                            ld	a,state_route
-                            ld	(ix+enemy.state),a
-                            ret
-
-restore_route_or_walk_walk
+restore_behavior_state
+                ; Transient fall and jump states return to neutral motion for their behavior.
                             ld	a,state_walk
                             ld	(ix+enemy.state),a
                             ret
 
-move_offline_route_enemy
-                ; Offline route followers advance abstractly, without room physics.
-                            call	has_route_target
+try_get_or_find_route_target
+                ; Reuse a stored target or perform the enemy's single room-table search.
+                            ld	a,(ix+enemy.target_route_point_ptr)
+                            or	(ix+enemy.target_route_point_ptr+1)
+                            jr	z,try_get_or_find_route_target_search
+
+                            scf
+                            ret
+
+try_get_or_find_route_target_search
+                            ld	a,(ix+enemy.route_target_search_done)
+                            or	a
+                            ret	nz
+
+                            inc	a
+                            ld	(ix+enemy.route_target_search_done),a
+                            jp	find_route_target_in_enemy_room
+
+try_switch_online_free_to_route
+                ; Each free enemy rolls a 1/8 route switch after its own timer expires.
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_free
+                            ret	nz
+
+                            ld	a,(ix+enemy.behavior_switch_timer)
+                            or	a
+                            jr	z,try_switch_online_free_to_route_expired
+
+                            dec	a
+                            ld	(ix+enemy.behavior_switch_timer),a
+                            ret	nz
+
+try_switch_online_free_to_route_expired
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            ret	z
+                            cp	state_jump
                             ret	z
 
-                            ld	a,state_route
+                            ld	a,(ix+enemy.behavior_switch_delay)
+                            ld	(ix+enemy.behavior_switch_timer),a
+
+                            call	next_random
+                            and	free_to_route_chance_mask
+                            ret	nz
+
+                            ld	a,(ix+enemy.target_route_point_ptr)
+                            or	(ix+enemy.target_route_point_ptr+1)
+                            jr	nz,try_switch_online_free_to_route_apply
+
+                            call	find_route_target_in_enemy_room
+                            ret	nc
+
+try_switch_online_free_to_route_apply
+                            ld	a,behavior_route
+                            ld	(ix+enemy.behavior_mode),a
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+                            ret
+
+try_switch_online_route_to_free
+                ; Each reached route point in the active room gives a 1/8 free-movement chance.
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
+                            ret	nz
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
+                            ret	nz
+
+                            call	next_random
+                            and	route_to_free_chance_mask
+                            ret	nz
+
+                            ld	a,behavior_free
+                            ld	(ix+enemy.behavior_mode),a
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+
+                            ld	a,(ix+enemy.state_delay)
+                            ld	(ix+enemy.state_timer),a
+
+                            ld	a,(ix+enemy.behavior_switch_delay)
+                            ld	(ix+enemy.behavior_switch_timer),a
+                            ret
+
+move_offline_route_enemy
+                ; Offline route followers advance abstractly, without room physics.
+                            call	try_get_or_find_route_target
+                            ret	nc
+
+move_offline_route_enemy_target_ready
+                            ld	a,behavior_route
+                            ld	(ix+enemy.behavior_mode),a
+                            ld	a,state_walk
                             ld	(ix+enemy.state),a
 
                             ld	a,(ix+enemy.offline_route_timer)
@@ -273,6 +675,9 @@ move_offline_route_enemy_step
                             ld	a,offline_route_point_delay
                             ld	(ix+enemy.offline_route_timer),a
 
+                            call	is_enemy_in_current_room
+                            call	z,add_enemy_position_to_restore
+
                             call	get_target_route_point
                             ret	z
 
@@ -283,6 +688,82 @@ move_offline_route_enemy_step
                             call	select_next_route_target_from_point
 
                             call	refresh_enemy_simulation_mode
+                            call	try_switch_online_route_to_free
+                            ret
+
+find_route_target_in_enemy_room
+                ; Room tables preserve authored order, so the first point in range wins.
+                            call	get_enemy_room_route_point_table
+                            ld	a,b
+                            or	a
+                            ret	z
+
+find_route_target_in_enemy_room_next
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+
+                            push	de
+                            call	is_route_point_in_target_window
+                            pop	de
+                            jr	c,find_route_target_in_enemy_room_found
+
+                            djnz	find_route_target_in_enemy_room_next
+                            or	a
+                            ret
+
+find_route_target_in_enemy_room_found
+                            call	store_target_route_point
+                            scf
+                            ret
+
+get_enemy_room_route_point_table
+                ; The generated descriptor table is row-major for the fixed 7-room width.
+                            ld	a,(ix+enemy.room_y)
+                            ld	c,a
+                            add	a,a
+                            add	a,a
+                            add	a,a
+                            sub	c
+                            add	a,(ix+enemy.room_x)
+                            add	a,a
+
+                            ld	l,a
+                            ld	h,0
+                            ld	de,route_room_point_tables
+                            add	hl,de
+
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            ex	de,hl
+
+                            ld	b,(hl)
+                            inc	hl
+                            ret
+
+is_route_point_in_target_window
+                ; DE is a route point; carry returns set inside the inclusive 15x5 window.
+                            inc	de
+                            inc	de
+                            ld	a,(de)
+                            sub	(ix+enemy.x)
+                            jr	nc,is_route_point_in_target_window_x_ready
+                            neg
+
+is_route_point_in_target_window_x_ready
+                            cp	route_target_window_x+1
+                            ret	nc
+
+                            inc	de
+                            ld	a,(de)
+                            sub	(ix+enemy.y)
+                            jr	nc,is_route_point_in_target_window_y_ready
+                            neg
+
+is_route_point_in_target_window_y_ready
+                            cp	route_target_window_y+1
                             ret
 
 move_route_enemy
@@ -294,8 +775,8 @@ move_route_enemy
                             cp	simulation_mode_online
                             ret	nz
 
-                            ld	a,(ix+enemy.state)
-                            cp	state_route
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             ret	nz
 
                             ld	a,(ix+enemy.jump_phase_delay)
@@ -328,11 +809,24 @@ move_route_enemy_step
                             ret
 
 advance_online_route_target_if_reached
+                            ld	a,(ix+enemy.simulation_mode)
+                            cp	simulation_mode_online
+                            ret	nz
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
+                            ret	nz
+
                             ld	a,(ix+enemy.state)
                             cp	state_jump
                             ret	z
 
                             call	is_target_route_point_reached
+                            ret	nz
+
+                            call	try_switch_online_route_to_free
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             ret	nz
 
                             call	select_next_route_point
@@ -352,6 +846,11 @@ advance_online_route_exit_if_reached
                             ld	a,(hl)
                             pop	hl
                             cp	route_point_exit
+                            ret	nz
+
+                            call	try_switch_online_route_to_free
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
                             ret	nz
 
                             jp	select_next_route_point

@@ -3,7 +3,21 @@
 ## Scope
 
 - Only online enemies process per-frame physical movement.
+- Every enemy in the active room is online, and every enemy outside it is offline.
+- Entering the active room automatically switches an enemy online without changing its movement behavior.
+- An enemy entering while following a route continues following it with online physics.
+- At each reached route point, an online route follower has a `1/8` chance to switch to free `state_walk`.
+- Each online free enemy counts down its own `150`-to-`250`-frame behavior timer.
+- At timer expiration the enemy has a `1/8` chance to return to route behavior, then reloads its configured timer.
+- A successful roll can attach a targetless enemy through a same-room route search.
+- Failed online target searches can be retried after later timer rolls.
+- Behavior changes do not change simulation mode and do not clear route pointers.
+- `behavior_mode` selects free, route, or aggressive logic; `state` contains only stand, walk, fall, or jump physics.
+- Free online enemies are red, while their standing `state_stand` subtype is yellow.
+- Online route followers are green.
+- `behavior_aggressive` is purple and currently has no pursuit implementation.
 - Enemy movement pacing is controlled by enemy-local movement delay and movement timer fields.
+- Free-to-route behavior pacing uses separate enemy-local delay and timer fields.
 - Route-following is a separate behavior model from free roaming; route followers do not use random standing/walking choices while following a route.
 - Online route followers move physically toward the current target and use the regular enemy walking, obstacle, falling, and jump behavior while doing so.
 - Outside water, when a route target has the same `x` and a lower `y`, the route follower uses normal gravity instead of route-specific downward movement.
@@ -27,13 +41,13 @@
 - If the reached point has an enabled `alternative_point_ptr`, online route followers choose 50/50 between the direct neighbor and the alternative branch.
 - Online route followers advance their target before gravity is applied; gravity itself does not choose route targets.
 - Online route followers do not advance route targets while `state_jump` is active; jump targets are processed after the arc ends and routing resumes.
-- Route-following enemies return to route-following behavior after fall or jump physics while they still have a route target.
+- After fall or jump physics, an enemy returns to the state required by its stored movement behavior.
 - Online route followers wait `route_jump_delay_frames` frames after reaching a `route_point_jump_left` or `route_point_jump_right` point, then start the selected jump.
 - Pending route-jump delay suppresses fall-state checks so edge jump points can wind up before the arc starts.
 - Online route followers step diagonally down on a one-cell ledge and fall from deeper drops; they do not choose jumping or turning back at that ledge.
 - Falling route followers check whether they reached their current route point immediately after each downward fall step, before the next bottom-edge handoff can run.
 - Online enemies that reach or stand on the bottom screen edge move to the same `x` at `y=0` in the room below and become offline.
-- Route followers use the same bottom-edge handoff from `state_route`; they do not need to enter `state_fall` first.
+- Route followers use the same bottom-edge handoff from route behavior; they do not need to enter `state_fall` first.
 - After reaching an exit point, an online route follower moves to the selected linked entry point, takes that point's room and position, marks its old cell for restore, and becomes offline immediately.
 - Online route followers process reached screen-exit points on the same movement tick, so an enemy that steps onto an exit point is spawned at the linked entry without waiting for the next frame.
 - The route-exit handoff immediately treats the linked entry point as reached and selects the next target from that new room before offline simulation continues.

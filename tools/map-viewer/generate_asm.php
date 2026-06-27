@@ -31,7 +31,14 @@ if (!is_dir($outputDir) && !mkdir($outputDir, 0777, true)) {
     fail("Cannot create output directory: {$outputDir}");
 }
 
-write_route_table($outputDir . DIRECTORY_SEPARATOR . 'enemies.route.a80', $orderedIds, $includeFiles, $routeLogicTail);
+write_route_table(
+    $outputDir . DIRECTORY_SEPARATOR . 'enemies.route.a80',
+    $orderedIds,
+    $includeFiles,
+    $routeLogicTail,
+    $pointsById,
+    $data['room'] ?? []
+);
 write_route_files($outputDir, $includeFiles, $pointsById, $orderedIds);
 write_viewer_data(
     $toolDir . DIRECTORY_SEPARATOR . 'routes-data.js',
@@ -192,7 +199,14 @@ function route_file_sort_key(string $file): int
     return PHP_INT_MAX;
 }
 
-function write_route_table(string $path, array $orderedIds, array $includeFiles, string $logicTail): void
+function write_route_table(
+    string $path,
+    array $orderedIds,
+    array $includeFiles,
+    string $logicTail,
+    array $pointsById,
+    array $room
+): void
 {
     $indent = str_repeat(' ', 28);
     $lines = [];
@@ -207,6 +221,8 @@ function write_route_table(string $path, array $orderedIds, array $includeFiles,
     $lines[] = 'route_points_table_end';
     $lines[] = '';
 
+    append_room_point_tables($lines, $indent, $orderedIds, $pointsById, $room);
+
     foreach ($includeFiles as $includeFile) {
         $lines[] = $indent . 'include	"' . $includeFile . '"';
     }
@@ -217,6 +233,51 @@ function write_route_table(string $path, array $orderedIds, array $includeFiles,
     }
 
     write_text($path, implode(PHP_EOL, $lines) . PHP_EOL);
+}
+
+function append_room_point_tables(
+    array &$lines,
+    string $indent,
+    array $orderedIds,
+    array $pointsById,
+    array $room
+): void
+{
+    $amountX = positive_int($room, 'amountX');
+    $amountY = positive_int($room, 'amountY');
+    $pointsByRoom = [];
+
+    foreach ($orderedIds as $id) {
+        $point = $pointsById[$id];
+        $roomX = int_value($point, 'roomX');
+        $roomY = int_value($point, 'roomY');
+        if ($roomX < 0 || $roomX >= $amountX || $roomY < 0 || $roomY >= $amountY) {
+            fail("Point {$id} belongs to room outside the room grid: {$roomX},{$roomY}");
+        }
+
+        $pointsByRoom[$roomY][$roomX][] = $id;
+    }
+
+    $lines[] = 'route_room_point_tables';
+    for ($roomY = 0; $roomY < $amountY; $roomY++) {
+        for ($roomX = 0; $roomX < $amountX; $roomX++) {
+            $lines[] = $indent . sprintf('dw	route_room_%d_%d_points', $roomX, $roomY);
+        }
+    }
+    $lines[] = 'route_room_point_tables_end';
+    $lines[] = '';
+
+    for ($roomY = 0; $roomY < $amountY; $roomY++) {
+        for ($roomX = 0; $roomX < $amountX; $roomX++) {
+            $ids = $pointsByRoom[$roomY][$roomX] ?? [];
+            $lines[] = sprintf('route_room_%d_%d_points', $roomX, $roomY);
+            $lines[] = $indent . 'db	' . count($ids);
+            foreach ($ids as $id) {
+                $lines[] = $indent . 'dw	' . $id;
+            }
+            $lines[] = '';
+        }
+    }
 }
 
 function write_route_files(string $outputDir, array $includeFiles, array $pointsById, array $orderedIds): void
@@ -302,6 +363,25 @@ function string_value(array $point, string $key): string
     }
 
     return (string) $point[$key];
+}
+
+function int_value(array $values, string $key): int
+{
+    if (!array_key_exists($key, $values) || !is_int($values[$key])) {
+        fail("Value {$key} must be an integer");
+    }
+
+    return $values[$key];
+}
+
+function positive_int(array $values, string $key): int
+{
+    $value = int_value($values, $key);
+    if ($value <= 0) {
+        fail("Value {$key} must be positive");
+    }
+
+    return $value;
 }
 
 function link_value(array $point, string $key): string

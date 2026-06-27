@@ -23,9 +23,13 @@ enemy_0
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
+                            behavior_free,      ; starts with free movement
                             0,                  ; last route point
                             0,                  ; target route point
-                            offline_route_point_delay ; offline route timer
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            150,                ; free-to-route switch delay
+                            150                 ; first free-to-route switch timer
                             }
 
 enemy_1
@@ -44,9 +48,13 @@ enemy_1
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
+                            behavior_free,      ; starts with free movement
                             0,                  ; last route point
                             0,                  ; target route point
-                            offline_route_point_delay ; offline route timer
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            180,                ; free-to-route switch delay
+                            180                 ; first free-to-route switch timer
                             }
 
 enemy_2
@@ -55,9 +63,9 @@ enemy_2
                             1,                  ; start room row
                             0,                  ; start cell column
                             19,                 ; start cell row
-                            state_route,        ; follows route points
-                            0,                  ; no behavior reroll while routing
-                            0,                  ; no behavior timer while routing
+                            state_walk,         ; route behavior starts from neutral motion
+                            80,                 ; free behavior choice pacing
+                            80,                 ; first free behavior choice delay
                             direction_right,    ; initial route direction
                             8,                  ; route step pacing
                             8,                  ; first route step delay
@@ -65,9 +73,13 @@ enemy_2
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
                             route_3_1_right_entry, ; last route point
                             route_4_1_left_entry, ; target route point
-                            offline_route_point_delay ; offline route timer
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            220,                ; free-to-route switch delay
+                            220                 ; first free-to-route switch timer
                             }
 
 enemy_3
@@ -76,9 +88,9 @@ enemy_3
                             2,                  ; start room row
                             31,                 ; start cell column
                             16,                 ; start cell row
-                            state_route,        ; follows route points
-                            0,                  ; no behavior reroll while routing
-                            0,                  ; no behavior timer while routing
+                            state_walk,         ; route behavior starts from neutral motion
+                            60,                 ; free behavior choice pacing
+                            60,                 ; first free behavior choice delay
                             direction_left,     ; initial route direction
                             8,                  ; route step pacing
                             8,                  ; first route step delay
@@ -86,7 +98,11 @@ enemy_3
                             0,                  ; jump step
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
                             route_3_2_right_entry, ; last route point
                             route_3_2_right_mid, ; target route point
-                            offline_route_point_delay ; offline route timer
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            250,                ; free-to-route switch delay
+                            250                 ; first free-to-route switch timer
                             }

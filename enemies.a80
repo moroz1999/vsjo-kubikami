@@ -5,15 +5,22 @@ enemy_size                  equ	enemy
 enemy_damage_amount         equ	32
 
 ; Enemy state controls waiting, patrol, route following, fall, and jump behavior.
+; Route and aggressive selection live in behavior_mode; state stores physical motion only.
 state_stand                 equ	0
 state_walk                  equ	1
 state_fall                  equ	2
 state_jump                  equ	3
-state_route                 equ	4
 
 ; Enemy simulation mode is refreshed when the active room changes.
+; Room refresh preserves current-room mode and only forces outside enemies offline.
 simulation_mode_offline       equ	0
 simulation_mode_online        equ	1
+
+behavior_free               equ	0
+behavior_route              equ	1
+behavior_aggressive         equ	2
+route_to_free_chance_mask   equ	%00000111
+free_to_route_chance_mask   equ	%00000111
 
 ; Falling speed is shared by all enemies.
 fall_delay                  equ	1
@@ -22,6 +29,8 @@ swim_delay                  equ	15
 ; Offline route followers advance one route point after this many frames.
 offline_route_point_delay   equ	50
 route_jump_delay_frames     equ	25
+route_target_window_x       equ	7
+route_target_window_y       equ	2
 
 ; Enemy jumps copy the hero jump arc while using enemy movement rules.
 jump_steps                  equ	8
@@ -43,8 +52,13 @@ random_seed_init            equ	1
 random_lfsr_xor_mask        equ	56
 
 ; Enemies share one blinking visual palette.
+; Status drawing uses the fixed colors below; the shared palette remains for compatibility.
 enemy_color1                equ	%00000010
 enemy_color2                equ	%00010000
+enemy_online_color          equ	%00000010
+enemy_route_color           equ	%00000100
+enemy_stand_color           equ	%00000110
+enemy_aggressive_color      equ	%00000011
 
                         struct	route_point
 room_x                      byte
@@ -73,9 +87,13 @@ fall_timer                  byte
 jump_step                   byte
 jump_phase_delay            byte
 simulation_mode               byte
+behavior_mode               byte
 last_route_point_ptr        word
 target_route_point_ptr      word
 offline_route_timer         byte
+route_target_search_done    byte
+behavior_switch_delay       byte
+behavior_switch_timer       byte
                         ends
 
 ; Enemy behavior is split by gameplay topic.
