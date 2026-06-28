@@ -64,6 +64,7 @@ route_point_wait
 - When `last_route_point_ptr` matches neither direct link, route selection preserves horizontal movement direction: left selects `top_left_point_ptr`, and right selects `bottom_right_point_ptr`.
 - `route_point_wait` is the exception to direction fallback: an unmatched arrival selects `top_left_point_ptr` so elevator wait points keep targeting their lift/top exit instead of walking onward.
 - If `alternative_point_ptr` is enabled, route selection chooses 50/50 between the direct neighbor and the alternative branch.
+- Offline jump points update stored direction toward the selected target but skip jump timing and physics.
 - Correctly authored point links make two-way lines, dead ends, item rewires, random forks, and exits work without special point types.
 
 ## Exit Points

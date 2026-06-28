@@ -39,7 +39,9 @@
 - The enemy table contains nine enemies.
 - `enemy_0` through `enemy_7` start in rooms `0,0`, `3,1`, `5,1`, `0,1`, `1,2`, `5,3`, `5,2`, and `0,3`.
 - `enemy_8` is the second starting enemy in room `0,0`.
-- New `enemy_4` through `enemy_8` use distinct state-choice delays `70`, `90`, `50`, `110`, and `30`, with movement delays `5`, `7`, `9`, `11`, and `4`.
+- Current movement delays for `enemy_0` through `enemy_8` are `10`, `18`, `7`, `13`, `16`, `6`, `9`, `12`, and `14`.
+- New `enemy_4` through `enemy_8` use distinct state-choice delays `70`, `90`, `50`, `110`, and `30`.
+- Slower enemies have longer horizontal vision and aggressive stick delays; faster enemies have shorter values for both.
 
 ## Collision
 

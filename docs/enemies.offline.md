@@ -18,6 +18,8 @@
 - Offline route movement pacing is controlled by an enemy-local offline route timer.
 - Offline route followers spend 50 frames per route point through an enemy-local timer.
 - Offline route followers use the same top-left/bottom-right and optional alternative branch selection as online route followers, but without physical point effects.
+- Reaching an offline `jump_left` or `jump_right` point updates direction toward the selected next target without starting jump physics.
+- This direction update lets one-way return links leave the room `0,2` water loop and the room `0,3` left loop.
 - When an offline route follower's previous point matches neither direct link, the shared selector uses its stored horizontal movement direction.
 - Offline route followers treat `route_point_wait` like any other route point; wait behavior is only meaningful while the enemy is online.
 - Enemies that physically fell through the bottom edge are forced offline in the room below; route followers continue from their selected target.

@@ -686,10 +686,27 @@ move_offline_route_enemy_step
                             call	move_enemy_to_route_point
                             pop	hl
                             call	select_next_route_target_from_point
+                            call	update_offline_jump_direction
 
                             call	refresh_enemy_simulation_mode
                             call	try_switch_online_route_to_free
                             ret
+
+update_offline_jump_direction
+                ; Offline jumps skip physics but preserve the direction of their selected link.
+                            push	hl
+                            ld	bc,route_point.type
+                            add	hl,bc
+                            ld	a,(hl)
+                            pop	hl
+
+                            cp	route_point_jump_left
+                            jr	z,update_offline_jump_direction_apply
+                            cp	route_point_jump_right
+                            ret	nz
+
+update_offline_jump_direction_apply
+                            jp	select_jump_direction_to_target
 
 find_route_target_in_enemy_room
                 ; Room tables preserve authored order, so the first point in range wins.

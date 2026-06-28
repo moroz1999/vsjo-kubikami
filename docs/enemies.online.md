@@ -17,6 +17,7 @@
 - Online route followers are green.
 - `behavior_aggressive` is purple and pursues the hero horizontally.
 - Enemy movement pacing is controlled by enemy-local movement delay and movement timer fields.
+- The nine movement delays are distinct; larger delays belong to slower enemies with stronger vision and pursuit persistence.
 - Free-to-route behavior pacing uses separate enemy-local delay and timer fields.
 - Route-following is a separate behavior model from free roaming; route followers do not use random standing/walking choices while following a route.
 - Online route followers move physically toward the current target and use the regular enemy walking, obstacle, falling, and jump behavior while doing so.
