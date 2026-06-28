@@ -1131,6 +1131,24 @@ is_route_point_in_enemy_room_done
                             pop	de
                             ret
 
+reattach_route_target_after_room_change
+                ; Keep valid cross-room route entries; replace stale physical-handoff targets.
+                            call	get_target_route_point
+                            jr	z,reattach_route_target_after_room_change_search
+
+                            ex	de,hl
+                            call	is_route_point_in_enemy_room
+                            ret	z
+
+reattach_route_target_after_room_change_search
+                            xor	a
+                            ld	(ix+enemy.target_route_point_ptr),a
+                            ld	(ix+enemy.target_route_point_ptr+1),a
+
+                            inc	a
+                            ld	(ix+enemy.route_target_search_done),a
+                            jp	find_route_target_in_enemy_room
+
 add_enemy_position_to_restore
                             ld	d,(ix+enemy.x)
                             ld	e,(ix+enemy.y)

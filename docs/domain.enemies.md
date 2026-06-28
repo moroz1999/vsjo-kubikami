@@ -33,6 +33,9 @@
 - A targetless online enemy searches after each successful free-to-route timer roll until a suitable point is found.
 - Route attachment selects the first point in the enemy's room within the inclusive horizontal window `x +/- 7`, `y +/- 2`.
 - A route-target search is never repeated, including when no suitable point was found.
+- Every physical room handoff validates that the stored route target belongs to the new room.
+- A stale or missing target is cleared and replaced through the existing first-point-in-window attachment search.
+- Authored route exits keep their selected entry target because it already belongs to the destination room.
 - The enemy table contains nine enemies.
 - `enemy_0` through `enemy_7` start in rooms `0,0`, `3,1`, `5,1`, `0,1`, `1,2`, `5,3`, `5,2`, and `0,3`.
 - `enemy_8` is the second starting enemy in room `0,0`.
@@ -57,6 +60,7 @@
 - Standing online enemies are yellow.
 - `behavior_aggressive` enemies are purple.
 - Aggressive enemies pursue the hero horizontally while their behavior remains active.
+- Aggressive timeout always returns the enemy to free behavior.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
 - Route debug drawing is compile-time gated by `debug.route_points_debug_enabled`.
 - Route debug drawing is disabled by default.

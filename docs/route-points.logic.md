@@ -36,7 +36,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 ## Room 1,2 Teleports
 
 - Room `1,2` routes enemies from `route_1_2_right_teleport` at the right teleport landing `(28,9)` into water at `(25,11)`, then left through `(19,13) -> (13,13) -> (7,13)`.
-- No authored starting route enemy currently begins in room `1,2`; the teleport chain remains connected for arrivals from room `5,2` and returns from room `0,1`.
+- `enemy_4` starts in room `1,2` at `route_1_2_water_mid` and initially targets `route_1_2_water_mid_right`.
 - Along the underwater chain in room `1,2`, `topLeft`/`L` points leftward and `bottomRight`/`R` points back rightward.
 - `route_1_2_right_teleport` is an exit point paired with `route_5_2_gap_exit`: arrivals from `5,2` continue left into water, and returns from water exit back to `5,2`.
 - The room `1,2` underwater route surfaces at `(5,9)` and reaches `route_1_2_left_teleport` at the left teleport `(2,9)`, which exits to `route_0_1_teleport_right`.
@@ -85,7 +85,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,21)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.
 - The mirrored right lift-up route uses `route_2_3_right_lift_wait` `(18,19)` -> `route_2_3_right_lift_top_exit` `(18,0)`, then room `2,2` at `(18,21)` -> `(18,10)` -> `(18,0)` -> room `2,1` at `(18,21)` -> `route_2_1_right_elevator_top_jump_right` `(18,19)`.
 - At the top stop, `route_2_1_left_elevator_top_jump_left` jumps left to `route_2_1_left_entry`, and `route_2_1_right_elevator_top_jump_right` jumps right to `route_2_1_right_mid`.
-- No current route test enemy starts in room `2,1`; `enemy_2` is currently assigned to room `4,1` for the generator route test.
+- No current enemy starts in room `2,1`; the repaired shaft route remains reachable from the room `1,1` and `3,1` entries.
 
 ## Room 3,1 Split
 
@@ -105,7 +105,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 
 - Room `4,1` left edge `route_4_1_left_entry` and room `3,1` right edge `route_3_1_right_entry` are paired entry points.
 - Room `4,1` right edge `route_4_1_right_entry` and room `5,1` left edge `route_5_1_left_entry` are paired entry points.
-- The debug route enemy `enemy_2` starts in room `4,1` at `route_4_1_left_entry` `(0,19)` with `route_3_1_right_entry` as the previous point, so its first in-room target is `route_4_1_left_mid` and it tests the room from left to right.
+- No current enemy starts in room `4,1`; the generator route remains reachable from the room `3,1` and `5,1` entries.
 - `route_4_1_left_mid` at `(8,19)` continues through the hatch fork at `(15,19)` to `route_4_1_left_jump` at `(16,19)`.
 - `route_4_1_left_jump` is a `jump_right` point for crossing the blocked floor gap toward `(23,19)`.
 - Applying the key opens the hatch and calls `logic.room_4_1.activate_hatch_route`, enabling `route_4_1_hatch_fork.alternative_point_ptr = route_4_1_hatch_drop`.
@@ -122,7 +122,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The slope path reaches the right-edge fork as `(18,7) -> (24,13) -> (31,14)`; the down branch continues through `(23,15) -> (16,18) -> (19,21)`.
 - `route_4_2_slope_right` at `(31,14)` is an exit-capable fork: its direct path exits right to `route_5_2_left_entry`, its left return goes through `route_4_2_slope_jump_left` at `(30,14)`, and its alternative branch continues down the slope.
 - `route_4_2_slope_jump_left` is a right-side `jump_left` point that jumps back to `route_4_2_slope_mid` at `(24,13)`.
-- The last route enemy starts at `route_3_2_right_entry` `(31,16)` with that point as its last point and `route_3_2_right_mid` as its target, so it begins moving left from the right edge of room `3,2`.
+- No current enemy starts in room `3,2`; its right route remains reachable from room `4,2`.
 - Room `4,2` right edge `route_4_2_slope_right` and room `5,2` left edge `route_5_2_left_entry` are paired entry points at local `y=14`.
 - `route_4_2_lower_right` at `(23,15)` uses `topLeft` for the descent toward `route_4_2_lower_left` and `bottomRight` for returning up toward `route_4_2_slope_right`.
 - `route_4_2_lower_left` at `(16,18)` uses `topLeft` for the left branch through `(12,15) -> (7,18 jump right) -> (6,18) -> (0,16)`, `bottomRight` for the return toward `route_4_2_lower_right`, and `alternative` for the bottom exit branch.

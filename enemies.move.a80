@@ -431,4 +431,4 @@ leave_enemy_to_room_coords
                             ld	(ix+enemy.aggressive_stick_timer),a
                             ld	a,behavior_route
                             ld	(ix+enemy.behavior_before_aggressive),a
-                            ret
+                            jp	reattach_route_target_after_room_change

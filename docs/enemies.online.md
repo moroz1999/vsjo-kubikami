@@ -53,6 +53,8 @@
 - The route-exit handoff immediately treats the linked entry point as reached and selects the next target from that new room before offline simulation continues.
 - Visible enemy position changes mark the previous cell for restore through the shared position setter.
 - Cross-room enemy movement uses a shared leave-room path that marks the old cell for restore, stores the new room-local position, resets the offline route timer, and switches the enemy offline.
+- The shared physical handoff keeps a route target only when that target belongs to the destination room; otherwise it reattaches through the local `x +/- 7`, `y +/- 2` search.
+- Normal route exits are unaffected because their destination entry point is installed as the target before the shared handoff runs.
 - Online enemies can stand on elevator tops as solid floor while still walking left or right through the normal movement path.
 - Online enemies carried out of the room by an elevator use the shared offline room handoff: bottom riders enter the room below, and top riders enter the room above.
 

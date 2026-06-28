@@ -21,6 +21,8 @@
 - When an offline route follower's previous point matches neither direct link, the shared selector uses its stored horizontal movement direction.
 - Offline route followers treat `route_point_wait` like any other route point; wait behavior is only meaningful while the enemy is online.
 - Enemies that physically fell through the bottom edge are forced offline in the room below; route followers continue from their selected target.
+- Elevator and accidental edge handoffs replace targets that still belong to the previous room.
+- If the destination room has no point inside the attachment window, the target stays empty and the offline enemy stops instead of moving back through a stale target.
 - Offline and online route followers share the same target-selection helper after a route point is reached.
 
 ## Route Movement

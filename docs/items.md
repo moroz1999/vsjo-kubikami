@@ -52,12 +52,14 @@
 
 ## Handle
 
+- The handle lies on the far-right accessible step under the room `3,3` monster at `(29,17)`.
 - The handle is used in room `4,0` when the hero stands at `y=20` and `x=1..4`.
 - Using it opens the balcony door at `(0,16)` with a six-frame screen animation and sets `logic.room_4_0.handle_used`.
 - The dark green/cyan door (`%00100101`) is one attribute cell wide: it first moves whole one cell right, then rises five cells parallel to the left wall; the final two-column patch keeps the raised door at `x=1`, `y=11..15`, changes `x=0`, `y=16..20` to gray balcony background, and leaves `x=1`, `y=16..20` black.
 
 ## Seeds
 
+- The seeds lie at `(21,11)` directly above the center of the flower in room `5,3`.
 - The seeds are used in room `5,0` when the hero stands at `y=14` and `x=18..24`.
 - Using them grows a flower above the pot at `(18,8)` with a four-frame screen animation and sets `logic.room_5_0.seeds_grown`.
 - The final flower is `8x5`: its gray stem column is passable and reaches each leaf row, while its fewer wide green leaves are solid climb steps.

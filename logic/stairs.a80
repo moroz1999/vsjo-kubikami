@@ -52,7 +52,7 @@ item_animation
                             8       ;width
                             4       ;height
                             }
-sky_color                   equ	rooms.room_bg_color_sky
+sky_color                   equ	rooms.room_bg_color
 gra_color                   equ	rooms.room_bg_color_gray
 
 animation_frame0

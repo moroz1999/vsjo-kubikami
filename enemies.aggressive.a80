@@ -16,8 +16,15 @@ update_aggressive_behavior
                             ret	nz
 
 update_aggressive_behavior_exit
-                            ld	a,(ix+enemy.behavior_before_aggressive)
+                            ld	a,behavior_free
                             ld	(ix+enemy.behavior_mode),a
+                            ld	(ix+enemy.behavior_before_aggressive),a
+
+                            ld	a,(ix+enemy.state_delay)
+                            ld	(ix+enemy.state_timer),a
+
+                            ld	a,(ix+enemy.behavior_switch_delay)
+                            ld	(ix+enemy.behavior_switch_timer),a
                             jp	reset_enemy_state_after_aggression
 
 update_aggressive_behavior_visible
