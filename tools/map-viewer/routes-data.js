@@ -470,8 +470,7 @@ window.ROUTE_MAP_DATA = {
         "route_6_1_left_ledge_mid",
         "route_6_1_left_ledge_high",
         "route_6_1_red_door_left",
-        "route_6_1_red_door_fall",
-        "route_6_1_left_return_entry"
+        "route_6_1_red_door_fall"
     ],
     "includeFiles": [
         "enemies.route_0_0.a80",
@@ -577,7 +576,7 @@ window.ROUTE_MAP_DATA = {
             "roomX": 6,
             "roomY": 1,
             "file": "room_6_1.json",
-            "points": 8
+            "points": 7
         },
         {
             "roomX": 0,
@@ -3272,7 +3271,7 @@ window.ROUTE_MAP_DATA = {
             "id": "route_6_1_left_jump_low",
             "roomX": 6,
             "roomY": 1,
-            "x": 0,
+            "x": 1,
             "y": 19,
             "type": "jump_right",
             "topLeft": "route_6_1_left_entry",
@@ -3337,27 +3336,14 @@ window.ROUTE_MAP_DATA = {
             "id": "route_6_1_red_door_fall",
             "roomX": 6,
             "roomY": 1,
-            "x": 1,
-            "y": 19,
+            "x": 2,
+            "y": 20,
             "type": "normal",
             "topLeft": "route_6_1_red_door_left",
-            "bottomRight": "route_6_1_left_return_entry",
+            "bottomRight": "route_6_1_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_6_1.a80",
             "sourceLine": 73
-        },
-        {
-            "id": "route_6_1_left_return_entry",
-            "roomX": 6,
-            "roomY": 1,
-            "x": 0,
-            "y": 19,
-            "type": "exit",
-            "topLeft": "route_5_1_right_entry",
-            "bottomRight": "route_6_1_red_door_fall",
-            "alternative": null,
-            "sourceFile": "enemies.route_6_1.a80",
-            "sourceLine": 85
         }
     ]
 };

@@ -19,7 +19,7 @@
             "id": "route_6_1_left_jump_low",
             "roomX": 6,
             "roomY": 1,
-            "x": 0,
+            "x": 1,
             "y": 19,
             "type": "jump_right",
             "topLeft": "route_6_1_left_entry",
@@ -84,27 +84,14 @@
             "id": "route_6_1_red_door_fall",
             "roomX": 6,
             "roomY": 1,
-            "x": 1,
-            "y": 19,
+            "x": 2,
+            "y": 20,
             "type": "normal",
             "topLeft": "route_6_1_red_door_left",
-            "bottomRight": "route_6_1_left_return_entry",
+            "bottomRight": "route_6_1_left_entry",
             "alternative": null,
             "sourceFile": "enemies.route_6_1.a80",
             "sourceLine": 73
-        },
-        {
-            "id": "route_6_1_left_return_entry",
-            "roomX": 6,
-            "roomY": 1,
-            "x": 0,
-            "y": 19,
-            "type": "exit",
-            "topLeft": "route_5_1_right_entry",
-            "bottomRight": "route_6_1_red_door_fall",
-            "alternative": null,
-            "sourceFile": "enemies.route_6_1.a80",
-            "sourceLine": 85
         }
     ]
 }

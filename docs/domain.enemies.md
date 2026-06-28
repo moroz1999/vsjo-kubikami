@@ -41,6 +41,7 @@
 - `enemy_0` through `enemy_7` start in rooms `0,0`, `3,1`, `5,1`, `0,1`, `1,2`, `5,3`, `5,2`, and `0,3`.
 - `enemy_8` is the second starting enemy in room `0,0`.
 - Current movement delays for `enemy_0` through `enemy_8` are `10`, `18`, `7`, `13`, `16`, `6`, `9`, `12`, and `14`.
+- Current horizontal vision ranges for `enemy_0` through `enemy_8` are `5`, `9`, `4`, `7`, `8`, `4`, `5`, `6`, and `7`.
 - New `enemy_4` through `enemy_8` use distinct state-choice delays `70`, `90`, `50`, `110`, and `30`.
 - Slower enemies have longer horizontal vision and aggressive stick delays; faster enemies have shorter values for both.
 

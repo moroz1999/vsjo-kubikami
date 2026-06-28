@@ -161,9 +161,11 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - `route_5_1_top_exit` exits into room `5,0` at `route_5_0_bottom_entry` `(27,20)`. The receiving point is one row above the bottom edge so the enemy stands on room floor instead of immediately falling back to `5,1`.
 - Room `5,0` routes left across its bottom floor through `(27,20) -> (20,20) -> (13,20) -> (6,20) -> (0,20)`.
 - Room `5,0` left exit `(0,20)` and room `4,0` right entry `(31,20)` are paired entry points; room `4,0` then covers the bottom floor through `(31,20) -> (24,20) -> (16,20) -> (8,20)`.
-- Room `5,1` right edge `route_5_1_right_entry` and room `6,1` left edge `route_6_1_left_entry` are paired entry points.
+- Room `5,1` right edge `route_5_1_right_entry` at `(31,19)` and room `6,1` left edge `route_6_1_left_entry` at `(0,19)` are paired entry points.
 - Room `5,1` no longer has a separate red-door return lane; its points stay on the main `Y=1` chain.
-- Room `6,1` climbs from `route_6_1_left_entry` through the left ledges to `route_6_1_red_door_left` at `(8,11)`, then falls through `route_6_1_red_door_fall` to `route_6_1_left_return_entry` and exits back to `route_5_1_right_entry`.
+- Room `6,1` uses one shared left entry/exit point at `(0,19)`, then starts its climb at `route_6_1_left_jump_low` `(1,19)` and reaches `route_6_1_red_door_left` at `(8,11)`.
+- The right-side fall lands at `route_6_1_red_door_fall` `(2,20)`, which routes back to the shared entry/exit point; the enemy then exits to `route_5_1_right_entry`.
+- Offline same-room steps update horizontal direction before selecting the next link, so the abstract `(2,20) -> (0,19)` return selects `5,1` at the shared entry/exit instead of starting another climb.
 - Room `6,1` keeps the old shaft route removed; enemies approach the red door but do not continue into the shaft or behind the door.
 - Applying the red card opens the door visually but no longer rewires enemy route points; enemies do not go behind the red door.
 - Rooms `6,2` and `6,3` currently have no enemy route points.

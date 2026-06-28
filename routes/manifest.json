@@ -470,8 +470,7 @@
         "route_6_1_left_ledge_mid",
         "route_6_1_left_ledge_high",
         "route_6_1_red_door_left",
-        "route_6_1_red_door_fall",
-        "route_6_1_left_return_entry"
+        "route_6_1_red_door_fall"
     ],
     "includeFiles": [
         "enemies.route_0_0.a80",
@@ -577,7 +576,7 @@
             "roomX": 6,
             "roomY": 1,
             "file": "room_6_1.json",
-            "points": 8
+            "points": 7
         },
         {
             "roomX": 0,

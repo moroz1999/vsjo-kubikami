@@ -30,7 +30,7 @@ enemy_0
                             0,                  ; route target search not attempted
                             150,                ; free-to-route switch delay
                             150,                ; first free-to-route switch timer
-                            11,                 ; horizontal vision range
+                            5,                  ; horizontal vision range
                             120,                ; aggressive stick delay
                             120,                ; aggressive stick timer
                             behavior_free       ; behavior restored after aggression
@@ -59,7 +59,7 @@ enemy_1
                             0,                  ; route target search not attempted
                             180,                ; free-to-route switch delay
                             180,                ; first free-to-route switch timer
-                            19,                 ; horizontal vision range
+                            9,                  ; horizontal vision range
                             225,                ; aggressive stick delay
                             225,                ; aggressive stick timer
                             behavior_free       ; behavior restored after aggression
@@ -88,7 +88,7 @@ enemy_2
                             0,                  ; route target search not attempted
                             220,                ; free-to-route switch delay
                             220,                ; first free-to-route switch timer
-                            9,                  ; horizontal vision range
+                            4,                  ; horizontal vision range
                             90,                 ; aggressive stick delay
                             90,                 ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -117,7 +117,7 @@ enemy_3
                             0,                  ; route target search not attempted
                             250,                ; free-to-route switch delay
                             250,                ; first free-to-route switch timer
-                            14,                 ; horizontal vision range
+                            7,                  ; horizontal vision range
                             160,                ; aggressive stick delay
                             160,                ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -146,7 +146,7 @@ enemy_4
                             0,                  ; route target search not attempted
                             160,                ; free-to-route switch delay
                             160,                ; first free-to-route switch timer
-                            17,                 ; horizontal vision range
+                            8,                  ; horizontal vision range
                             200,                ; aggressive stick delay
                             200,                ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -175,7 +175,7 @@ enemy_5
                             0,                  ; route target search not attempted
                             190,                ; free-to-route switch delay
                             190,                ; first free-to-route switch timer
-                            8,                  ; horizontal vision range
+                            4,                  ; horizontal vision range
                             75,                 ; aggressive stick delay
                             75,                 ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -204,7 +204,7 @@ enemy_6
                             0,                  ; route target search not attempted
                             205,                ; free-to-route switch delay
                             205,                ; first free-to-route switch timer
-                            10,                 ; horizontal vision range
+                            5,                  ; horizontal vision range
                             105,                ; aggressive stick delay
                             105,                ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -233,7 +233,7 @@ enemy_7
                             0,                  ; route target search not attempted
                             235,                ; free-to-route switch delay
                             235,                ; first free-to-route switch timer
-                            13,                 ; horizontal vision range
+                            6,                  ; horizontal vision range
                             140,                ; aggressive stick delay
                             140,                ; aggressive stick timer
                             behavior_route      ; behavior restored after aggression
@@ -262,7 +262,7 @@ enemy_8
                             0,                  ; route target search not attempted
                             245,                ; free-to-route switch delay
                             245,                ; first free-to-route switch timer
-                            15,                 ; horizontal vision range
+                            7,                  ; horizontal vision range
                             175,                ; aggressive stick delay
                             175,                ; aggressive stick timer
                             behavior_free       ; behavior restored after aggression

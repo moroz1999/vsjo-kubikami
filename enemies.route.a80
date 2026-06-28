@@ -204,7 +204,6 @@ route_points_table
                             dw	route_6_1_left_ledge_high
                             dw	route_6_1_red_door_left
                             dw	route_6_1_red_door_fall
-                            dw	route_6_1_left_return_entry
 route_points_table_end
 
 route_room_point_tables
@@ -389,7 +388,7 @@ route_room_5_1_points
                             dw	route_5_1_upper_top_return
 
 route_room_6_1_points
-                            db	8
+                            db	7
                             dw	route_6_1_left_entry
                             dw	route_6_1_left_jump_low
                             dw	route_6_1_left_ledge_low
@@ -397,7 +396,6 @@ route_room_6_1_points
                             dw	route_6_1_left_ledge_high
                             dw	route_6_1_red_door_left
                             dw	route_6_1_red_door_fall
-                            dw	route_6_1_left_return_entry
 
 route_room_0_2_points
                             db	9
@@ -681,6 +679,7 @@ move_offline_route_enemy_step
                             call	get_target_route_point
                             ret	z
 
+                            call	update_offline_move_direction
                             push	hl
                             ex	de,hl
                             call	move_enemy_to_route_point
@@ -690,6 +689,34 @@ move_offline_route_enemy_step
 
                             call	refresh_enemy_simulation_mode
                             call	try_switch_online_route_to_free
+                            ret
+
+update_offline_move_direction
+                ; Same-room abstract steps preserve their actual horizontal direction.
+                            push	hl
+                            ld	a,(hl)
+                            cp	(ix+enemy.room_x)
+                            jr	nz,update_offline_move_direction_done
+
+                            inc	hl
+                            ld	a,(hl)
+                            cp	(ix+enemy.room_y)
+                            jr	nz,update_offline_move_direction_done
+
+                            inc	hl
+                            ld	a,(hl)
+                            cp	(ix+enemy.x)
+                            jr	z,update_offline_move_direction_done
+
+                            ld	a,direction_left
+                            jr	c,update_offline_move_direction_store
+                            inc	a
+
+update_offline_move_direction_store
+                            ld	(ix+enemy.direction),a
+
+update_offline_move_direction_done
+                            pop	hl
                             ret
 
 update_offline_jump_direction
