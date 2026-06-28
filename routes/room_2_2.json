@@ -100,8 +100,8 @@
             "x": 18,
             "y": 21,
             "type": "exit",
-            "topLeft": "route_2_2_right_lift_mid",
-            "bottomRight": "route_2_3_right_lift_top_exit",
+            "topLeft": "route_2_3_right_lift_top_exit",
+            "bottomRight": "route_2_2_right_lift_mid",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 85
@@ -113,8 +113,8 @@
             "x": 18,
             "y": 10,
             "type": "normal",
-            "topLeft": "route_2_2_right_lift_top_exit",
-            "bottomRight": "route_2_2_right_lift_bottom_entry",
+            "topLeft": "route_2_2_right_lift_bottom_entry",
+            "bottomRight": "route_2_2_right_lift_top_exit",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 97
@@ -126,8 +126,8 @@
             "x": 18,
             "y": 0,
             "type": "exit",
-            "topLeft": "route_2_1_right_lift_bottom_entry",
-            "bottomRight": "route_2_2_right_lift_mid",
+            "topLeft": "route_2_2_right_lift_mid",
+            "bottomRight": "route_2_1_right_lift_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 109

@@ -152,8 +152,8 @@
             "x": 18,
             "y": 21,
             "type": "exit",
-            "topLeft": "route_2_1_right_elevator_top_jump_right",
-            "bottomRight": "route_2_2_right_lift_top_exit",
+            "topLeft": "route_2_2_right_lift_top_exit",
+            "bottomRight": "route_2_1_right_elevator_top_jump_right",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
             "sourceLine": 133

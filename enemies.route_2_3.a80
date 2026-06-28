@@ -30,7 +30,7 @@ route_2_3_left_lift_wait
                             19,                          ; y
                             route_point_wait,            ; type
                             route_2_3_left_lift_top_exit, ; top-left point
-                            route_2_3_left_fall_landing, ; bottom-right point
+                            route_2_3_right_fall_landing, ; bottom-right point
                             0                            ; alternative point
                             }
 
@@ -66,7 +66,7 @@ route_2_3_right_fall_landing
                             19,                          ; y
                             route_point_normal,          ; type
                             route_2_3_left_lift_wait,    ; top-left point
-                            route_2_3_right_lift_wait,   ; bottom-right point
+                            route_2_3_right_top_entry,   ; bottom-right point
                             0                            ; alternative point
                             }
 
@@ -77,8 +77,8 @@ route_2_3_right_lift_wait
                             18,                          ; x
                             19,                          ; y
                             route_point_wait,            ; type
-                            route_2_3_right_lift_top_exit, ; top-left point
-                            route_2_3_right_fall_landing, ; bottom-right point
+                            route_2_3_left_fall_landing, ; top-left point
+                            route_2_3_right_lift_top_exit, ; bottom-right point
                             0                            ; alternative point
                             }
 
@@ -89,7 +89,7 @@ route_2_3_right_lift_top_exit
                             18,                          ; x
                             0,                           ; y
                             route_point_exit,            ; type
-                            route_2_2_right_lift_bottom_entry, ; top-left point
-                            route_2_3_right_lift_wait,   ; bottom-right point
+                            route_2_3_right_lift_wait,   ; top-left point
+                            route_2_2_right_lift_bottom_entry, ; bottom-right point
                             0                            ; alternative point
                             }

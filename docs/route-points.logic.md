@@ -80,6 +80,11 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The repaired right descent mirrors it on shaft edge `x=19`: `route_2_1_right_fall_exit` `(19,21)` -> `route_2_2_right_top_entry` `(19,0)` -> `route_2_2_right_bottom_exit` `(19,21)` -> `route_2_3_right_top_entry` `(19,0)` -> `route_2_3_right_fall_landing` `(19,19)`.
 - The bottom wait points sit one cell inside the descent lanes so they do not overlap the fall path: left lane waits at `route_2_3_left_lift_wait` `(9,19)`, and right lane waits at `route_2_3_right_lift_wait` `(18,19)`.
 - `route_2_3_left_fall_landing` goes right to `route_2_3_right_lift_wait`, and `route_2_3_right_fall_landing` goes left to `route_2_3_left_lift_wait`.
+- The left-to-right chain is `route_2_3_left_fall_landing` -> `route_2_3_right_lift_wait` -> `route_2_3_right_lift_top_exit`; the right lift-top exit is the wait point's `bottomRight` link.
+- The mirrored right-to-left chain is `route_2_3_right_fall_landing` -> `route_2_3_left_lift_wait` -> `route_2_3_left_lift_top_exit`; the left lift-top exit is the wait point's `topLeft` link.
+- Neither wait point links to the fall landing on the same side.
+- Every point on the right lift-up chain keeps the point below in `topLeft` and the next point above in `bottomRight`, preserving the enemy's rightward route direction through rooms `2,3`, `2,2`, and `2,1`.
+- Every point on the left lift-up chain is mirrored: the next point above stays in `topLeft` and the point below stays in `bottomRight`, preserving leftward route direction through the shaft.
 - In room `2,2`, `elevator_2_3` is not drawn while its global top is below the room bottom. Lift handoff entries use local `y=21`; the enemy floor check now tests for an elevator below the lower screen edge before treating that edge as a fall.
 - After a lift route exit hands an enemy from room `2,3` into room `2,2`, the enemy is forced offline. If room `2,2` is not active, offline route steps can still advance it upward through one point per offline route timer, without elevator physics.
 - The left lift-up route uses `route_2_3_left_lift_top_exit` at `(9,0)`, then room `2,2` at `(9,21)` -> `(9,10)` -> `(9,0)` -> room `2,1` at `(9,21)` -> `route_2_1_left_elevator_top_jump_left` `(9,19)`.

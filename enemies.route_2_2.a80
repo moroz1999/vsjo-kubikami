@@ -89,8 +89,8 @@ route_2_2_right_lift_bottom_entry
                             18,                          ; x
                             21,                          ; y
                             route_point_exit,            ; type
-                            route_2_2_right_lift_mid,    ; top-left point
-                            route_2_3_right_lift_top_exit, ; bottom-right point
+                            route_2_3_right_lift_top_exit, ; top-left point
+                            route_2_2_right_lift_mid,    ; bottom-right point
                             0                            ; alternative point
                             }
 
@@ -101,8 +101,8 @@ route_2_2_right_lift_mid
                             18,                          ; x
                             10,                          ; y
                             route_point_normal,          ; type
-                            route_2_2_right_lift_top_exit, ; top-left point
-                            route_2_2_right_lift_bottom_entry, ; bottom-right point
+                            route_2_2_right_lift_bottom_entry, ; top-left point
+                            route_2_2_right_lift_top_exit, ; bottom-right point
                             0                            ; alternative point
                             }
 
@@ -113,7 +113,7 @@ route_2_2_right_lift_top_exit
                             18,                          ; x
                             0,                           ; y
                             route_point_exit,            ; type
-                            route_2_1_right_lift_bottom_entry, ; top-left point
-                            route_2_2_right_lift_mid,    ; bottom-right point
+                            route_2_2_right_lift_mid,    ; top-left point
+                            route_2_1_right_lift_bottom_entry, ; bottom-right point
                             0                            ; alternative point
                             }

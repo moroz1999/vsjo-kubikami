@@ -1584,8 +1584,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 21,
             "type": "exit",
-            "topLeft": "route_2_1_right_elevator_top_jump_right",
-            "bottomRight": "route_2_2_right_lift_top_exit",
+            "topLeft": "route_2_2_right_lift_top_exit",
+            "bottomRight": "route_2_1_right_elevator_top_jump_right",
             "alternative": null,
             "sourceFile": "enemies.route_2_1.a80",
             "sourceLine": 133
@@ -1701,8 +1701,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 21,
             "type": "exit",
-            "topLeft": "route_2_2_right_lift_mid",
-            "bottomRight": "route_2_3_right_lift_top_exit",
+            "topLeft": "route_2_3_right_lift_top_exit",
+            "bottomRight": "route_2_2_right_lift_mid",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 85
@@ -1714,8 +1714,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 10,
             "type": "normal",
-            "topLeft": "route_2_2_right_lift_top_exit",
-            "bottomRight": "route_2_2_right_lift_bottom_entry",
+            "topLeft": "route_2_2_right_lift_bottom_entry",
+            "bottomRight": "route_2_2_right_lift_top_exit",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 97
@@ -1727,8 +1727,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 0,
             "type": "exit",
-            "topLeft": "route_2_1_right_lift_bottom_entry",
-            "bottomRight": "route_2_2_right_lift_mid",
+            "topLeft": "route_2_2_right_lift_mid",
+            "bottomRight": "route_2_1_right_lift_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_2.a80",
             "sourceLine": 109
@@ -1767,7 +1767,7 @@ window.ROUTE_MAP_DATA = {
             "y": 19,
             "type": "wait",
             "topLeft": "route_2_3_left_lift_top_exit",
-            "bottomRight": "route_2_3_left_fall_landing",
+            "bottomRight": "route_2_3_right_fall_landing",
             "alternative": null,
             "sourceFile": "enemies.route_2_3.a80",
             "sourceLine": 25
@@ -1806,7 +1806,7 @@ window.ROUTE_MAP_DATA = {
             "y": 19,
             "type": "normal",
             "topLeft": "route_2_3_left_lift_wait",
-            "bottomRight": "route_2_3_right_lift_wait",
+            "bottomRight": "route_2_3_right_top_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_3.a80",
             "sourceLine": 61
@@ -1818,8 +1818,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 19,
             "type": "wait",
-            "topLeft": "route_2_3_right_lift_top_exit",
-            "bottomRight": "route_2_3_right_fall_landing",
+            "topLeft": "route_2_3_left_fall_landing",
+            "bottomRight": "route_2_3_right_lift_top_exit",
             "alternative": null,
             "sourceFile": "enemies.route_2_3.a80",
             "sourceLine": 73
@@ -1831,8 +1831,8 @@ window.ROUTE_MAP_DATA = {
             "x": 18,
             "y": 0,
             "type": "exit",
-            "topLeft": "route_2_2_right_lift_bottom_entry",
-            "bottomRight": "route_2_3_right_lift_wait",
+            "topLeft": "route_2_3_right_lift_wait",
+            "bottomRight": "route_2_2_right_lift_bottom_entry",
             "alternative": null,
             "sourceFile": "enemies.route_2_3.a80",
             "sourceLine": 85
