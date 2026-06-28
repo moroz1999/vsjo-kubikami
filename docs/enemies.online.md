@@ -6,6 +6,7 @@
 - Every enemy in the active room is online, and every enemy outside it is offline.
 - Entering the active room automatically switches an enemy online without changing its movement behavior.
 - An enemy entering while following a route continues following it with online physics.
+- A route enemy activated on an exit with a target in another room completes that existing handoff immediately instead of remaining online with an unreachable target.
 - At each reached route point, an online route follower has a `1/8` chance to switch to free `state_walk`.
 - Each online free enemy counts down its own `150`-to-`250`-frame behavior timer.
 - At timer expiration the enemy has a `1/8` chance to return to route behavior, then reloads its configured timer.

@@ -1148,6 +1148,24 @@ is_route_point_in_enemy_room_done
                             pop	de
                             ret
 
+complete_pending_route_handoff_on_online
+                ; Room activation completes a route exit already selected while offline.
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_route
+                            ret	nz
+
+                            call	get_target_route_point
+                            ret	z
+
+                            ex	de,hl
+                            call	is_route_point_in_enemy_room
+                            ret	z
+
+                            push	bc
+                            call	leave_enemy_to_route_point
+                            pop	bc
+                            ret
+
 reattach_route_target_after_room_change
                 ; Keep valid cross-room route entries; replace stale physical-handoff targets.
                             call	get_target_route_point

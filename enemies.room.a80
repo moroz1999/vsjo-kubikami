@@ -31,7 +31,7 @@ refresh_enemy_simulation_mode
 refresh_enemy_simulation_mode_online
                             ld	a,simulation_mode_online
                             ld	(ix+enemy.simulation_mode),a
-                            ret
+                            jp	complete_pending_route_handoff_on_online
 
 is_enemy_in_current_room
                             ld	a,(rooms.room_number_x)

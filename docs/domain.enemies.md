@@ -36,6 +36,7 @@
 - Every physical room handoff validates that the stored route target belongs to the new room.
 - A stale or missing target is cleared and replaced through the existing first-point-in-window attachment search.
 - Authored route exits keep their selected entry target because it already belongs to the destination room.
+- Activating a room completes any pending route handoff whose target already belongs to another room.
 - The enemy table contains nine enemies.
 - `enemy_0` through `enemy_7` start in rooms `0,0`, `3,1`, `5,1`, `0,1`, `1,2`, `5,3`, `5,2`, and `0,3`.
 - `enemy_8` is the second starting enemy in room `0,0`.

@@ -32,6 +32,7 @@
 - Offline route followers advance along the same route, but without physics: after their offline timer expires, they are treated as reaching the current target, move directly to that point's room and position, then choose the next target.
 - Offline route movement refreshes simulation mode after moving to a route point and selecting its next target.
 - If the new point belongs to the active room, the enemy becomes online and performs the route-to-free roll.
+- If room activation catches an offline enemy paused on an exit with its next target outside, the pending handoff is completed through the normal cross-room route path.
 
 ## Route Point References
 
