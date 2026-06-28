@@ -10,6 +10,7 @@
 - Offline enemies without a target skip movement after a failed route attachment.
 - Offline route-following enemies advance through route points without physics.
 - Every enemy outside the active room is offline and uses route behavior.
+- Entering offline mode immediately cancels aggressive behavior and its pending exit timer.
 - After an offline route step enters the active room, room-coordinate refresh immediately switches the enemy online.
 - The enemy keeps route behavior after becoming online and continues toward points with physical movement.
 - The `1/8` route-to-free roll is performed after entering the active room at a route point.

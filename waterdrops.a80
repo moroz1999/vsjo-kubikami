@@ -173,6 +173,7 @@ move_check_hero
                             jr	nz,move_skip
 
                             ld	a,16
+                            ld	b,hero.health_damage_delayed
                             call	hero.decrease_health
 move_skip
                             pop	hl
@@ -215,6 +216,7 @@ check_hero_collision
                             ret	nz
 
                             ld	a,16
+                            ld	b,hero.health_damage_delayed
                             call	hero.decrease_health
                             ret
 

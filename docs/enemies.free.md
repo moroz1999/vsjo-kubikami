@@ -45,8 +45,6 @@
 - Enemy jumps use the same eight-step arc shape as the hero, but apply enemy movement rules and stay inside the current room.
 - After an enemy jump arc ends, normal falling checks resume on the next enemy update.
 
-## Aggressive Placeholder
+## Aggressive Behavior
 
-- `behavior_aggressive` is reserved for future hero pursuit behavior.
-- Aggressive enemies are drawn in purple.
-- Aggressive enemies skip standing/walking state rerolls and currently do not move horizontally.
+- Aggressive detection, pursuit, and exit rules are documented in [Enemies Aggressive Movement](enemies.aggressive.md).

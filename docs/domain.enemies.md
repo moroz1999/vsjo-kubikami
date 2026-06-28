@@ -19,11 +19,12 @@
 - Enemy records keep a movement behavior: free, route, or aggressive.
 - Enemy `state` stores only transient physical motion: stand, walk, fall, or jump.
 - Route and aggressive behavior are not duplicated in `state`; they persist through fall and jump transitions in `behavior_mode`.
+- Enemy records store individual horizontal vision range and aggressive stick-delay fields.
 - Offline enemies currently always use route behavior.
 - Online route enemies have a `1/8` chance to switch to free behavior at each reached route point.
 - Each enemy record stores an individual free-to-route delay and timer.
 - While an enemy is online and free, its timer counts down; after expiration it has a `1/8` chance to switch to route behavior.
-- The current enemy delays are `150`, `180`, `220`, and `250` frames.
+- The current enemy delays are `150`, `180`, `220`, `250`, `160`, `190`, `205`, `235`, and `245` frames.
 - Every failed or successful timer roll reloads the enemy's configured delay.
 - A timer that expires during fall or jump waits at zero until stable physical motion resumes.
 - Route/free behavior changes preserve route pointers.
@@ -32,10 +33,19 @@
 - A targetless online enemy searches after each successful free-to-route timer roll until a suitable point is found.
 - Route attachment selects the first point in the enemy's room within the inclusive horizontal window `x +/- 7`, `y +/- 2`.
 - A route-target search is never repeated, including when no suitable point was found.
+- The enemy table contains nine enemies.
+- `enemy_0` through `enemy_7` start in rooms `0,0`, `3,1`, `5,1`, `0,1`, `1,2`, `5,3`, `5,2`, and `0,3`.
+- `enemy_8` is the second starting enemy in room `0,0`.
+- New `enemy_4` through `enemy_8` use distinct state-choice delays `70`, `90`, `50`, `110`, and `30`, with movement delays `5`, `7`, `9`, `11`, and `4`.
 
 ## Collision
 
-- Enemy collision applies 32 damage through the standard `hero.decrease_health` armor and health path.
+- Enemy collision applies 16 damage through the standard `hero.decrease_health` armor and health path.
+- Standard enemy damage uses the delayed-damage flag and starts a `100`-frame hero invulnerability timer.
+- Further delayed damage is ignored while that timer is active; immediate damage bypasses the timer.
+- Water-drop collision damage also uses the delayed path, preserving its shared contact-damage protection.
+- Oxygen loss damages health through the separate immediate path and is never delayed by enemy invulnerability.
+- The room `1,3` boss bite remains an immediate scripted lethal hit.
 - Online enemies in the active room collide with the hero.
 
 ## Drawing
@@ -46,9 +56,10 @@
 - Route-following enemies are green, including online route followers in the active room.
 - Standing online enemies are yellow.
 - `behavior_aggressive` enemies are purple.
-- Aggressive behavior is currently a placeholder; pursuit logic is not implemented yet.
+- Aggressive enemies pursue the hero horizontally while their behavior remains active.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
 - Route debug drawing is compile-time gated by `debug.route_points_debug_enabled`.
+- Route debug drawing is disabled by default.
 - Route debug helpers and colors live in `debug.a80`.
 - When route debug drawing is enabled, current-room route points are bright magenta.
 
@@ -57,5 +68,6 @@
 - [Free Movement](enemies.free.md)
 - [Online Movement](enemies.online.md)
 - [Offline Movement](enemies.offline.md)
+- [Aggressive Movement](enemies.aggressive.md)
 - [Route Points](waypoints.md)
 - [Route Point Logic](route-points.logic.md)

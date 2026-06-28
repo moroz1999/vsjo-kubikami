@@ -14,6 +14,7 @@ move_next
                             jr	move_next_skip
 
 move_next_online
+                            call	update_aggressive_behavior
                             call	try_switch_online_free_to_route
                             call	advance_online_route_target_if_reached
 
@@ -140,7 +141,7 @@ move_enemy
                             cp	behavior_route
                             jp	z,move_route_enemy
                             cp	behavior_aggressive
-                            ret	z
+                            jp	z,move_aggressive_enemy
 
                 ; Only walking enemies can spend movement ticks.
                             ld	a,(ix+enemy.state)
@@ -425,4 +426,9 @@ leave_enemy_to_room_coords
                             ld	(ix+enemy.behavior_mode),a
                             ld	a,state_walk
                             ld	(ix+enemy.state),a
+
+                            ld	a,(ix+enemy.aggressive_stick_delay)
+                            ld	(ix+enemy.aggressive_stick_timer),a
+                            ld	a,behavior_route
+                            ld	(ix+enemy.behavior_before_aggressive),a
                             ret

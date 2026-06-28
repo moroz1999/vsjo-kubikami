@@ -423,6 +423,7 @@ update_jaws_hunt_bite      ; Close jaws and remove all hero health on contact.
                             ld	a,boss_jaw_state_closed ; Load the closed jaw state.
                             ld	(boss_jaw_state),a ; Clamp jaws shut for the bite.
                             ld	a,boss_bite_damage ; Load the bite damage chunk.
+                            ld	b,hero.health_damage_immediate ; Keep the scripted lethal bite immediate.
                             call	hero.decrease_health ; Remove armor and apply the first damage hit.
                             ld	a,boss_bite_damage ; Reload the bite damage chunk.
                             call	hero.decrease_health_only ; Finish the bite without touching hero memory directly.

@@ -19,11 +19,7 @@ room_logic_pointer          equ	$+1
                             call	teleports.check_hero
                             call	medkits.check_hero
                             call	armors.check_hero
-                            ld a,3
-                            call	draw.border
                             call	enemies.check_hero
-                            ld a,0
-                            call	draw.border
                             call	draw.switch_colors
                             call	draw.draw_state
                             call	game_ui.draw_stats
@@ -38,11 +34,7 @@ calculate_state
                             call	animate.update_room
                             call	elevators_update.update_room
                             call	elevators_coords.coords
-                            ld a,2
-                            call	draw.border
                             call	enemies.move
-                            ld a,0
-                            call	draw.border
                             ret
 wait
                             ld	iy,0

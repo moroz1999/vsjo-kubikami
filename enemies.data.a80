@@ -11,7 +11,7 @@ enemy_0
                             enemy	{
                             0,                  ; start room column
                             0,                  ; start room row
-                            2,                  ; start cell column
+                            4,                  ; start cell column
                             9,                  ; start cell row
                             state_walk,         ; starts walking
                             100,                 ; behavior choice pacing
@@ -24,20 +24,24 @@ enemy_0
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
                             behavior_free,      ; starts with free movement
-                            0,                  ; last route point
-                            0,                  ; target route point
+                            route_0_0_left,     ; last route point
+                            route_0_0_mid_left, ; target route point
                             offline_route_point_delay, ; offline route timer
                             0,                  ; route target search not attempted
                             150,                ; free-to-route switch delay
-                            150                 ; first free-to-route switch timer
+                            150,                ; first free-to-route switch timer
+                            6,                  ; horizontal vision range
+                            50,                 ; aggressive stick delay
+                            50,                 ; aggressive stick timer
+                            behavior_free       ; behavior restored after aggression
                             }
 
 enemy_1
                             enemy	{
-                            0,                  ; start room column
-                            0,                  ; start room row
-                            16,                 ; start cell column
-                            9,                  ; start cell row
+                            3,                  ; start room column
+                            1,                  ; start room row
+                            7,                  ; start cell column
+                            19,                 ; start cell row
                             state_stand,        ; starts waiting
                             40,                 ; behavior choice pacing
                             40,                 ; first behavior choice delay
@@ -49,19 +53,23 @@ enemy_1
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
                             behavior_free,      ; starts with free movement
-                            0,                  ; last route point
-                            0,                  ; target route point
+                            route_3_1_bottom_fork, ; last route point
+                            route_3_1_left_entry, ; target route point
                             offline_route_point_delay, ; offline route timer
                             0,                  ; route target search not attempted
                             180,                ; free-to-route switch delay
-                            180                 ; first free-to-route switch timer
+                            180,                ; first free-to-route switch timer
+                            8,                  ; horizontal vision range
+                            75,                 ; aggressive stick delay
+                            75,                 ; aggressive stick timer
+                            behavior_free       ; behavior restored after aggression
                             }
 
 enemy_2
                             enemy	{
-                            4,                  ; start room column
+                            5,                  ; start room column
                             1,                  ; start room row
-                            0,                  ; start cell column
+                            8,                  ; start cell column
                             19,                 ; start cell row
                             state_walk,         ; route behavior starts from neutral motion
                             80,                 ; free behavior choice pacing
@@ -74,20 +82,24 @@ enemy_2
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
                             behavior_route,     ; starts with route movement
-                            route_3_1_right_entry, ; last route point
-                            route_4_1_left_entry, ; target route point
+                            route_5_1_bottom_left, ; last route point
+                            route_5_1_bottom_fork, ; target route point
                             offline_route_point_delay, ; offline route timer
                             0,                  ; route target search not attempted
                             220,                ; free-to-route switch delay
-                            220                 ; first free-to-route switch timer
+                            220,                ; first free-to-route switch timer
+                            10,                 ; horizontal vision range
+                            100,                ; aggressive stick delay
+                            100,                ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
                             }
 
 enemy_3
                             enemy	{
-                            3,                  ; start room column
-                            2,                  ; start room row
-                            31,                 ; start cell column
-                            16,                 ; start cell row
+                            0,                  ; start room column
+                            1,                  ; start room row
+                            18,                 ; start cell column
+                            19,                 ; start cell row
                             state_walk,         ; route behavior starts from neutral motion
                             60,                 ; free behavior choice pacing
                             60,                 ; first free behavior choice delay
@@ -99,10 +111,159 @@ enemy_3
                             0,                  ; jump delay
                             simulation_mode_offline, ; refreshed during room init
                             behavior_route,     ; starts with route movement
-                            route_3_2_right_entry, ; last route point
-                            route_3_2_right_mid, ; target route point
+                            route_0_1_mid,      ; last route point
+                            route_0_1_left_mid, ; target route point
                             offline_route_point_delay, ; offline route timer
                             0,                  ; route target search not attempted
                             250,                ; free-to-route switch delay
-                            250                 ; first free-to-route switch timer
+                            250,                ; first free-to-route switch timer
+                            12,                 ; horizontal vision range
+                            125,                ; aggressive stick delay
+                            125,                ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
+                            }
+
+enemy_4
+                            enemy	{
+                            1,                  ; start room column
+                            2,                  ; start room row
+                            13,                 ; start cell column
+                            13,                 ; start cell row
+                            state_walk,         ; route behavior starts from neutral motion
+                            70,                 ; free behavior choice pacing
+                            35,                 ; first free behavior choice delay
+                            direction_right,    ; initial route direction
+                            5,                  ; route step pacing
+                            5,                  ; first route step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
+                            route_1_2_water_mid, ; last route point
+                            route_1_2_water_mid_right, ; target route point
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            160,                ; free-to-route switch delay
+                            160,                ; first free-to-route switch timer
+                            7,                  ; horizontal vision range
+                            60,                 ; aggressive stick delay
+                            60,                 ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
+                            }
+
+enemy_5
+                            enemy	{
+                            5,                  ; start room column
+                            3,                  ; start room row
+                            16,                 ; start cell column
+                            7,                  ; start cell row
+                            state_walk,         ; route behavior starts from neutral motion
+                            90,                 ; free behavior choice pacing
+                            45,                 ; first free behavior choice delay
+                            direction_left,     ; initial route direction
+                            7,                  ; route step pacing
+                            6,                  ; first route step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
+                            route_5_3_upper_mid, ; last route point
+                            route_5_3_upper_mid_left, ; target route point
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            190,                ; free-to-route switch delay
+                            190,                ; first free-to-route switch timer
+                            9,                  ; horizontal vision range
+                            85,                 ; aggressive stick delay
+                            85,                 ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
+                            }
+
+enemy_6
+                            enemy	{
+                            5,                  ; start room column
+                            2,                  ; start room row
+                            8,                  ; start cell column
+                            14,                 ; start cell row
+                            state_walk,         ; route behavior starts from neutral motion
+                            50,                 ; free behavior choice pacing
+                            25,                 ; first free behavior choice delay
+                            direction_right,    ; initial route direction
+                            9,                  ; route step pacing
+                            4,                  ; first route step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
+                            route_5_2_floor_mid, ; last route point
+                            route_5_2_floor_right, ; target route point
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            205,                ; free-to-route switch delay
+                            205,                ; first free-to-route switch timer
+                            11,                 ; horizontal vision range
+                            110,                ; aggressive stick delay
+                            110,                ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
+                            }
+
+enemy_7
+                            enemy	{
+                            0,                  ; start room column
+                            3,                  ; start room row
+                            12,                 ; start cell column
+                            16,                 ; start cell row
+                            state_walk,         ; route behavior starts from neutral motion
+                            110,                ; free behavior choice pacing
+                            55,                 ; first free behavior choice delay
+                            direction_left,     ; initial route direction
+                            11,                 ; route step pacing
+                            9,                  ; first route step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            behavior_route,     ; starts with route movement
+                            route_0_3_center_floor, ; last route point
+                            route_0_3_left_jump_left, ; target route point
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            235,                ; free-to-route switch delay
+                            235,                ; first free-to-route switch timer
+                            13,                 ; horizontal vision range
+                            135,                ; aggressive stick delay
+                            135,                ; aggressive stick timer
+                            behavior_route      ; behavior restored after aggression
+                            }
+
+enemy_8
+                            enemy	{
+                            0,                  ; start room column
+                            0,                  ; start room row
+                            27,                 ; start cell column
+                            9,                  ; start cell row
+                            state_stand,        ; starts waiting
+                            30,                 ; behavior choice pacing
+                            15,                 ; first behavior choice delay
+                            direction_left,     ; initial patrol direction
+                            4,                  ; patrol step pacing
+                            2,                  ; first patrol step delay
+                            0,                  ; can fall immediately
+                            0,                  ; jump step
+                            0,                  ; jump delay
+                            simulation_mode_offline, ; refreshed during room init
+                            behavior_free,      ; starts with free movement
+                            route_0_0_right,    ; last route point
+                            route_0_0_mid_right, ; target route point
+                            offline_route_point_delay, ; offline route timer
+                            0,                  ; route target search not attempted
+                            245,                ; free-to-route switch delay
+                            245,                ; first free-to-route switch timer
+                            14,                 ; horizontal vision range
+                            150,                ; aggressive stick delay
+                            150,                ; aggressive stick timer
+                            behavior_free       ; behavior restored after aggression
                             }

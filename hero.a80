@@ -17,7 +17,9 @@ hero_delay_swim             equ	4
 max_health                  equ	192
 max_armor                   equ	192
 max_oxygen                  equ	250
-health_damage_delay         equ	25
+health_damage_immediate     equ	0
+health_damage_delayed       equ	1
+health_damage_delay         equ	100
 oxygen_health_delay         equ	50
 oxygen_health_damage        equ	8
 health                      db	max_health
@@ -78,14 +80,17 @@ update_health_damage_timer
 decrease_health
                 ; input:
                 ; a - health damage amount
+                ; b - damage timing flag: health_damage_immediate or health_damage_delayed
 
                             ld	c,a
-                            add	a,a
-                            ld	b,a
 
                             ld	a,(health)
                             or	a
                             ret	z
+
+                            ld	a,b
+                            or	a
+                            jr	z,decrease_health_calculate
 
                             ld	a,(health_damage_timer)
                             or	a
@@ -93,6 +98,11 @@ decrease_health
 
                             ld	a,health_damage_delay
                             ld	(health_damage_timer),a
+
+decrease_health_calculate
+                            ld	a,c
+                            add	a,a
+                            ld	b,a
 
                             ld	a,(armor)
                             or	a

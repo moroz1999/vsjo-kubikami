@@ -26,6 +26,7 @@ check_hero_next
 
                 ; Enemy contact applies normal armor-first damage.
                             ld	a,enemy_damage_amount
+                            ld	b,hero.health_damage_delayed
                             push	ix
                             call	hero.decrease_health
                             pop	ix

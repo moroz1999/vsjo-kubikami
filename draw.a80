@@ -90,7 +90,6 @@ draw_state
                             call	logic.room_3_3.restore_previous
                             
                             //todo: remove after debug
-                            call	hero.draw_hero
 
                             call	animate.draw_room
                             call	animate.check
@@ -106,11 +105,7 @@ draw_state
                             call	armors.draw_room
 
                             call	teleports.draw_current
-                            ld a,1
-                            call draw.border
                             call	enemies.draw_enemies
-                            ld a,0
-                            call draw.border
                             call	logic.room_1_3.draw_current
                             call	logic.room_3_3.draw_current
 

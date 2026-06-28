@@ -15,7 +15,7 @@
 - `behavior_mode` selects free, route, or aggressive logic; `state` contains only stand, walk, fall, or jump physics.
 - Free online enemies are red, while their standing `state_stand` subtype is yellow.
 - Online route followers are green.
-- `behavior_aggressive` is purple and currently has no pursuit implementation.
+- `behavior_aggressive` is purple and pursues the hero horizontally.
 - Enemy movement pacing is controlled by enemy-local movement delay and movement timer fields.
 - Free-to-route behavior pacing uses separate enemy-local delay and timer fields.
 - Route-following is a separate behavior model from free roaming; route followers do not use random standing/walking choices while following a route.

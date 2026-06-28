@@ -1,0 +1,97 @@
+update_aggressive_behavior
+                ; Vision starts pursuit and refreshes stickiness while the hero remains visible.
+                            call	is_hero_in_enemy_vision
+                            jr	c,update_aggressive_behavior_visible
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_aggressive
+                            ret	nz
+
+                            ld	a,(ix+enemy.aggressive_stick_timer)
+                            or	a
+                            jr	z,update_aggressive_behavior_exit
+
+                            dec	a
+                            ld	(ix+enemy.aggressive_stick_timer),a
+                            ret	nz
+
+update_aggressive_behavior_exit
+                            ld	a,(ix+enemy.behavior_before_aggressive)
+                            ld	(ix+enemy.behavior_mode),a
+                            jp	reset_enemy_state_after_aggression
+
+update_aggressive_behavior_visible
+                            ld	a,(ix+enemy.aggressive_stick_delay)
+                            ld	(ix+enemy.aggressive_stick_timer),a
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            cp	behavior_aggressive
+                            ret	z
+
+                            ld	(ix+enemy.behavior_before_aggressive),a
+                            ld	a,behavior_aggressive
+                            ld	(ix+enemy.behavior_mode),a
+
+reset_enemy_state_after_aggression
+                ; Do not interrupt an active fall or jump when behavior changes.
+                            ld	a,(ix+enemy.state)
+                            cp	state_fall
+                            ret	z
+                            cp	state_jump
+                            ret	z
+
+                            xor	a
+                            ld	(ix+enemy.jump_phase_delay),a
+                            ld	a,state_walk
+                            ld	(ix+enemy.state),a
+                            ret
+
+is_hero_in_enemy_vision
+                ; Carry returns set inside the inclusive horizontal range and vertical +/-2.
+                            ld	a,(hero.hero_x)
+                            sub	(ix+enemy.x)
+                            jr	nc,is_hero_in_enemy_vision_x_ready
+                            neg
+
+is_hero_in_enemy_vision_x_ready
+                            ld	c,(ix+enemy.vision_range_x)
+                            inc	c
+                            cp	c
+                            ret	nc
+
+                            ld	a,(hero.hero_y)
+                            sub	(ix+enemy.y)
+                            jr	nc,is_hero_in_enemy_vision_y_ready
+                            neg
+
+is_hero_in_enemy_vision_y_ready
+                            cp	3
+                            ret
+
+move_aggressive_enemy
+                ; Pursuit reuses normal horizontal movement, obstacles, ledges, and pacing.
+                            ld	a,(ix+enemy.move_timer)
+                            or	a
+                            jr	z,move_aggressive_enemy_step
+
+                            dec	a
+                            ld	(ix+enemy.move_timer),a
+                            ret
+
+move_aggressive_enemy_step
+                            ld	a,(ix+enemy.move_delay)
+                            ld	(ix+enemy.move_timer),a
+
+                            ld	a,(hero.hero_x)
+                            cp	(ix+enemy.x)
+                            ret	z
+                            jr	c,move_aggressive_enemy_left
+
+                            ld	a,direction_right
+                            ld	(ix+enemy.direction),a
+                            jp	move_enemy_right
+
+move_aggressive_enemy_left
+                            ld	a,direction_left
+                            ld	(ix+enemy.direction),a
+                            jp	move_enemy_left

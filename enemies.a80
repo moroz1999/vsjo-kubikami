@@ -1,8 +1,8 @@
                         module	enemies
 ; Enemy constants describe gameplay behavior shared by all enemy records.
-enemy_count                 equ	4
+enemy_count                 equ	9
 enemy_size                  equ	enemy
-enemy_damage_amount         equ	32
+enemy_damage_amount         equ	16
 
 ; Enemy state controls waiting, patrol, route following, fall, and jump behavior.
 ; Route and aggressive selection live in behavior_mode; state stores physical motion only.
@@ -94,12 +94,17 @@ offline_route_timer         byte
 route_target_search_done    byte
 behavior_switch_delay       byte
 behavior_switch_timer       byte
+vision_range_x              byte
+aggressive_stick_delay      byte
+aggressive_stick_timer      byte
+behavior_before_aggressive  byte
                         ends
 
 ; Enemy behavior is split by gameplay topic.
                             include	"enemies.data.a80"
                             include	"enemies.random.a80"
                             include	"enemies.room.a80"
+                            include	"enemies.aggressive.a80"
                             include	"enemies.collision.a80"
                             include	"enemies.draw.a80"
                             include	"enemies.jump.a80"

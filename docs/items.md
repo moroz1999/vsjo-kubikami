@@ -95,7 +95,8 @@
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `1`, red door opened by red card `1`, hatch key used `1`, elevator repaired by toolkit `1`, generator started `1`, stairs unfolded `1`, and dynamite exploded `1`.
+- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, and dynamite exploded `0`.
+- With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
 
 ## Persistent Room Art
 
