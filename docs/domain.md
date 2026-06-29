@@ -15,6 +15,9 @@
 - `objects.check_coords` treats water as passable, but hero state checks must also treat water below the hero as non-solid; otherwise the water surface becomes jumpable ground.
 - Hero floor checks at the bottom row must go through the room-edge-aware coordinate check instead of reading `rooms.current_room_buf` past row `21`.
 - Swimming upward from water into a non-water passable cell starts a hero jump arc in the requested direction; swimming inside water remains swim movement.
+- The program opens on a pixel menu before game initialization. Number keys `1` through `5` activate the matching menu item directly.
+- The menu stores the selected keyboard, Kempston, or Cursor mode in `menu.input_mode` and five redefined key scan codes in `menu.assigned_keys`. Gameplay input does not consume these settings yet.
+- Zero hero health opens a cleared screen with `Конец Игры`; poisoning the room `1,3` purple boss opens a cleared screen with `Успех`. Both end screens wait for any key and return to the main menu.
 
 ## Topic Details
 

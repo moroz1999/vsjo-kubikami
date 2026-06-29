@@ -4,8 +4,11 @@ start                       equ	#6000
 
                             org	start
 
+main_menu
                             di
                             ld	sp,start-1
+                            call	menu.run
+
                             ld	a,draw.border_color
                             call	draw.border
                             call	draw.draw_pattern
@@ -25,6 +28,7 @@ start                       equ	#6000
                             include	"logic.a80"
                             include	"items.a80"
                             include	"print.a80"
+                            include	"menu.a80"
                             include	"functions.a80"
                             include	"dzx0_turbo.asm"
                             include	"rooms.a80"

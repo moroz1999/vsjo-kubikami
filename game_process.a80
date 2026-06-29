@@ -20,6 +20,11 @@ room_logic_pointer          equ	$+1
                             call	medkits.check_hero
                             call	armors.check_hero
                             call	enemies.check_hero
+
+                            ld	a,(hero.health)
+                            or	a
+                            jr	z,game_over
+
                             call	draw.switch_colors
                             call	draw.draw_state
                             call	game_ui.draw_stats
@@ -46,6 +51,19 @@ wait
                             ret
 endgame
                             call	draw.clear_screen
-                            di
-                            halt
+
+                            ld	hl,strings.game_success
+                            ld	b,13
+                            jr	show_end_text
+game_over
+                            call	draw.clear_screen
+
+                            ld	hl,strings.game_over
+                            ld	b,11
+show_end_text
+                            ld	c,12
+                            call	print.print_string
+
+                            call	menu.wait_key_press
+                            jp	@main_menu
                         endmodule

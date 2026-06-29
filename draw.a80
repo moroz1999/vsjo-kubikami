@@ -222,9 +222,18 @@ restore_pixel
                             ld	(hl),a
                             ret
 clear_screen
+                            xor	a
+                            ld	hl,screen_utils.screen
+                            ld	de,screen_utils.screen+1
+                            ld	bc,#1800-1
+                            ld	(hl),a
+                            ldir
+
+                            ld	a,%01000111
                             ld	hl,screen_utils.attrs
                             ld	de,screen_utils.attrs+1
                             ld	bc,screen_utils.attrs_size-1
+                            ld	(hl),a
                             ldir
                             ret
 draw_room_sprite

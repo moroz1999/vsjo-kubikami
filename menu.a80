@@ -1,0 +1,294 @@
+                            module	menu
+input_mode_keyboard         equ	0
+input_mode_kempston         equ	1
+input_mode_cursor           equ	2
+
+key_a                       equ	5
+key_q                       equ	10
+key_1                       equ	15
+key_2                       equ	16
+key_3                       equ	17
+key_4                       equ	18
+key_5                       equ	19
+key_p                       equ	25
+key_o                       equ	26
+key_y                       equ	29
+key_space                   equ	35
+key_n                       equ	38
+key_none                    equ	255
+
+logo_x                      equ	15
+logo_y                      equ	3
+logo_width                  equ	16
+logo_height                 equ	8
+menu_x                      equ	6
+menu_width                  equ	20
+menu_start_y                equ	7
+menu_keyboard_y             equ	9
+menu_kempston_y             equ	11
+menu_cursor_y               equ	13
+menu_assign_y               equ	15
+assignment_text_x           equ	13
+assignment_text_y           equ	12
+confirmation_text_x         equ	12
+confirmation_text_y         equ	12
+
+normal_color                equ	%01000111
+selected_control_color      equ	%01001111
+
+run
+                            xor	a
+                            call	draw.border
+                            call	draw_menu
+
+menu_loop
+                            call	wait_key_press
+                            cp	key_1
+                            jr	z,start_game
+                            cp	key_2
+                            jr	z,select_keyboard
+                            cp	key_3
+                            jr	z,select_kempston
+                            cp	key_4
+                            jr	z,select_cursor
+                            cp	key_5
+                            jp	z,assign_keys
+                            jr	menu_loop
+
+start_game
+                            call	wait_key_release
+                            ret
+
+select_keyboard
+                            ld	a,input_mode_keyboard
+                            jr	select_input_mode
+select_kempston
+                            ld	a,input_mode_kempston
+                            jr	select_input_mode
+select_cursor
+                            ld	a,input_mode_cursor
+
+select_input_mode
+                            ld	(input_mode),a
+                            call	draw_highlights
+                            jr	menu_loop
+
+draw_menu
+                            call	draw.clear_screen
+                            call	draw_logo
+
+                            ld	hl,strings.menu_start
+                            ld	b,menu_x
+                            ld	c,menu_start_y
+                            call	print.print_latin_string
+
+                            ld	hl,strings.menu_keyboard
+                            ld	b,menu_x
+                            ld	c,menu_keyboard_y
+                            call	print.print_latin_string
+
+                            ld	hl,strings.menu_kempston
+                            ld	b,menu_x
+                            ld	c,menu_kempston_y
+                            call	print.print_latin_string
+
+                            ld	hl,strings.menu_cursor
+                            ld	b,menu_x
+                            ld	c,menu_cursor_y
+                            call	print.print_latin_string
+
+                            ld	hl,strings.menu_assign
+                            ld	b,menu_x
+                            ld	c,menu_assign_y
+                            call	print.print_latin_string
+
+                            call	draw_highlights
+                            ret
+
+draw_logo
+                            ld	b,logo_x
+                            ld	c,logo_y
+                            call	@get_screen_address_de
+                            ld	hl,logo_bitmap
+                            ld	b,logo_height
+draw_logo_row
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(de),a
+                            inc	e
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(de),a
+                            dec	e
+                            call	@down_de
+                            djnz	draw_logo_row
+                            ret
+
+draw_highlights
+                            ld	a,normal_color
+                            ld	b,menu_width
+                            ld	c,menu_keyboard_y
+                            call	paint_menu_row
+                            ld	a,normal_color
+                            ld	b,menu_width
+                            ld	c,menu_kempston_y
+                            call	paint_menu_row
+                            ld	a,normal_color
+                            ld	b,menu_width
+                            ld	c,menu_cursor_y
+                            call	paint_menu_row
+
+                            ld	a,(input_mode)
+                            add	a,a
+                            add	a,menu_keyboard_y
+                            ld	c,a
+                            ld	a,selected_control_color
+                            ld	b,menu_width
+                            call	paint_menu_row
+                            ret
+
+paint_menu_row
+                ; a - color, b - width, c - attribute row
+                            push	af
+                            push	bc
+                            ld	d,menu_x
+                            ld	e,c
+                            call	screen_utils.get_attrs_address
+                            pop	bc
+                            pop	af
+paint_menu_row_next
+                            ld	(hl),a
+                            inc	hl
+                            djnz	paint_menu_row_next
+                            ret
+
+assign_keys
+                            xor	a
+                            ld	(assignment_index),a
+
+assign_next_key
+                            call	draw_assignment_screen
+                            call	print_assignment_prompt
+                            call	wait_key_press
+                            push	af
+                            ld	a,(assignment_index)
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,assigned_keys
+                            add	hl,de
+                            pop	af
+                            ld	(hl),a
+
+                            ld	a,(assignment_index)
+                            inc	a
+                            ld	(assignment_index),a
+                            cp	assigned_key_amount
+                            jr	c,assign_next_key
+
+                            call	draw_assignment_screen
+                            ld	hl,strings.menu_confirmation
+                            ld	b,confirmation_text_x
+                            ld	c,confirmation_text_y
+                            call	print.print_latin_string
+
+confirm_assignment
+                            call	wait_key_press
+                            cp	key_y
+                            jr	z,confirm_assignment_yes
+                            cp	key_n
+                            jr	z,assign_keys
+                            jr	confirm_assignment
+
+confirm_assignment_yes
+                            call	draw_menu
+                            jp	menu_loop
+
+draw_assignment_screen
+                            call	draw.clear_screen
+                            call	draw_logo
+                            ret
+
+print_assignment_prompt
+                            ld	a,(assignment_index)
+                            add	a,a
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,assignment_text_table
+                            add	hl,de
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            ex	de,hl
+                            ld	b,assignment_text_x
+                            ld	c,assignment_text_y
+                            jp	print.print_latin_string
+
+wait_key_press
+                            call	wait_key_release
+wait_key_press_down
+                            call	read_key
+                            cp	key_none
+                            jr	z,wait_key_press_down
+                            ret
+
+wait_key_release
+                            call	read_key
+                            cp	key_none
+                            jr	nz,wait_key_release
+                            ret
+
+read_key
+                            ld	bc,#fefe
+                            ld	d,0
+                            ld	e,8
+read_key_row
+                            in	a,(c)
+                            and	%00011111
+                            cp	%00011111
+                            jr	nz,read_key_found
+
+                            ld	a,d
+                            add	a,5
+                            ld	d,a
+                            rlc	b
+                            dec	e
+                            jr	nz,read_key_row
+
+                            ld	a,key_none
+                            ret
+
+read_key_found
+                            cpl
+                            and	%00011111
+                            ld	b,0
+read_key_bit
+                            rrca
+                            jr	c,read_key_code
+                            inc	b
+                            jr	read_key_bit
+read_key_code
+                            ld	a,d
+                            add	a,b
+                            ret
+
+input_mode                  db	input_mode_keyboard
+assignment_index            db	0
+assigned_key_amount         equ	5
+                ; Left, Right, Jump, Dive, Use.
+assigned_keys               db	key_o,key_p,key_q,key_a,key_space
+
+assignment_text_table
+                            dw	strings.menu_key_left,strings.menu_key_right
+                            dw	strings.menu_key_jump,strings.menu_key_dive,strings.menu_key_use
+
+logo_bitmap
+                ; Reserved 16x8 placeholder logo.
+                            db	%11111111,%11111111
+                            db	%10000000,%00000001
+                            db	%10111111,%11111101
+                            db	%10100000,%00000101
+                            db	%10100111,%11100101
+                            db	%10100000,%00000101
+                            db	%10000000,%00000001
+                            db	%11111111,%11111111
+                            endmodule

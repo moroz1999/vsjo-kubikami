@@ -50,7 +50,7 @@ on_enter                  ; Room enter hook.
 logic                      ; Per-frame room logic.
                             ld	a,(boss_poisoned) ; Poisoned boss no longer moves or bites.
                             or	a
-                            ret	nz
+                            jp	nz,game_process.endgame
 
                             call	update_points ; Advance boss joints and jaws.
 
