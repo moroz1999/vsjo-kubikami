@@ -1,0 +1,39 @@
+                            module	controls
+input_mode_keyboard         equ	0
+input_mode_kempston         equ	1
+input_mode_cursor           equ	2
+
+action_right_bit            equ	0
+action_left_bit             equ	1
+action_dive_bit             equ	2
+action_jump_bit             equ	3
+action_use_bit              equ	4
+
+action_right                equ	1<<action_right_bit
+action_left                 equ	1<<action_left_bit
+action_dive                 equ	1<<action_dive_bit
+action_jump                 equ	1<<action_jump_bit
+action_use                  equ	1<<action_use_bit
+action_mask                 equ	action_right|action_left|action_dive|action_jump|action_use
+
+read
+                ; returns the selected controller as an action bitfield
+                            ld	a,(input_mode)
+                            cp	input_mode_kempston
+                            jr	z,read_kempston
+                            cp	input_mode_cursor
+                            jp	z,keyboard.read_cursor_actions
+                            jp	keyboard.read_custom_actions
+
+read_kempston
+                            xor	a
+                            in	a,(#1f)
+                            and	action_mask
+                            ret
+
+input_mode                  db	input_mode_keyboard
+assigned_key_amount         equ	5
+                ; Left, Right, Jump, Dive, Use.
+assigned_keys               db	keyboard.key_o,keyboard.key_p,keyboard.key_q
+                            db	keyboard.key_a,keyboard.key_space
+                            endmodule

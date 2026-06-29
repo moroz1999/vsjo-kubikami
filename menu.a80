@@ -1,22 +1,4 @@
                             module	menu
-input_mode_keyboard         equ	0
-input_mode_kempston         equ	1
-input_mode_cursor           equ	2
-
-key_a                       equ	5
-key_q                       equ	10
-key_1                       equ	15
-key_2                       equ	16
-key_3                       equ	17
-key_4                       equ	18
-key_5                       equ	19
-key_p                       equ	25
-key_o                       equ	26
-key_y                       equ	29
-key_space                   equ	35
-key_n                       equ	38
-key_none                    equ	255
-
 logo_x                      equ	15
 logo_y                      equ	3
 logo_width                  equ	16
@@ -43,15 +25,15 @@ run
 
 menu_loop
                             call	wait_key_press
-                            cp	key_1
+                            cp	keyboard.key_1
                             jr	z,start_game
-                            cp	key_2
+                            cp	keyboard.key_2
                             jr	z,select_keyboard
-                            cp	key_3
+                            cp	keyboard.key_3
                             jr	z,select_kempston
-                            cp	key_4
+                            cp	keyboard.key_4
                             jr	z,select_cursor
-                            cp	key_5
+                            cp	keyboard.key_5
                             jp	z,assign_keys
                             jr	menu_loop
 
@@ -60,16 +42,16 @@ start_game
                             ret
 
 select_keyboard
-                            ld	a,input_mode_keyboard
+                            ld	a,controls.input_mode_keyboard
                             jr	select_input_mode
 select_kempston
-                            ld	a,input_mode_kempston
+                            ld	a,controls.input_mode_kempston
                             jr	select_input_mode
 select_cursor
-                            ld	a,input_mode_cursor
+                            ld	a,controls.input_mode_cursor
 
 select_input_mode
-                            ld	(input_mode),a
+                            ld	(controls.input_mode),a
                             call	draw_highlights
                             jr	menu_loop
 
@@ -138,7 +120,7 @@ draw_highlights
                             ld	c,menu_cursor_y
                             call	paint_menu_row
 
-                            ld	a,(input_mode)
+                            ld	a,(controls.input_mode)
                             add	a,a
                             add	a,menu_keyboard_y
                             ld	c,a
@@ -174,7 +156,7 @@ assign_next_key
                             ld	a,(assignment_index)
                             ld	e,a
                             ld	d,0
-                            ld	hl,assigned_keys
+                            ld	hl,controls.assigned_keys
                             add	hl,de
                             pop	af
                             ld	(hl),a
@@ -182,7 +164,7 @@ assign_next_key
                             ld	a,(assignment_index)
                             inc	a
                             ld	(assignment_index),a
-                            cp	assigned_key_amount
+                            cp	controls.assigned_key_amount
                             jr	c,assign_next_key
 
                             call	draw_assignment_screen
@@ -193,9 +175,9 @@ assign_next_key
 
 confirm_assignment
                             call	wait_key_press
-                            cp	key_y
+                            cp	keyboard.key_y
                             jr	z,confirm_assignment_yes
-                            cp	key_n
+                            cp	keyboard.key_n
                             jr	z,assign_keys
                             jr	confirm_assignment
 
@@ -226,56 +208,18 @@ print_assignment_prompt
 wait_key_press
                             call	wait_key_release
 wait_key_press_down
-                            call	read_key
-                            cp	key_none
+                            call	keyboard.read_key
+                            cp	keyboard.key_none
                             jr	z,wait_key_press_down
                             ret
 
 wait_key_release
-                            call	read_key
-                            cp	key_none
+                            call	keyboard.read_key
+                            cp	keyboard.key_none
                             jr	nz,wait_key_release
                             ret
 
-read_key
-                            ld	bc,#fefe
-                            ld	d,0
-                            ld	e,8
-read_key_row
-                            in	a,(c)
-                            and	%00011111
-                            cp	%00011111
-                            jr	nz,read_key_found
-
-                            ld	a,d
-                            add	a,5
-                            ld	d,a
-                            rlc	b
-                            dec	e
-                            jr	nz,read_key_row
-
-                            ld	a,key_none
-                            ret
-
-read_key_found
-                            cpl
-                            and	%00011111
-                            ld	b,0
-read_key_bit
-                            rrca
-                            jr	c,read_key_code
-                            inc	b
-                            jr	read_key_bit
-read_key_code
-                            ld	a,d
-                            add	a,b
-                            ret
-
-input_mode                  db	input_mode_keyboard
 assignment_index            db	0
-assigned_key_amount         equ	5
-                ; Left, Right, Jump, Dive, Use.
-assigned_keys               db	key_o,key_p,key_q,key_a,key_space
 
 assignment_text_table
                             dw	strings.menu_key_left,strings.menu_key_right

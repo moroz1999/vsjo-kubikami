@@ -1,99 +1,161 @@
-                        module	keyboard
-action_fire                 equ	0
-action_left                 equ	1
-action_right                equ	2
-action_up                   equ	3
-action_down                 equ	4
-last_action                 db	255
+                            module	keyboard
+key_a                       equ	5			;a
+key_q                       equ	10			;q
+key_1                       equ	15
+key_2                       equ	16
+key_3                       equ	17
+key_4                       equ	18
+key_5                       equ	19
+key_p                       equ	25			;p
+key_o                       equ	26			;o
+key_y                       equ	29
+key_space                   equ	35			;space
+key_n                       equ	38
+key_none                    equ	255
 
-query
-                            ld	a,#fb
-                            in	a,#fe
+                ; Original jump direction modifiers:
+                ;p
+                ;o
 
-                            bit	0,a			;q
-                            jp	z,keyboard_up
+read_custom_actions
+                            ld	hl,controls.assigned_keys
+                            jp	read_actions
 
-                            ld	a,#fd
-                            in	a,#fe
+read_cursor_actions
+                            ld	c,0
+                            ld	a,#f7
+                            in	a,(#fe)
+                            bit	4,a
+                            jr	nz,read_cursor_right
 
-                            bit	0,a			;a
-                            call	z,keyboard_down
+                            set	controls.action_left_bit,c
 
-                            ld	a,#df
-                            in	a,#fe
+read_cursor_right
+                            ld	a,#ef
+                            in	a,(#fe)
+                            bit	2,a
+                            jr	nz,read_cursor_jump
 
-                            bit	0,a			;p
-                            call	z,keyboard_right
+                            set	controls.action_right_bit,c
 
-                            ld	a,#df
-                            in	a,#fe
+read_cursor_jump
+                            bit	3,a
+                            jr	nz,read_cursor_dive
 
-                            bit	1,a			;o
-                            call	z,keyboard_left
+                            set	controls.action_jump_bit,c
 
-                            ld	a,#7f
-                            in	a,#fe
+read_cursor_dive
+                            bit	4,a
+                            jr	nz,read_cursor_use
 
-                            bit	0,a			;space
-                            call	z,keyboard_fire
+                            set	controls.action_dive_bit,c
 
+read_cursor_use
+                            bit	0,a
+                            jr	nz,read_cursor_done
+
+                            set	controls.action_use_bit,c
+
+read_cursor_done
+                            ld	a,c
                             ret
-keyboard_left
-                            call	z,hero.move_hero_left
-                            ld	a,action_left
-                            ld	(last_action),a
+
+read_actions
+                            xor	a
+                            ld	(action_state),a
+
+                            ld	e,controls.action_left
+                            call	read_mapped_action
+                            inc	hl
+                            ld	e,controls.action_right
+                            call	read_mapped_action
+                            inc	hl
+                            ld	e,controls.action_jump
+                            call	read_mapped_action
+                            inc	hl
+                            ld	e,controls.action_dive
+                            call	read_mapped_action
+                            inc	hl
+                            ld	e,controls.action_use
+                            call	read_mapped_action
+
+                            ld	a,(action_state)
                             ret
-keyboard_right
-                            call	z,hero.move_hero_right
-                            ld	a,action_right
-                            ld	(last_action),a
+
+read_mapped_action
+                            push	hl
+                            push	de
+                            ld	a,(hl)
+                            call	is_key_pressed
+                            pop	de
+                            pop	hl
+                            ret	nz
+
+                            ld	a,(action_state)
+                            or	e
+                            ld	(action_state),a
                             ret
-keyboard_fire
-                            ld	a,(last_action)
-                            cp	action_fire
-                            ret	z
-                            call	hero.fire_pressed
-                            ld	a,action_fire
-                            ld	(last_action),a
+
+is_key_pressed
+                ; a - scan code from 0 to 39
+                ; returns z when the key is pressed
+                            ld	l,a
+                            ld	h,0
+                            add	hl,hl
+                            ld	de,key_descriptor_table
+                            add	hl,de
+                            ld	b,(hl)
+                            inc	hl
+                            ld	c,#fe
+                            in	a,(c)
+                            and	(hl)
                             ret
-keyboard_down
-                            call	z,hero.move_hero_down
-                            ld	a,action_down
-                            ld	(last_action),a
+
+read_key
+                ; returns the first pressed scan code or key_none
+                            ld	bc,#fefe
+                            ld	d,0
+                            ld	e,8
+read_key_row
+                            in	a,(c)
+                            and	%00011111
+                            cp	%00011111
+                            jr	nz,read_key_found
+
+                            ld	a,d
+                            add	a,5
+                            ld	d,a
+                            rlc	b
+                            dec	e
+                            jr	nz,read_key_row
+
+                            ld	a,key_none
                             ret
-keyboard_up
-                            ld	a,action_up
-                            ld	(last_action),a
 
-                            ld	a,(hero.hero_state)
-                            cp	hero.state_swim
-                            jr	z,keyboard_swim_up
+read_key_found
+                            cpl
+                            and	%00011111
+                            ld	b,0
+read_key_bit
+                            rrca
+                            jr	c,read_key_code
+                            inc	b
+                            jr	read_key_bit
+read_key_code
+                            ld	a,d
+                            add	a,b
+                            ret
 
-                            ld	a,#df
-                            in	a,#fe
+key_descriptor_table
+                ; Port high byte and active-low bit mask for scan codes 0..39.
+                            db	#fe,1,#fe,2,#fe,4,#fe,8,#fe,16
+                            db	#fd,1,#fd,2,#fd,4,#fd,8,#fd,16
+                            db	#fb,1,#fb,2,#fb,4,#fb,8,#fb,16
+                            db	#f7,1,#f7,2,#f7,4,#f7,8,#f7,16
+                            db	#ef,1,#ef,2,#ef,4,#ef,8,#ef,16
+                            db	#df,1,#df,2,#df,4,#df,8,#df,16
+                            db	#bf,1,#bf,2,#bf,4,#bf,8,#bf,16
+                            db	#7f,1,#7f,2,#7f,4,#7f,8,#7f,16
 
-                            bit	0,a			;p
-                            jp	z,hero.hero_jump_right
-
-                            ld	a,#df
-                            in	a,#fe
-
-                            bit	1,a			;o
-                            jp	z,hero.hero_jump_left
-keyboard_upd
-                            jp	hero.hero_jump_top
-keyboard_swim_up
-                            ld	a,#df
-                            in	a,#fe
-
-                            bit	0,a			;p
-                            jp	z,swimming.swim_up_right
-
-                            ld	a,#df
-                            in	a,#fe
-
-                            bit	1,a			;o
-                            jp	z,swimming.swim_up_left
-
-                            jp swimming.swim_up
-                        endmodule
+action_state                db	0
+                            endmodule

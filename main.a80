@@ -34,6 +34,7 @@ main_menu
                             include	"rooms.a80"
                             include	"strings.a80"
                             include	"game_ui.a80"
+                            include	"controls.a80"
                             include	"keyboard.a80"
                             include	"swimming.a80"
                             include	"elevators.a80"

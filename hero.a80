@@ -28,6 +28,8 @@ oxygen                      db	max_oxygen
 health_damage_timer         db	0
 oxygen_health_timer         db	oxygen_health_delay
 swam_up                     db	0
+control_state               db	0
+previous_control_state      db	0
 
 state_void                  equ	%00000001
 state_ground                equ	%00000010
@@ -68,6 +70,8 @@ reset_stats
 
                             xor	a
                             ld	(health_damage_timer),a
+                            ld	(control_state),a
+                            ld	(previous_control_state),a
                             ret
 update_health_damage_timer
                             ld	a,(health_damage_timer)
@@ -383,11 +387,87 @@ hero_move2
                             and	state_movable
                             jr	z,hero_move_end
 
-                            call	keyboard.query
+                            call	controls.read
+                            call	process_controls
                             ld	a,(hero_delay)
                             ld	(hero_timer),a
 hero_move_end
                             call	hero.recalculate
+                            ret
+
+process_controls
+                ; a - action bitfield from controls.read
+                            ld	(control_state),a
+                            bit	controls.action_jump_bit,a
+                            jr	nz,process_controls_jump
+
+                            bit	controls.action_dive_bit,a
+                            call	nz,move_hero_down
+                            ld	a,(control_state)
+                            bit	controls.action_right_bit,a
+                            call	nz,move_hero_right
+                            ld	a,(control_state)
+                            bit	controls.action_left_bit,a
+                            call	nz,move_hero_left
+                            call	process_controls_use
+                            jr	process_controls_finish
+
+process_controls_jump
+                            ld	a,(hero_state)
+                            cp	state_swim
+                            jr	z,process_controls_swim_up
+
+                            ld	a,(control_state)
+                            bit	controls.action_right_bit,a
+                            jr	z,process_controls_jump_left
+
+                            call	hero_jump_right
+                            jr	process_controls_finish
+
+process_controls_jump_left
+                            bit	controls.action_left_bit,a
+                            jr	z,process_controls_jump_top
+
+                            call	hero_jump_left
+                            jr	process_controls_finish
+
+process_controls_jump_top
+                            call	hero_jump_top
+                            jr	process_controls_finish
+
+process_controls_swim_up
+                            ld	a,(control_state)
+                            bit	controls.action_right_bit,a
+                            jr	z,process_controls_swim_up_left
+
+                            call	swimming.swim_up_right
+                            jr	process_controls_finish
+
+process_controls_swim_up_left
+                            bit	controls.action_left_bit,a
+                            jr	z,process_controls_swim_up_top
+
+                            call	swimming.swim_up_left
+                            jr	process_controls_finish
+
+process_controls_swim_up_top
+                            call	swimming.swim_up
+
+process_controls_finish
+                            ld	a,(control_state)
+                            ld	(previous_control_state),a
+                            ret
+
+process_controls_use
+                            ld	a,(control_state)
+                            bit	controls.action_use_bit,a
+                            ret	z
+
+                            ld	a,(previous_control_state)
+                            bit	controls.action_use_bit,a
+                            ret	nz
+
+                            call	fire_pressed
                             ret
 
 hero_jump_top

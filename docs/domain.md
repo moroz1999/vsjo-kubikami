@@ -16,7 +16,8 @@
 - Hero floor checks at the bottom row must go through the room-edge-aware coordinate check instead of reading `rooms.current_room_buf` past row `21`.
 - Swimming upward from water into a non-water passable cell starts a hero jump arc in the requested direction; swimming inside water remains swim movement.
 - The program opens on a pixel menu before game initialization. Number keys `1` through `5` activate the matching menu item directly.
-- The menu stores the selected keyboard, Kempston, or Cursor mode in `menu.input_mode` and five redefined key scan codes in `menu.assigned_keys`. Gameplay input does not consume these settings yet.
+- `controls.input_mode` selects Keyboard, Kempston, or Cursor; `controls.read` abstracts the selected source into one `Right/Left/Dive/Jump/Use` action bitfield consumed by `hero.process_controls`.
+- Keyboard mode reads the five scan codes in `controls.assigned_keys`; defaults are `O/P/Q/A/Space` for `Left/Right/Jump/Dive/Use`, and redefining keys changes gameplay input immediately. Use acts once per press, while direction combinations remain simultaneous.
 - Zero hero health opens a cleared screen with `Конец Игры`; poisoning the room `1,3` purple boss opens a cleared screen with `Успех`. Both end screens wait for any key and return to the main menu.
 
 ## Topic Details
