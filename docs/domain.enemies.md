@@ -13,6 +13,9 @@
 - Enemy records use room coordinates as `room_x` and `room_y`, not a linear `room_id`.
 - Enemy positions use room attribute coordinates, not pixel coordinates.
 - Enemies are processed from the global table, without a current-room enemy buffer.
+- Online and offline enemy updates use separate global-table passes.
+- The online pass runs inside `game_process.calculate_state` before drawing.
+- The offline pass runs after all visible frame drawing and before the interrupt wait.
 - Enemy records keep simulation mode separately from movement behavior.
 - Enemies in the active room are always online; enemies outside it are always offline.
 - Room initialization and offline route steps refresh simulation mode directly from enemy room coordinates.

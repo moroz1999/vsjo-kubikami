@@ -32,6 +32,8 @@ room_logic_pointer          equ	$+1
                             xor	a
                             call	draw.border
 
+                            call	enemies.move_offline
+
                             ld	b,1
                             call	wait
                             jr	loop
@@ -39,7 +41,7 @@ calculate_state
                             call	animate.update_room
                             call	elevators_update.update_room
                             call	elevators_coords.coords
-                            call	enemies.move
+                            call	enemies.move_online
                             ret
 wait
                             ld	iy,0

@@ -1,60 +1,77 @@
-move
-                ; Enemy behavior updates globally, regardless of the active room.
+move_online
+                ; Online enemy physics is resolved before the visible frame is drawn.
                             ld	b,enemy_count
                             ld	ix,enemies
-move_next
-                ; Online enemies use physics; offline route followers use a light timer.
+move_online_next
+                ; Skip enemies outside the active room for the deferred offline pass.
                             push	bc
 
                             ld	a,(ix+enemy.simulation_mode)
-                            cp	simulation_mode_online
-                            jr	z,move_next_online
+                            or	a
+                            jr	z,move_online_next_skip
 
-                            call	move_offline_route_enemy
-                            jr	move_next_skip
-
-move_next_online
                             call	update_aggressive_behavior
                             call	try_switch_online_free_to_route
                             call	advance_online_route_target_if_reached
 
                             ld	a,(ix+enemy.simulation_mode)
-                            cp	simulation_mode_online
-                            jr	nz,move_next_skip
+                            or	a
+                            jr	z,move_online_next_skip
 
                             call	update_fall_state
 
-move_next_after_fall_state
+move_online_next_after_fall_state
                             ld	a,(ix+enemy.simulation_mode)
-                            cp	simulation_mode_online
-                            jr	nz,move_next_skip
+                            or	a
+                            jr	z,move_online_next_skip
 
                             ld	a,(ix+enemy.state)
                             cp	state_fall
-                            jr	z,move_next_apply
+                            jr	z,move_online_next_apply
                             cp	state_jump
-                            jr	z,move_next_apply
+                            jr	z,move_online_next_apply
 
                             ld	a,(ix+enemy.behavior_mode)
                             cp	behavior_route
-                            jr	z,move_next_apply
+                            jr	z,move_online_next_apply
                             cp	behavior_aggressive
-                            jr	z,move_next_apply
+                            jr	z,move_online_next_apply
 
                             call	update_state_timer
 
-move_next_apply
+move_online_next_apply
                             call	move_enemy
 
                             ld	a,(ix+enemy.simulation_mode)
-                            cp	simulation_mode_online
-                            call	z,apply_enemy_swim_gravity
+                            or	a
+                            call	nz,apply_enemy_swim_gravity
 
-move_next_skip
+move_online_next_skip
                             ld	de,enemy_size
                             add	ix,de
                             pop	bc
-                            djnz	move_next
+                            djnz	move_online_next
+                            ret
+
+move_offline
+                ; Offline route simulation runs after all visible drawing is complete.
+                            ld	b,enemy_count
+                            ld	ix,enemies
+move_offline_next
+                ; Current-room enemies were already processed by the online pass.
+                            push	bc
+
+                            ld	a,(ix+enemy.simulation_mode)
+                            or	a
+                            jr	nz,move_offline_next_skip
+
+                            call	move_offline_route_enemy
+
+move_offline_next_skip
+                            ld	de,enemy_size
+                            add	ix,de
+                            pop	bc
+                            djnz	move_offline_next
                             ret
 
 update_fall_state

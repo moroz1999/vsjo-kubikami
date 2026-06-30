@@ -3,6 +3,7 @@
 ## Scope
 
 - Only online enemies process per-frame physical movement.
+- Online enemy movement runs in `game_process.calculate_state` before the visible frame is drawn.
 - Every enemy in the active room is online, and every enemy outside it is offline.
 - Entering the active room automatically switches an enemy online without changing its movement behavior.
 - An enemy entering while following a route continues following it with online physics.

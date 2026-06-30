@@ -9,6 +9,8 @@
 - The attachment attempt is recorded even when no suitable point exists, so a failed search is not repeated.
 - Offline enemies without a target skip movement after a failed route attachment.
 - Offline route-following enemies advance through route points without physics.
+- Offline enemy movement runs after all visible frame drawing and before the interrupt wait.
+- An offline enemy entering the active room during that pass first becomes visible and collidable on the next frame.
 - Every enemy outside the active room is offline and uses route behavior.
 - Entering offline mode immediately cancels aggressive behavior and its pending exit timer.
 - After an offline route step enters the active room, room-coordinate refresh immediately switches the enemy online.
