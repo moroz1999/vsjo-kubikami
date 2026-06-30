@@ -16,6 +16,9 @@
 
 ## Stone
 
+- The stone starts at `(28,10)` directly under the lower-right ceiling in room `2,1`.
+- When the hero reaches column `x=12`, room `2,1` releases the stone and keeps moving it down one attribute row every three frames until it lands at `(28,19)`.
+- Each falling step queues the previous stone cell for background restoration before the item is drawn at its new position.
 - The stone is used in room `1,1` when the hero stands at `(20,19)`.
 - Using it starts the glass break animation, removes the item from the pocket, and calls `logic.room_1_1.activate_glass_route`.
 - The enemy route effect enables the two glass-edge jump points, so enemies can cross the room `1,1` glass only after it has been broken.

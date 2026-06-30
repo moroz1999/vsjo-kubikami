@@ -114,8 +114,8 @@ item_2
                             stone                   // type_id
                             2                       // room_x
                             1                       // room_y
-                            30                      // room_pos_x
-                            3                       // room_pos_y
+                            logic.room_2_1.stone_start_x // room_pos_x
+                            logic.room_2_1.stone_start_y // room_pos_y
                             strings.stone           // name
                             logic.stone.action      // logic
                             %01000110               // color1

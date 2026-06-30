@@ -1,24 +1,67 @@
                         module	room_2_1
+stone_state_landed          equ	0
+stone_state_hanging         equ	1
+stone_state_falling         equ	2
+stone_trigger_x             equ	12
+stone_start_x               equ	28
+stone_start_y               equ	10
+stone_landing_y             equ	19
+stone_fall_delay            equ	2
+
 logic
-                            ld	a,(stone_fallen)
+                            ld	a,(stone_state)
                             or	a
-                            ret	nz
+                            ret	z
+                            dec	a
+                            jr	nz,update_stone_fall
 
+                ; Crossing the shaft releases the stone from the lower ceiling.
                             ld	a,(hero.hero_x)
-                            cp	12
+                            cp	stone_trigger_x
                             ret	nz
 
+                            ld	a,stone_state_falling
+                            ld	(stone_state),a
+                            xor	a
+                            ld	(stone_fall_timer),a
+
+update_stone_fall
+                            ld	a,(stone_fall_timer)
+                            or	a
+                            jr	z,move_stone_down
+
+                            dec	a
+                            ld	(stone_fall_timer),a
+                            ret
+
+move_stone_down
                             ld	a,items.stone
                             call	items.get_item_address
                             ld	de,items.item.room_pos_y
                             add	hl,de
 
-                            ld	a,19
-                            ld	(hl),a
+                            ld	a,(hl)
+                            cp	stone_landing_y
+                            jr	z,finish_stone_fall
 
-                            ld	a,1
-                            ld	(stone_fallen),a
+                            ld	d,stone_start_x
+                            ld	e,a
+                            push	hl
+                            call	draw.add_to_restore
+                            pop	hl
 
+                            inc	(hl)
+                            ld	a,(hl)
+                            cp	stone_landing_y
+                            jr	z,finish_stone_fall
+
+                            ld	a,stone_fall_delay
+                            ld	(stone_fall_timer),a
+                            ret
+
+finish_stone_fall
+                            ld	a,stone_state_landed
+                            ld	(stone_state),a
                             ret
 
 activate_elevator_route
@@ -34,5 +77,6 @@ activate_elevator_route
                             inc	hl
                             ld	(hl),d
                             ret
-stone_fallen                db	0
+stone_state                 db	stone_state_hanging
+stone_fall_timer            db	0
                         endmodule
