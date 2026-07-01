@@ -9,14 +9,24 @@ get_attrs_address
                 ; D = x coordinate (0..31)
                 ; E = y coordinate (0..23)
                 ; Output:
-                ; HL = attribute address
+                ; HL = buffered attribute address
                             call	get_texture_address
-                ; Add the base attribute address #5800
+                ; Add the buffered attribute base address
+                            ld	de,screen_buffer.attrs_buf
+                            add	hl,de
+
+                ; Now HL contains the buffered attribute address
+
+                            ret
+get_screen_attrs_address
+                ; Input:
+                ; D = x coordinate (0..31)
+                ; E = y coordinate (0..23)
+                ; Output:
+                ; HL = visible screen attribute address
+                            call	get_texture_address
                             ld	de,attrs
-                            add	hl,de      ; HL = HL + #5800
-
-                ; Now HL contains the attribute address
-
+                            add	hl,de
                             ret
 get_texture_address
                 ; Input:

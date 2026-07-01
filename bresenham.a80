@@ -25,7 +25,7 @@ draw_line
                             ld	b,0
                             ld	c,d
                             add	hl,bc
-                            ld	bc,screen_utils.attrs
+                            ld	bc,screen_buffer.attrs_buf
                             add	hl,bc
 
                             pop	bc

@@ -76,6 +76,10 @@ room_3_3                    incbin	"rooms/room3,3.zx0"
 room_4_3                    incbin	"rooms/room4,3.zx0"
 room_5_3                    incbin	"rooms/room5,3.zx0"
 room_6_3                    incbin	"rooms/room6,3.zx0"
+                            module	screen_buffer
+                            align	256
+attrs_buf                   ds	screen_utils.attrs_size
+                            endmodule
 end
                             display	'program length ',end-start
                             display	'remaining room ',#ffff-end

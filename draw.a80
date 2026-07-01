@@ -15,7 +15,7 @@ draw_panel
                             inc	de
                             ld	a,%01000111
                             ld	(hl),a
-                            ld	bc,rooms.room_w*2
+                            ld	bc,rooms.room_w*2-1
                             ldir
                             ret
 draw_pattern
@@ -217,7 +217,7 @@ restore_pixel
                             ld	hl,(rooms.current_room_address)
                             add	hl,bc
                             ld	a,(hl)
-                            ld	hl,screen_utils.attrs
+                            ld	hl,screen_buffer.attrs_buf
                             add	hl,bc
                             ld	(hl),a
                             ret

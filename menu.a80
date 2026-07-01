@@ -135,7 +135,7 @@ paint_menu_row
                             push	bc
                             ld	d,menu_x
                             ld	e,c
-                            call	screen_utils.get_attrs_address
+                            call	screen_utils.get_screen_attrs_address
                             pop	bc
                             pop	af
 paint_menu_row_next

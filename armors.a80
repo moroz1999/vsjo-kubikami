@@ -201,7 +201,7 @@ get_armor_attrs_address
                             ld	b,0
                             ld	c,d
                             add	hl,bc
-                            ld	de,screen_utils.attrs
+                            ld	de,screen_buffer.attrs_buf
                             add	hl,de
                             ret
 

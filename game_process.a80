@@ -1,5 +1,8 @@
                         module	game_process
 loop
+                            ld	b,1
+                            call	wait
+
                             call	elevators_restore.restore
                             call	hero.save_restore
 
@@ -34,8 +37,6 @@ room_logic_pointer          equ	$+1
 
                             call	enemies.move_offline
 
-                            ld	b,1
-                            call	wait
                             jr	loop
 calculate_state
                             call	animate.update_room
@@ -50,6 +51,11 @@ wait
                             halt
                             di
                             djnz	wait
+
+                            ld	hl,screen_buffer.attrs_buf
+                            ld	de,screen_utils.attrs
+                            ld	bc,screen_utils.attrs_size
+                            ldir
                             ret
 endgame
                             call	draw.clear_screen

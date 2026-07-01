@@ -63,7 +63,7 @@ copy_current_room
 							ret
 redraw_current_room
 							ld	hl,(current_room_address)
-							ld	de,screen_utils.attrs
+							ld	de,screen_buffer.attrs_buf
 							ld	bc,room_size
 							ldir
 							ret

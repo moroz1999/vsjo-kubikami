@@ -167,7 +167,7 @@ erase_previous_jaws        ; Erase the old jaw area around the previous head.
                             ld	e,d ; Move jaw column into E.
                             ld	d,0 ; Clear D for the column add.
                             add	hl,de ; Add jaw column.
-                            ld	de,screen_utils.attrs ; Load attribute base address.
+                            ld	de,screen_buffer.attrs_buf ; Load buffered attribute base address.
                             add	hl,de ; Convert DE to an attribute address in HL.
                             xor	a ; Load black attribute color.
                             ld	(hl),a ; Paint the top jaw cell black.
