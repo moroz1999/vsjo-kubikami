@@ -1,4 +1,6 @@
                         module	stone
+use_min_x                   equ	20
+
 action
                             ld	a,(rooms.room_number_x)
                             cp	1
@@ -7,13 +9,8 @@ action
                             cp	1
                             jr	nz,stone_false
                             ld	a,(hero.hero_x)
-                            ld	d,a
-                            cp	20
-                            jr	nz,stone_false
-                            ld	a,(hero.hero_y)
-                            ld	e,a
-                            cp	19
-                            jr	nz,stone_false
+                            cp	use_min_x
+                            jr	c,stone_false
 
                             ld	d,12
                             ld	e,12

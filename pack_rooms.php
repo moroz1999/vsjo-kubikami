@@ -30,9 +30,10 @@ $totalPacked = 0;
 
 for ($y = 0; $y < ROOM_AMOUNT_Y; $y++) {
     for ($x = 0; $x < ROOM_AMOUNT_X; $x++) {
-        $fileName = "room{$x},{$y}.atr";
-        $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $fileName;
-        $targetPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+        $sourceFileName = "room{$x},{$y}.atr";
+        $targetFileName = "room{$x},{$y}.zx0";
+        $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $sourceFileName;
+        $targetPath = $targetDir . DIRECTORY_SEPARATOR . $targetFileName;
 
         if (!is_file($sourcePath)) {
             fwrite(STDERR, "Missing room file: {$sourcePath}\n");
@@ -61,7 +62,7 @@ for ($y = 0; $y < ROOM_AMOUNT_Y; $y++) {
         $totalSource += ROOM_SIZE;
         $totalPacked += strlen($packed);
 
-        printf("%s: %d -> %d bytes\n", $fileName, ROOM_SIZE, strlen($packed));
+        printf("%s -> %s: %d -> %d bytes\n", $sourceFileName, $targetFileName, ROOM_SIZE, strlen($packed));
     }
 }
 
