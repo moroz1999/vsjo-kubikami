@@ -25,6 +25,8 @@ poison_bottle
                             db	"butylka s qdom",255
 bug_jar
                             db	"banka s jukami",255
+cube
+                            db	"kubik",255
 
 menu_start
                             db	"1. start igry",255

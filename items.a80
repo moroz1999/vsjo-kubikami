@@ -83,6 +83,7 @@ screwdriver                 equ	9
 bottle                      equ	10
 poison_bottle               equ	11
 bug_jar                     equ	12
+cube                        equ	13
 
 all_items
 item_0
@@ -241,6 +242,18 @@ item_12
                             logic.bug_jar.action    // logic
                             %00100100               // color1
                             %01100110               // color2
+                            }
+item_13
+                            item	{
+                            cube                    // type_id
+                            1                       // room_x
+                            0                       // room_y
+                            19                      // room_pos_x
+                            17                      // room_pos_y
+                            strings.cube            // name
+                            logic.empty_item_action // logic
+                            hero.hero_color1        // color1
+                            hero.hero_color2        // color2
                             }
 items_end
                             db	items_end_marker

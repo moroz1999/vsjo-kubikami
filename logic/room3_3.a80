@@ -129,6 +129,7 @@ update_dissolve
 update_dissolve_done
                             ld	a,boss_state_gone
                             ld	(boss_state),a
+                            call	logic.room_1_0.release_cube
                             ret
 
 restore_previous

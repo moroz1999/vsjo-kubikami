@@ -8,6 +8,7 @@
 - The selected room is loaded from immutable room data into `rooms.current_room_buf` on enter. Redraw, restore points, surface checks, and water checks use this mutable current-room buffer.
 - Room art in `rooms/*.zx0` is stored as ZX0 streams of the first 22 attribute rows. `rooms.init_current_room` unpacks the selected stream into `rooms.current_room_buf` before room `on_enter` callbacks run.
 - Permanent item-driven room art is applied to `rooms.current_room_buf`, either when a one-shot animation finishes or from the room `on_enter` callback when the room's explicit effect flag is set.
+- Room `2,0` starts the hero inside the one-cell box at `(13,11)`. After two seconds (100 room-logic frames), the floor cell `(13,12)` becomes black and passable, releasing the hero downward; `logic.room_2_0.release_hole_opened` keeps that hole open on later room entries.
 - Water wave visuals are background room animations drawn one attribute row above the physical water surface in rooms `0,1`, `1,2`, and `4,3`; the physical water remains in room data for movement checks.
 - Room `3,1` draws overlapping smoke puffs that continuously rise and disperse near the top of a `5x5` area at `(11,15)` above the one-cell floor opening at `x=13`; it is screen-only and does not change the room geometry.
 - Timed rain in room `1,0` uses room waterdrops with a phase mask; disabling a visible rain drop must queue its last attribute point for restore before parking it at the source.

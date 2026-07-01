@@ -11,6 +11,8 @@ rain_wait_start_seconds     equ	5
 rain_wait_step_seconds      equ	3
 rain_wait_full_seconds      equ	10
 rain_wait_finish_seconds    equ	3
+cube_x                      equ	19
+cube_y                      equ	17
 
 logic
                             call	update_rain_state
@@ -29,6 +31,7 @@ on_enter
 
                             call	reset_room_waterdrops
                             call	patch_stairs_if_unfolded
+                            call	patch_cube_if_escaped
                             ret
 
 patch_stairs_if_unfolded
@@ -40,6 +43,26 @@ patch_stairs_if_unfolded
                             ld	e,10
                             ld	hl,logic.stairs.item_animation
                             call	animate.patch_last_frame
+                            ret
+
+release_cube
+                            ld	a,1
+                            ld	(cube_escaped),a
+
+                            ld	a,items.cube
+                            call	items.remove_item
+                            ret
+
+patch_cube_if_escaped
+                            ld	a,(cube_escaped)
+                            or	a
+                            ret	z
+
+                            ld	d,cube_x
+                            ld	e,cube_y
+                            call	rooms.get_current_room_pixel_address
+                            xor	a
+                            ld	(hl),a
                             ret
 
 activate_stairs_route
@@ -261,4 +284,5 @@ rain_mode                   db	rain_mode_wait_start
 rain_seconds                db	0
 rain_frames                 db	0
 stairs_unfolded             db	0
+cube_escaped                db	0
                         endmodule

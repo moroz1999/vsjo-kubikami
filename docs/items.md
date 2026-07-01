@@ -92,6 +92,14 @@
 - The poison bottle is used in boss room `1,3`; for now, the whole screen is an active use zone.
 - Using the poison bottle removes it from the pocket, sets `logic.room_1_3.boss_poisoned`, restores the last boss footprint, and stops the boss from updating or drawing.
 
+## Cube
+
+- The cube lies in room `1,0` at `(19,17)`.
+- Its two gigacolor attributes reference `hero.hero_color1` and `hero.hero_color2`, so it always uses exactly the hero palette.
+- The cube is collectible and has no use effect yet.
+- Fully dissolving the right boss in room `3,3` calls `logic.room_1_0.release_cube`, marks the cube as no longer located in any room, and sets `logic.room_1_0.cube_escaped`.
+- When `cube_escaped` is set, room `1,0` paints `(19,17)` black on enter so the empty box remains visibly open.
+
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.

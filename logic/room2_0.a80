@@ -1,8 +1,53 @@
                         module	room_2_0
+frames_per_second           equ	50
+release_delay_seconds       equ	2
+release_delay_frames        equ	frames_per_second*release_delay_seconds
+release_hole_x              equ	13
+release_hole_y              equ	12
+
 logic
-                            ret
+                            ld	a,(release_hole_opened)
+                            or	a
+                            ret	nz
+
+                            ld	a,(release_hole_timer)
+                            dec	a
+                            ld	(release_hole_timer),a
+                            ret	nz
+
+                            jp	open_release_hole
 
 on_enter
+                            call	prepare_release_hole
+                            call	patch_roof_if_broken
+                            ret
+
+prepare_release_hole
+                            ld	a,(release_hole_opened)
+                            or	a
+                            jp	nz,patch_release_hole
+
+                            ld	a,release_delay_frames
+                            ld	(release_hole_timer),a
+                            ret
+
+open_release_hole
+                            ld	a,1
+                            ld	(release_hole_opened),a
+
+                            ld	d,release_hole_x
+                            ld	e,release_hole_y
+                            call	draw.add_to_restore
+
+patch_release_hole
+                            ld	d,release_hole_x
+                            ld	e,release_hole_y
+                            call	rooms.get_current_room_pixel_address
+                            xor	a
+                            ld	(hl),a
+                            ret
+
+patch_roof_if_broken
                             ld	a,(roof_broken)
                             or	a
                             ret	z
@@ -23,4 +68,6 @@ activate_roof_route
                             ld	(hl),d
                             ret
 roof_broken                 db	0
+release_hole_opened         db	0
+release_hole_timer          db	0
                         endmodule
