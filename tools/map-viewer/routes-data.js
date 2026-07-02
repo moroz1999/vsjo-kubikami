@@ -4,7 +4,7 @@ window.ROUTE_MAP_DATA = {
     "source": {
         "rooms": "rooms.a80",
         "roomsDir": "rooms_unpacked",
-        "routeTable": "enemies.route.a80",
+        "routeTable": "routes/enemies.route.a80",
         "logicDir": "logic"
     },
     "room": {

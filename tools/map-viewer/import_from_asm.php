@@ -6,12 +6,13 @@ const ROOM_BYTES_PER_CELL = 1;
 
 $toolDir = __DIR__;
 $projectRoot = dirname($toolDir, 2);
+$routesDir = $projectRoot . DIRECTORY_SEPARATOR . 'routes';
 
 $roomConfig = read_room_config($projectRoot . DIRECTORY_SEPARATOR . 'rooms.a80');
 $rooms = read_rooms($projectRoot, $roomConfig);
-$routeTable = read_route_table($projectRoot . DIRECTORY_SEPARATOR . 'enemies.route.a80');
-$includeFiles = read_route_includes($projectRoot . DIRECTORY_SEPARATOR . 'enemies.route.a80');
-$points = read_route_points($projectRoot, $includeFiles);
+$routeTable = read_route_table($routesDir . DIRECTORY_SEPARATOR . 'enemies.route.a80');
+$includeFiles = read_route_includes($routesDir . DIRECTORY_SEPARATOR . 'enemies.route.a80');
+$points = read_route_points($routesDir, $includeFiles);
 $rewires = read_route_rewires($projectRoot);
 $orderedPoints = order_points($points, $routeTable);
 $routeFiles = write_room_route_files($projectRoot, $orderedPoints);
@@ -22,7 +23,7 @@ $data = [
     'source' => [
         'rooms' => 'rooms.a80',
         'roomsDir' => 'rooms_unpacked',
-        'routeTable' => 'enemies.route.a80',
+        'routeTable' => 'routes/enemies.route.a80',
         'logicDir' => 'logic',
     ],
     'room' => $roomConfig,
@@ -115,12 +116,12 @@ function read_route_includes(string $path): array
     return array_values(array_unique($matches[1]));
 }
 
-function read_route_points(string $projectRoot, array $includeFiles): array
+function read_route_points(string $routesDir, array $includeFiles): array
 {
     $points = [];
 
     foreach ($includeFiles as $includeFile) {
-        $path = $projectRoot . DIRECTORY_SEPARATOR . $includeFile;
+        $path = $routesDir . DIRECTORY_SEPARATOR . $includeFile;
         if (!is_file($path)) {
             fail("Missing route include: {$includeFile}");
         }

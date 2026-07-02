@@ -24,7 +24,7 @@ bottle
 poison_bottle
                             db	"butylka s qdom",255
 bug_jar
-                            db	"banka s jukami",255
+                            db	"banka s vukami",255
 cube
                             db	"kubik",255
 valve

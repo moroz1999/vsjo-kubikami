@@ -86,8 +86,8 @@ route_point_wait
 
 - `routes/manifest.json` is the route manifest for enemy route asm generation and the browser map viewer.
 - Route points are split by room under `routes/room_X_Y.json`.
-- Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files.
-- Run `php tools/map-viewer/generate_asm.php` to emit reviewable asm files into `tools/map-viewer/generated/` and refresh `tools/map-viewer/routes-data.js`; use `--project` only when intentionally replacing the root route asm files.
+- Run `php tools/map-viewer/import_from_asm.php` to refresh JSON data from current route asm files under `routes/`.
+- Run `php tools/map-viewer/generate_asm.php` to regenerate route asm under `routes/` and refresh `tools/map-viewer/routes-data.js`; `--project` remains accepted for the build command.
 - `compile.bat` regenerates the project route asm from the split route JSON data before assembling the game.
 
 ## Movement References

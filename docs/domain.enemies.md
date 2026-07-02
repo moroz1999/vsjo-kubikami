@@ -4,8 +4,8 @@
 
 - The `enemies` module should stay split by topic-specific include files.
 - Do not accumulate unrelated enemy functions in `enemies.a80`; put movement, drawing, collision, data, and random helpers into separate `enemies.*.a80` files.
-- Route point records live in per-room include files named `enemies.route_X_Y.a80`; `enemies.route.a80` keeps the route pointer table and shared route logic.
-- Gameplay route rewires caused by room items belong to the corresponding `logic.room_X_Y` module, not to `enemies.route.a80`.
+- Route point records live in per-room include files named `routes/enemies.route_X_Y.a80`; `routes/enemies.route.a80` keeps the route pointer table and shared route logic.
+- Gameplay route rewires caused by room items belong to the corresponding `logic.room_X_Y` module, not to `routes/enemies.route.a80`.
 
 ## Data
 
@@ -62,10 +62,7 @@
 
 - Enemy drawing is connected to the main draw pass through `enemies.draw_enemies`.
 - Enemy drawing checks room coordinates; room membership guarantees that every visible enemy is online.
-- Free online enemies are red.
-- Route-following enemies are green, including online route followers in the active room.
-- Standing online enemies are yellow.
-- `behavior_aggressive` enemies are purple.
+- All visible enemies use the shared blinking palette; physical state and behavior do not change their color.
 - Aggressive enemies pursue the hero horizontally while their behavior remains active.
 - Aggressive timeout always returns the enemy to free behavior.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.

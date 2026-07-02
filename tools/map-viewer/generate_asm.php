@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 $toolDir = __DIR__;
 $projectRoot = dirname($toolDir, 2);
-$dataPath = $projectRoot . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'manifest.json';
-$outputDir = $toolDir . DIRECTORY_SEPARATOR . 'generated';
+$routesDir = $projectRoot . DIRECTORY_SEPARATOR . 'routes';
+$dataPath = $routesDir . DIRECTORY_SEPARATOR . 'manifest.json';
+$outputDir = $routesDir;
 
 foreach (array_slice($argv, 1) as $arg) {
     if ($arg === '--project') {
-        $outputDir = $projectRoot;
+        $outputDir = $routesDir;
         continue;
     }
 
@@ -25,7 +26,7 @@ $data = read_route_data($dataPath);
 $pointsById = index_points($data['points'] ?? []);
 $orderedIds = order_ids($data['tableOrder'] ?? [], $pointsById);
 $includeFiles = collect_include_files($data['includeFiles'] ?? [], $pointsById);
-$routeLogicTail = read_route_logic_tail($projectRoot . DIRECTORY_SEPARATOR . 'enemies.route.a80');
+$routeLogicTail = read_route_logic_tail($routesDir . DIRECTORY_SEPARATOR . 'enemies.route.a80');
 
 if (!is_dir($outputDir) && !mkdir($outputDir, 0777, true)) {
     fail("Cannot create output directory: {$outputDir}");

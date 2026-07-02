@@ -38,29 +38,7 @@ draw_enemy
 
 select_enemy_color
                 ; Behavior color is independent from online and offline simulation.
-                            ld	a,(ix+enemy.behavior_mode)
-                            cp	behavior_aggressive
-                            jr	z,select_enemy_color_aggressive
-                            cp	behavior_route
-                            jr	z,select_enemy_color_route
-
-                            ld	a,(ix+enemy.state)
-                            cp	state_stand
-                            jr	z,select_enemy_color_stand
-
-                            ld	a,enemy_online_color
-                            ret
-
-select_enemy_color_route
-                            ld	a,enemy_route_color
-                            ret
-
-select_enemy_color_aggressive
-                            ld	a,enemy_aggressive_color
-                            ret
-
-select_enemy_color_stand
-                            ld	a,enemy_stand_color
+                            ld	a,(enemy_flash_color)
                             ret
 
 update_flash_color

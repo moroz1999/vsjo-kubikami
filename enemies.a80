@@ -53,8 +53,8 @@ random_lfsr_xor_mask        equ	56
 
 ; Enemies share one blinking visual palette.
 ; Status drawing uses the fixed colors below; the shared palette remains for compatibility.
-enemy_color1                equ	%00000010
-enemy_color2                equ	%00010000
+enemy_color1                equ	%00000011
+enemy_color2                equ	%01010010
 enemy_online_color          equ	%00000010
 enemy_route_color           equ	%00000100
 enemy_stand_color           equ	%00000110
@@ -108,7 +108,7 @@ behavior_before_aggressive  byte
                             include	"enemies.collision.a80"
                             include	"enemies.draw.a80"
                             include	"enemies.jump.a80"
-                            include	"enemies.route.a80"
+                            include	"routes/enemies.route.a80"
                             include	"enemies.elevator.a80"
                             include	"enemies.swim.a80"
                             include	"enemies.move.a80"
