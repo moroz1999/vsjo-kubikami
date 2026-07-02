@@ -1,5 +1,6 @@
                             module	keyboard
 key_a                       equ	5			;a
+key_d                       equ	7			;d
 key_q                       equ	10			;q
 key_1                       equ	15
 key_2                       equ	16
@@ -9,6 +10,7 @@ key_5                       equ	19
 key_p                       equ	25			;p
 key_o                       equ	26			;o
 key_y                       equ	29
+key_h                       equ	34			;h
 key_space                   equ	35			;space
 key_n                       equ	38
 key_none                    equ	255

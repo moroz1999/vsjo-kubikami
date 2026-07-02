@@ -175,7 +175,7 @@ assign_next_key
 
 confirm_assignment
                             call	wait_key_press
-                            cp	keyboard.key_y
+                            cp	keyboard.key_d
                             jr	z,confirm_assignment_yes
                             cp	keyboard.key_n
                             jr	z,assign_keys
@@ -224,6 +224,7 @@ assignment_index            db	0
 assignment_text_table
                             dw	strings.menu_key_left,strings.menu_key_right
                             dw	strings.menu_key_jump,strings.menu_key_dive,strings.menu_key_use
+                            dw	strings.menu_key_pause
 
 logo_bitmap
                 ; Reserved 16x8 placeholder logo.

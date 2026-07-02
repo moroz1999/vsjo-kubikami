@@ -48,7 +48,8 @@ init_current_room
 							call	redraw_current_room
 
 							// update state instantly
-							call	game_process.calculate_state
+                ; Synchronize elevator drawing state without advancing timed simulation
+                            call	elevators_coords.coords
 
 							ret
 copy_current_room

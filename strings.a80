@@ -31,7 +31,7 @@ valve
                             db	"wentilx",255
 
 menu_start
-                            db	"1. start igry",255
+                            db	"1. na^atx igru",255
 menu_keyboard
                             db	"2. klawiatura",255
 menu_kempston
@@ -41,17 +41,23 @@ menu_cursor
 menu_assign
                             db	"5. nazna^itx klawi[i",255
 menu_key_left
-                            db	"LEFT",255
+                            db	"wlewo",255
 menu_key_right
-                            db	"RIGHT",255
+                            db	"wprawo",255
 menu_key_jump
-                            db	"JUMP",255
+                            db	"pryjok",255
 menu_key_dive
-                            db	"DIVE",255
+                            db	"wniz",255
 menu_key_use
-                            db	"USE",255
+                            db	"ispolxzowatx",255
+menu_key_pause
+                            db	"pauza",255
 menu_confirmation
-                            db	"OK? Y/N",255
+                            db	"podtwerditx? d/n",255
+game_pause
+                            db	"pauza",255
+game_pause_clear
+                            db	"     ",255
 game_over
                             db	"konec igry",255
 game_success

@@ -1,7 +1,12 @@
                         module	game_process
+pause_text_x                equ	25
+pause_text_y                equ	22
+
 loop
                             ld	b,1
                             call	wait
+
+                            call	process_pause
 
                             call	elevators_restore.restore
                             call	hero.save_restore
@@ -38,6 +43,44 @@ room_logic_pointer          equ	$+1
                             call	enemies.move_offline
 
                             jr	loop
+
+process_pause
+                            call	controls.read
+                            bit	controls.action_pause_bit,a
+                            ret	z
+
+                            ld	hl,strings.game_pause
+                            call	draw_pause_text
+                            call	pause_wait_key_release
+                            call	pause_wait_key_press
+                            call	pause_wait_key_release
+
+                            ld	hl,strings.game_pause_clear
+                            call	draw_pause_text
+                            ret
+
+pause_wait_key_press
+                            ld	b,1
+                            call	wait
+                            call	controls.read
+                            bit	controls.action_pause_bit,a
+                            jr	z,pause_wait_key_press
+                            ret
+
+pause_wait_key_release
+                            ld	b,1
+                            call	wait
+                            call	controls.read
+                            bit	controls.action_pause_bit,a
+                            jr	nz,pause_wait_key_release
+                            ret
+
+draw_pause_text
+                ; Pause stays in the unused panel area so the room bitmap remains intact.
+                            ld	b,pause_text_x
+                            ld	c,pause_text_y
+                            jp	print.print_string
+
 calculate_state
                             call	animate.update_room
                             call	elevators_update.update_room
