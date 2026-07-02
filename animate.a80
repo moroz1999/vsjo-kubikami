@@ -360,8 +360,12 @@ animations_table
                             dw	room_animation_6_3_bg
                             dw	room_animation_6_3
                             dw	room_animation_water_0_1_surface
+                            dw	room_animation_water_0_1_pipe_left
+                            dw	room_animation_water_0_1_pipe_right
                             dw	room_animation_water_1_2_surface
                             dw	room_animation_water_4_3_surface
+                            dw	room_animation_water_4_3_lowered_surface
+                            dw	room_animation_water_5_3_lowered_surface
 animations_table_end
 
 room_animation_0_2
@@ -1017,6 +1021,42 @@ room_animation_water_0_1_surface
                             room_animation_water_8_frames   ; frames_ptr
                             }
 
+room_animation_water_0_1_pipe_left
+                            @room_animation	{
+                            0,                              ; room_x
+                            1,                              ; room_y
+
+                            4,                              ; x
+                            17,                             ; y
+                            1,                              ; width
+                            3,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_water_0_1_pipe_left_frames ; frames_ptr
+                            }
+
+room_animation_water_0_1_pipe_right
+                            @room_animation	{
+                            0,                              ; room_x
+                            1,                              ; room_y
+
+                            7,                              ; x
+                            15,                             ; y
+                            1,                              ; width
+                            5,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_water_0_1_pipe_right_frames ; frames_ptr
+                            }
+
 room_animation_water_1_2_surface
                             @room_animation	{
                             1,                              ; room_x
@@ -1053,8 +1093,68 @@ room_animation_water_4_3_surface
                             room_animation_water_12_frames  ; frames_ptr
                             }
 
+room_animation_water_4_3_lowered_surface
+                            @room_animation	{
+                            4,                              ; room_x
+                            3,                              ; room_y
+
+                            2,                              ; x
+                            11,                             ; y
+                            30,                             ; width
+                            1,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            0,                              ; timer
+                            state_off,                      ; state
+                            room_animation_water_30_frames  ; frames_ptr
+                            }
+
+room_animation_water_5_3_lowered_surface
+                            @room_animation	{
+                            5,                              ; room_x
+                            3,                              ; room_y
+
+                            0,                              ; x
+                            11,                             ; y
+                            30,                             ; width
+                            1,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            8,                              ; delay
+                            0,                              ; timer
+                            state_off,                      ; state
+                            room_animation_water_30_frames  ; frames_ptr
+                            }
+
 water_surface_blue          equ	rooms.room_bg_color_wat
 water_surface_black         equ	rooms.room_bg_color
+
+room_animation_water_0_1_pipe_left_frames
+                ; frame 0
+                            db	water_surface_blue
+                            db	water_surface_black
+                            db	water_surface_blue
+                ; frame 1
+                            db	water_surface_black
+                            db	water_surface_blue
+                            db	water_surface_black
+
+room_animation_water_0_1_pipe_right_frames
+                ; frame 0
+                            db	water_surface_blue
+                            db	water_surface_black
+                            db	water_surface_blue
+                            db	water_surface_black
+                            db	water_surface_blue
+                ; frame 1
+                            db	water_surface_black
+                            db	water_surface_blue
+                            db	water_surface_black
+                            db	water_surface_blue
+                            db	water_surface_black
 
 room_animation_water_8_frames
                 ; frame 0
@@ -1077,4 +1177,28 @@ room_animation_water_23_frames
                             db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
                             db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
                             db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+
+room_animation_water_28_frames
+                ; frame 0
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                ; frame 1
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+
+room_animation_water_30_frames
+                ; frame 0
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                            db	water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black
+                ; frame 1
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
+                            db	water_surface_black,water_surface_blue,water_surface_black,water_surface_blue,water_surface_black,water_surface_blue
                         endmodule

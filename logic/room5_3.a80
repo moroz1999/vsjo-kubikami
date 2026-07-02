@@ -1,0 +1,9 @@
+                        module	room_5_3
+on_enter
+                            ld	a,(logic.room_4_3.water_lowered)
+                            or	a
+                            ret	z
+
+                            call	logic.room_4_3.clear_all_lowered_rows
+                            ret
+                        endmodule

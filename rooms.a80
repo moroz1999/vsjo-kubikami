@@ -455,15 +455,15 @@ room_3_3_info
 room_4_3_info
 							room	{
 							room_4_3,                 ; data_address
-							logic.empty_room_logic,   ; logic_pointer
-							logic.empty_room_on_enter, ; on_enter_pointer
+							logic.room_4_3.logic,     ; logic_pointer
+							logic.room_4_3.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_5_3_info
 							room	{
 							room_5_3,                 ; data_address
 							logic.empty_room_logic,   ; logic_pointer
-							logic.empty_room_on_enter, ; on_enter_pointer
+							logic.room_5_3.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_6_3_info

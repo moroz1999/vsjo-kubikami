@@ -14,3 +14,4 @@
 ## Placement
 
 - Room `6,0` has a big medkit at `(20,8)`.
+- Room `5,3` has a big medkit at `(26,5)`.

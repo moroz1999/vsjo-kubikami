@@ -22,3 +22,4 @@
 ## Placement
 
 - Room `6,0` has a small armor at `(23,9)`.
+- Room `5,3` has a big armor at `(22,5)`.

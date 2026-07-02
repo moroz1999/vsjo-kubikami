@@ -84,6 +84,7 @@ bottle                      equ	10
 poison_bottle               equ	11
 bug_jar                     equ	12
 cube                        equ	13
+valve                       equ	14
 
 all_items
 item_0
@@ -254,6 +255,18 @@ item_13
                             logic.empty_item_action // logic
                             hero.hero_color1        // color1
                             hero.hero_color2        // color2
+                            }
+item_14
+                            item	{
+                            valve                   // type_id
+                            0                       // room_x
+                            1                       // room_y
+                            8                       // room_pos_x
+                            8                       // room_pos_y
+                            strings.valve           // name
+                            logic.valve.action      // logic
+                            %01000010               // color1
+                            %01000110               // color2
                             }
 items_end
                             db	items_end_marker

@@ -7,12 +7,11 @@
 boss_room_x                 equ	3
 boss_room_y                 equ	3
 
-; Fixed wall anchor and idle head center.
+; Fixed wall anchor and shortened idle head center.
 boss_anchor_x               equ	30
 boss_anchor_y               equ	12
-boss_end_base_x             equ	5
+boss_end_base_x             equ	11
 boss_end_base_y             equ	16
-boss_end_x_min              equ	2
 boss_end_y_min              equ	14
 
 ; Chain topology: six control points make five segments.
@@ -37,6 +36,7 @@ boss_end_x_delay            equ	4
 boss_end_y_delay            equ	3
 boss_wave_delay             equ	1
 boss_hunt_move_delay        equ	3
+boss_bite_damage            equ	(hero.max_health+hero.max_armor)/3
 
 ; Shape offsets: segment samples are lifted slightly; inner controls arch the body upward.
 boss_curve_lift_sample      equ	1
@@ -46,6 +46,7 @@ boss_control_outer_lift     equ	2
 ; Mode and movement bounds.
 boss_mode_idle              equ	0
 boss_mode_hunt              equ	1
+boss_hunt_x_min             equ	10
 boss_hunt_x_max             equ	29
 boss_head_x_max             equ	boss_anchor_x
 boss_head_y_min             equ	1
@@ -103,6 +104,7 @@ logic
 logic_update
                             call	update_phases
                             call	update_mode_and_head
+                            call	check_head_bite
                             call	update_control_points
                             call	build_path_points
                             ret
@@ -326,8 +328,10 @@ update_mode_and_head
                             jp	update_idle_head
 
 select_mode
-; Hunting is active while the hero is not past the right-side hunt limit.
+; The left ten columns are a safe zone; hunting is active only inside the remaining range.
                             ld	a,(hero.hero_x)
+                            cp	boss_hunt_x_min
+                            jr	c,select_mode_idle
                             cp	boss_hunt_x_max+1
                             jr	nc,select_mode_idle
 
@@ -413,6 +417,31 @@ move_head_y_up
                             dec	(hl)
                             ret
 
+check_head_bite
+; A live hunting boss deals the same delayed combined-pool bite as the left boss on contact.
+                            ld	a,(boss_state)
+                            or	a
+                            ret	nz
+
+                            ld	a,(boss_mode)
+                            cp	boss_mode_hunt
+                            ret	nz
+
+                            ld	a,(hero.hero_x)
+                            ld	hl,boss_head_x
+                            cp	(hl)
+                            ret	nz
+
+                            ld	a,(hero.hero_y)
+                            ld	hl,boss_head_y
+                            cp	(hl)
+                            ret	nz
+
+                            ld	a,boss_bite_damage
+                            ld	b,hero.health_damage_delayed
+                            call	hero.decrease_health_armor_pool
+                            ret
+
 clamp_head_target_x
 ; Right bound prevents hunting target from moving beyond the fixed wall anchor.
                             cp	boss_head_x_max+1
@@ -439,19 +468,15 @@ clamp_head_target_y_max
 
 update_control_points
                 ; The right anchor is fixed; the left endpoint and inner points are recalculated each tick.
-; Control 0 is the wall anchor, control 5 is the moving head.
+; Control 0 is the wall anchor; control 5 and the moving head share the same storage.
 ; Controls 1..4 are rebuilt between them so the entire chain follows head movement.
                             ld	a,boss_anchor_x
                             ld	(boss_control_x_buf),a
                             ld	a,boss_anchor_y
                             ld	(boss_control_y_buf),a
 
-                            ld	a,(boss_head_x)
-                            ld	(boss_control_x_buf+5),a
                             call	update_control_x_points
 
-                            ld	a,(boss_head_y)
-                            ld	(boss_control_y_buf+5),a
                             call	update_control_y_points
                             ret
 
@@ -858,12 +883,12 @@ boss_state                  db	boss_state_alive
 boss_visible_point_amount   db	boss_draw_point_amount
 boss_draw_point_budget      db	boss_draw_point_amount
 boss_prev_draw_point_amount db	boss_draw_point_amount
-boss_head_x                 db	boss_end_base_x
-boss_head_y                 db	boss_end_base_y
 boss_head_target_x          db	boss_end_base_x
 boss_head_target_y          db	boss_end_base_y
 boss_control_x_buf          ds	boss_control_amount
 boss_control_y_buf          ds	boss_control_amount
+boss_head_x                 equ	boss_control_x_buf+boss_control_amount-1
+boss_head_y                 equ	boss_control_y_buf+boss_control_amount-1
 boss_path_points_buf        ds	boss_path_point_amount*2
 boss_prev_path_attrs_buf    ds	boss_draw_point_amount*2
 boss_path_write_pointer     dw	boss_path_points_buf

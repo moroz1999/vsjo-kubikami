@@ -1,0 +1,98 @@
+                        module	room_4_3
+frames_per_second           equ	50
+water_old_y                 equ	9
+water_start_y               equ	10
+water_new_y                 equ	12
+
+logic
+                            ld	a,(water_lowered)
+                            or	a
+                            ret	z
+
+                            ld	a,(water_level_y)
+                            cp	water_new_y
+                            ret	nc
+
+                            ld	hl,water_lower_timer
+                            dec	(hl)
+                            ret	nz
+
+                            ld	(hl),frames_per_second
+                            call	lower_water_one_row
+                            ret
+
+on_enter
+                            ld	a,(water_lowered)
+                            or	a
+                            ret	z
+
+                            call	apply_current_water_level
+                            call	update_surface_y
+                            ret
+
+lower_water_one_row
+; Remove the current top water row, then move the animated surface down with the level.
+                            ld	a,(water_level_y)
+                            ld	e,a
+                            call	clear_water_row
+
+                            ld	a,(water_level_y)
+                            inc	a
+                            ld	(water_level_y),a
+                            call	update_surface_y
+                            call	rooms.redraw_current_room
+                            ret
+
+apply_current_water_level
+; Rebuild all completed drain steps after re-entering the room.
+                            ld	a,(water_level_y)
+                            sub	water_old_y
+                            ret	z
+
+                            ld	b,a
+                            ld	e,water_old_y
+                            jr	clear_water_rows
+
+clear_all_lowered_rows
+; Room 5,3 always uses the final level once the valve has been applied.
+                            ld	b,water_new_y-water_old_y
+                            ld	e,water_old_y
+
+clear_water_rows
+                            push	bc
+                            push	de
+                            call	clear_water_row
+                            pop	de
+                            pop	bc
+                            inc	e
+                            djnz	clear_water_rows
+                            ret
+
+clear_water_row
+; Remove only authored water from one row while preserving walls and props.
+                            ld	d,0
+                            call	rooms.get_current_room_pixel_address
+                            ld	b,rooms.room_w
+
+clear_water_row_next
+                            ld	a,(hl)
+                            cp	rooms.room_bg_color_wat
+                            jr	nz,clear_water_row_keep
+
+                            ld	(hl),rooms.room_bg_color
+
+clear_water_row_keep
+                            inc	hl
+                            djnz	clear_water_row_next
+                            ret
+
+update_surface_y
+                            ld	a,(water_level_y)
+                            dec	a
+                            ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.y),a
+                            ret
+
+water_lowered               db	0
+water_level_y               db	water_start_y
+water_lower_timer           db	frames_per_second
+                        endmodule

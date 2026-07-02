@@ -8,6 +8,7 @@ initial_elevator_repaired   equ	0
 initial_generator_started   equ	0
 initial_stairs_unfolded     equ	0
 initial_dynamite_exploded   equ	0
+initial_water_lowered       equ	0
 
 enemy_stand_color           equ	%00000110
 enemy_route_color           equ	%00000100
@@ -53,6 +54,12 @@ apply_initial_item_states
                             if	initial_dynamite_exploded
                             call	logic.dynamite.apply_effect
                             ld	a,items.dynamite
+                            call	items.remove_item
+                            endif
+
+                            if	initial_water_lowered
+                            call	logic.valve.apply_effect
+                            ld	a,items.valve
                             call	items.remove_item
                             endif
                             ret

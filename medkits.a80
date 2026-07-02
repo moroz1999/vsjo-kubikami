@@ -192,6 +192,7 @@ medkits_table
                             dw	medkit_1_1_1
                             dw	medkit_2_1_1
                             dw	medkit_5_0_1
+                            dw	medkit_5_3_1
                             dw	medkit_6_0_1
                             dw	medkit_6_1_1
 medkits_table_end
@@ -232,6 +233,16 @@ medkit_5_0_1
                             0,         ; room_y
                             26,        ; x
                             11,        ; y
+                            state_on,  ; state
+                            type_big   ; type
+                            }
+
+medkit_5_3_1
+                            medkit	{
+                            5,         ; room_x
+                            3,         ; room_y
+                            26,        ; x
+                            5,         ; y
                             state_on,  ; state
                             type_big   ; type
                             }

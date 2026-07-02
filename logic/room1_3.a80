@@ -9,7 +9,7 @@ boss_vision_x_max           equ	23  ; Right edge of the hunt trigger range.
 boss_head_move_delay        equ	3   ; Ticks between head movement steps.
 boss_idle_target_delay      equ	50  ; Ticks between idle target changes.
 boss_idle_target_range      equ	5   ; Maximum idle target offset.
-boss_bite_damage           equ	hero.max_health/2 ; Damage chunk used to strip armor and finish the bite.
+boss_bite_damage           equ	(hero.max_health+hero.max_armor)/3 ; One third of full health and armor combined.
 boss_floor_y               equ	20  ; Red floor row that must be restored under the jaws.
 boss_head_y_max            equ	18  ; Lowest row the boss head may reach.
 boss_idle_seed_init         equ	1   ; Non-zero start value for the idle LFSR.
@@ -419,14 +419,12 @@ update_jaws_hunt           ; Keep jaws open until the head reaches the bite poin
                             ld	(boss_jaw_state),a ; Hold jaws open during the chase.
                             ret     ; Finish hunt jaw handling.
 
-update_jaws_hunt_bite      ; Close jaws and remove all hero health on contact.
+update_jaws_hunt_bite      ; Close jaws and apply one delayed boss bite on contact.
                             ld	a,boss_jaw_state_closed ; Load the closed jaw state.
                             ld	(boss_jaw_state),a ; Clamp jaws shut for the bite.
-                            ld	a,boss_bite_damage ; Load the bite damage chunk.
-                            ld	b,hero.health_damage_immediate ; Keep the scripted lethal bite immediate.
-                            call	hero.decrease_health ; Remove armor and apply the first damage hit.
-                            ld	a,boss_bite_damage ; Reload the bite damage chunk.
-                            call	hero.decrease_health_only ; Finish the bite without touching hero memory directly.
+                            ld	a,boss_bite_damage ; Load one third of full combined protection.
+                            ld	b,hero.health_damage_delayed ; Share the standard enemy damage pause.
+                            call	hero.decrease_health_armor_pool ; Consume armor first, then health.
                             ret     ; Finish the bite.
 
 update_jaws_toggle         ; Flip jaw state and reset the timer.

@@ -145,6 +145,55 @@ decrease_health_apply
 decrease_health_store
                             ld	(health),a
                             ret
+decrease_health_armor_pool
+                ; input:
+                ; a - combined armor and health damage amount
+                ; b - damage timing flag: health_damage_immediate or health_damage_delayed
+
+                            ld	c,a
+
+                            ld	a,(health)
+                            or	a
+                            ret	z
+
+                            ld	a,b
+                            or	a
+                            jr	z,decrease_health_armor_pool_calculate
+
+                            ld	a,(health_damage_timer)
+                            or	a
+                            ret	nz
+
+                            ld	a,health_damage_delay
+                            ld	(health_damage_timer),a
+
+decrease_health_armor_pool_calculate
+; Consume armor first at a 1:1 rate, then pass only the overflow to health.
+                            ld	a,(armor)
+                            or	a
+                            jr	z,decrease_health_armor_pool_no_armor
+
+                            sub	c
+                            jr	c,decrease_health_armor_pool_overflow
+
+                            ld	(armor),a
+                            ret
+
+decrease_health_armor_pool_overflow
+                            add	a,c
+                            ld	b,a
+
+                            xor	a
+                            ld	(armor),a
+
+                            ld	a,c
+                            sub	b
+                            jp	decrease_health_only
+
+decrease_health_armor_pool_no_armor
+                            ld	a,c
+                            jp	decrease_health_only
+
 decrease_health_only
                 ; input:
                 ; a - health damage amount

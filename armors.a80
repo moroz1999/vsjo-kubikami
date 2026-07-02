@@ -214,6 +214,7 @@ armors_table
                             dw	armor_4_2_1
                             dw	armor_5_0_1
                             dw	armor_5_0_2
+                            dw	armor_5_3_1
                             dw	armor_6_0_1
                             dw	armor_6_3_1
 armors_table_end
@@ -276,6 +277,16 @@ armor_5_0_2
                             8,          ; y
                             state_on,   ; state
                             type_small    ; type
+                            }
+
+armor_5_3_1
+                            armor	{
+                            5,          ; room_x
+                            3,          ; room_y
+                            22,         ; x
+                            5,          ; y
+                            state_on,   ; state
+                            type_big    ; type
                             }
 
 armor_6_0_1

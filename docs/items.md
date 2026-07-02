@@ -100,19 +100,29 @@
 - Fully dissolving the right boss in room `3,3` calls `logic.room_1_0.release_cube`, marks the cube as no longer located in any room, and sets `logic.room_1_0.cube_escaped`.
 - When `cube_escaped` is set, room `1,0` paints `(19,17)` black on enter so the empty box remains visibly open.
 
+## Valve
+
+- The valve lies in room `0,1` at `(8,8)`.
+- The valve is used in room `4,3` when the hero stands at `(4,14)`.
+- Using it removes the item from the pocket, immediately removes the initial water row `y=9`, and starts the visible room `4,3` drain at water level `y=10`; progress persists across room transitions.
+- The remaining levels move `y=10 -> 11 -> 12`, one row every `50` frames.
+- Each room `4,3` drain step clears the departed physical-water row and moves its full-width animated surface down with the new level.
+- Room `5,3` uses the final `y=12` physical-water level immediately after the valve is applied.
+- The effect disables the old room `4,3` surface at `x=6..17`, `y=8` and enables post-valve surfaces across `x=2..31` in room `4,3` and `x=0..29` in room `5,3`.
+
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
-- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, and `debug.initial_dynamite_exploded` are compile-time 0/1 flags for item effects that should start already applied.
+- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, `debug.initial_dynamite_exploded`, and `debug.initial_water_lowered` are compile-time 0/1 flags for item effects that should start already applied.
 - Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, and dynamite exploded `0`.
+- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, and water lowered by valve `0`.
 - With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
 
 ## Persistent Room Art
 
 - One-shot item animations draw their changing frames directly to the screen. They patch only the final frame into `rooms.current_room_buf` when the animation completes.
 - Room `on_enter` callbacks check explicit room/effect flags instead of inferring state from item inventory fields.
-- Persistent final-art flags are `logic.room_2_0.roof_broken`, `logic.room_1_1.glass_broken`, `logic.room_1_0.stairs_unfolded`, `logic.room_6_1.red_door_opened`, `logic.room_4_1.hatch_opened`, `logic.room_4_0.handle_used`, `logic.room_5_0.seeds_grown`, and `logic.room_2_3.dynamite_exploded`.
+- Persistent final-art flags are `logic.room_2_0.roof_broken`, `logic.room_1_1.glass_broken`, `logic.room_1_0.stairs_unfolded`, `logic.room_6_1.red_door_opened`, `logic.room_4_1.hatch_opened`, `logic.room_4_0.handle_used`, `logic.room_5_0.seeds_grown`, `logic.room_2_3.dynamite_exploded`, and `logic.room_4_3.water_lowered`.

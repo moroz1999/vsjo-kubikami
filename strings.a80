@@ -27,6 +27,8 @@ bug_jar
                             db	"banka s jukami",255
 cube
                             db	"kubik",255
+valve
+                            db	"wentilx",255
 
 menu_start
                             db	"1. start igry",255

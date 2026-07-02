@@ -55,7 +55,7 @@
 - Further delayed damage is ignored while that timer is active; immediate damage bypasses the timer.
 - Water-drop collision damage also uses the delayed path, preserving its shared contact-damage protection.
 - Oxygen loss damages health through the separate immediate path and is never delayed by enemy invulnerability.
-- The room `1,3` boss bite remains an immediate scripted lethal hit.
+- The room `1,3` and `3,3` boss bites each deal `(max_health + max_armor) / 3`, consume armor before health at a 1:1 rate, and use the standard `100`-frame delayed-damage timer; three accepted bites kill from full armor and health.
 - Online enemies in the active room collide with the hero.
 
 ## Drawing
