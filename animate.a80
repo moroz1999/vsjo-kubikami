@@ -646,20 +646,20 @@ room_3_1_smoke_floor        equ	%00000010
 room_animation_3_1_smoke_frames
                 ; Overlapping smoke puffs rise continuously and disperse near the top.
                             db	room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_black,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
                             db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_dark,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
                             db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_black,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
@@ -667,7 +667,7 @@ room_animation_3_1_smoke_frames
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_black,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
                             db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_dark,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
@@ -675,7 +675,7 @@ room_animation_3_1_smoke_frames
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light

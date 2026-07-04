@@ -45,7 +45,7 @@ menu_key_left
 menu_key_right
                             db	"wprawo",255
 menu_key_jump
-                            db	"pryvпашok",255
+                            db	"pryvok",255
 menu_key_dive
                             db	"wniz",255
 menu_key_use
