@@ -18,6 +18,7 @@
 
 - Collected armor switches to `state_off`.
 - After collection, the armor rectangle is restored from the current room data.
+- Game restart changes only every armor record's `state` back to `state_on`.
 
 ## Placement
 

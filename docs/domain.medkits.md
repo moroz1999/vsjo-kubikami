@@ -11,6 +11,7 @@
 
 - Collected medkits switch to `state_off`.
 - After collection, the medkit rectangle is restored from the current room data.
+- Game restart changes only every medkit record's `state` back to `state_on`.
 
 ## Placement
 

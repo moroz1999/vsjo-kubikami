@@ -13,14 +13,28 @@ main_menu
                             ei
                             call	menu.run
 
+                            call	reset_game_state
                             ld	a,draw.border_color
                             call	draw.border
                             call	draw.draw_pattern
                             call	draw.draw_panel
-                            call	hero.reset_stats
                             call	debug.apply_initial_item_states
                             call	rooms.init_current_room
                             jp	game_process.loop
+
+reset_game_state
+                            call	rooms.reset_state
+                            call	hero.reset_state
+                            call	items.reset_state
+                            call	enemies.reset_state
+                            call	medkits.reset_state
+                            call	armors.reset_state
+                            call	elevators.reset_state
+                            call	logic.reset_quests
+                            call	animate.reset_state
+                            call	draw.reset_state
+                            ret
+
                             include	"math.a80"
                             include	"interrupts.a80"
                             include	"music.a80"

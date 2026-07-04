@@ -47,6 +47,7 @@
 - Current horizontal vision ranges for `enemy_0` through `enemy_8` are `5`, `9`, `4`, `7`, `8`, `4`, `5`, `6`, and `7`.
 - New `enemy_4` through `enemy_8` use distinct state-choice delays `70`, `90`, `50`, `110`, and `30`.
 - Slower enemies have longer horizontal vision and aggressive stick delays; faster enemies have shorter values for both.
+- Game restart restores authored room/cell placement, physical state, first state timer, direction, behavior, and both route anchors. Transient motion fields are cleared, runtime timers are reloaded from the immutable per-enemy delays, and the enemy random seed returns to its initial value; immutable profile fields are not copied.
 
 ## Collision
 

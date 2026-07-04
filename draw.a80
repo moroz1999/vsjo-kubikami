@@ -3,6 +3,15 @@ border_color                equ	0
 restore                     db	255
 restore_x                   db	255
 restore_y                   db	255
+reset_state
+                            xor	a
+                            ld	(color_shift),a
+                            ld	(restore_length),a
+
+                            ld	hl,restore_buffer
+                            ld	(restore_buffer_cur),hl
+                            ret
+
 border
                             out	#fe,a
                             ret

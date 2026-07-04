@@ -4,6 +4,36 @@ item_not_in_room            equ	255
 
 item_size                   equ	item
 item_color                  db	%01100000,%01000110
+item_amount                 equ	(items_end-all_items)/item_size
+
+reset_state
+                ; Restore only mutable room and cell coordinates.
+                            ld	ix,all_items
+                            ld	hl,initial_item_locations
+                            ld	b,item_amount
+
+reset_state_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+item.room_x),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+item.room_y),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+item.room_pos_x),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+item.room_pos_y),a
+
+                            ld	de,item_size
+                            add	ix,de
+                            djnz	reset_state_next
+                            ret
+
 print_item_name
         ;   input
         ;   a - item type id
@@ -270,4 +300,24 @@ item_14
                             }
 items_end
                             db	items_end_marker
+
+initial_item_locations
+                ; room_x, room_y, room_pos_x, room_pos_y
+                            db	2,0,5,14
+                            db	0,2,28,20
+                            db	2,1,logic.room_2_1.stone_start_x,logic.room_2_1.stone_start_y
+                            db	0,1,19,9
+                            db	0,0,1,8
+                            db	1,3,22,19
+                            db	0,3,9,16
+                            db	3,3,29,17
+                            db	5,3,21,11
+                            db	1,0,2,18
+                            db	3,0,29,19
+                            db	item_not_in_room,0,0,0
+                            db	5,0,6,7
+                            db	1,0,19,17
+                            db	0,1,8,8
+initial_item_locations_end
+                            assert	initial_item_locations_end-initial_item_locations=item_amount*4
                         endmodule

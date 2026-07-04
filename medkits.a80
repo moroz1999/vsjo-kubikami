@@ -22,6 +22,23 @@ gray_color2                 equ	%01111000
 red_color1                  equ	%00000010
 red_color2                  equ	%01010000
 
+reset_state
+                ; Collection changes only the state field.
+                            ld	b,amount
+                            ld	hl,medkits_table
+
+reset_state_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixl,a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixh,a
+
+                            ld	(ix+medkit.state),state_on
+                            djnz	reset_state_next
+                            ret
+
 check_hero
                 ; Load current room medkits and exit on empty buffer
                             ld	a,(rooms.room_medkits_count)

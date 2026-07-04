@@ -26,6 +26,10 @@
 - Keyboard assignment reads six scan codes in `controls.assigned_keys`; defaults are `O/P/Q/A/Space/H` for `Left/Right/Jump/Dive/Use/Pause`, and redefining keys changes gameplay input immediately. Use acts once per press, while direction combinations remain simultaneous. Pause freezes the simulation, displays its message in the unused right side of the item panel, and resumes only after the pause key has been released and pressed again.
 - Zero hero health opens a cleared screen with `Конец Игры`; poisoning the room `1,3` purple boss opens a cleared screen with `Успех`. Both end screens wait for any key and return to the main menu.
 
+- Starting from the menu calls `reset_game_state` before debug initial effects and room initialization. Input mode and assigned keys persist, while the active room returns to `2,0`, the hero returns to `(13,11)`, and stale draw-restore and one-shot-animation state is cleared.
+- Quest restart clears permanent room-effect flags, both boss completion states, the room `2,0` release hole, and the room `2,1` falling stone. It also restores only the route pointers and room-animation fields changed by item effects, so debug initial item effects can be reapplied from a clean state.
+- Elevator restart restores only `cur_height`, `state`, and `timer`. Derived `y` and `in_room` fields are recalculated by normal room initialization.
+
 ## Topic Details
 
 - [Enemies](domain.enemies.md)

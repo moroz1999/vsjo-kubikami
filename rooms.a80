@@ -27,6 +27,11 @@ onend_pointer				word
 
 current_room_address		dw	0
 current_room_source_address	dw	0
+reset_state
+                            ld	hl,0*256+2
+                            ld	(room_number_x),hl
+                            ret
+
 init_current_room
 							call	logic.change_logic_pointer
 							call	gather_room_items

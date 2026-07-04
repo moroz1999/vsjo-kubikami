@@ -5,6 +5,105 @@ enemy_flash_color           db	enemy_color1
 ; Enemy random choices are shared by state and movement decisions.
 random_seed                 db	random_seed_init
 
+reset_state_mask            equ	%00000011
+reset_direction_shift       equ	2
+reset_behavior_shift        equ	3
+reset_record_size           equ	10
+
+reset_state
+                ; Restore authored placement, motion, behavior, and route anchors.
+                            ld	ix,enemies
+                            ld	hl,initial_enemy_states
+                            ld	b,enemy_count
+
+reset_state_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.room_x),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.room_y),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.x),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.y),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.state_timer),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	c,a
+                            and	reset_state_mask
+                            ld	(ix+enemy.state),a
+
+                            ld	a,c
+                        dup	reset_direction_shift
+                            rrca
+                        edup
+                            and	1
+                            ld	(ix+enemy.direction),a
+
+                            ld	a,c
+                        dup	reset_behavior_shift
+                            rrca
+                        edup
+                            and	1
+                            ld	(ix+enemy.behavior_mode),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.last_route_point_ptr),a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.last_route_point_ptr+1),a
+
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.target_route_point_ptr),a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	(ix+enemy.target_route_point_ptr+1),a
+
+                ; Derive mutable timers from each enemy's immutable profile.
+                            ld	a,(ix+enemy.move_delay)
+                            ld	(ix+enemy.move_timer),a
+
+                            xor	a
+                            ld	(ix+enemy.fall_timer),a
+                            ld	(ix+enemy.jump_step),a
+                            ld	(ix+enemy.jump_phase_delay),a
+                            ld	(ix+enemy.route_target_search_done),a
+
+                            ld	a,simulation_mode_offline
+                            ld	(ix+enemy.simulation_mode),a
+
+                            ld	a,offline_route_point_delay
+                            ld	(ix+enemy.offline_route_timer),a
+
+                            ld	a,(ix+enemy.behavior_switch_delay)
+                            ld	(ix+enemy.behavior_switch_timer),a
+
+                            ld	a,(ix+enemy.aggressive_stick_delay)
+                            ld	(ix+enemy.aggressive_stick_timer),a
+
+                            ld	a,(ix+enemy.behavior_mode)
+                            ld	(ix+enemy.behavior_before_aggressive),a
+
+                            ld	de,enemy_size
+                            add	ix,de
+                            djnz	reset_state_next
+
+                            ld	a,random_seed_init
+                            ld	(random_seed),a
+                            ret
+
 ; Global enemy records define each enemy's starting room and behavior profile.
 enemies
 enemy_0
@@ -267,3 +366,43 @@ enemy_8
                             175,                ; aggressive stick timer
                             behavior_free       ; behavior restored after aggression
                             }
+
+initial_enemy_states
+                ; room_x, room_y, x, y, state_timer, packed state/direction/behavior, route anchors
+                            db	0,0,4,9,50
+                            db	state_walk|(direction_right<<reset_direction_shift)|(behavior_free<<reset_behavior_shift)
+                            dw	route_0_0_left,route_0_0_mid_left
+
+                            db	3,1,7,19,40
+                            db	state_stand|(direction_left<<reset_direction_shift)|(behavior_free<<reset_behavior_shift)
+                            dw	route_3_1_bottom_fork,route_3_1_left_entry
+
+                            db	5,1,8,19,80
+                            db	state_walk|(direction_right<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_5_1_bottom_left,route_5_1_bottom_fork
+
+                            db	0,1,18,19,60
+                            db	state_walk|(direction_left<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_0_1_mid,route_0_1_left_mid
+
+                            db	1,2,13,13,35
+                            db	state_walk|(direction_right<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_1_2_water_mid,route_1_2_water_mid_right
+
+                            db	5,3,16,7,45
+                            db	state_walk|(direction_left<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_5_3_upper_mid,route_5_3_upper_mid_left
+
+                            db	5,2,8,14,25
+                            db	state_walk|(direction_right<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_5_2_floor_mid,route_5_2_floor_right
+
+                            db	0,3,12,16,55
+                            db	state_walk|(direction_left<<reset_direction_shift)|(behavior_route<<reset_behavior_shift)
+                            dw	route_0_3_center_floor,route_0_3_left_jump_left
+
+                            db	0,0,27,9,15
+                            db	state_stand|(direction_left<<reset_direction_shift)|(behavior_free<<reset_behavior_shift)
+                            dw	route_0_0_right,route_0_0_mid_right
+initial_enemy_states_end
+                            assert	initial_enemy_states_end-initial_enemy_states=enemy_count*reset_record_size

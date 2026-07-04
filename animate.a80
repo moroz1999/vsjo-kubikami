@@ -35,6 +35,14 @@ current_animation
 current_delay
                             db	0
 
+reset_state
+                            xor	a
+                            ld	(current_delay),a
+
+                            ld	hl,0
+                            ld	(current_animation),hl
+                            ret
+
 start
                 ; Bind the one-shot animation to the current room buffer and screen cell.
                             ld	(current_animation),hl

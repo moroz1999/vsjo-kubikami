@@ -33,6 +33,55 @@ edge_delay                  byte
 timer                       byte
                         ends
 
+reset_state
+                ; Restore only movement height, direction, and countdown.
+                            ld	b,amount
+                            ld	hl,elevators_table
+
+reset_state_timer_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixl,a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixh,a
+
+                            ld	(ix+elevator.timer),0
+                            djnz	reset_state_timer_next
+
+                            ld	a,13
+                            ld	(elevator_4_1_1+elevator.cur_height),a
+                            ld	(elevator_4_1_2+elevator.cur_height),a
+                            ld	(elevator_4_1_3+elevator.cur_height),a
+                            ld	(elevator_4_3+elevator.cur_height),a
+
+                            ld	a,8
+                            ld	(elevator_1_1+elevator.cur_height),a
+                            ld	a,44
+                            ld	(elevator_2_3+elevator.cur_height),a
+                            xor	a
+                            ld	(elevator_3_1+elevator.cur_height),a
+                            ld	a,7
+                            ld	(elevator_4_2+elevator.cur_height),a
+                            ld	a,38
+                            ld	(elevator_6_3+elevator.cur_height),a
+
+                            ld	a,state_up
+                            ld	(elevator_1_1+elevator.state),a
+                            ld	(elevator_3_1+elevator.state),a
+                            ld	(elevator_4_2+elevator.state),a
+
+                            ld	a,state_stop
+                            ld	(elevator_2_3+elevator.state),a
+                            ld	(elevator_4_1_1+elevator.state),a
+                            ld	(elevator_4_1_2+elevator.state),a
+                            ld	(elevator_4_1_3+elevator.state),a
+                            ld	(elevator_6_3+elevator.state),a
+
+                            ld	a,state_down
+                            ld	(elevator_4_3+elevator.state),a
+                            ret
+
 amount                      equ	(elevators_table_end-elevators_table)/2
 elevators_table
                             dw	elevator_1_1

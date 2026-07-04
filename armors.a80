@@ -22,6 +22,23 @@ small_armor_amount          equ	hero.max_armor/2
 armor_color1                equ	%01101001
 armor_color2                equ	%00001101
 
+reset_state
+                ; Collection changes only the state field.
+                            ld	b,amount
+                            ld	hl,armors_table
+
+reset_state_next
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixl,a
+                            ld	a,(hl)
+                            inc	hl
+                            ld	ixh,a
+
+                            ld	(ix+armor.state),state_on
+                            djnz	reset_state_next
+                            ret
+
 check_hero
                 ; Load current room armors and exit on empty buffer
                             ld	a,(rooms.room_armors_count)

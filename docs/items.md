@@ -121,6 +121,7 @@
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
 - Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, and water lowered by valve `0`.
 - With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
+- Game restart restores only each item's mutable `room_x`, `room_y`, `room_pos_x`, and `room_pos_y` fields. Type, name, action, and colors remain untouched, and debug initial item states are applied after this location reset.
 
 ## Persistent Room Art
 

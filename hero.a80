@@ -2,14 +2,17 @@
 hero_color1                 equ	%01111101
 hero_color2                 equ	%01001111
 hero_color                  db	hero_color1,hero_color2
+hero_start_x                equ	13
+hero_start_y                equ	11
+hero_start_global_y         equ	14
 
 hero_coords
 ; original coords
 ;hero_y                      db	13
 ;hero_x                      db	11
-hero_y                      db	11
-hero_x                      db	13
-hero_global_y               db	14
+hero_y                      db	hero_start_y
+hero_x                      db	hero_start_x
+hero_global_y               db	hero_start_global_y
 hero_timer                  db	0
 hero_delay                  db	2
 hero_delay_ground           equ	3
@@ -55,7 +58,14 @@ jump_phase_delay_frames     equ	1
 jump_type                   db	jump_type_top
 no_item_in_pocket           equ	255
 current_item                db	no_item_in_pocket
+reset_state
 reset_stats
+                            ld	hl,hero_start_x*256+hero_start_y
+                            ld	(hero_coords),hl
+
+                            ld	a,hero_start_global_y
+                            ld	(hero_global_y),a
+
                             ld	a,max_health
                             ld	(health),a
 
@@ -69,9 +79,31 @@ reset_stats
                             ld	(oxygen_health_timer),a
 
                             xor	a
+                            ld	(hero_timer),a
                             ld	(health_damage_timer),a
+                            ld	(swam_up),a
                             ld	(control_state),a
                             ld	(previous_control_state),a
+                            ld	(jump_step),a
+                            ld	(jump_phase_delay),a
+                            ld	(jump_type),a
+                            ld	(gravity_timer),a
+                            ld	(gravity_delay),a
+
+                            ld	hl,0
+                            ld	(current_elevator),hl
+
+                            ld	a,2
+                            ld	(hero_delay),a
+
+                            ld	a,state_ground
+                            ld	(hero_state),a
+
+                            ld	a,no_item_in_pocket
+                            ld	(current_item),a
+
+                            ld	a,elevators.item_not_elevator
+                            ld	(hero_elevator),a
                             ret
 update_health_damage_timer
                             ld	a,(health_damage_timer)

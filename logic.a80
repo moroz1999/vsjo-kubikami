@@ -2,6 +2,91 @@
 game_end_x                  equ	6
 game_end_y                  equ	19
 
+reset_quests
+                ; Clear persistent room outcomes and active quest transitions.
+                            xor	a
+                            ld	(room_2_0.roof_broken),a
+                            ld	(room_2_0.release_hole_opened),a
+                            ld	(room_2_0.release_hole_timer),a
+                            ld	(room_1_1.glass_broken),a
+                            ld	(room_2_1.stone_fall_timer),a
+                            ld	(room_1_0.stairs_unfolded),a
+                            ld	(room_1_0.cube_escaped),a
+                            ld	(room_2_3.dynamite_exploded),a
+                            ld	(room_4_0.handle_used),a
+                            ld	(room_4_1.hatch_opened),a
+                            ld	(room_5_0.seeds_grown),a
+                            ld	(room_6_1.red_door_opened),a
+                            ld	(room_4_3.water_lowered),a
+                            ld	(room_1_3.boss_poisoned),a
+                            ld	(room_3_3.boss_state),a
+
+                            ld	a,room_2_1.stone_state_hanging
+                            ld	(room_2_1.stone_state),a
+
+                            ld	a,room_3_3.boss_draw_point_amount
+                            ld	(room_3_3.boss_visible_point_amount),a
+
+                            ld	a,room_4_3.water_start_y
+                            ld	(room_4_3.water_level_y),a
+
+                            ld	a,room_4_3.frames_per_second
+                            ld	(room_4_3.water_lower_timer),a
+
+                ; Restore only room-animation fields changed by quest effects.
+                            xor	a
+                            ld	(animate.room_animation_6_3+@room_animation.current),a
+                            ld	(animate.room_animation_6_3+@room_animation.timer),a
+                            ld	(animate.room_animation_6_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1+@room_animation.current),a
+                            ld	(animate.room_animation_5_1_2+@room_animation.current),a
+                            ld	(animate.room_animation_5_1_2+@room_animation.timer),a
+                            ld	(animate.room_animation_5_1_3+@room_animation.current),a
+                            ld	(animate.room_animation_5_1_3+@room_animation.timer),a
+                            ld	(animate.room_animation_5_1_4+@room_animation.current),a
+                            ld	(animate.room_animation_5_1_4+@room_animation.timer),a
+                            ld	(animate.room_animation_5_1+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_2+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_3+@room_animation.state),a
+                            ld	(animate.room_animation_5_1_4+@room_animation.state),a
+                            ld	(animate.room_animation_water_4_3_surface+@room_animation.current),a
+                            ld	(animate.room_animation_water_4_3_surface+@room_animation.timer),a
+                            ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.current),a
+                            ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.timer),a
+                            ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.state),a
+                            ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.current),a
+                            ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.timer),a
+                            ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.state),a
+
+                            ld	a,50
+                            ld	(animate.room_animation_5_1+@room_animation.timer),a
+
+                            ld	a,animate.state_on
+                            ld	(animate.room_animation_water_4_3_surface+@room_animation.state),a
+
+                            ld	a,11
+                            ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.y),a
+
+                ; Restore route fields rewired by completed item effects.
+                            ld	hl,enemies.route_2_0_top_right_entry
+                            ld	(enemies.route_2_0_top_mid+enemies.route_point.bottom_right_point_ptr),hl
+
+                            ld	hl,enemies.route_1_1_left_mid
+                            ld	(enemies.route_1_1_left_inner+enemies.route_point.bottom_right_point_ptr),hl
+
+                            ld	hl,enemies.route_1_1_right_entry
+                            ld	(enemies.route_1_1_right_mid+enemies.route_point.top_left_point_ptr),hl
+
+                            ld	hl,enemies.route_2_1_elevator_jump_left
+                            ld	(enemies.route_2_1_left_mid+enemies.route_point.bottom_right_point_ptr),hl
+                            ld	(enemies.route_2_1_right_mid+enemies.route_point.top_left_point_ptr),hl
+
+                            ld	hl,0
+                            ld	(enemies.route_1_0_lower_walk+enemies.route_point.alternative_point_ptr),hl
+                            ld	(enemies.route_4_1_right_mid+enemies.route_point.alternative_point_ptr),hl
+                            ld	(enemies.route_4_1_hatch_fork+enemies.route_point.alternative_point_ptr),hl
+                            ret
+
 change_logic_pointer
                             call	rooms.get_current_room_struct_pointer
                             push	hl
