@@ -5,6 +5,7 @@
 - Medkits are room entities gathered into `rooms.room_medkits_buf` for the current room.
 - Big medkits occupy a 3x3 attribute rectangle and restore `hero.max_health`.
 - Small medkits occupy the same 3x3 attribute rectangle but restore half of `hero.max_health`.
+- Small medkits are marked by two vertically aligned red points in the top two center cells.
 
 ## Collection
 
@@ -14,4 +15,4 @@
 ## Placement
 
 - Room `6,0` has a big medkit at `(20,8)`.
-- Room `5,3` has a big medkit at `(26,5)`.
+- Room `5,3` has a small medkit at `(26,5)`.

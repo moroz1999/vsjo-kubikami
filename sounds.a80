@@ -1,0 +1,39 @@
+                            module	sound_player
+                            include	"sound_player.a80"
+                            endmodule
+
+                            module	sounds
+no_pending_effect           equ	#ff
+crowbar_effect              equ	1
+enemy_damage_effect         equ	4
+
+init
+                            ld	hl,bank
+                            call	sound_player.AFXINIT
+
+                            ld	a,no_pending_effect
+                            ld	(pending_effect),a
+                            ret
+
+play
+                            ld	(pending_effect),a
+                            ret
+
+frame
+                            ld	a,(pending_effect)
+                            cp	no_pending_effect
+                            jr	z,frame_update
+
+                            call	sound_player.AFXPLAY
+                            ld	a,no_pending_effect
+                            ld	(pending_effect),a
+
+frame_update
+                            jp	sound_player.AFXFRAME
+
+pending_effect              db	no_pending_effect
+
+bank
+                            incbin	"music/sounds.afb"
+bank_end
+                            endmodule

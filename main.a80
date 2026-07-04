@@ -7,6 +7,10 @@ start                       equ	#6000
 main_menu
                             di
                             ld	sp,start-1
+                            call	interrupts.init
+                            call	music.init
+                            call	sounds.init
+                            ei
                             call	menu.run
 
                             ld	a,draw.border_color
@@ -18,6 +22,9 @@ main_menu
                             call	rooms.init_current_room
                             jp	game_process.loop
                             include	"math.a80"
+                            include	"interrupts.a80"
+                            include	"music.a80"
+                            include	"sounds.a80"
                             include	"game_process.a80"
                             include	"draw.a80"
                             include	"objects.a80"
@@ -81,6 +88,7 @@ room_6_3                    incbin	"rooms/room6,3.zx0"
 attrs_buf                   ds	screen_utils.attrs_size
                             endmodule
 end
+                            assert	end<=interrupts.reserved_start
                             display	'program length ',end-start
-                            display	'remaining room ',#ffff-end
+                            display	'remaining room ',interrupts.reserved_start-end
                             savesna	"qsave1.sna",start

@@ -625,12 +625,12 @@ room_animation_3_1_smoke
                             3,                              ; room_x
                             1,                              ; room_y
 
-                            11,                             ; x
-                            15,                             ; y
-                            5,                              ; width
-                            5,                              ; height
+                            10,                             ; x
+                            14,                             ; y
+                            7,                              ; width
+                            8,                              ; height
 
-                            5,                              ; frames
+                            4,                              ; frames
                             0,                              ; current
                             6,                              ; delay
                             0,                              ; timer
@@ -640,38 +640,46 @@ room_animation_3_1_smoke
 room_3_1_smoke_bg           equ	rooms.room_bg_color_sky
 room_3_1_smoke_dark         equ	%00000111
 room_3_1_smoke_light        equ	%01000111
+room_3_1_smoke_black        equ	%00000000
+room_3_1_smoke_floor        equ	%00000010
 
 room_animation_3_1_smoke_frames
                 ; Overlapping smoke puffs rise continuously and disperse near the top.
-                            db	room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_dark
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_black,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
+                            db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_dark,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
+                            db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_black,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
-                            db	room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_black,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
+                            db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_dark,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_bg
-                            db	room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
-
-                            db	room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_dark
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
-                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_light,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_dark,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
+                            db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
+                            db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_black,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
 
 room_animation_3_2
                             @room_animation	{

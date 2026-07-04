@@ -92,7 +92,6 @@ wait
                             ld	ix,0
                             ei
                             halt
-                            di
                             djnz	wait
 
                             ld	hl,screen_buffer.attrs_buf

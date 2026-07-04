@@ -4,6 +4,7 @@
 
 - The crowbar is used in room `2,0` when the hero stands at `(21,12)`.
 - Using it breaks the roof, starts the room ground animation, and removes the item from the pocket.
+- Successful use starts AYFX effect `1`.
 - The enemy route effect is `logic.room_2_0.activate_roof_route`: it rewires `route_2_0_top_mid.bottom_right_point_ptr` to the normal `route_2_0_basement_entry`.
 - After the rewire, enemies can enter the lower room path through the broken roof route without starting a jump, then use the separate basement jump point to climb back right.
 

@@ -24,6 +24,9 @@ action
                             call	logic.room_2_0.activate_roof_route
                             call	hero.delete_item_in_pocket
 
+                            ld	a,sounds.crowbar_effect
+                            call	sounds.play
+
                             ld	a,255
                             ret
 crowbar_false

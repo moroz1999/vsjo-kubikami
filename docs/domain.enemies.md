@@ -51,6 +51,7 @@
 ## Collision
 
 - Enemy collision applies 16 damage through the standard `hero.decrease_health` armor and health path.
+- Each accepted enemy-damage event starts AYFX effect `4`, the fifth effect in the zero-based bank.
 - Standard enemy damage uses the delayed-damage flag and starts a `100`-frame hero invulnerability timer.
 - Further delayed damage is ignored while that timer is active; immediate damage bypasses the timer.
 - Water-drop collision damage also uses the delayed path, preserving its shared contact-damage protection.

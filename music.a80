@@ -1,0 +1,13 @@
+                            module	music_player
+                            include	"music_player.a80"
+                            endmodule
+
+                            module	music
+init                        equ	music_player.START
+play                        equ	music_player.PLAY
+stop                        equ	music_player.MUTE
+
+module_data
+                            incbin	"music/compiled.C"
+module_data_end
+                            endmodule

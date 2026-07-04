@@ -1,0 +1,58 @@
+                            module	interrupts
+vector_page                 equ	#fe
+vector_fill                 equ	#fd
+dispatch_address            equ	#fdfd
+vector_table_address        equ	#fe00
+vector_table_size           equ	#101
+reserved_start              equ	dispatch_address
+reserved_end                equ	vector_table_address+vector_table_size
+
+init
+                            ld	hl,vector_table_address
+                            ld	de,vector_table_address+1
+                            ld	bc,vector_table_size-1
+                            ld	(hl),vector_fill
+                            ldir
+
+                            ld	a,#c3
+                            ld	(dispatch_address),a
+                            ld	hl,handler
+                            ld	(dispatch_address+1),hl
+
+                            ld	a,vector_page
+                            ld	i,a
+                            im	2
+                            ret
+
+handler
+                            push	ix
+                            push	iy
+                            push	af
+                            push	bc
+                            push	de
+                            push	hl
+                            exx
+                            push	bc
+                            push	de
+                            push	hl
+                            ex	af,af'
+                            push	af
+
+                            call	music.play
+                            call	sounds.frame
+
+                            pop	af
+                            ex	af,af'
+                            pop	hl
+                            pop	de
+                            pop	bc
+                            exx
+                            pop	hl
+                            pop	de
+                            pop	bc
+                            pop	af
+                            pop	iy
+                            pop	ix
+                            ei
+                            ret
+                            endmodule

@@ -244,7 +244,7 @@ medkit_5_3_1
                             26,        ; x
                             5,         ; y
                             state_on,  ; state
-                            type_big   ; type
+                            type_small   ; type
                             }
 
 medkit_6_0_1
@@ -279,6 +279,6 @@ medkit_big_color_table
 
 medkit_small_color_table
                             dw	medkit_gray_color,medkit_red_color,medkit_gray_color
-                            dw	medkit_gray_color,medkit_gray_color,medkit_gray_color
+                            dw	medkit_gray_color,medkit_red_color,medkit_gray_color
                             dw	medkit_gray_color,medkit_gray_color,medkit_gray_color
                         endmodule
