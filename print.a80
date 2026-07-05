@@ -13,7 +13,11 @@ print_string_char
                             inc	hl
                             push	hl
                             push	de
+                            if localization.current = localization.id_ru
                             call	print_char
+                            else
+                            call	print_latin_char
+                            endif
                             pop	de
                             pop	hl
 

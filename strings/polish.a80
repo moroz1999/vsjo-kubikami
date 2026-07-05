@@ -1,0 +1,65 @@
+confirmation_yes_key        equ	keyboard.key_t
+
+crowbar
+                            db	"LOM",255
+toolkit
+                            db	"NARZEDZIA",255
+stone
+                            db	"KAMIEN",255
+stairs
+                            db	"SCHODY",255
+redcard
+                            db	"CZERWONA KARTA",255
+key
+                            db	"KLUCZ",255
+screwdriver
+                            db	"SRUBOKRET",255
+dynamite
+                            db	"DYNAMIT",255
+handle
+                            db	"KLAMKA DRZWI",255
+seeds
+                            db	"NASIONA",255
+bottle
+                            db	"BUTELKA",255
+poison_bottle
+                            db	"BUTELKA JADU",255
+bug_jar
+                            db	"SLOIK OWADOW",255
+cube
+                            db	"KOSTKA",255
+valve
+                            db	"ZAWOR",255
+
+menu_start
+                            db	"1. ROZPOCZNIJ GRE",255
+menu_keyboard
+                            db	"2. KLAWIATURA",255
+menu_kempston
+                            db	"3. KEMPSTON",255
+menu_cursor
+                            db	"4. KURSOR",255
+menu_assign
+                            db	"5. USTAW KLAWISZE",255
+menu_key_left
+                            db	"LEWO",255
+menu_key_right
+                            db	"PRAWO",255
+menu_key_jump
+                            db	"SKOK",255
+menu_key_dive
+                            db	"W DOL",255
+menu_key_use
+                            db	"UZYJ",255
+menu_key_pause
+                            db	"PAUZA",255
+menu_confirmation
+                            db	"POTWIERDZIC? T/N",255
+game_pause
+                            db	"PAUZA",255
+game_pause_clear
+                            db	"     ",255
+game_over
+                            db	"KONIEC GRY",255
+game_success
+                            db	"SUKCES",255

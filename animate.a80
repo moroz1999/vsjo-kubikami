@@ -694,7 +694,7 @@ room_3_2_fire_x             equ	8
 room_3_2_fire_y             equ	1
 room_3_2_fire_width         equ	20
 room_3_2_fire_red_yellow    equ	%01010110
-room_3_2_fire_yellow_red    equ	%01110010
+room_3_2_fire_yellow_red    equ	%00010010
 
 room_animation_3_2_fire
                             @room_animation	{
@@ -708,7 +708,7 @@ room_animation_3_2_fire
 
                             2,                              ; frames
                             0,                              ; current
-                            4,                              ; delay
+                            0,                              ; delay
                             0,                              ; timer
                             state_on,                       ; state
                             room_animation_3_2_fire_frames  ; frames_ptr
@@ -716,12 +716,14 @@ room_animation_3_2_fire
 
 room_animation_3_2_fire_frames
                 ; The checkerboard bitmap blends bright red and yellow into flickering orange.
-                            dup	room_3_2_fire_width
+                            dup	room_3_2_fire_width/2
                             db	room_3_2_fire_red_yellow
+                            db	room_3_2_fire_yellow_red
                             edup
 
-                            dup	room_3_2_fire_width
+                            dup	room_3_2_fire_width/2
                             db	room_3_2_fire_yellow_red
+                            db room_3_2_fire_red_yellow
                             edup
 
 room_animation_3_2

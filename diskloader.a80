@@ -1,0 +1,49 @@
+			module	diskloader
+
+init
+			; сохранить положение трека/сектора на старте
+
+				ld	hl,(#5cf4)
+				ld	(start_pos),hl
+				ret
+
+start_pos
+				dw	0
+
+load_file_from_offset
+			; читаем файл
+			; hl - адрес куда читать
+			; e - дорожка (смещение от старта)
+			; d - сектор (смещение от старта)
+			; b - число секторов
+
+				push	hl
+
+				ld	hl,(start_pos)		; к сохраненным дорожке и сектору прибавим смещение дорожки и сектора
+				ld	a,l
+				add	a,e
+				ld	c,a
+				and	#f0
+				rrca
+				rrca
+				rrca
+				rrca
+				add	a,h
+				add	a,d
+				ld	d,a
+				ld	a,c
+				and	#0f
+				ld	e,a
+
+				pop	hl
+				ld	c,5
+
+				im	1
+				xor	a
+				
+				ld	iy,#5c3a
+								
+				call	#3d13			; загрузка блока
+				di
+				ret
+			endmodule

@@ -1,0 +1,65 @@
+confirmation_yes_key        equ	keyboard.key_y
+
+crowbar
+                            db	"CROWBAR",255
+toolkit
+                            db	"TOOLS",255
+stone
+                            db	"STONE",255
+stairs
+                            db	"STAIRS",255
+redcard
+                            db	"RED CARD",255
+key
+                            db	"KEY",255
+screwdriver
+                            db	"SCREWDRIVER",255
+dynamite
+                            db	"DYNAMITE",255
+handle
+                            db	"DOOR HANDLE",255
+seeds
+                            db	"SEEDS",255
+bottle
+                            db	"BOTTLE",255
+poison_bottle
+                            db	"POISON BOTTLE",255
+bug_jar
+                            db	"BUG JAR",255
+cube
+                            db	"CUBE",255
+valve
+                            db	"VALVE",255
+
+menu_start
+                            db	"1. START GAME",255
+menu_keyboard
+                            db	"2. KEYBOARD",255
+menu_kempston
+                            db	"3. KEMPSTON",255
+menu_cursor
+                            db	"4. CURSOR",255
+menu_assign
+                            db	"5. ASSIGN KEYS",255
+menu_key_left
+                            db	"LEFT",255
+menu_key_right
+                            db	"RIGHT",255
+menu_key_jump
+                            db	"JUMP",255
+menu_key_dive
+                            db	"DIVE",255
+menu_key_use
+                            db	"USE",255
+menu_key_pause
+                            db	"PAUSE",255
+menu_confirmation
+                            db	"CONFIRM? Y/N",255
+game_pause
+                            db	"PAUSE",255
+game_pause_clear
+                            db	"     ",255
+game_over
+                            db	"GAME OVER",255
+game_success
+                            db	"SUCCESS",255

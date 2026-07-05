@@ -244,7 +244,7 @@ item_10
                             3                       // room_x
                             0                       // room_y
                             29                      // room_pos_x
-                            19                      // room_pos_y
+                            20                      // room_pos_y
                             strings.bottle          // name
                             logic.bottle.action     // logic
                             %01001101               // color1
@@ -313,7 +313,7 @@ initial_item_locations
                             db	3,3,29,17
                             db	5,3,21,11
                             db	1,0,2,18
-                            db	3,0,29,19
+                            db	3,0,29,20
                             db	item_not_in_room,0,0,0
                             db	5,0,6,7
                             db	1,0,19,17

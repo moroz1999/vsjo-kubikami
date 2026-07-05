@@ -4,6 +4,14 @@ start                       equ	#6000
 
                             org	start
 
+                            include	"localization.a80"
+
+startup
+                            di
+                            ld	sp,start-1
+                            call	menu.wait_key_press
+                            jp	main_menu
+
 main_menu
                             di
                             ld	sp,start-1
@@ -109,4 +117,4 @@ end
                             assert	end<=interrupts.reserved_start
                             display	'program length ',end-start
                             display	'remaining room ',interrupts.reserved_start-end
-                            savesna	"qsave1.sna",start
+                            include	"release.a80"

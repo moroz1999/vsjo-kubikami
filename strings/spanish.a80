@@ -1,0 +1,65 @@
+confirmation_yes_key        equ	keyboard.key_s
+
+crowbar
+                            db	"PALANCA",255
+toolkit
+                            db	"HERRAMIENTAS",255
+stone
+                            db	"PIEDRA",255
+stairs
+                            db	"ESCALERA",255
+redcard
+                            db	"TARJETA ROJA",255
+key
+                            db	"LLAVE",255
+screwdriver
+                            db	"DESTORNILLADOR",255
+dynamite
+                            db	"DINAMITA",255
+handle
+                            db	"MANIJA PUERTA",255
+seeds
+                            db	"SEMILLAS",255
+bottle
+                            db	"BOTELLA",255
+poison_bottle
+                            db	"BOTELLA VENENO",255
+bug_jar
+                            db	"FRASCO BICHOS",255
+cube
+                            db	"CUBO",255
+valve
+                            db	"VALVULA",255
+
+menu_start
+                            db	"1. INICIAR JUEGO",255
+menu_keyboard
+                            db	"2. TECLADO",255
+menu_kempston
+                            db	"3. KEMPSTON",255
+menu_cursor
+                            db	"4. CURSOR",255
+menu_assign
+                            db	"5. ASIGNAR TECLAS",255
+menu_key_left
+                            db	"IZQUIERDA",255
+menu_key_right
+                            db	"DERECHA",255
+menu_key_jump
+                            db	"SALTAR",255
+menu_key_dive
+                            db	"BAJAR",255
+menu_key_use
+                            db	"USAR",255
+menu_key_pause
+                            db	"PAUSA",255
+menu_confirmation
+                            db	"CONFIRMAR? S/N",255
+game_pause
+                            db	"PAUSA",255
+game_pause_clear
+                            db	"     ",255
+game_over
+                            db	"FIN DEL JUEGO",255
+game_success
+                            db	"EXITO",255

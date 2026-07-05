@@ -1,0 +1,75 @@
+                            module	release
+loading_screen_size         equ	#1b00
+
+                            org	screen_utils.screen
+loading_screen
+                            incbin	"loading.scr"
+loading_screen_end
+                            assert	loading_screen_end-loading_screen=loading_screen_size
+
+                            ifdef	release_tap
+                            if localization.current = localization.id_en
+                            savetap	"kubikami-en.tap",start
+                            elseif localization.current = localization.id_cs
+                            savetap	"kubikami-cs.tap",start
+                            elseif localization.current = localization.id_pl
+                            savetap	"kubikami-pl.tap",start
+                            elseif localization.current = localization.id_es
+                            savetap	"kubikami-es.tap",start
+                            else
+                            savetap	"kubikami-ru.tap",start
+                            endif
+                            else
+                            ifdef	release_trd
+                            assert	localization.current=localization.id_ru
+
+                            org	#5d00
+basic_loader
+                            db	0,1
+                            dw	basic_line_1_end-basic_line_1
+basic_line_1
+                            db	#e7,"0",#0e,0,0,0,0,0,13
+basic_line_1_end
+
+                            db	0,10
+                            dw	basic_line_10_end-basic_line_10
+basic_line_10
+                            db	#da,"0",#0e,0,0,0,0,0,":",#fb,13
+basic_line_10_end
+
+                            db	0,20
+                            dw	basic_line_20_end-basic_line_20
+basic_line_20
+                            db	#fd,"24575",#0e,0,0,#ff,#5f,0,13
+basic_line_20_end
+
+                            db	0,30
+                            dw	basic_line_30_end-basic_line_30
+basic_line_30
+                            db	#f9,#c0,"15619",#0e,0,0,#03,#3d,0,":"
+                            db	#ea,":",#ef,#22,"LOADING",#22,#af,13
+basic_line_30_end
+
+                            db	0,40
+                            dw	basic_line_40_end-basic_line_40
+basic_line_40
+                            db	#f9,#c0,"15619",#0e,0,0,#03,#3d,0,":"
+                            db	#ea,":",#ef,#22,"KUBIKAMI",#22,#af,13
+basic_line_40_end
+
+                            db	0,50
+                            dw	basic_line_50_end-basic_line_50
+basic_line_50
+                            db	#f9,#c0,"24576",#0e,0,0,0,#60,0,13
+basic_line_50_end
+basic_loader_end
+
+                            emptytrd	"kubikami-ru.trd","KUBIKAMI"
+                            savetrd	"kubikami-ru.trd","boot.B",basic_loader,basic_loader_end-basic_loader,1
+                            savetrd	"kubikami-ru.trd","LOADING.C",loading_screen,loading_screen_size
+                            savetrd	"kubikami-ru.trd","KUBIKAMI.C",start,end-start
+                            else
+                            savesna	"qsave1.sna",start
+                            endif
+                            endif
+                            endmodule

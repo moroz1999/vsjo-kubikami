@@ -83,7 +83,7 @@
 
 ## Bottle
 
-- The empty bottle lies on the lower balcony in room `3,0` at `(29,19)`.
+- The empty bottle lies on the lower balcony in room `3,0` at `(29,20)`.
 - The empty bottle is used in room `6,3` on the ledge by the poison pool left of the lift, when the hero stands at `y=5` and `x=8..12`.
 - Using the empty bottle removes it from the pocket and immediately puts `items.poison_bottle` into the pocket.
 - The poison bottle inventory colors use the room `6,3` poison-pool animation palette: `%00100110` and `%01100111`.

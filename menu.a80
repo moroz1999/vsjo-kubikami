@@ -175,9 +175,9 @@ assign_next_key
 
 confirm_assignment
                             call	wait_key_press
-                            cp	keyboard.key_d
+                            cp	strings.confirmation_yes_key
                             jr	z,confirm_assignment_yes
-                            cp	keyboard.key_n
+                            cp	strings.confirmation_no_key
                             jr	z,assign_keys
                             jr	confirm_assignment
 

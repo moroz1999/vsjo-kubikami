@@ -1,0 +1,25 @@
+                            module	localization
+id_ru                       equ	0
+id_en                       equ	1
+id_cs                       equ	2
+id_pl                       equ	3
+id_es                       equ	4
+
+                            ifdef	language_en
+current                     equ	id_en
+                            else
+                            ifdef	language_cs
+current                     equ	id_cs
+                            else
+                            ifdef	language_pl
+current                     equ	id_pl
+                            else
+                            ifdef	language_es
+current                     equ	id_es
+                            else
+current                     equ	id_ru
+                            endif
+                            endif
+                            endif
+                            endif
+                            endmodule

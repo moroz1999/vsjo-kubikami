@@ -1,2 +1,38 @@
                         module	room_6_3
+poison_damage_rate          equ	logic.room_3_2.fire_damage_rate
+poison_damage_period        equ	logic.room_3_2.fire_damage_period
+poison_damage_amount        equ	logic.room_3_2.fire_damage_amount
+
+logic
+                ; Every water cell in this room belongs to the poison pool.
+                            ld	a,(hero.hero_state)
+                            cp	hero.state_swim
+                            jr	nz,reset_damage_phase
+
+                            ld	a,(poison_damage_phase)
+                            add	a,poison_damage_rate
+                            cp	poison_damage_period
+                            jr	c,store_damage_phase
+
+                            sub	poison_damage_period
+                            ld	(poison_damage_phase),a
+
+                            ld	a,poison_damage_amount
+                            jp	hero.decrease_health_only
+
+store_damage_phase
+                            ld	(poison_damage_phase),a
+                            ret
+
+reset_damage_phase
+                            xor	a
+                            ld	(poison_damage_phase),a
+                            ret
+
+on_enter
+                            xor	a
+                            ld	(poison_damage_phase),a
+                            ret
+
+poison_damage_phase         db	0
                         endmodule

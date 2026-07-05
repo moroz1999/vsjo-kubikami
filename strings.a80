@@ -1,66 +1,15 @@
                         module	strings
-crowbar
-                            db	"montirowka",255
-toolkit
-                            db	"instrumenty",255
-stone
-                            db	"kamenx",255
-stairs
-                            db	"lestnica",255
-redcard
-                            db	"krasnaq karta",255
-key
-                            db	"kl@^",255
-screwdriver
-                            db	"otwertka",255
-dynamite
-                            db	"dinamit",255
-handle
-                            db	"ru^ka dweri",255
-seeds
-                            db	"semena",255
-bottle
-                            db	"butylka",255
-poison_bottle
-                            db	"butylka s qdom",255
-bug_jar
-                            db	"banka s vukami",255
-cube
-                            db	"kubik",255
-valve
-                            db	"wentilx",255
+confirmation_no_key         equ	keyboard.key_n
 
-menu_start
-                            db	"1. na^atx igru",255
-menu_keyboard
-                            db	"2. klawiatura",255
-menu_kempston
-                            db	"3. kempston",255
-menu_cursor
-                            db	"4. kursor",255
-menu_assign
-                            db	"5. nazna^itx klawi[i",255
-menu_key_left
-                            db	"wlewo",255
-menu_key_right
-                            db	"wprawo",255
-menu_key_jump
-                            db	"pryvok",255
-menu_key_dive
-                            db	"wniz",255
-menu_key_use
-                            db	"ispolxzowatx",255
-menu_key_pause
-                            db	"pauza",255
-menu_confirmation
-                            db	"podtwerditx? d/n",255
-game_pause
-                            db	"pauza",255
-game_pause_clear
-                            db	"     ",255
-game_over
-                            db	"konec igry",255
-game_success
-                            db	"uspeh",255
-
+                            if localization.current = localization.id_en
+                            include	"strings/english.a80"
+                            elseif localization.current = localization.id_cs
+                            include	"strings/czech.a80"
+                            elseif localization.current = localization.id_pl
+                            include	"strings/polish.a80"
+                            elseif localization.current = localization.id_es
+                            include	"strings/spanish.a80"
+                            else
+                            include	"strings/russian.a80"
+                            endif
                         endmodule

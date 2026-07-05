@@ -1,7 +1,9 @@
                             module	keyboard
 key_a                       equ	5			;a
+key_s                       equ	6			;s
 key_d                       equ	7			;d
 key_q                       equ	10			;q
+key_t                       equ	14			;t
 key_1                       equ	15
 key_2                       equ	16
 key_3                       equ	17
