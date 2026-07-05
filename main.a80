@@ -8,7 +8,7 @@ main_menu
                             di
                             ld	sp,start-1
                             call	interrupts.init
-                            call	music.init
+                            call	music.stop
                             call	sounds.init
                             ei
                             call	menu.run
@@ -20,6 +20,10 @@ main_menu
                             call	draw.draw_panel
                             call	debug.apply_initial_item_states
                             call	rooms.init_current_room
+
+                            di
+                            call	music.start
+                            ei
                             jp	game_process.loop
 
 reset_game_state

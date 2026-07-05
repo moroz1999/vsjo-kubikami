@@ -404,8 +404,8 @@ room_2_2_info
 room_3_2_info
 							room	{
 							room_3_2,                 ; data_address
-							logic.empty_room_logic,   ; logic_pointer
-							logic.empty_room_on_enter, ; on_enter_pointer
+							logic.room_3_2.logic,     ; logic_pointer
+							logic.room_3_2.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
 room_4_2_info

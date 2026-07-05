@@ -176,6 +176,7 @@ empty_item_action
                             include	"logic/room1_1.a80"
                             include	"logic/room2_0.a80"
                             include	"logic/room2_3.a80"
+                            include	"logic/room3_2.a80"
                             include	"logic/room3_3.a80"
                             include	"logic/room4_3.a80"
                             include	"logic/room5_3.a80"

@@ -358,6 +358,7 @@ animations_table
                             dw	room_animation_5_1_3
                             dw	room_animation_5_1_4
                             dw	room_animation_3_1_smoke
+                            dw	room_animation_3_2_fire
                             dw	room_animation_3_2
                             dw	room_animation_3_2_2
                             dw	room_animation_3_2_3
@@ -688,6 +689,40 @@ room_animation_3_1_smoke_frames
                             db	room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg,room_3_1_smoke_bg
                             db	room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_dark,room_3_1_smoke_light,room_3_1_smoke_light,room_3_1_smoke_light
                             db	room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_black,room_3_1_smoke_floor,room_3_1_smoke_floor,room_3_1_smoke_floor
+
+room_3_2_fire_x             equ	8
+room_3_2_fire_y             equ	1
+room_3_2_fire_width         equ	20
+room_3_2_fire_red_yellow    equ	%01010110
+room_3_2_fire_yellow_red    equ	%01110010
+
+room_animation_3_2_fire
+                            @room_animation	{
+                            3,                              ; room_x
+                            2,                              ; room_y
+
+                            room_3_2_fire_x,                ; x
+                            room_3_2_fire_y,                ; y
+                            room_3_2_fire_width,            ; width
+                            1,                              ; height
+
+                            2,                              ; frames
+                            0,                              ; current
+                            4,                              ; delay
+                            0,                              ; timer
+                            state_on,                       ; state
+                            room_animation_3_2_fire_frames  ; frames_ptr
+                            }
+
+room_animation_3_2_fire_frames
+                ; The checkerboard bitmap blends bright red and yellow into flickering orange.
+                            dup	room_3_2_fire_width
+                            db	room_3_2_fire_red_yellow
+                            edup
+
+                            dup	room_3_2_fire_width
+                            db	room_3_2_fire_yellow_red
+                            edup
 
 room_animation_3_2
                             @room_animation	{

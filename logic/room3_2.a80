@@ -1,0 +1,49 @@
+                        module	room_3_2
+fire_x                      equ	animate.room_3_2_fire_x
+fire_y                      equ	animate.room_3_2_fire_y
+fire_width                  equ	animate.room_3_2_fire_width
+fire_x_end                  equ	fire_x+fire_width
+fire_damage_rate            equ	4
+fire_damage_period          equ	hero.oxygen_health_delay
+fire_damage_amount          equ	hero.oxygen_health_damage
+
+logic
+                ; Fire contact is limited to the single burning cavity row.
+                            ld	a,(hero.hero_y)
+                            cp	fire_y
+                            jr	nz,reset_damage_phase
+
+                            ld	a,(hero.hero_x)
+                            cp	fire_x
+                            jr	c,reset_damage_phase
+                            cp	fire_x_end
+                            jr	nc,reset_damage_phase
+
+                ; Four fire phase units per frame produce exactly four water-rate hits per second.
+                            ld	a,(fire_damage_phase)
+                            add	a,fire_damage_rate
+                            cp	fire_damage_period
+                            jr	c,store_damage_phase
+
+                            sub	fire_damage_period
+                            ld	(fire_damage_phase),a
+
+                            ld	a,fire_damage_amount
+                            jp	hero.decrease_health_only
+
+store_damage_phase
+                            ld	(fire_damage_phase),a
+                            ret
+
+reset_damage_phase
+                            xor	a
+                            ld	(fire_damage_phase),a
+                            ret
+
+on_enter
+                            xor	a
+                            ld	(fire_damage_phase),a
+                            ret
+
+fire_damage_phase           db	0
+                        endmodule

@@ -1,6 +1,7 @@
                         module	game_process
 pause_text_x                equ	25
 pause_text_y                equ	22
+game_over_pause_frames      equ	100
 
 loop
                             ld	b,1
@@ -31,7 +32,7 @@ room_logic_pointer          equ	$+1
 
                             ld	a,(hero.health)
                             or	a
-                            jr	z,game_over
+                            jr	z,begin_game_over
 
                             call	draw.switch_colors
                             call	draw.draw_state
@@ -99,6 +100,23 @@ wait
                             ld	bc,screen_utils.attrs_size
                             ldir
                             ret
+begin_game_over
+                            call	hero.hide
+                            call	draw.switch_colors
+                            call	draw.draw_state
+                            call	game_ui.draw_stats
+
+                            xor	a
+                            call	draw.border
+
+                            call	music.fade_out
+
+                            ld	b,1
+                            call	wait
+
+                            ld	b,game_over_pause_frames
+                            call	wait
+                            jr	game_over
 endgame
                             call	draw.clear_screen
 

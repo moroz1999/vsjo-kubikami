@@ -3,9 +3,65 @@
                             endmodule
 
                             module	music
-init                        equ	music_player.START
-play                        equ	music_player.PLAY
-stop                        equ	music_player.MUTE
+fade_step_delay             equ	6
+fade_step_amount            equ	15
+
+start
+                            ld	hl,module_data
+                            call	music_player.START+3
+
+                            xor	a
+                            ld	(@volctrl),a
+                            ld	(fade_step_count),a
+                            inc	a
+                            ld	(playing),a
+                            ret
+
+stop
+                            xor	a
+                            ld	(playing),a
+                            ld	(fade_step_count),a
+                            jp	music_player.MUTE
+
+play
+                            ld	a,(playing)
+                            or	a
+                            ret	z
+
+                            call	music_player.PLAY
+
+                            ld	a,(fade_step_count)
+                            or	a
+                            ret	z
+
+                            ld	hl,fade_timer
+                            dec	(hl)
+                            ret	nz
+
+                            ld	(hl),fade_step_delay
+                            ld	hl,@volctrl
+                            dec	(hl)
+
+                            ld	hl,fade_step_count
+                            dec	(hl)
+                            ret	nz
+                            jp	stop
+
+fade_out
+                            ld	a,(playing)
+                            or	a
+                            ret	z
+
+                            ld	a,fade_step_delay
+                            ld	(fade_timer),a
+
+                            ld	a,fade_step_amount
+                            ld	(fade_step_count),a
+                            ret
+
+playing                     db	0
+fade_timer                  db	0
+fade_step_count             db	0
 
 module_data
                             incbin	"music/compiled.C"

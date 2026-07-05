@@ -33,6 +33,7 @@ oxygen_health_timer         db	oxygen_health_delay
 swam_up                     db	0
 control_state               db	0
 previous_control_state      db	0
+hidden                      db	0
 
 state_void                  equ	%00000001
 state_ground                equ	%00000010
@@ -84,6 +85,7 @@ reset_stats
                             ld	(swam_up),a
                             ld	(control_state),a
                             ld	(previous_control_state),a
+                            ld	(hidden),a
                             ld	(jump_step),a
                             ld	(jump_phase_delay),a
                             ld	(jump_type),a
@@ -104,6 +106,10 @@ reset_stats
 
                             ld	a,elevators.item_not_elevator
                             ld	(hero_elevator),a
+                            ret
+hide
+                            ld	a,1
+                            ld	(hidden),a
                             ret
 update_health_damage_timer
                             ld	a,(health_damage_timer)
@@ -326,6 +332,10 @@ update_oxygen_damage
                             call	decrease_health_only
                             ret
 draw_hero
+                            ld	a,(hidden)
+                            or	a
+                            ret	nz
+
                             ld	a,(hero_x)
                             ld	d,a
                             ld	a,(hero_y)
