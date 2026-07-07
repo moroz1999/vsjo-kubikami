@@ -64,7 +64,7 @@ The argument is written to `#B3` before its command is sent to `#BB`.
 
 ## Generated Sample Table
 
-Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..5` for the crowbar, enemy hit, hero landing, air-to-water splash, and glass break. `sounds.map_gs_sample` maps gameplay IDs to those same fixed numbers.
+Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..8` for the crowbar, enemy hit, hero landing, air-to-water splash, glass break, falling water drop, item pickup, and item drop. Runtime sound calls use backend-neutral `sounds.event_*` IDs; the AY backend maps only events with authored AYFX data, while the GS backend maps events directly to these fixed sample numbers.
 
 `build/gs/samples.a80` uses this format:
 
@@ -83,17 +83,28 @@ note, volume, priority, seek first, seek last
 
 The current upload order and gameplay mapping are:
 
-| Gameplay event | Gameplay ID | GS sample | GS source | Parameters |
-|---|---:|---:|---|---|
-| Crowbar | `1` | `1` | `gs/sounds/crowbar.raw`, copied from `17_wall.raw` | note `71`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Enemy hit | `4` | `2` | `gs/sounds/enemy_hit.raw`, copied from `05_jump_start.raw` | note `71`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Hero lands after a jump or fall | `#80` | `3` | `sfx/jumpend.raw` | default note `70`; runtime note `67..70`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Hero enters water from air | `#81` | `4` | `sfx/splash.raw` | default note `70`; runtime note `67..70`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Stone breaks glass | `#82` | `5` | `sfx/glass.raw` | note `67`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
+|---|---:|---:|---:|---|---|
+| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/wood.raw` | note `61`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Enemy hit | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `gs/sounds/enemy_hit.raw`, copied from `05_jump_start.raw` | note `71`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/glass.raw` | note `61`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
+| Water drop starts falling | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, priority `#80`, seeks `#0F/#0F` |
+| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
+| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/itemdrop.raw` | note `53`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
 
-Gameplay IDs `#80` and above are GS-only and are not passed to the AYFX bank. The landing event stays pending after a jump arc or while the hero is in free fall until the hero reaches ground; entering water clears it and plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
+The landing event is emitted only on the transition from `hero.state_void` to `hero.state_ground`; entering water plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
 
-The `glass.raw` source rate is `18000 Hz`, while the preceding `jumpend.raw` and `splash.raw` sources use `22050 Hz`. GS notes are semitone steps, so `71 + round(12 * log2(18000 / 22050))` selects note `67`.
+The GS sample note rule is fixed by source rate, not recalculated at build time:
+
+| Source rate | GS note |
+|---:|---:|
+| `22050 Hz` | `65` |
+| `18000 Hz` | `61` |
+| `14000 Hz` | `57` |
+
+Known-rate samples follow that table: `wood.raw` and `glass.raw` use note `61`; `jumpend.raw`, `splash.raw`, and `take.raw` use note `65`; `waterdrop.raw` uses note `57`. Runtime randomization plays `65..68` for landing and splash, and `57..60` for water drops. `itemdrop.raw` is `11025 Hz` and uses note `53`, one octave below the `22050 Hz` rule. `enemy_hit.raw` keeps note `71` until its source rate is measured. Crowbar, landing, splash, and glass use full GS sample volume `#40`; water drops use half volume `#20`; item pickup and item drop use 75% volume `#30`.
 
 ## Sample Preparation
 
@@ -109,13 +120,15 @@ The `glass.raw` source rate is `18000 Hz`, while the preceding `jumpend.raw` and
 
 The loader reads a packed block into `#8000`, decompresses it with `dzx0_turbo` to `#C000`, reverses the delta encoding in place, and streams the exact unpacked byte count to GS. Resetting the delta accumulator for every block must match the encoder.
 
-The current RAW total is `69189` of `477184` bytes. The packed output is `50944` bytes: `199` sectors, or twelve tracks plus seven sectors. Generated files live under ignored `build/gs/`; the raw source samples are tracked under `gs/sounds/` and `sfx/`.
+The current RAW total is `81425` of `477184` bytes. The packed output is `58112` bytes: `227` sectors, or fourteen tracks plus three sectors. Generated files live under ignored `build/gs/`; the raw source samples are tracked under `gs/sounds/` and `sfx/`.
 
 ## Runtime Playback
 
-To play a fixed-pitch effect, the game writes its sample number to `#B3`, sends command `#39`, and waits for command-ready status. Playback is dispatched from the existing pending-effect path in the IM 2 handler.
+Runtime gameplay code loads a backend-neutral `sounds.event_*` ID into `A` and calls `sounds.play`. `sounds.play` is a patched trampoline: AY modes route to the AY request handler, GS modes route to the direct GS handler, and muted modes return immediately. `sounds.configure` patches the play and frame trampolines when the sound mode changes.
 
-The repeated hero landing and splash effects use direct-play command `#88` with a per-play note argument. They add `R & 3` to the repeating-effect note base, producing notes `67..70`; the sample headers remain unchanged for other playback paths. After command-ready status, the note is written to `#B3`, and the game waits for data-ready status.
+The AY backend never calls `AFXPLAY` directly from gameplay code. It stores one pending AYFX ID, and the IM 2 `sounds.frame` handler consumes it with `AFXPLAY` before advancing `AFXFRAME`. The GS backend sends commands immediately from gameplay code; it does not use the AY pending slot or the IM 2 SFX frame path.
+
+To play a fixed-pitch GS effect, the game writes its sample number to `#B3`, sends command `#39`, and waits for command-ready status. The repeated hero landing, splash, and water-drop effects use direct-play command `#88` with a per-play note argument. `general_sound.play_sample_random_note` adds `R & 3` to the event's base note, producing notes `65..68` for landing and splash and `57..60` for water drops; the sample headers remain unchanged for other playback paths. After command-ready status, the note is written to `#B3`, and the game waits for data-ready status.
 
 Main-menu item `6` cycles these modes:
 

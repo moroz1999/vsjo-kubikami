@@ -7,5 +7,10 @@ enemy_hit_sample            equ	2
 jump_end_sample             equ	3
 splash_sample               equ	4
 glass_break_sample          equ	5
-repeating_effect_note_base  equ	67
+waterdrop_sample            equ	6
+take_sample                 equ	7
+itemdrop_sample             equ	8
+jump_end_note_base          equ	65
+splash_note_base            equ	65
+waterdrop_note_base         equ	57
                             endmodule

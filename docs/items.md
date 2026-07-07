@@ -1,11 +1,13 @@
 # Items Domain
 
+- Picking up any room item queues `sounds.event_take`; GS maps it to `sfx/take.raw` at note `65` and 75% volume `#30`, while AY modes ignore the event.
+- Dropping any carried room item queues `sounds.event_itemdrop`; GS maps it to `sfx/itemdrop.raw` at note `53` and 75% volume `#30`, while AY modes ignore the event.
+
 ## Crowbar
 
 - The crowbar is used in room `2,0` when the hero stands at `(21,12)`.
 - Using it breaks the roof, starts the room ground animation, and removes the item from the pocket.
-- Successful use starts AYFX effect `1`.
-- In GS modes, crowbar AYFX ID `1` maps to fixed GS sample number `1`.
+- Successful use queues `sounds.event_crowbar`; AY modes map it to AYFX effect `1`, and GS modes map it to fixed GS sample number `1`.
 - The enemy route effect is `logic.room_2_0.activate_roof_route`: it rewires `route_2_0_top_mid.bottom_right_point_ptr` to the normal `route_2_0_basement_entry`.
 - After the rewire, enemies can enter the lower room path through the broken roof route without starting a jump, then use the separate basement jump point to climb back right.
 
@@ -23,7 +25,7 @@
 - Each falling step queues the previous stone cell for background restoration before the item is drawn at its new position.
 - The stone is used anywhere in room `1,1` from the right edge of the glass to the screen edge (`x=20..31`, any `y`).
 - Using it starts the glass break animation, removes the item from the pocket, and calls `logic.room_1_1.activate_glass_route`.
-- A successful use also queues GS-only glass-break effect `#82`, mapped to sample `5` from `sfx/glass.raw`.
+- A successful use also queues `sounds.event_glass_break`, mapped in GS modes to sample `5` from `sfx/glass.raw`.
 - The enemy route effect enables the two glass-edge jump points, so enemies can cross the room `1,1` glass only after it has been broken.
 - Room `1,1` stores the persistent result in `logic.room_1_1.glass_broken`; `on_enter` applies the final broken-glass frame when this flag is set.
 
@@ -116,7 +118,7 @@
 
 ## Scuba
 
-- The scuba gear lies on the upper platform in room `6,0` at `(18,10)`.
+- The scuba gear lies on the lower-right bed in room `4,0` at `(24,16)`, one cell above the bed surface.
 - Keeping it in the inventory means it is equipped; underwater oxygen and the drowning-damage timer stay full.
 - Dropping it or swapping it for another item removes the effect immediately.
 - Scuba prevents drowning only; environmental damage such as the powered room `6,3` poison pool remains active.
@@ -133,11 +135,12 @@
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
 - `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, `debug.initial_dynamite_exploded`, `debug.initial_water_lowered`, and `debug.initial_energy_module_used` are compile-time 0/1 flags for item effects that should start already applied.
+- `debug.initial_elevator_6_3_on` is a temporary compile-time debug flag that starts only `elevator_6_3` upward without applying the full screwdriver/generator effect.
 - Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, water lowered by valve `0`, and energy module used `0`.
+- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, water lowered by valve `0`, energy module used `0`, and temporary room `6,3` elevator on `0`.
 - With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
 - Game restart restores only each item's mutable `room_x`, `room_y`, `room_pos_x`, and `room_pos_y` fields. Type, name, action, and colors remain untouched, and debug initial item states are applied after this location reset.
 

@@ -2,14 +2,14 @@
 hero_color1                 equ	%01111101
 hero_color2                 equ	%01001111
 hero_color                  db	hero_color1,hero_color2
-hero_start_x                equ	17
-hero_start_y                equ	10
-hero_start_global_y         equ	10
+hero_start_x                equ	13
+hero_start_y                equ	11
+hero_start_global_y         equ	11
 
 hero_coords
 ; original coords
-;hero_y                      db	13
-;hero_x                      db	11
+;hero_y                      db	11
+;hero_x                      db	13
 hero_y                      db	hero_start_y
 hero_x                      db	hero_start_x
 hero_global_y               db	hero_start_global_y
@@ -49,7 +49,6 @@ hero_state                  db	state_ground
 
 jump_step                   db	0
 jump_phase_delay            db	0
-landing_sound_pending       db	0
 
 jump_type_top               equ	0
 jump_type_left              equ	1
@@ -89,7 +88,6 @@ reset_stats
                             ld	(hidden),a
                             ld	(jump_step),a
                             ld	(jump_phase_delay),a
-                            ld	(landing_sound_pending),a
                             ld	(jump_type),a
                             ld	(gravity_timer),a
                             ld	(gravity_delay),a
@@ -470,7 +468,6 @@ jump_process_dec
                             ret
 hero_jump_stop
                             ld	a,state_void
-                            ld	(landing_sound_pending),a
                             ld	(hero_state),a
                             ret
 hero_move
@@ -782,6 +779,9 @@ pickup_item
 
                             ld	a,(current_item)
                             call	items.print_item_name
+
+                            ld	a,sounds.event_take
+                            call	sounds.play
                             ret
 delete_item_in_pocket
                             ld	a,no_item_in_pocket
@@ -797,6 +797,9 @@ drop_item
                             ld	c,a
                             ld	a,(current_item)
                             call	rooms.spawn_item
+
+                            ld	a,sounds.event_itemdrop
+                            call	sounds.play
 
                             call	delete_item_in_pocket
                             ret
@@ -854,13 +857,10 @@ check_hero_state
                             cp	state_swim
                             jr	z,check_hero_state_swim_store
 
-                            ld	a,sounds.splash_effect
+                            ld	a,sounds.event_splash
                             call	sounds.play
 
 check_hero_state_swim_store
-                            xor	a
-                            ld	(landing_sound_pending),a
-
                             ld	a,state_swim
                             ld	(hero_state),a
 
@@ -893,13 +893,11 @@ check_hero_state_ground
                             jr	z,check_hero_state_falling
                 ; if not empty room or sky then hero is standing on ground
 check_hero_state_stand
-                            ld	a,(landing_sound_pending)
-                            or	a
-                            jr	z,check_hero_state_stand_store
+                            ld	a,(hero_state)
+                            cp	state_void
+                            jr	nz,check_hero_state_stand_store
 
-                            xor	a
-                            ld	(landing_sound_pending),a
-                            ld	a,sounds.jump_end_effect
+                            ld	a,sounds.event_jump_end
                             call	sounds.play
 
 check_hero_state_stand_store
@@ -914,7 +912,6 @@ check_hero_state_stand_store
                             ret
 check_hero_state_falling
                             ld	a,state_void
-                            ld	(landing_sound_pending),a
                             ld	(hero_state),a
 
                             ld	a,gravity_air

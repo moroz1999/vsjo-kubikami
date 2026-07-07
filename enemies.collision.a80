@@ -39,7 +39,7 @@ check_hero_next
                             call	hero.decrease_health
                             pop	ix
 
-                            ld	a,sounds.enemy_damage_effect
+                            ld	a,sounds.event_enemy_hit
                             call	sounds.play
 
 check_hero_skip

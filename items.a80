@@ -303,10 +303,10 @@ item_14
 item_15
                             item	{
                             scuba                    ; type_id
-                            6                        ; room_x
+                            4                        ; room_x
                             0                        ; room_y
-                            18                       ; room_pos_x
-                            10                       ; room_pos_y
+                            24                       ; room_pos_x
+                            16                       ; room_pos_y
                             strings.scuba            ; name
                             logic.empty_item_action  ; logic
                             %01000101                ; color1
@@ -344,7 +344,7 @@ initial_item_locations
                             db	5,0,6,7
                             db	1,0,19,17
                             db	0,1,8,8
-                            db	6,0,18,10
+                            db	4,0,24,16
                             db	7,2,25,16
 initial_item_locations_end
                             assert	initial_item_locations_end-initial_item_locations=item_amount*4

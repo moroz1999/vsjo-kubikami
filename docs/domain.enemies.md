@@ -53,8 +53,7 @@
 ## Collision
 
 - Enemy collision applies 16 damage through the standard `hero.decrease_health` armor and health path.
-- Each accepted enemy-damage event starts AYFX effect `4`, the fifth effect in the zero-based bank.
-- In GS modes, enemy-damage AYFX ID `4` maps to fixed GS sample number `2`, loaded from `gs/sounds/enemy_hit.raw`.
+- Each accepted enemy-damage event queues `sounds.event_enemy_hit`; AY modes map it to AYFX effect `4`, and GS modes map it to fixed GS sample number `2` loaded from `gs/sounds/enemy_hit.raw`.
 - Standard enemy damage uses the delayed-damage flag and starts a `100`-frame hero invulnerability timer.
 - Further delayed damage is ignored while that timer is active; immediate damage bypasses the timer.
 - Water-drop collision damage also uses the delayed path, preserving its shared contact-damage protection.

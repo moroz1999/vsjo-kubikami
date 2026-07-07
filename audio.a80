@@ -24,6 +24,7 @@ init
 
 init_store
                             ld	(mode),a
+                            call	sounds.configure
                             ret
 
 select_next
@@ -52,6 +53,7 @@ select_validate_gs
 
 select_store
                             ld	(mode),a
+                            call	sounds.configure
                             ret
 
 music_enabled

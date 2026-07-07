@@ -140,6 +140,10 @@ move_next
 
                             inc	hl
                             ld	(hl),state_drop
+                            push	de
+                            ld	a,sounds.event_waterdrop
+                            call	sounds.play
+                            pop	de
 move_drop
                             push	de
                             ld	h,d

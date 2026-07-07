@@ -57,5 +57,15 @@ send_data_wait
                             jr	c,send_data_wait
                             ret
 
+play_sample_random_note
+                ; a - GS upload handle, b - base note; R & 3 is added to the note.
+                            ld	d,a
+                            ld	a,r
+                            and	3
+                            add	a,b
+                            ld	c,a
+                            ld	a,d
+                            jp	play_sample_with_note
+
 available                   db	0
                             endmodule

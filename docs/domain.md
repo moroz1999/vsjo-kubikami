@@ -19,6 +19,7 @@
 - Room `3,1` draws a four-frame smoke animation in a `7x8` area at `(10,14)` centered on the one-cell floor opening at `x=13`; its bottom two rows intentionally overlay the floor, and it is screen-only and does not change the room geometry.
 - Room `3,2` fills the one-cell-high top cavity at `(8..27,1)` with screen-only flickering red-yellow fire. Contact removes `8` health four times per `50` frames, bypassing armor.
 - Timed rain in room `1,0` uses room waterdrops with a phase mask; disabling a visible rain drop must queue its last attribute point for restore before parking it at the source.
+- A water drop queues `sounds.event_waterdrop` once when its delay expires and it starts falling; GS maps it to the half-volume `sfx/waterdrop.raw` sample with randomized note `57..60`, while AY modes ignore the event.
 - The left water drop in room `1,1` starts at `(8,3)`, and the third water drop in room `2,1` starts at `(20,3)`.
 - Room `7,0` has three always-active water drops starting at `(6,1)`, `(12,2)`, and `(27,4)`, with respective delays `40`, `20`, and `60` frames and initial timers `30`, `70`, and `80`.
 - Room `1,3` boss restores its old arm lines and jaw column with black attributes for speed; moving 2x2 joint/head markers keep last drawn attribute addresses so erase can clear by address, while the red floor under jaws is still restored through `draw.restore_pixel`. Its bite removes one third of maximum combined armor and health through the shared delayed-damage timer.
@@ -26,7 +27,7 @@
 - `objects.check_coords` treats water as passable, but hero state checks must also treat water below the hero as non-solid; otherwise the water surface becomes jumpable ground.
 - Hero floor checks at the bottom row must go through the room-edge-aware coordinate check instead of reading `rooms.current_room_buf` past row `21`.
 - Swimming upward from water into a non-water passable cell starts a hero jump arc in the requested direction; swimming inside water remains swim movement.
-- Finishing a jump arc or entering free fall marks a landing sound as pending. Reaching ground plays it once; entering water plays the splash instead and clears the pending landing.
+- Finishing a jump arc or entering free fall puts the hero into `state_void`. The transition from `state_void` to `state_ground` plays the landing sound once; entering water from any non-swim state plays the splash and switches to `state_swim` instead.
 - Room entry must not advance timed room simulation: edge movement commits the hero's wrapped local coordinate only after `goto_*_room` returns, so a nested elevator update can move a rider from the stale edge coordinate and skip a room. The outer elevator update already performs the step that crosses the boundary, and the upper room gathers elevators based in rooms below, so the same elevator continues on later frames. Room entry must recompute elevator `y` and `in_room` for same-frame drawing, while animation, elevator, and enemy movement advance only from the main game loop.
 - On initial startup, the fully loaded game keeps `loading.scr` visible until the current key is released and a new key is pressed, then opens the menu with the centered Cyrillic title `ВСЁ КУБИКАМИ` at the top and version `0.5` at the bottom. Returning from an end screen goes directly to the menu without showing the loading screen again. Number keys `1` through `6` activate the matching menu item directly. Visible menu and item messages are selected at build time from Russian, English, Czech, Polish, or Spanish strings.
 - Main-menu item `6` controls the persistent [sound mode](general_sound.md#runtime-playback).
@@ -37,7 +38,7 @@
 - On zero health, the final simulated frame is drawn without the hero and held for 100 frames before the game-over screen.
 - PT3 music is silent in the menu, restarts from the module beginning when gameplay starts, and fades to silence during the game-over hold.
 
-- Starting from the menu calls `reset_game_state` before debug initial effects and room initialization. Input mode and assigned keys persist, while the temporary test start places the hero in room `6,0` at `(17,10)`, next to the scuba gear, and stale draw-restore and one-shot-animation state is cleared.
+- Starting from the menu calls `reset_game_state` before debug initial effects and room initialization. Input mode and assigned keys persist, while the normal start places the hero in room `2,0` at `(13,11)`, and stale draw-restore and one-shot-animation state is cleared.
 - Quest restart clears permanent room-effect flags, both boss completion states, the room `2,0` release hole, and the room `2,1` falling stone. It also restores only the route pointers and room-animation fields changed by item effects, so debug initial item effects can be reapplied from a clean state.
 - Elevator restart restores only `cur_height`, `state`, and `timer`. Derived `y` and `in_room` fields are recalculated by normal room initialization.
 
