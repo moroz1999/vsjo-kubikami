@@ -1,0 +1,95 @@
+                            module	audio
+mode_ay                     equ	0
+mode_ay_gs                  equ	1
+mode_music                  equ	2
+mode_ay_sfx                 equ	3
+mode_gs_sfx                 equ	4
+mode_none                   equ	5
+mode_amount                 equ	6
+
+flag_music                  equ	%00000001
+flag_ay_sfx                 equ	%00000010
+flag_gs_sfx                 equ	%00000100
+
+init
+                ; Hardware presence selects the safest useful initial mode.
+                            call	general_sound.init
+
+                            ld	a,(general_sound.available)
+                            or	a
+                            ld	a,mode_ay
+                            jr	z,init_store
+
+                            ld	a,mode_ay_gs
+
+init_store
+                            ld	(mode),a
+                            ret
+
+select_next
+                            ld	a,(mode)
+
+select_next_candidate
+                            inc	a
+                            cp	mode_amount
+                            jr	c,select_validate
+
+                            xor	a
+
+select_validate
+                            cp	mode_ay_gs
+                            jr	z,select_validate_gs
+                            cp	mode_gs_sfx
+                            jr	nz,select_store
+
+select_validate_gs
+                ; Never expose modes that would be silent without GS hardware.
+                            ld	b,a
+                            ld	a,(general_sound.available)
+                            or	a
+                            ld	a,b
+                            jr	z,select_next_candidate
+
+select_store
+                            ld	(mode),a
+                            ret
+
+music_enabled
+                            call	get_mode_flags
+                            and	flag_music
+                            ret
+
+ay_sfx_enabled
+                            call	get_mode_flags
+                            and	flag_ay_sfx
+                            ret
+
+gs_sfx_enabled
+                            call	get_mode_flags
+                            and	flag_gs_sfx
+                            ret	z
+
+                            ld	a,(general_sound.available)
+                            or	a
+                            ret
+
+get_mode_flags
+                            ld	a,(mode)
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,mode_flags
+                            add	hl,de
+                            ld	a,(hl)
+                            ret
+
+mode                        db	mode_ay
+
+mode_flags
+                ; music, AY effects, GS effects
+                            db	flag_music|flag_ay_sfx
+                            db	flag_music|flag_gs_sfx
+                            db	flag_music
+                            db	flag_ay_sfx
+                            db	flag_gs_sfx
+                            db	0
+                            endmodule

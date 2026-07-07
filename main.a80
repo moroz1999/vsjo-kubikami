@@ -5,10 +5,13 @@ start                       equ	#6000
                             org	start
 
                             include	"localization.a80"
+                            include	"gs_config.a80"
 
 startup
                             di
                             ld	sp,start-1
+                ; Consume the loader handoff before opening the first menu.
+                            call	audio.init
                             call	menu.wait_key_press
                             jp	main_menu
 
@@ -49,6 +52,8 @@ reset_game_state
 
                             include	"math.a80"
                             include	"interrupts.a80"
+                            include	"general_sound.a80"
+                            include	"audio.a80"
                             include	"music.a80"
                             include	"sounds.a80"
                             include	"game_process.a80"
@@ -85,6 +90,7 @@ room_3_0                    incbin	"rooms/room3,0.zx0"
 room_4_0                    incbin	"rooms/room4,0.zx0"
 room_5_0                    incbin	"rooms/room5,0.zx0"
 room_6_0                    incbin	"rooms/room6,0.zx0"
+room_7_0                    incbin	"rooms/room7,0.zx0"
 
 room_0_1                    incbin	"rooms/room0,1.zx0"
 room_1_1                    incbin	"rooms/room1,1.zx0"
@@ -93,6 +99,7 @@ room_3_1                    incbin	"rooms/room3,1.zx0"
 room_4_1                    incbin	"rooms/room4,1.zx0"
 room_5_1                    incbin	"rooms/room5,1.zx0"
 room_6_1                    incbin	"rooms/room6,1.zx0"
+room_7_1                    incbin	"rooms/room7,1.zx0"
 
 room_0_2                    incbin	"rooms/room0,2.zx0"
 room_1_2                    incbin	"rooms/room1,2.zx0"
@@ -101,6 +108,7 @@ room_3_2                    incbin	"rooms/room3,2.zx0"
 room_4_2                    incbin	"rooms/room4,2.zx0"
 room_5_2                    incbin	"rooms/room5,2.zx0"
 room_6_2                    incbin	"rooms/room6,2.zx0"
+room_7_2                    incbin	"rooms/room7,2.zx0"
 
 room_0_3                    incbin	"rooms/room0,3.zx0"
 room_1_3                    incbin	"rooms/room1,3.zx0"

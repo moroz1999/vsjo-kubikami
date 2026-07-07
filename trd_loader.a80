@@ -1,0 +1,277 @@
+trd_loader_stack            equ	#ffff
+trd_loader_packed_buf       equ	#8000
+trd_loader_unpacked_buf     equ	#c000
+trd_loader_data_port        equ	gs_config.data_port
+trd_loader_command_port     equ	gs_config.command_port
+trd_loader_data_end         equ	#fe
+trd_loader_table_end        equ	#ff
+trd_loader_high_volume_command equ	#03
+trd_loader_max_volume       equ	#40
+trd_loader_game_sectors     equ	(@end-@start+255)/256
+
+                            assert	loading_screen_size/256<=255
+                            assert	trd_loader_game_sectors<=255
+
+trd_loader
+                ; Keep the loader resident above every destination it fills.
+                            di
+                            ld	sp,trd_loader_stack
+                            xor	a
+                            out	(#fe),a
+                            ld	(gs_config.detected_address),a
+
+                ; Show the loading screen before probing or uploading hardware data.
+                            ld	hl,screen_utils.screen
+                            ld	a,loading_screen_size/256
+                            call	trd_loader_read_sectors
+
+                            ifdef	release_gs_trd
+                ; GS images consume sample sectors only when the device answers.
+                            call	trd_loader_detect_gs
+                            or	a
+                            jr	z,trd_loader_skip_gs_data
+
+                            ld	(gs_config.detected_address),a
+                            call	trd_loader_reset_gs
+                            call	trd_loader_load_samples
+                            jr	trd_loader_load_game
+
+trd_loader_skip_gs_data
+                            call	trd_loader_skip_sample_sectors
+                            endif
+
+trd_loader_load_game
+                ; The final disk read replaces scratch buffers but not this loader.
+                            ld	hl,@start
+                            ld	a,trd_loader_game_sectors
+                            call	trd_loader_read_sectors
+                            jp	@start
+
+trd_loader_read_sectors
+                ; a - sector count, hl - destination
+                            ld	b,a
+                            ld	de,(#5cf4)
+                            ld	c,5
+                            ld	iy,#5c3a
+                            im	1
+                            call	#3d13
+                            di
+                            ret
+
+                            ifdef	release_gs_trd
+trd_loader_detect_gs
+                ; Bound detection so a GS-free machine cannot hang during startup.
+                            ld	a,1
+                            out	(trd_loader_data_port),a
+                            ld	a,#2e
+                            out	(trd_loader_command_port),a
+                            ld	b,255
+
+trd_loader_detect_gs_retry
+                            in	a,(trd_loader_command_port)
+                            rrca
+                            jr	nc,trd_loader_detect_gs_success
+                            djnz	trd_loader_detect_gs_retry
+
+                            xor	a
+                            ret
+
+trd_loader_detect_gs_success
+                            ld	a,1
+                            ret
+
+trd_loader_reset_gs
+                ; Cold reset precedes all GS state and sample initialization.
+                            ld	a,#f4
+                            call	trd_loader_send_command
+
+                ; GS output passes through DAC, FX master, and FX global stages.
+                            ld	a,trd_loader_high_volume_command
+                            call	trd_loader_send_command
+
+                            ld	a,trd_loader_max_volume
+                            out	(trd_loader_data_port),a
+                            ld	a,#2b
+                            call	trd_loader_send_command
+
+                            ld	a,trd_loader_max_volume
+                            out	(trd_loader_data_port),a
+                            ld	a,#3d
+                            jp	trd_loader_send_command
+
+trd_loader_load_samples
+                ; The generated table keeps disk blocks and GS headers synchronized.
+                            ld	hl,gs_sample_table
+
+trd_loader_load_sample
+                            ld	a,(hl)
+                            inc	hl
+                            cp	trd_loader_table_end
+                            ret	z
+
+                            call	trd_loader_start_sample
+                            call	trd_loader_upload_blocks
+                            call	trd_loader_end_upload
+                            call	trd_loader_set_sample_parameters
+                            jr	trd_loader_load_sample
+
+trd_loader_start_sample
+                ; Select the exact GS sample number encoded in the generated table.
+                            out	(trd_loader_data_port),a
+                            ld	a,#38
+                            call	trd_loader_send_command
+
+                            ld	a,#d1
+                            jp	trd_loader_send_command
+
+trd_loader_end_upload
+                            ld	a,#d2
+                            jp	trd_loader_send_command
+
+trd_loader_upload_blocks
+                            ld	a,(hl)
+                            inc	hl
+                            cp	trd_loader_data_end
+                            ret	z
+
+                ; Packed blocks are independent so each can reuse the same buffers.
+                            push	hl
+                            ld	hl,trd_loader_packed_buf
+                            call	trd_loader_read_sectors
+
+                            ld	hl,trd_loader_packed_buf
+                            ld	de,trd_loader_unpacked_buf
+                            call	dzx0_turbo
+                            pop	hl
+
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+
+                ; Restore unsigned PCM before streaming the exact raw byte count.
+                            push	hl
+                            push	de
+                            call	trd_loader_delta_decode
+                            pop	de
+                            call	trd_loader_upload_data
+                            pop	hl
+                            jr	trd_loader_upload_blocks
+
+trd_loader_delta_decode
+                            ld	hl,trd_loader_unpacked_buf
+                            ld	c,0
+
+trd_loader_delta_decode_next
+                            ld	a,(hl)
+                            add	a,c
+                            ld	c,a
+                            ld	(hl),a
+                            inc	hl
+                            dec	e
+                            jp	nz,trd_loader_delta_decode_next
+                            dec	d
+                            jp	p,trd_loader_delta_decode_next
+                            ret
+
+trd_loader_upload_data
+                            ld	hl,trd_loader_unpacked_buf
+
+trd_loader_upload_data_wait
+                            in	a,(trd_loader_command_port)
+                            rlca
+                            jr	c,trd_loader_upload_data_wait
+
+                            ld	a,(hl)
+                            out	(trd_loader_data_port),a
+                            inc	hl
+                            dec	de
+                            ld	a,d
+                            or	e
+                            jr	nz,trd_loader_upload_data_wait
+
+trd_loader_upload_data_end
+                            in	a,(trd_loader_command_port)
+                            rlca
+                            jr	c,trd_loader_upload_data_end
+                            ret
+
+trd_loader_set_sample_parameters
+                ; Persist playback defaults in the uploaded sample header.
+                            ld	a,(hl)
+                            inc	hl
+                            call	trd_loader_set_sample_note
+                            ld	a,(hl)
+                            inc	hl
+                            call	trd_loader_set_sample_volume
+                            ld	a,(hl)
+                            inc	hl
+                            call	trd_loader_set_sample_priority
+                            ld	a,(hl)
+                            inc	hl
+                            call	trd_loader_set_sample_seek_first
+                            ld	a,(hl)
+                            inc	hl
+                            jp	trd_loader_set_sample_seek_last
+
+trd_loader_set_sample_note
+                            out	(trd_loader_data_port),a
+                            ld	a,#40
+                            jp	trd_loader_send_command
+
+trd_loader_set_sample_volume
+                            out	(trd_loader_data_port),a
+                            ld	a,#41
+                            jp	trd_loader_send_command
+
+trd_loader_set_sample_priority
+                            out	(trd_loader_data_port),a
+                            ld	a,#45
+                            jp	trd_loader_send_command
+
+trd_loader_set_sample_seek_first
+                            out	(trd_loader_data_port),a
+                            ld	a,#46
+                            jp	trd_loader_send_command
+
+trd_loader_set_sample_seek_last
+                            out	(trd_loader_data_port),a
+                            ld	a,#47
+                            jp	trd_loader_send_command
+
+trd_loader_send_command
+                            out	(trd_loader_command_port),a
+
+trd_loader_send_command_wait
+                            in	a,(trd_loader_command_port)
+                            rrca
+                            jr	c,trd_loader_send_command_wait
+                            ret
+
+trd_loader_skip_sample_sectors
+                ; Convert generated sector overflow into the matching track advance.
+                            ld	de,(#5cf4)
+                            ld	a,e
+                            add	a,gs_data_skip_sectors
+                            ld	e,a
+                            and	#f0
+                            rrca
+                            rrca
+                            rrca
+                            rrca
+                            add	a,d
+                            add	a,gs_data_skip_tracks
+                            ld	d,a
+                            ld	a,e
+                            and	#0f
+                            ld	e,a
+                            ld	(#5cf4),de
+                            ret
+
+                            include	"build/gs/samples.a80"
+                            include	"dzx0_turbo.asm"
+                            endif
+
+trd_loader_end
+                            assert	@end<=trd_loader
+                            assert	trd_loader_end<=interrupts.reserved_start

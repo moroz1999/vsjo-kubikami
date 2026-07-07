@@ -3,8 +3,9 @@
 const ROOM_WIDTH = 32;
 const ROOM_HEIGHT = 22;
 const ROOM_SIZE = ROOM_WIDTH * ROOM_HEIGHT;
-const ROOM_AMOUNT_X = 7;
+const ROOM_AMOUNT_X = 8;
 const ROOM_AMOUNT_Y = 4;
+const ROOM_ROW_WIDTHS = [8, 8, 8, 7];
 
 $sourceDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms_unpacked';
 $targetDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms';
@@ -28,8 +29,13 @@ if (!is_dir($targetDir) && !mkdir($targetDir, 0777, true)) {
 $totalSource = 0;
 $totalPacked = 0;
 
+if (count(ROOM_ROW_WIDTHS) !== ROOM_AMOUNT_Y || max(ROOM_ROW_WIDTHS) !== ROOM_AMOUNT_X) {
+    fwrite(STDERR, "Room row widths do not match the room grid\n");
+    exit(1);
+}
+
 for ($y = 0; $y < ROOM_AMOUNT_Y; $y++) {
-    for ($x = 0; $x < ROOM_AMOUNT_X; $x++) {
+    for ($x = 0; $x < ROOM_ROW_WIDTHS[$y]; $x++) {
         $sourceFileName = "room{$x},{$y}.atr";
         $targetFileName = "room{$x},{$y}.zx0";
         $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $sourceFileName;

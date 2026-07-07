@@ -30,6 +30,10 @@ cube
                             db	"KOSTKA",255
 valve
                             db	"ZAWOR",255
+scuba
+                            db	"AKWALUNG",255
+energy_module
+                            db	"MODUL ENERGII",255
 
 menu_start
                             db	"1. ROZPOCZNIJ GRE",255
@@ -41,6 +45,20 @@ menu_cursor
                             db	"4. KURSOR",255
 menu_assign
                             db	"5. USTAW KLAWISZE",255
+menu_sound
+                            db	"6. DZWIEK:",255
+sound_ay
+                            db	"AY",255
+sound_ay_gs
+                            db	"AY+GS",255
+sound_music
+                            db	"MUZYKA",255
+sound_ay_sfx
+                            db	"EFEKTY AY",255
+sound_gs_sfx
+                            db	"EFEKTY GS",255
+sound_none
+                            db	"BEZ DZWIEKU",255
 menu_key_left
                             db	"LEWO",255
 menu_key_right

@@ -1,6 +1,6 @@
 window.ROUTE_MAP_DATA = {
     "version": 1,
-    "generatedAt": "2026-06-09T21:03:16+00:00",
+    "generatedAt": "2026-07-05T21:40:10+00:00",
     "source": {
         "rooms": "rooms.a80",
         "roomsDir": "rooms_unpacked",
@@ -8,7 +8,7 @@ window.ROUTE_MAP_DATA = {
         "logicDir": "logic"
     },
     "room": {
-        "amountX": 7,
+        "amountX": 8,
         "amountY": 4,
         "width": 32,
         "height": 22
@@ -78,6 +78,15 @@ window.ROUTE_MAP_DATA = {
             "hasFullRoomData": true
         },
         {
+            "id": "7,0",
+            "x": 7,
+            "y": 0,
+            "file": "rooms_unpacked/room7,0.atr",
+            "exists": true,
+            "bytes": 768,
+            "hasFullRoomData": true
+        },
+        {
             "id": "0,1",
             "x": 0,
             "y": 1,
@@ -136,6 +145,15 @@ window.ROUTE_MAP_DATA = {
             "x": 6,
             "y": 1,
             "file": "rooms_unpacked/room6,1.atr",
+            "exists": true,
+            "bytes": 768,
+            "hasFullRoomData": true
+        },
+        {
+            "id": "7,1",
+            "x": 7,
+            "y": 1,
+            "file": "rooms_unpacked/room7,1.atr",
             "exists": true,
             "bytes": 768,
             "hasFullRoomData": true
@@ -204,6 +222,15 @@ window.ROUTE_MAP_DATA = {
             "hasFullRoomData": true
         },
         {
+            "id": "7,2",
+            "x": 7,
+            "y": 2,
+            "file": "rooms_unpacked/room7,2.atr",
+            "exists": true,
+            "bytes": 768,
+            "hasFullRoomData": true
+        },
+        {
             "id": "0,3",
             "x": 0,
             "y": 3,
@@ -265,6 +292,15 @@ window.ROUTE_MAP_DATA = {
             "exists": true,
             "bytes": 768,
             "hasFullRoomData": true
+        },
+        {
+            "id": "7,3",
+            "x": 7,
+            "y": 3,
+            "file": "rooms_unpacked/room7,3.atr",
+            "exists": false,
+            "bytes": 0,
+            "hasFullRoomData": false
         }
     ],
     "tableOrder": [

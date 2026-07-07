@@ -1,0 +1,11 @@
+                            module	gs_config
+data_port                   equ	#b3
+command_port                equ	#bb
+detected_address            equ	#5b00
+crowbar_sample              equ	1
+enemy_hit_sample            equ	2
+jump_end_sample             equ	3
+splash_sample               equ	4
+glass_break_sample          equ	5
+repeating_effect_note_base  equ	67
+                            endmodule

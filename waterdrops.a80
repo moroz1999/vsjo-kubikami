@@ -254,6 +254,10 @@ waterdrops_table
                             dw	waterdrop_1_0_31
                             dw	waterdrop_1_0_32
 
+                            dw	waterdrop_7_0_1
+                            dw	waterdrop_7_0_2
+                            dw	waterdrop_7_0_3
+
                             dw	waterdrop_0_1_1
                             dw	waterdrop_0_1_2
                             dw	waterdrop_0_1_3
@@ -680,6 +684,43 @@ waterdrop_1_0_32
                             81  //timer
                             0   //state_delay
                             type_falling //type
+                            }
+
+waterdrop_7_0_1
+                            waterdrop	{
+                            7,  //room_x
+                            0,  //room_y
+                            1,  //room_start_y
+                            6,  //room_pos_x
+                            1   //room_pos_y
+                            40  //delay
+                            30  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
+waterdrop_7_0_2
+                            waterdrop	{
+                            7,  //room_x
+                            0,  //room_y
+                            2,  //room_start_y
+                            12, //room_pos_x
+                            2,  //room_pos_y
+                            20  //delay
+                            70  //timer
+                            0   //state_delay
+                            type_always //type
+                            }
+waterdrop_7_0_3
+                            waterdrop	{
+                            7,  //room_x
+                            0,  //room_y
+                            4,  //room_start_y
+                            27, //room_pos_x
+                            4,  //room_pos_y
+                            60  //delay
+                            80  //timer
+                            0   //state_delay
+                            type_always //type
                             }
 
 waterdrop_0_1_1

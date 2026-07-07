@@ -20,6 +20,7 @@ reset_quests
                             ld	(room_4_3.water_lowered),a
                             ld	(room_1_3.boss_poisoned),a
                             ld	(room_3_3.boss_state),a
+                            ld	(room_6_3.poison_pool_enabled),a
 
                             ld	a,room_2_1.stone_state_hanging
                             ld	(room_2_1.stone_state),a
@@ -57,12 +58,18 @@ reset_quests
                             ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.current),a
                             ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.timer),a
                             ld	(animate.room_animation_water_5_3_lowered_surface+@room_animation.state),a
+                            ld	(animate.room_animation_6_3_bg+@room_animation.current),a
+                            ld	(animate.room_animation_6_3_bg+@room_animation.timer),a
+                            ld	(animate.room_animation_6_3_bg+@room_animation.state),a
+                            ld	(animate.room_animation_water_6_3_surface+@room_animation.current),a
+                            ld	(animate.room_animation_water_6_3_surface+@room_animation.timer),a
 
                             ld	a,50
                             ld	(animate.room_animation_5_1+@room_animation.timer),a
 
                             ld	a,animate.state_on
                             ld	(animate.room_animation_water_4_3_surface+@room_animation.state),a
+                            ld	(animate.room_animation_water_6_3_surface+@room_animation.state),a
 
                             ld	a,11
                             ld	(animate.room_animation_water_4_3_lowered_surface+@room_animation.y),a
@@ -163,6 +170,7 @@ room_onend_pointer          dw	0
                             include	"./logic/poison_bottle.a80";
                             include	"./logic/bug_jar.a80";
                             include	"./logic/valve.a80";
+                            include	"./logic/energy_module.a80";
 empty_room_logic
                             ret
 empty_room_on_enter

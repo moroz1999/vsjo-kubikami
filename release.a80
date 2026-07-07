@@ -1,5 +1,15 @@
                             module	release
 loading_screen_size         equ	#1b00
+basic_runtime_address       equ	#5ccb
+trd_loader_address          equ	#f000
+                            assert	loading_screen_size%256=0
+
+                            ifdef	release_trd
+                            define	release_disk 1
+                            endif
+                            ifdef	release_gs_trd
+                            define	release_disk 1
+                            endif
 
                             org	screen_utils.screen
 loading_screen
@@ -20,11 +30,11 @@ loading_screen_end
                             savetap	"kubikami-ru.tap",start
                             endif
                             else
-                            ifdef	release_trd
-                            assert	localization.current=localization.id_ru
+                            ifdef	release_disk
 
-                            org	#5d00
+                            org	#5b00
 basic_loader
+                ; BASIC only establishes RAMTOP and loads the resident ASM loader.
                             db	0,1
                             dw	basic_line_1_end-basic_line_1
 basic_line_1
@@ -40,34 +50,86 @@ basic_line_10_end
                             db	0,20
                             dw	basic_line_20_end-basic_line_20
 basic_line_20
-                            db	#fd,"24575",#0e,0,0,#ff,#5f,0,13
+                            db	#fd,"61439",#0e,0,0,#ff,#ef,0,13
 basic_line_20_end
 
                             db	0,30
                             dw	basic_line_30_end-basic_line_30
 basic_line_30
                             db	#f9,#c0,"15619",#0e,0,0,#03,#3d,0,":"
-                            db	#ea,":",#ef,#22,"LOADING",#22,#af,13
+                            db	#ea,":",#ef,#22,"LOADER",#22,#af,13
 basic_line_30_end
 
                             db	0,40
                             dw	basic_line_40_end-basic_line_40
 basic_line_40
-                            db	#f9,#c0,"15619",#0e,0,0,#03,#3d,0,":"
-                            db	#ea,":",#ef,#22,"KUBIKAMI",#22,#af,13
+                            db	#f9,#c0,"61440",#0e,0,0,0,#f0,0,13
 basic_line_40_end
-
-                            db	0,50
-                            dw	basic_line_50_end-basic_line_50
-basic_line_50
-                            db	#f9,#c0,"24576",#0e,0,0,0,#60,0,13
-basic_line_50_end
 basic_loader_end
+                            assert	basic_runtime_address+(basic_loader_end-basic_loader)<trd_loader_address
 
-                            emptytrd	"kubikami-ru.trd","KUBIKAMI"
-                            savetrd	"kubikami-ru.trd","boot.B",basic_loader,basic_loader_end-basic_loader,1
-                            savetrd	"kubikami-ru.trd","LOADING.C",loading_screen,loading_screen_size
-                            savetrd	"kubikami-ru.trd","KUBIKAMI.C",start,end-start
+                            org	trd_loader_address
+                            include	"trd_loader.a80"
+
+                            macro	build_trd disk_filename
+                ; Physical file order is the sequential loader contract.
+                            emptytrd	disk_filename,"KUBIKAMI"
+                            savetrd	disk_filename,"boot.B",basic_loader,basic_loader_end-basic_loader,1
+                            savetrd	disk_filename,"LOADER.C",trd_loader,trd_loader_end-trd_loader
+                            savetrd	disk_filename,"LOADING.C",loading_screen,loading_screen_size
+                            ifdef	release_gs_trd
+                ; Reuse screen staging only after LOADING.C has been saved.
+gs_disk_data_size           =	gs_data_sector_count*256
+gs_disk_data_offset         =	0
+                            assert	gs_disk_data_size%256=0
+                            assert	gs_data_sector_count<=255
+
+                            while	gs_disk_data_offset<gs_disk_data_size
+gs_disk_data_chunk_size     =	gs_disk_data_size-gs_disk_data_offset
+                            if	loading_screen_size<gs_disk_data_chunk_size
+gs_disk_data_chunk_size     =	loading_screen_size
+                            endif
+
+                            org	screen_utils.screen
+                            incbin	"build/gs/samples.bin",gs_disk_data_offset,gs_disk_data_chunk_size
+                            if	gs_disk_data_offset=0
+                            savetrd	disk_filename,"GSDATA.C",screen_utils.screen,gs_disk_data_chunk_size
+                            else
+                            savetrd	disk_filename,&"GSDATA.C",screen_utils.screen,gs_disk_data_chunk_size
+                            endif
+
+gs_disk_data_offset         =	gs_disk_data_offset+gs_disk_data_chunk_size
+                            endw
+                            assert	gs_disk_data_offset=gs_disk_data_size
+                            endif
+                            savetrd	disk_filename,"KUBIKAMI.C",@start,@end-@start
+                            endm
+
+                            ifdef	release_gs_trd
+                            if localization.current = localization.id_en
+                            build_trd	"kubikami-en-gs.trd"
+                            elseif localization.current = localization.id_cs
+                            build_trd	"kubikami-cs-gs.trd"
+                            elseif localization.current = localization.id_pl
+                            build_trd	"kubikami-pl-gs.trd"
+                            elseif localization.current = localization.id_es
+                            build_trd	"kubikami-es-gs.trd"
+                            else
+                            build_trd	"kubikami-ru-gs.trd"
+                            endif
+                            else
+                            if localization.current = localization.id_en
+                            build_trd	"kubikami-en.trd"
+                            elseif localization.current = localization.id_cs
+                            build_trd	"kubikami-cs.trd"
+                            elseif localization.current = localization.id_pl
+                            build_trd	"kubikami-pl.trd"
+                            elseif localization.current = localization.id_es
+                            build_trd	"kubikami-es.trd"
+                            else
+                            build_trd	"kubikami-ru.trd"
+                            endif
+                            endif
                             else
                             savesna	"qsave1.sna",start
                             endif

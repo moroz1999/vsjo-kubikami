@@ -6,6 +6,8 @@ php tools\map-viewer\generate_asm.php --project
 if errorlevel 1 goto :fail
 php pack_rooms.php
 if errorlevel 1 goto :fail
+php gs\prepare.php
+if errorlevel 1 goto :fail
 
 if not exist release mkdir release
 call :clean_release
@@ -26,6 +28,25 @@ if errorlevel 1 goto :fail
 
 _sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_trd main.a80
 if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_trd -Dlanguage_en main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_trd -Dlanguage_cs main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_trd -Dlanguage_pl main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_trd -Dlanguage_es main.a80
+if errorlevel 1 goto :fail
+
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_gs_trd main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_gs_trd -Dlanguage_en main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_gs_trd -Dlanguage_cs main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_gs_trd -Dlanguage_pl main.a80
+if errorlevel 1 goto :fail
+_sjasmplus\sjasmplus.exe --nologo --outprefix=release/ -Drelease_gs_trd -Dlanguage_es main.a80
+if errorlevel 1 goto :fail
 
 for %%F in (
     release\kubikami-ru.tap
@@ -34,6 +55,15 @@ for %%F in (
     release\kubikami-pl.tap
     release\kubikami-es.tap
     release\kubikami-ru.trd
+    release\kubikami-en.trd
+    release\kubikami-cs.trd
+    release\kubikami-pl.trd
+    release\kubikami-es.trd
+    release\kubikami-ru-gs.trd
+    release\kubikami-en-gs.trd
+    release\kubikami-cs-gs.trd
+    release\kubikami-pl-gs.trd
+    release\kubikami-es-gs.trd
 ) do if not exist "%%F" goto :fail
 
 popd
@@ -47,6 +77,15 @@ for %%F in (
     release\kubikami-pl.tap
     release\kubikami-es.tap
     release\kubikami-ru.trd
+    release\kubikami-en.trd
+    release\kubikami-cs.trd
+    release\kubikami-pl.trd
+    release\kubikami-es.trd
+    release\kubikami-ru-gs.trd
+    release\kubikami-en-gs.trd
+    release\kubikami-cs-gs.trd
+    release\kubikami-pl-gs.trd
+    release\kubikami-es-gs.trd
 ) do if exist "%%F" del /q "%%F"
 exit /b 0
 

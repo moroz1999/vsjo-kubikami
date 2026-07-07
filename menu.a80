@@ -1,8 +1,8 @@
                             module	menu
-logo_x                      equ	15
-logo_y                      equ	3
-logo_width                  equ	16
-logo_height                 equ	8
+title_x                     equ	10
+title_y                     equ	3
+version_x                   equ	14
+version_y                   equ	23
 menu_x                      equ	6
 menu_width                  equ	20
 menu_start_y                equ	7
@@ -10,9 +10,11 @@ menu_keyboard_y             equ	9
 menu_kempston_y             equ	11
 menu_cursor_y               equ	13
 menu_assign_y               equ	15
-assignment_text_x           equ	13
+menu_sound_y                equ	17
+sound_value_x               equ	17
+assignment_text_x           equ	10
 assignment_text_y           equ	12
-confirmation_text_x         equ	12
+confirmation_text_x         equ	9
 confirmation_text_y         equ	12
 
 normal_color                equ	%01000111
@@ -35,6 +37,8 @@ menu_loop
                             jr	z,select_cursor
                             cp	keyboard.key_5
                             jp	z,assign_keys
+                            cp	keyboard.key_6
+                            jr	z,select_sound
                             jr	menu_loop
 
 start_game
@@ -55,9 +59,15 @@ select_input_mode
                             call	draw_highlights
                             jr	menu_loop
 
+select_sound
+                            call	audio.select_next
+                ; Redraw the complete row so localized mode names cannot overlap.
+                            call	draw_menu
+                            jr	menu_loop
+
 draw_menu
                             call	draw.clear_screen
-                            call	draw_logo
+                            call	draw_header
 
                             ld	hl,strings.menu_start
                             ld	b,menu_x
@@ -84,27 +94,40 @@ draw_menu
                             ld	c,menu_assign_y
                             call	print.print_latin_string
 
+                            ld	hl,strings.menu_sound
+                            ld	b,menu_x
+                            ld	c,menu_sound_y
+                            call	print.print_latin_string
+
+                            call	draw_sound_mode
                             call	draw_highlights
                             ret
 
-draw_logo
-                            ld	b,logo_x
-                            ld	c,logo_y
-                            call	@get_screen_address_de
-                            ld	hl,logo_bitmap
-                            ld	b,logo_height
-draw_logo_row
-                            ld	a,(hl)
+draw_sound_mode
+                            ld	a,(audio.mode)
+                            add	a,a
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,sound_mode_text_table
+                            add	hl,de
+                            ld	e,(hl)
                             inc	hl
-                            ld	(de),a
-                            inc	e
-                            ld	a,(hl)
-                            inc	hl
-                            ld	(de),a
-                            dec	e
-                            call	@down_de
-                            djnz	draw_logo_row
-                            ret
+                            ld	d,(hl)
+                            ex	de,hl
+                            ld	b,sound_value_x
+                            ld	c,menu_sound_y
+                            jp	print.print_latin_string
+
+draw_header
+                            ld	hl,game_title
+                            ld	b,title_x
+                            ld	c,title_y
+                            call	print.print_latin_string
+
+                            ld	hl,game_version
+                            ld	b,version_x
+                            ld	c,version_y
+                            jp	print.print_latin_string
 
 draw_highlights
                             ld	a,normal_color
@@ -187,7 +210,7 @@ confirm_assignment_yes
 
 draw_assignment_screen
                             call	draw.clear_screen
-                            call	draw_logo
+                            call	draw_header
                             ret
 
 print_assignment_prompt
@@ -226,14 +249,14 @@ assignment_text_table
                             dw	strings.menu_key_jump,strings.menu_key_dive,strings.menu_key_use
                             dw	strings.menu_key_pause
 
-logo_bitmap
-                ; Reserved 16x8 placeholder logo.
-                            db	%11111111,%11111111
-                            db	%10000000,%00000001
-                            db	%10111111,%11111101
-                            db	%10100000,%00000101
-                            db	%10100111,%11100101
-                            db	%10100000,%00000101
-                            db	%10000000,%00000001
-                            db	%11111111,%11111111
+sound_mode_text_table
+                ; Order matches audio.mode_* constants.
+                            dw	strings.sound_ay,strings.sound_ay_gs,strings.sound_music
+                            dw	strings.sound_ay_sfx,strings.sound_gs_sfx,strings.sound_none
+
+game_title
+                ; Russian font uses Latin key positions; Ё has a dedicated code.
+                            db	"ws",print.cyrillic_yo_code," kubikami",255
+game_version
+                            db	"0.5",255
                             endmodule

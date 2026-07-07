@@ -30,6 +30,10 @@ cube
                             db	"kubik",255
 valve
                             db	"wentilx",255
+scuba
+                            db	"akwalang",255
+energy_module
+                            db	"energomodulx",255
 
 menu_start
                             db	"1. na^atx igru",255
@@ -41,6 +45,20 @@ menu_cursor
                             db	"4. kursor",255
 menu_assign
                             db	"5. nazna^itx klawi[i",255
+menu_sound
+                            db	"6. zwuk:",255
+sound_ay
+                            db	"AY",255
+sound_ay_gs
+                            db	"AY+GS",255
+sound_music
+                            db	"muzyka",255
+sound_ay_sfx
+                            db	"AY effekty",255
+sound_gs_sfx
+                            db	"GS effekty",255
+sound_none
+                            db	"bez zwuka",255
 menu_key_left
                             db	"wlewo",255
 menu_key_right

@@ -3,10 +3,10 @@
 ; room_number_x				db	2
 ; room_number_y				db	0
 
-room_number_x				db	2
+room_number_x				db	6
 room_number_y				db	0
 
-room_amount_x				equ	7
+room_amount_x				equ	8
 room_amount_y				equ	4
 room_w						equ	32
 room_h						equ	22
@@ -28,7 +28,7 @@ onend_pointer				word
 current_room_address		dw	0
 current_room_source_address	dw	0
 reset_state
-                            ld	hl,0*256+2
+                            ld	hl,0*256+6
                             ld	(room_number_x),hl
                             ret
 
@@ -202,10 +202,15 @@ goto_left_room
 				; a=255 (room_change_abort) - no room change happened	
 				; a=0 - room changed	
 goto_right_room
-							ld	a,(room_number_x)
-							inc	a
-							cp	room_amount_x
-							jr	z,goto_abort
+                            ld	a,(room_number_y)
+                            call	get_room_row_width
+                            ld	b,a
+
+                            ld	a,(room_number_x)
+                            inc	a
+                            cp	b
+                            jr	nc,goto_abort
+
 							push	af
 							call	logic.call_room_onend
 							pop	af
@@ -221,6 +226,14 @@ goto_bottom_room
 							inc	a
 							cp	room_amount_y
 							jr	z,goto_abort
+                            ld	c,a
+                            call	get_room_row_width
+                            ld	b,a
+                            ld	a,(room_number_x)
+                            cp	b
+                            jr	nc,goto_abort
+                            ld	a,c
+
 							push	af
 							call	logic.call_room_onend
 							pop	af
@@ -236,6 +249,14 @@ goto_top_room
 							dec	a
 							cp	255
 							jr	z,goto_abort
+                            ld	c,a
+                            call	get_room_row_width
+                            ld	b,a
+                            ld	a,(room_number_x)
+                            cp	b
+                            jr	nc,goto_abort
+                            ld	a,c
+
 							push	af
 							call	logic.call_room_onend
 							pop	af
@@ -246,6 +267,20 @@ goto_top_room
 goto_abort
 							ld	a,room_change_abort
 							ret
+
+get_room_row_width
+                ; Return the number of available rooms in map row A.
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,room_row_widths
+                            add	hl,de
+                            ld	a,(hl)
+                            ret
+
+room_row_widths
+                            db	8,8,8,7
+room_row_widths_end
+                            assert	room_row_widths_end-room_row_widths=room_amount_y
 rooms_table
 							dw	room_0_0_info
 							dw	room_1_0_info
@@ -254,6 +289,7 @@ rooms_table
 							dw	room_4_0_info
 							dw	room_5_0_info
 							dw	room_6_0_info
+                            dw	room_7_0_info
 
 							dw	room_0_1_info
 							dw	room_1_1_info
@@ -262,6 +298,7 @@ rooms_table
 							dw	room_4_1_info
 							dw	room_5_1_info
 							dw	room_6_1_info
+                            dw	room_7_1_info
 
 							dw	room_0_2_info
 							dw	room_1_2_info
@@ -270,6 +307,7 @@ rooms_table
 							dw	room_4_2_info
 							dw	room_5_2_info
 							dw	room_6_2_info
+                            dw	room_7_2_info
 
 							dw	room_0_3_info
 							dw	room_1_3_info
@@ -278,7 +316,9 @@ rooms_table
 							dw	room_4_3_info
 							dw	room_5_3_info
 							dw	room_6_3_info
+                            dw	0
 rooms_table_end
+                            assert	rooms_table_end-rooms_table=room_amount_x*room_amount_y*2
 
 room_0_0_info
 							room	{
@@ -329,6 +369,13 @@ room_6_0_info
 							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
+room_7_0_info
+                            room	{
+                            room_7_0,                 ; data_address
+                            logic.empty_room_logic,   ; logic_pointer
+                            logic.empty_room_on_enter, ; on_enter_pointer
+                            0                         ; onend_pointer
+                            }
 
 room_0_1_info
 							room	{
@@ -379,6 +426,13 @@ room_6_1_info
 							logic.room_6_1.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
+room_7_1_info
+                            room	{
+                            room_7_1,                 ; data_address
+                            logic.empty_room_logic,   ; logic_pointer
+                            logic.empty_room_on_enter, ; on_enter_pointer
+                            0                         ; onend_pointer
+                            }
 
 room_0_2_info
 							room	{
@@ -429,6 +483,13 @@ room_6_2_info
 							logic.empty_room_on_enter, ; on_enter_pointer
 							0                         ; onend_pointer
 							}
+room_7_2_info
+                            room	{
+                            room_7_2,                 ; data_address
+                            logic.empty_room_logic,   ; logic_pointer
+                            logic.empty_room_on_enter, ; on_enter_pointer
+                            0                         ; onend_pointer
+                            }
 
 room_0_3_info
 							room	{

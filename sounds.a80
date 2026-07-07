@@ -6,6 +6,10 @@
 no_pending_effect           equ	#ff
 crowbar_effect              equ	1
 enemy_damage_effect         equ	4
+gs_only_effect_first        equ	#80
+jump_end_effect             equ	#80
+splash_effect               equ	#81
+glass_break_effect          equ	#82
 
 init
                             ld	hl,bank
@@ -19,16 +23,96 @@ play
                             ld	(pending_effect),a
                             ret
 
+map_gs_sample
+                ; Map AYFX gameplay IDs to the fixed GS sample numbers we upload.
+                            cp	crowbar_effect
+                            jr	z,map_gs_sample_crowbar
+                            cp	enemy_damage_effect
+                            jr	z,map_gs_sample_enemy_damage
+                            cp	jump_end_effect
+                            jr	z,map_gs_sample_jump_end
+                            cp	splash_effect
+                            jr	z,map_gs_sample_splash
+                            cp	glass_break_effect
+                            jr	z,map_gs_sample_glass_break
+
+                            xor	a
+                            ret
+
+map_gs_sample_crowbar
+                            ld	a,gs_config.crowbar_sample
+                            ret
+
+map_gs_sample_enemy_damage
+                            ld	a,gs_config.enemy_hit_sample
+                            ret
+
+map_gs_sample_jump_end
+                            ld	a,gs_config.jump_end_sample
+                            ret
+
+map_gs_sample_splash
+                            ld	a,gs_config.splash_sample
+                            ret
+
+map_gs_sample_glass_break
+                            ld	a,gs_config.glass_break_sample
+                            ret
+
 frame
                             ld	a,(pending_effect)
                             cp	no_pending_effect
                             jr	z,frame_update
 
+                ; Route one gameplay effect through the selected sound backend.
+                            call	audio.gs_sfx_enabled
+                            jr	z,frame_ay
+
+                            ld	a,(pending_effect)
+                            cp	jump_end_effect
+                            jr	z,frame_gs_jump_end
+                            cp	splash_effect
+                            jr	z,frame_gs_splash
+
+                            call	map_gs_sample
+                            or	a
+                            jr	z,frame_ay
+
+                            call	general_sound.play_sample
+                            jr	frame_ay
+
+frame_gs_jump_end
+                            ld	b,gs_config.jump_end_sample
+                            jr	frame_gs_repeating_effect
+
+frame_gs_splash
+                            ld	b,gs_config.splash_sample
+
+frame_gs_repeating_effect
+                            ld	a,r
+                            and	3
+                            add	a,gs_config.repeating_effect_note_base
+                            ld	c,a
+                            ld	a,b
+                            call	general_sound.play_sample_with_note
+
+frame_ay
+                            call	audio.ay_sfx_enabled
+                            jr	z,frame_effect_done
+
+                            ld	a,(pending_effect)
+                            cp	gs_only_effect_first
+                            jr	nc,frame_effect_done
                             call	sound_player.AFXPLAY
+
+frame_effect_done
                             ld	a,no_pending_effect
                             ld	(pending_effect),a
 
 frame_update
+                            call	audio.ay_sfx_enabled
+                            ret	z
+
                             jp	sound_player.AFXFRAME
 
 pending_effect              db	no_pending_effect

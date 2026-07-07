@@ -214,6 +214,7 @@ route_room_point_tables
                             dw	route_room_4_0_points
                             dw	route_room_5_0_points
                             dw	route_room_6_0_points
+                            dw	route_room_7_0_points
                             dw	route_room_0_1_points
                             dw	route_room_1_1_points
                             dw	route_room_2_1_points
@@ -221,6 +222,7 @@ route_room_point_tables
                             dw	route_room_4_1_points
                             dw	route_room_5_1_points
                             dw	route_room_6_1_points
+                            dw	route_room_7_1_points
                             dw	route_room_0_2_points
                             dw	route_room_1_2_points
                             dw	route_room_2_2_points
@@ -228,6 +230,7 @@ route_room_point_tables
                             dw	route_room_4_2_points
                             dw	route_room_5_2_points
                             dw	route_room_6_2_points
+                            dw	route_room_7_2_points
                             dw	route_room_0_3_points
                             dw	route_room_1_3_points
                             dw	route_room_2_3_points
@@ -235,6 +238,7 @@ route_room_point_tables
                             dw	route_room_4_3_points
                             dw	route_room_5_3_points
                             dw	route_room_6_3_points
+                            dw	route_room_7_3_points
 route_room_point_tables_end
 
 route_room_0_0_points
@@ -294,6 +298,9 @@ route_room_5_0_points
                             dw	route_5_0_left_exit
 
 route_room_6_0_points
+                            db	0
+
+route_room_7_0_points
                             db	0
 
 route_room_0_1_points
@@ -397,6 +404,9 @@ route_room_6_1_points
                             dw	route_6_1_red_door_left
                             dw	route_6_1_red_door_fall
 
+route_room_7_1_points
+                            db	0
+
 route_room_0_2_points
                             db	9
                             dw	route_0_2_top_entry
@@ -468,6 +478,9 @@ route_room_5_2_points
 route_room_6_2_points
                             db	0
 
+route_room_7_2_points
+                            db	0
+
 route_room_0_3_points
                             db	8
                             dw	route_0_3_teleport
@@ -522,6 +535,9 @@ route_room_5_3_points
                             dw	route_5_3_lower_water_end
 
 route_room_6_3_points
+                            db	0
+
+route_room_7_3_points
                             db	0
 
                             include	"enemies.route_0_0.a80"
@@ -763,13 +779,11 @@ find_route_target_in_enemy_room_found
                             ret
 
 get_enemy_room_route_point_table
-                ; The generated descriptor table is row-major for the fixed 7-room width.
+                ; The generated descriptor table is row-major for the fixed 8-room width.
                             ld	a,(ix+enemy.room_y)
-                            ld	c,a
                             add	a,a
                             add	a,a
                             add	a,a
-                            sub	c
                             add	a,(ix+enemy.room_x)
                             add	a,a
 

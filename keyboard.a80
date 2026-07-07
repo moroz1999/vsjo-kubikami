@@ -9,6 +9,7 @@ key_2                       equ	16
 key_3                       equ	17
 key_4                       equ	18
 key_5                       equ	19
+key_6                       equ	24
 key_p                       equ	25			;p
 key_o                       equ	26			;o
 key_y                       equ	29

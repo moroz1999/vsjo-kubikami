@@ -1,0 +1,61 @@
+                            module	general_sound
+data_port                   equ	gs_config.data_port
+command_port                equ	gs_config.command_port
+play_sample_command         equ	#39
+play_sample_with_note_command equ	#88
+
+init
+                ; Only a GS release may trust the loader's hardware handoff byte.
+                            ifdef	release_gs_trd
+                            ld	a,(gs_config.detected_address)
+                            and	1
+                            else
+                            xor	a
+                            endif
+                            ld	(available),a
+                            ret
+
+play_sample
+                ; a - GS upload handle; its header supplies note and volume.
+                            ld	b,a
+                            ld	a,(available)
+                            or	a
+                            ret	z
+
+                            ld	a,b
+                            out	(data_port),a
+                            ld	a,play_sample_command
+
+send_command
+                ; Serialize runtime commands through the GS command-ready bit.
+                            out	(command_port),a
+
+send_command_wait
+                            in	a,(command_port)
+                            rrca
+                            jr	c,send_command_wait
+                            ret
+
+play_sample_with_note
+                ; a - GS upload handle, c - note. Command #88 overrides the header note for this play only.
+                            ld	b,a
+                            ld	a,(available)
+                            or	a
+                            ret	z
+
+                            ld	a,b
+                            out	(data_port),a
+                            ld	a,play_sample_with_note_command
+                            call	send_command
+
+                            ld	a,c
+                            out	(data_port),a
+
+send_data_wait
+                            in	a,(command_port)
+                            rlca
+                            jr	c,send_data_wait
+                            ret
+
+available                   db	0
+                            endmodule

@@ -32,6 +32,7 @@
 - A timer that expires during fall or jump waits at zero until stable physical motion resumes.
 - Route/free behavior changes preserve route pointers.
 - Generated room route tables keep each room's route point pointers in authored global table order.
+- The generated room route descriptor table uses the map's eight-column row-major layout; lookup indexes it as `room_y * 8 + room_x`.
 - Offline target attachment is attempted at most once per enemy.
 - A targetless online enemy searches after each successful free-to-route timer roll until a suitable point is found.
 - Route attachment selects the first point in the enemy's room within the inclusive horizontal window `x +/- 7`, `y +/- 2`.
@@ -53,6 +54,7 @@
 
 - Enemy collision applies 16 damage through the standard `hero.decrease_health` armor and health path.
 - Each accepted enemy-damage event starts AYFX effect `4`, the fifth effect in the zero-based bank.
+- In GS modes, enemy-damage AYFX ID `4` maps to fixed GS sample number `2`, loaded from `gs/sounds/enemy_hit.raw`.
 - Standard enemy damage uses the delayed-damage flag and starts a `100`-frame hero invulnerability timer.
 - Further delayed damage is ignored while that timer is active; immediate damage bypasses the timer.
 - Water-drop collision damage also uses the delayed path, preserving its shared contact-damage protection.

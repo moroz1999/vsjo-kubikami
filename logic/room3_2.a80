@@ -5,7 +5,7 @@ fire_width                  equ	animate.room_3_2_fire_width
 fire_x_end                  equ	fire_x+fire_width
 fire_damage_rate            equ	4
 fire_damage_period          equ	hero.oxygen_health_delay
-fire_damage_amount          equ	hero.oxygen_health_damage
+fire_damage_amount          equ	8
 
 logic
                 ; Fire contact is limited to the single burning cavity row.

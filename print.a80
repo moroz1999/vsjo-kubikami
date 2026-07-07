@@ -1,5 +1,7 @@
                         module	print
 
+cyrillic_yo_code            equ	123
+
 print_string
                 ; input
                 ; b - x coord
@@ -59,6 +61,8 @@ print_latin_string_char
                             jr	print_latin_string_char
 
 print_latin_char
+                            cp	48
+                            jr	z,print_digit_zero
                             cp	63
                             jr	z,print_question_mark
                             cp	47
@@ -69,6 +73,10 @@ print_latin_char
                             jr	z,print_digit_four
                             cp	53
                             jr	z,print_digit_five
+                            cp	54
+                            jr	z,print_digit_six
+                            cp	cyrillic_yo_code
+                            jr	z,print_cyrillic_yo
                             cp	65
                             jp	c,print_char
                             cp	91
@@ -90,6 +98,9 @@ print_latin_char_bitmap
                             inc	d
                         edup
                             ret
+print_digit_zero
+                            ld	hl,digit_zero_bitmap
+                            jr	print_latin_char_bitmap
 print_question_mark
                             ld	hl,question_mark_bitmap
                             jr	print_latin_char_bitmap
@@ -104,6 +115,12 @@ print_digit_four
                             jr	print_latin_char_bitmap
 print_digit_five
                             ld	hl,digit_five_bitmap
+                            jr	print_latin_char_bitmap
+print_digit_six
+                            ld	hl,digit_six_bitmap
+                            jr	print_latin_char_bitmap
+print_cyrillic_yo
+                            ld	hl,cyrillic_yo_bitmap
                             jr	print_latin_char_bitmap
 font_address
                             incbin	"./font/1942_RUS.SpecCHR"
@@ -145,5 +162,11 @@ digit_four_bitmap
                             db	#0c,#1c,#3c,#6c,#cc,#fe,#0c,#00
 digit_five_bitmap
                             db	#fe,#c0,#c0,#fc,#06,#c6,#7c,#00
+digit_six_bitmap
+                            db	#7c,#c6,#c0,#fc,#c6,#c6,#7c,#00
+digit_zero_bitmap
+                            db	#7c,#c6,#ce,#d6,#e6,#c6,#7c,#00
+cyrillic_yo_bitmap
+                            db	#6c,#00,#fe,#c0,#fc,#c0,#fe,#00
                         endmodule
 

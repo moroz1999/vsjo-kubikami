@@ -1,0 +1,116 @@
+                        module	energy_module
+action
+                            ld	a,(rooms.room_number_x)
+                            cp	6
+                            jr	nz,action_false
+
+                            ld	a,(rooms.room_number_y)
+                            cp	2
+                            jr	nz,action_false
+
+                ; hero must stand under the emitter.
+                            ld	a,(hero.hero_x)
+                            sub	1
+                            jr	c,action_false
+                            ld	a,(hero.hero_x)
+                            sub	15
+                            jr	nc,action_false
+
+                            ld	a,(hero.hero_y)
+                            cp	6
+                            jr	nz,action_false
+
+                            ld	d,beam_x
+                            ld	e,beam_y
+                            ld	hl,item_animation
+                            call	animate.start
+                            call	apply_effect
+                            call	hero.delete_item_in_pocket
+
+                            ld	a,255
+                            ret
+
+action_false
+                            xor	a
+                            ret
+
+apply_effect
+                            call	logic.room_6_3.enable_poison_pool
+                            ret
+
+beam_x                      equ	7
+beam_y                      equ	6
+beam_height                 equ	16
+
+item_animation
+                            @animation	{
+                            11      ; frames
+                            0       ; current
+                            10      ; delay
+                            0       ; room_address
+                            0       ; screen_address
+                            0       ; room_x
+                            0       ; room_y
+                            1       ; width
+                            beam_height ; height
+                            }
+beam_white_cyan             equ	%01101111
+beam_cyan_white             equ	%01111101
+beam_empty                  equ	rooms.room_bg_color_gray
+
+                ; frame 0
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                ; frame 1
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                ; frame 2
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                ; frame 3
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                ; frame 4
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                ; frame 5
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                ; frame 6
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                ; frame 7
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                ; frame 8
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                            db	beam_white_cyan,beam_cyan_white,beam_white_cyan,beam_cyan_white
+                ; frame 9
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                            db	beam_cyan_white,beam_white_cyan,beam_cyan_white,beam_white_cyan
+                ; frame 10
+                            db	beam_empty,beam_empty,beam_empty,beam_empty
+                            db	beam_empty,beam_empty,beam_empty,beam_empty
+                            db	beam_empty,beam_empty,beam_empty,beam_empty
+                            db	beam_empty,beam_empty,beam_empty,beam_empty
+                        endmodule

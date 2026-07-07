@@ -5,6 +5,7 @@
 - The crowbar is used in room `2,0` when the hero stands at `(21,12)`.
 - Using it breaks the roof, starts the room ground animation, and removes the item from the pocket.
 - Successful use starts AYFX effect `1`.
+- In GS modes, crowbar AYFX ID `1` maps to fixed GS sample number `1`.
 - The enemy route effect is `logic.room_2_0.activate_roof_route`: it rewires `route_2_0_top_mid.bottom_right_point_ptr` to the normal `route_2_0_basement_entry`.
 - After the rewire, enemies can enter the lower room path through the broken roof route without starting a jump, then use the separate basement jump point to climb back right.
 
@@ -22,6 +23,7 @@
 - Each falling step queues the previous stone cell for background restoration before the item is drawn at its new position.
 - The stone is used anywhere in room `1,1` from the right edge of the glass to the screen edge (`x=20..31`, any `y`).
 - Using it starts the glass break animation, removes the item from the pocket, and calls `logic.room_1_1.activate_glass_route`.
+- A successful use also queues GS-only glass-break effect `#82`, mapped to sample `5` from `sfx/glass.raw`.
 - The enemy route effect enables the two glass-edge jump points, so enemies can cross the room `1,1` glass only after it has been broken.
 - Room `1,1` stores the persistent result in `logic.room_1_1.glass_broken`; `on_enter` applies the final broken-glass frame when this flag is set.
 
@@ -85,6 +87,7 @@
 
 - The empty bottle lies on the lower balcony in room `3,0` at `(29,20)`.
 - The empty bottle is used in room `6,3` on the ledge by the poison pool left of the lift, when the hero stands at `y=5` and `x=8..12`.
+- The empty bottle can be filled only after the energy module has powered the room `6,3` pool into poison.
 - Using the empty bottle removes it from the pocket and immediately puts `items.poison_bottle` into the pocket.
 - The poison bottle inventory colors use the room `6,3` poison-pool animation palette: `%00100110` and `%01100111`.
 
@@ -111,15 +114,30 @@
 - Room `5,3` uses the final `y=12` physical-water level immediately after the valve is applied.
 - The effect disables the old room `4,3` surface at `x=6..17`, `y=8` and enables post-valve surfaces across `x=2..31` in room `4,3` and `x=0..29` in room `5,3`.
 
+## Scuba
+
+- The scuba gear lies on the upper platform in room `6,0` at `(18,10)`.
+- Keeping it in the inventory means it is equipped; underwater oxygen and the drowning-damage timer stay full.
+- Dropping it or swapping it for another item removes the effect immediately.
+- Scuba prevents drowning only; environmental damage such as the powered room `6,3` poison pool remains active.
+
+## Energy Module
+
+- The energy module lies in room `7,2` at `(25,16)`, above the right-side bottom crate.
+- Its inventory and room colors flicker between bright yellow `%01000110` and bright blue `%01000001`.
+- The energy module is used in room `6,2` when the hero stands under the emitter at `y=6` and `x=1..14`.
+- Using it starts a screen-only beam animation in the existing vertical tunnel at `x=7`, `y=6..21`. The beam alternates bright white-on-cyan `%01101111` and bright cyan-on-white `%01111101` every frame, then restores the tunnel's original gray attributes.
+- The persistent effect is `logic.room_6_3.poison_pool_enabled`: room `6,3` switches its default water pool into the animated poison pool, and empty-bottle filling becomes possible there.
+
 ## Debug Initial Item States
 
 - `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
-- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, `debug.initial_dynamite_exploded`, and `debug.initial_water_lowered` are compile-time 0/1 flags for item effects that should start already applied.
+- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, `debug.initial_dynamite_exploded`, `debug.initial_water_lowered`, and `debug.initial_energy_module_used` are compile-time 0/1 flags for item effects that should start already applied.
 - Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, and water lowered by valve `0`.
+- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, water lowered by valve `0`, and energy module used `0`.
 - With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
 - Game restart restores only each item's mutable `room_x`, `room_y`, `room_pos_x`, and `room_pos_y` fields. Type, name, action, and colors remain untouched, and debug initial item states are applied after this location reset.
 
@@ -127,4 +145,4 @@
 
 - One-shot item animations draw their changing frames directly to the screen. They patch only the final frame into `rooms.current_room_buf` when the animation completes.
 - Room `on_enter` callbacks check explicit room/effect flags instead of inferring state from item inventory fields.
-- Persistent final-art flags are `logic.room_2_0.roof_broken`, `logic.room_1_1.glass_broken`, `logic.room_1_0.stairs_unfolded`, `logic.room_6_1.red_door_opened`, `logic.room_4_1.hatch_opened`, `logic.room_4_0.handle_used`, `logic.room_5_0.seeds_grown`, `logic.room_2_3.dynamite_exploded`, and `logic.room_4_3.water_lowered`.
+- Persistent final-art flags are `logic.room_2_0.roof_broken`, `logic.room_1_1.glass_broken`, `logic.room_1_0.stairs_unfolded`, `logic.room_6_1.red_door_opened`, `logic.room_4_1.hatch_opened`, `logic.room_4_0.handle_used`, `logic.room_5_0.seeds_grown`, `logic.room_2_3.dynamite_exploded`, `logic.room_4_3.water_lowered`, and `logic.room_6_3.poison_pool_enabled`.

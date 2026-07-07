@@ -2,9 +2,9 @@
 hero_color1                 equ	%01111101
 hero_color2                 equ	%01001111
 hero_color                  db	hero_color1,hero_color2
-hero_start_x                equ	13
-hero_start_y                equ	11
-hero_start_global_y         equ	14
+hero_start_x                equ	17
+hero_start_y                equ	10
+hero_start_global_y         equ	10
 
 hero_coords
 ; original coords
@@ -24,7 +24,7 @@ health_damage_immediate     equ	0
 health_damage_delayed       equ	1
 health_damage_delay         equ	100
 oxygen_health_delay         equ	50
-oxygen_health_damage        equ	8
+oxygen_health_damage        equ	12
 health                      db	max_health
 armor                       db	max_armor
 oxygen                      db	max_oxygen
@@ -49,6 +49,7 @@ hero_state                  db	state_ground
 
 jump_step                   db	0
 jump_phase_delay            db	0
+landing_sound_pending       db	0
 
 jump_type_top               equ	0
 jump_type_left              equ	1
@@ -88,6 +89,7 @@ reset_stats
                             ld	(hidden),a
                             ld	(jump_step),a
                             ld	(jump_phase_delay),a
+                            ld	(landing_sound_pending),a
                             ld	(jump_type),a
                             ld	(gravity_timer),a
                             ld	(gravity_delay),a
@@ -299,6 +301,7 @@ update_oxygen
                             cp	state_swim
                             jr	z,update_oxygen_underwater
 
+update_oxygen_refill
                             ld	a,max_oxygen
                             ld	(oxygen),a
 
@@ -307,6 +310,11 @@ update_oxygen
                             ret
 
 update_oxygen_underwater
+                ; Scuba in the inventory keeps oxygen and the drowning timer full.
+                            ld	a,(current_item)
+                            cp	items.scuba
+                            jr	z,update_oxygen_refill
+
                             ld	a,(oxygen)
                             or	a
                             jr	z,update_oxygen_damage
@@ -462,6 +470,7 @@ jump_process_dec
                             ret
 hero_jump_stop
                             ld	a,state_void
+                            ld	(landing_sound_pending),a
                             ld	(hero_state),a
                             ret
 hero_move
@@ -841,6 +850,17 @@ check_hero_state
                             cp	rooms.room_bg_color_wat
                             jr	nz,check_hero_elevator
                 ; hero is swimming
+                            ld	a,(hero_state)
+                            cp	state_swim
+                            jr	z,check_hero_state_swim_store
+
+                            ld	a,sounds.splash_effect
+                            call	sounds.play
+
+check_hero_state_swim_store
+                            xor	a
+                            ld	(landing_sound_pending),a
+
                             ld	a,state_swim
                             ld	(hero_state),a
 
@@ -873,6 +893,16 @@ check_hero_state_ground
                             jr	z,check_hero_state_falling
                 ; if not empty room or sky then hero is standing on ground
 check_hero_state_stand
+                            ld	a,(landing_sound_pending)
+                            or	a
+                            jr	z,check_hero_state_stand_store
+
+                            xor	a
+                            ld	(landing_sound_pending),a
+                            ld	a,sounds.jump_end_effect
+                            call	sounds.play
+
+check_hero_state_stand_store
                             ld	a,state_ground
                             ld	(hero_state),a
 
@@ -884,6 +914,7 @@ check_hero_state_stand
                             ret
 check_hero_state_falling
                             ld	a,state_void
+                            ld	(landing_sound_pending),a
                             ld	(hero_state),a
 
                             ld	a,gravity_air

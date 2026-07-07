@@ -115,6 +115,8 @@ poison_bottle               equ	11
 bug_jar                     equ	12
 cube                        equ	13
 valve                       equ	14
+scuba                       equ	15
+energy_module               equ	16
 
 all_items
 item_0
@@ -298,6 +300,30 @@ item_14
                             %01000010               // color1
                             %01000110               // color2
                             }
+item_15
+                            item	{
+                            scuba                    ; type_id
+                            6                        ; room_x
+                            0                        ; room_y
+                            18                       ; room_pos_x
+                            10                       ; room_pos_y
+                            strings.scuba            ; name
+                            logic.empty_item_action  ; logic
+                            %01000101                ; color1
+                            %01101111                ; color2
+                            }
+item_16
+                            item	{
+                            energy_module            ; type_id
+                            7                        ; room_x
+                            2                        ; room_y
+                            25                       ; room_pos_x
+                            16                       ; room_pos_y
+                            strings.energy_module    ; name
+                            logic.energy_module.action ; logic
+                            %01000110                ; color1
+                            %01000001                ; color2
+                            }
 items_end
                             db	items_end_marker
 
@@ -318,6 +344,8 @@ initial_item_locations
                             db	5,0,6,7
                             db	1,0,19,17
                             db	0,1,8,8
+                            db	6,0,18,10
+                            db	7,2,25,16
 initial_item_locations_end
                             assert	initial_item_locations_end-initial_item_locations=item_amount*4
                         endmodule

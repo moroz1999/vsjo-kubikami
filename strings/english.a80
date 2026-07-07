@@ -30,6 +30,10 @@ cube
                             db	"CUBE",255
 valve
                             db	"VALVE",255
+scuba
+                            db	"SCUBA GEAR",255
+energy_module
+                            db	"ENERGY MODULE",255
 
 menu_start
                             db	"1. START GAME",255
@@ -41,6 +45,20 @@ menu_cursor
                             db	"4. CURSOR",255
 menu_assign
                             db	"5. ASSIGN KEYS",255
+menu_sound
+                            db	"6. SOUND:",255
+sound_ay
+                            db	"AY",255
+sound_ay_gs
+                            db	"AY+GS",255
+sound_music
+                            db	"MUSIC",255
+sound_ay_sfx
+                            db	"AY SFX",255
+sound_gs_sfx
+                            db	"GS SFX",255
+sound_none
+                            db	"NO SOUND",255
 menu_key_left
                             db	"LEFT",255
 menu_key_right

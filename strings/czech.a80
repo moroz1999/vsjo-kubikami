@@ -30,6 +30,10 @@ cube
                             db	"KOSTKA",255
 valve
                             db	"VENTIL",255
+scuba
+                            db	"AKVALUNG",255
+energy_module
+                            db	"ENERGOMODUL",255
 
 menu_start
                             db	"1. SPUSTIT HRU",255
@@ -41,6 +45,20 @@ menu_cursor
                             db	"4. KURZOR",255
 menu_assign
                             db	"5. NASTAVIT KLAVESY",255
+menu_sound
+                            db	"6. ZVUK:",255
+sound_ay
+                            db	"AY",255
+sound_ay_gs
+                            db	"AY+GS",255
+sound_music
+                            db	"HUDBA",255
+sound_ay_sfx
+                            db	"AY EFEKTY",255
+sound_gs_sfx
+                            db	"GS EFEKTY",255
+sound_none
+                            db	"BEZ ZVUKU",255
 menu_key_left
                             db	"VLEVO",255
 menu_key_right
