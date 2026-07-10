@@ -5,7 +5,6 @@ trd_loader_data_port        equ	gs_config.data_port
 trd_loader_command_port     equ	gs_config.command_port
 trd_loader_data_end         equ	#fe
 trd_loader_table_end        equ	#ff
-trd_loader_high_volume_command equ	#03
 trd_loader_max_volume       equ	#40
 trd_loader_game_sectors     equ	(@end-@start+255)/256
 
@@ -85,10 +84,7 @@ trd_loader_reset_gs
                             ld	a,#f4
                             call	trd_loader_send_command
 
-                ; GS output passes through DAC, FX master, and FX global stages.
-                            ld	a,trd_loader_high_volume_command
-                            call	trd_loader_send_command
-
+                ; GS output passes through the FX master and FX global stages.
                             ld	a,trd_loader_max_volume
                             out	(trd_loader_data_port),a
                             ld	a,#2b

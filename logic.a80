@@ -1,6 +1,4 @@
                         module	logic
-game_end_x                  equ	6
-game_end_y                  equ	19
 
 reset_quests
                 ; Clear persistent room outcomes and active quest transitions.

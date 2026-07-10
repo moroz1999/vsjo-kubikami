@@ -2,7 +2,8 @@
 data_port                   equ	gs_config.data_port
 command_port                equ	gs_config.command_port
 play_sample_command         equ	#39
-play_sample_with_note_command equ	#88
+select_sample_command       equ	#2e
+set_sample_note_command     equ	#40
 
 init
                 ; Only a GS release may trust the loader's hardware handoff byte.
@@ -37,7 +38,7 @@ send_command_wait
                             ret
 
 play_sample_with_note
-                ; a - GS upload handle, c - note. Command #88 overrides the header note for this play only.
+                ; a - GS upload handle, c - note. #39 keeps automatic channel allocation active.
                             ld	b,a
                             ld	a,(available)
                             or	a
@@ -45,17 +46,18 @@ play_sample_with_note
 
                             ld	a,b
                             out	(data_port),a
-                            ld	a,play_sample_with_note_command
+                            ld	a,select_sample_command
                             call	send_command
 
                             ld	a,c
                             out	(data_port),a
+                            ld	a,set_sample_note_command
+                            call	send_command
 
-send_data_wait
-                            in	a,(command_port)
-                            rlca
-                            jr	c,send_data_wait
-                            ret
+                            ld	a,b
+                            out	(data_port),a
+                            ld	a,play_sample_command
+                            jp	send_command
 
 play_sample_random_note
                 ; a - GS upload handle, b - base note; R & 3 is added to the note.

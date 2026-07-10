@@ -50,19 +50,10 @@ on_enter                  ; Room enter hook.
 logic                      ; Per-frame room logic.
                             ld	a,(boss_poisoned) ; Poisoned boss no longer moves or bites.
                             or	a
-                            jp	nz,game_process.endgame
+                            ret	nz ; Poisoned boss stays hidden; final cut now lives in room 7,3.
 
                             call	update_points ; Advance boss joints and jaws.
-
-                            ld	a,(hero.hero_x) ; Read hero column.
-                            cp	logic.game_end_x ; Check for endgame column.
-                            ret	nz ; Leave if the column is not the exit.
-
-                            ld	a,(hero.hero_y) ; Read hero row.
-                            cp	logic.game_end_y ; Check for endgame row.
-                            ret	nz ; Leave if the row is not the exit.
-
-                            jp	game_process.endgame ; Start the endgame sequence.
+                            ret     ; Final cut moved to room 7,3.
 
 poison_boss                ; Hide the boss and stop its room logic.
                             call	restore_previous

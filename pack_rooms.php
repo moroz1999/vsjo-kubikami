@@ -5,7 +5,7 @@ const ROOM_HEIGHT = 22;
 const ROOM_SIZE = ROOM_WIDTH * ROOM_HEIGHT;
 const ROOM_AMOUNT_X = 8;
 const ROOM_AMOUNT_Y = 4;
-const ROOM_ROW_WIDTHS = [8, 8, 8, 7];
+const ROOM_ROW_WIDTHS = [8, 8, 8, 8];
 
 $sourceDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms_unpacked';
 $targetDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms';

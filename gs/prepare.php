@@ -5,6 +5,9 @@ declare(strict_types=1);
 const BLOCK_SIZE = 10000;
 const DATA_BLOCKS_END = 0xfe;
 const GS_SAMPLE_MEMORY_LIMIT = 466 * 1024;
+const SFX_PRIORITY_LOW = 0x40;
+const SFX_PRIORITY_MEDIUM = 0x80;
+const SFX_PRIORITY_HIGH = 0xc0;
 
 $projectRoot = dirname(__DIR__);
 $outputDirectory = $projectRoot . '/build/gs';
@@ -16,17 +19,17 @@ $samples = [
         'source' => $projectRoot . '/sfx/wood.raw',
         'note' => 61,
         'volume' => 0x40,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_HIGH,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
     [
         'handle' => 2,
         'name' => 'enemy_hit',
-        'source' => $projectRoot . '/gs/sounds/enemy_hit.raw',
-        'note' => 71,
+        'source' => $projectRoot . '/sfx/attack.raw',
+        'note' => 61,
         'volume' => 0x40,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_MEDIUM,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -36,7 +39,7 @@ $samples = [
         'source' => $projectRoot . '/sfx/jumpend.raw',
         'note' => 65,
         'volume' => 0x40,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_MEDIUM,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -46,7 +49,7 @@ $samples = [
         'source' => $projectRoot . '/sfx/splash.raw',
         'note' => 65,
         'volume' => 0x40,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_MEDIUM,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -56,7 +59,7 @@ $samples = [
         'source' => $projectRoot . '/sfx/glass.raw',
         'note' => 61,
         'volume' => 0x40,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_HIGH,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -66,7 +69,7 @@ $samples = [
         'source' => $projectRoot . '/sfx/waterdrop.raw',
         'note' => 57,
         'volume' => 0x20,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_LOW,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -76,7 +79,7 @@ $samples = [
         'source' => $projectRoot . '/sfx/take.raw',
         'note' => 65,
         'volume' => 0x30,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_MEDIUM,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
@@ -84,9 +87,9 @@ $samples = [
         'handle' => 8,
         'name' => 'itemdrop',
         'source' => $projectRoot . '/sfx/itemdrop.raw',
-        'note' => 53,
+        'note' => 61,
         'volume' => 0x30,
-        'priority' => 0x80,
+        'priority' => SFX_PRIORITY_MEDIUM,
         'seek_first' => 0x0f,
         'seek_last' => 0x0f,
     ],
