@@ -11,13 +11,13 @@ stairs
 redcard
                             db	"krasnaq karta",255
 key
-                            db	"kl@^",255
+                            db	"kl`}",255
 screwdriver
                             db	"otwertka",255
 dynamite
                             db	"dinamit",255
 handle
-                            db	"ru^ka dweri",255
+                            db	"ru}ka dweri",255
 seeds
                             db	"semena",255
 bottle
@@ -36,7 +36,7 @@ energy_module
                             db	"energomodulx",255
 
 menu_start
-                            db	"1. na^atx igru",255
+                            db	"1. na}atx igru",255
 menu_keyboard
                             db	"2. klawiatura",255
 menu_kempston
@@ -44,7 +44,7 @@ menu_kempston
 menu_cursor
                             db	"4. kursor",255
 menu_assign
-                            db	"5. nazna^itx klawi[i",255
+                            db	"5. nazna}itx klawi{i",255
 menu_sound
                             db	"6. zwuk:",255
 sound_ay

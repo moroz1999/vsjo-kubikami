@@ -1,7 +1,8 @@
                         module	print
 
-cyrillic_yo_code            equ	123
+cyrillic_yo_code            equ	126
 
+print_latin_string
 print_string
                 ; input
                 ; b - x coord
@@ -15,11 +16,7 @@ print_string_char
                             inc	hl
                             push	hl
                             push	de
-                            if localization.current = localization.id_ru
                             call	print_char
-                            else
-                            call	print_latin_char
-                            endif
                             pop	de
                             pop	hl
 
@@ -43,130 +40,10 @@ print_char
                             inc	d
                         edup
                             ret
-
-print_latin_string
-                            call	@get_screen_address_de
-print_latin_string_char
-                            ld	a,(hl)
-                            cp	255
-                            ret	z
-                            inc	hl
-                            push	hl
-                            push	de
-                            call	print_latin_char
-                            pop	de
-                            pop	hl
-
-                            inc	e
-                            jr	print_latin_string_char
-
-print_latin_char
-                            cp	48
-                            jr	z,print_digit_zero
-                            cp	63
-                            jr	z,print_question_mark
-                            cp	47
-                            jr	z,print_slash
-                            cp	51
-                            jr	z,print_digit_three
-                            cp	52
-                            jr	z,print_digit_four
-                            cp	53
-                            jr	z,print_digit_five
-                            cp	54
-                            jr	z,print_digit_six
-                            cp	cyrillic_yo_code
-                            jr	z,print_cyrillic_yo
-                            cp	65
-                            jp	c,print_char
-                            cp	91
-                            jp	nc,print_char
-
-                            sub	65
-                            ld	l,a
-                            ld	h,0
-                            add	hl,hl
-                            add	hl,hl
-                            add	hl,hl
-                            ld	bc,latin_font_address
-                            add	hl,bc
-print_latin_char_bitmap
-                        dup	8
-                            ld	a,(hl)
-                            ld	(de),a
-                            inc	hl
-                            inc	d
-                        edup
-                            ret
-print_digit_zero
-                            ld	hl,digit_zero_bitmap
-                            jr	print_latin_char_bitmap
-print_question_mark
-                            ld	hl,question_mark_bitmap
-                            jr	print_latin_char_bitmap
-print_slash
-                            ld	hl,slash_bitmap
-                            jr	print_latin_char_bitmap
-print_digit_three
-                            ld	hl,digit_three_bitmap
-                            jr	print_latin_char_bitmap
-print_digit_four
-                            ld	hl,digit_four_bitmap
-                            jr	print_latin_char_bitmap
-print_digit_five
-                            ld	hl,digit_five_bitmap
-                            jr	print_latin_char_bitmap
-print_digit_six
-                            ld	hl,digit_six_bitmap
-                            jr	print_latin_char_bitmap
-print_cyrillic_yo
-                            ld	hl,cyrillic_yo_bitmap
-                            jr	print_latin_char_bitmap
 font_address
-                            incbin	"./font/1942_RUS.SpecCHR"
-latin_font_address
                 ; Uppercase A-Z glyphs used by the key-assignment prompts.
-                            db	#38,#6c,#c6,#c6,#fe,#c6,#c6,#00
-                            db	#fc,#c6,#c6,#fc,#c6,#c6,#fc,#00
-                            db	#3c,#66,#c0,#c0,#c0,#66,#3c,#00
-                            db	#f8,#cc,#c6,#c6,#c6,#cc,#f8,#00
-                            db	#fe,#c0,#c0,#fc,#c0,#c0,#fe,#00
-                            db	#fe,#c0,#c0,#fc,#c0,#c0,#c0,#00
-                            db	#3c,#66,#c0,#ce,#c6,#66,#3e,#00
-                            db	#c6,#c6,#c6,#fe,#c6,#c6,#c6,#00
-                            db	#7e,#18,#18,#18,#18,#18,#7e,#00
-                            db	#1e,#06,#06,#06,#c6,#c6,#7c,#00
-                            db	#c6,#cc,#d8,#f0,#d8,#cc,#c6,#00
-                            db	#c0,#c0,#c0,#c0,#c0,#c0,#fe,#00
-                            db	#c6,#ee,#fe,#d6,#c6,#c6,#c6,#00
-                            db	#c6,#e6,#f6,#de,#ce,#c6,#c6,#00
-                            db	#7c,#c6,#c6,#c6,#c6,#c6,#7c,#00
-                            db	#fc,#c6,#c6,#fc,#c0,#c0,#c0,#00
-                            db	#7c,#c6,#c6,#c6,#de,#cc,#76,#00
-                            db	#fc,#c6,#c6,#fc,#d8,#cc,#c6,#00
-                            db	#7c,#c6,#c0,#7c,#06,#c6,#7c,#00
-                            db	#7e,#18,#18,#18,#18,#18,#18,#00
-                            db	#c6,#c6,#c6,#c6,#c6,#c6,#7c,#00
-                            db	#c6,#c6,#c6,#c6,#c6,#6c,#38,#10
-                            db	#c6,#c6,#c6,#d6,#fe,#ee,#c6,#00
-                            db	#c6,#6c,#38,#38,#38,#6c,#c6,#00
-                            db	#66,#66,#3c,#18,#18,#18,#18,#00
-                            db	#fe,#0c,#18,#30,#60,#c0,#fe,#00
-question_mark_bitmap
-                            db	#7c,#c6,#0c,#18,#18,#00,#18,#00
-slash_bitmap
-                            db	#06,#0c,#18,#30,#60,#c0,#80,#00
-digit_three_bitmap
-                            db	#7c,#c6,#06,#3c,#06,#c6,#7c,#00
-digit_four_bitmap
-                            db	#0c,#1c,#3c,#6c,#cc,#fe,#0c,#00
-digit_five_bitmap
-                            db	#fe,#c0,#c0,#fc,#06,#c6,#7c,#00
-digit_six_bitmap
-                            db	#7c,#c6,#c0,#fc,#c6,#c6,#7c,#00
-digit_zero_bitmap
-                            db	#7c,#c6,#ce,#d6,#e6,#c6,#7c,#00
-cyrillic_yo_bitmap
-                            db	#6c,#00,#fe,#c0,#fc,#c0,#fe,#00
+                            incbin	"./font/1942_RUS.SpecCHR"
+font_address_end
+                            assert	font_address_end-font_address=768
                         endmodule
 

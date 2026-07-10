@@ -22,10 +22,6 @@ draw_enemies_skip
                             add	ix,de
                             pop	bc
                             djnz	draw_enemies_next
-
-                            if	debug.route_points_debug_enabled
-                            call	debug.draw_route_points
-                            endif
                             ret
 
 draw_enemy

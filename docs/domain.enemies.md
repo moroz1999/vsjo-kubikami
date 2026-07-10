@@ -69,10 +69,6 @@
 - Aggressive enemies pursue the hero horizontally while their behavior remains active.
 - Aggressive timeout always returns the enemy to free behavior.
 - Enemies are drawn before the hero, so the existing hero draw can stay visually on top when positions overlap.
-- Route debug drawing is compile-time gated by `debug.route_points_debug_enabled`.
-- Route debug drawing is disabled by default.
-- Route debug helpers and colors live in `debug.a80`.
-- When route debug drawing is enabled, current-room route points are bright magenta.
 
 ## Topic Details
 

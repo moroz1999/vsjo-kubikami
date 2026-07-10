@@ -131,18 +131,18 @@
 - Using it starts a screen-only beam animation in the existing vertical tunnel at `x=7`, `y=6..21`. The beam alternates bright white-on-cyan `%01101111` and bright cyan-on-white `%01111101` every frame, then restores the tunnel's original gray attributes.
 - The persistent effect is `logic.room_6_3.poison_pool_enabled`: room `6,3` switches its default water pool into the animated poison pool, and empty-bottle filling becomes possible there.
 
-## Debug Initial Item States
+## Game Start State
 
-- `debug.apply_initial_item_states` runs once at startup before `rooms.init_current_room`.
-- `debug.initial_broken_glass`, `debug.initial_red_door_opened`, `debug.initial_hatch_key_used`, `debug.initial_elevator_repaired`, `debug.initial_generator_started`, `debug.initial_stairs_unfolded`, `debug.initial_dynamite_exploded`, `debug.initial_water_lowered`, and `debug.initial_energy_module_used` are compile-time 0/1 flags for item effects that should start already applied.
-- `debug.initial_elevator_6_3_on` is a temporary compile-time debug flag that starts only `elevator_6_3` upward without applying the full screwdriver/generator effect.
-- Each enabled flag calls the matching item module's `apply_effect` routine, then removes the consumed item from `items.all_items`.
+- A new game enters `rooms.init_current_room` immediately after the normal state reset and panel drawing.
+- Item effects cannot be pre-applied through compile-time debug flags.
+- Elevator `6,3` starts only from its authored state or a normal gameplay effect.
+- Items remain in their authored locations until collected and used through gameplay.
 - Item `apply_effect` routines contain only the persistent gameplay effect: room/effect flags, route rewires, elevator states, and animation-state switches. They do not check hero coordinates, start one-shot screen animations, or remove the item from the hero pocket.
 - Runtime item `action` routines handle hero-position checks, start the visible one-shot animation when needed, call `apply_effect`, and remove the item from the pocket.
 - Room-art final frames are applied by room `on_enter` callbacks into `rooms.current_room_buf`.
-- Current defaults are broken glass `0`, red door opened by red card `0`, hatch key used `0`, elevator repaired by toolkit `0`, generator started `0`, stairs unfolded `0`, dynamite exploded `0`, water lowered by valve `0`, energy module used `0`, and temporary room `6,3` elevator on `0`.
-- With all initial-effect flags disabled, authored items remain at their `items.all_items` room positions until collected and used.
-- Game restart restores only each item's mutable `room_x`, `room_y`, `room_pos_x`, and `room_pos_y` fields. Type, name, action, and colors remain untouched, and debug initial item states are applied after this location reset.
+- New games always begin with intact glass, closed doors and hatch, unrepaired elevators and generator, folded stairs, unexploded dynamite, normal water levels, and an unpowered poison pool.
+- Authored items remain at their `items.all_items` room positions until collected and used.
+- Game restart restores only each item's mutable `room_x`, `room_y`, `room_pos_x`, and `room_pos_y` fields. Type, name, action, and colors remain untouched.
 
 ## Persistent Room Art
 

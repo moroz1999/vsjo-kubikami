@@ -70,6 +70,13 @@ basic_loader_end
 
                             org	trd_loader_address
                             include	"trd_loader.a80"
+                            if	@end>trd_loader
+                            display	'TRD loader overlap ',@end-trd_loader
+                            else
+                            display	'TRD loader remaining ',trd_loader-@end
+                            endif
+                            display	'TRD loader length ',trd_loader_end-trd_loader
+                            display	'TRD loader IM2 room ',interrupts.reserved_start-trd_loader_end
 
                             macro	build_trd disk_filename
                 ; Physical file order is the sequential loader contract.

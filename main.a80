@@ -29,7 +29,6 @@ main_menu
                             call	draw.border
                             call	draw.draw_pattern
                             call	draw.draw_panel
-                            call	debug.apply_initial_item_states
                             call	rooms.init_current_room
 
                             di
@@ -79,7 +78,6 @@ reset_game_state
                             include	"teleports.a80"
                             include	"medkits.a80"
                             include	"armors.a80"
-                            include	"debug.a80"
                             include	"enemies.a80"
                             include	"waterdrops.a80"
 rooms_data
@@ -118,6 +116,7 @@ room_4_3                    incbin	"rooms/room4,3.zx0"
 room_5_3                    incbin	"rooms/room5,3.zx0"
 room_6_3                    incbin	"rooms/room6,3.zx0"
 room_7_3                    incbin	"rooms/room7,3.zx0"
+rooms_data_end
                             module	screen_buffer
                             align	256
 attrs_buf                   ds	screen_utils.attrs_size
@@ -125,5 +124,9 @@ attrs_buf                   ds	screen_utils.attrs_size
 end
                             assert	end<=interrupts.reserved_start
                             display	'program length ',end-start
+                            display	'resident modules ',rooms_data-start
+                            display	'packed rooms ',rooms_data_end-rooms_data
+                            display	'screen buffer alignment ',screen_buffer.attrs_buf-rooms_data_end
+                            display	'screen buffer ',end-screen_buffer.attrs_buf
                             display	'remaining room ',interrupts.reserved_start-end
                             include	"release.a80"

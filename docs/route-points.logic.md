@@ -19,7 +19,7 @@ This file tracks the current authored route graph and gameplay rewires. The `rou
 - The lower right-to-left route extends into the house basement as `(20,13) -> (14,13) -> (8,13) -> (4,17) -> (1,18)`, then turns back from the left wall.
 - The unfolded stairs enable an optional upward jump chain from `route_1_0_lower_walk` through `(19,12 jump_left) -> (15,9 jump_left) -> (12,7 jump_left)` back to `route_1_0_arch`.
 - The stair jump points exist in the route table, but they are not connected to the main route until `logic.room_1_0.activate_stairs_route` sets `route_1_0_lower_walk.alternative_point_ptr` to `route_1_0_stairs_lower_jump_left`.
-- The debug stairs key is `debug.initial_stairs_unfolded`; when enabled it calls `logic.stairs.apply_effect`, so the final room art and enemy route rewire both start already applied.
+- A new game always starts with the stairs folded and their enemy-route branch disconnected.
 - No current route test enemy starts in room `1,0`; the stairs branch remains reachable from `route_1_0_lower_walk` when an enemy enters the lower right-to-left route.
 
 ## Room 0,2 Water Loop

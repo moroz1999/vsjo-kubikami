@@ -38,8 +38,8 @@
 - On zero health, the final simulated frame is drawn without the hero and held for 100 frames before the game-over screen.
 - PT3 music is silent in the menu, restarts from the module beginning when gameplay starts, and fades to silence during the game-over hold.
 
-- Starting from the menu calls `reset_game_state` before debug initial effects and room initialization. Input mode and assigned keys persist, while the normal start places the hero in room `2,0` at `(13,11)`, and stale draw-restore and one-shot-animation state is cleared.
-- Quest restart clears permanent room-effect flags, both boss completion states, the room `2,0` release hole, and the room `2,1` falling stone. It also restores only the route pointers and room-animation fields changed by item effects, so debug initial item effects can be reapplied from a clean state.
+- Starting from the menu calls `reset_game_state` before room initialization. Input mode and assigned keys persist, while the normal start places the hero in room `2,0` at `(13,11)`, and stale draw-restore and one-shot-animation state is cleared.
+- Quest restart clears permanent room-effect flags, both boss completion states, the room `2,0` release hole, and the room `2,1` falling stone. It also restores only the route pointers and room-animation fields changed by item effects.
 - Elevator restart restores only `cur_height`, `state`, and `timer`. Derived `y` and `in_room` fields are recalculated by normal room initialization.
 
 ## Topic Details
