@@ -3,7 +3,7 @@
                             endmodule
 
                             module	music
-volume_reduction            equ	3
+volume_reduction            equ	1
 fade_step_delay             equ	6
 fade_step_amount            equ	15-volume_reduction
 

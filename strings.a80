@@ -1,6 +1,27 @@
                         module	strings
 confirmation_no_key         equ	keyboard.key_n
 
+                ; Latin diacritic glyph codes, drawn on free font slots in font.CHR.
+                ; Uppercase only (all in-game text is uppercase).
+a_acute                     equ	33	; A
+c_acute                     equ	34	; C
+c_caron                     equ	35	; C
+e_acute                     equ	36	; E
+e_ogonek                    equ	37	; E
+e_caron                     equ	38	; E
+i_acute                     equ	39	; I
+l_stroke                    equ	40	; L
+n_acute                     equ	41	; N
+o_acute                     equ	42	; O
+r_caron                     equ	44	; R
+s_acute                     equ	45	; S
+s_caron                     equ	59	; S
+u_acute                     equ	61	; U
+u_ring                      equ	62	; U
+z_acute                     equ	64	; Z
+z_dot                       equ	91	; Z
+z_caron                     equ	92	; Z
+
                             if localization.current = localization.id_en
                             include	"strings/english.a80"
                             elseif localization.current = localization.id_cs

@@ -29,11 +29,11 @@ bug_jar
 cube
                             db	"CUBO",255
 valve
-                            db	"VALVULA",255
+                            db	"V",strings.a_acute,"LVULA",255
 scuba
                             db	"EQUIPO BUCEO",255
 energy_module
-                            db	"MODULO ENERG",255
+                            db	"M",strings.o_acute,"DULO ENERG",255
 
 menu_start
                             db	"1. INICIAR JUEGO",255
@@ -52,7 +52,7 @@ sound_ay
 sound_ay_gs
                             db	"AY+GS",255
 sound_music
-                            db	"MUSICA",255
+                            db	"M",strings.u_acute,"SICA",255
 sound_ay_sfx
                             db	"EFECTOS AY",255
 sound_gs_sfx
@@ -80,4 +80,4 @@ game_pause_clear
 game_over
                             db	"FIN DEL JUEGO",255
 game_success
-                            db	"EXITO",255
+                            db	strings.e_acute,"XITO",255

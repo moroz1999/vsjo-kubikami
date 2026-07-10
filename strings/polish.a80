@@ -1,11 +1,11 @@
 confirmation_yes_key        equ	keyboard.key_t
 
 crowbar
-                            db	"LOM",255
+                            db	strings.l_stroke,"OM",255
 toolkit
-                            db	"NARZEDZIA",255
+                            db	"NARZ",strings.e_ogonek,"DZIA",255
 stone
-                            db	"KAMIEN",255
+                            db	"KAMIE",strings.n_acute,255
 stairs
                             db	"SCHODY",255
 redcard
@@ -13,7 +13,7 @@ redcard
 key
                             db	"KLUCZ",255
 screwdriver
-                            db	"SRUBOKRET",255
+                            db	strings.s_acute,"RUBOKR",strings.e_ogonek,"T",255
 dynamite
                             db	"DYNAMIT",255
 handle
@@ -25,18 +25,18 @@ bottle
 poison_bottle
                             db	"BUTELKA JADU",255
 bug_jar
-                            db	"SLOIK OWADOW",255
+                            db	"S",strings.l_stroke,"OIK OWAD",strings.o_acute,"W",255
 cube
                             db	"KOSTKA",255
 valve
-                            db	"ZAWOR",255
+                            db	"ZAW",strings.o_acute,"R",255
 scuba
                             db	"AKWALUNG",255
 energy_module
-                            db	"MODUL ENERGII",255
+                            db	"MODU",strings.l_stroke," ENERGII",255
 
 menu_start
-                            db	"1. ROZPOCZNIJ GRE",255
+                            db	"1. ROZPOCZNIJ GR",strings.e_ogonek,255
 menu_keyboard
                             db	"2. KLAWIATURA",255
 menu_kempston
@@ -46,7 +46,7 @@ menu_cursor
 menu_assign
                             db	"5. USTAW KLAWISZE",255
 menu_sound
-                            db	"6. DZWIEK:",255
+                            db	"6. D",strings.z_acute,"WI",strings.e_ogonek,"K:",255
 sound_ay
                             db	"AY",255
 sound_ay_gs
@@ -58,7 +58,7 @@ sound_ay_sfx
 sound_gs_sfx
                             db	"EFEKTY GS",255
 sound_none
-                            db	"BEZ DZWIEKU",255
+                            db	"BEZ D",strings.z_acute,"WI",strings.e_ogonek,"KU",255
 menu_key_left
                             db	"LEWO",255
 menu_key_right
@@ -66,13 +66,13 @@ menu_key_right
 menu_key_jump
                             db	"SKOK",255
 menu_key_dive
-                            db	"W DOL",255
+                            db	"W D",strings.o_acute,strings.l_stroke,255
 menu_key_use
-                            db	"UZYJ",255
+                            db	"U",strings.z_dot,"YJ",255
 menu_key_pause
                             db	"PAUZA",255
 menu_confirmation
-                            db	"POTWIERDZIC? T/N",255
+                            db	"POTWIERDZI",strings.c_acute,"? T/N",255
 game_pause
                             db	"PAUZA",255
 game_pause_clear

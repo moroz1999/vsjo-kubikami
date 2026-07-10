@@ -1,29 +1,29 @@
 confirmation_yes_key        equ	keyboard.key_a
 
 crowbar
-                            db	"PACIDLO",255
+                            db	"P",strings.a_acute,strings.c_caron,"IDLO",255
 toolkit
-                            db	"NARADI",255
+                            db	"N",strings.a_acute,strings.r_caron,"AD",strings.i_acute,255
 stone
-                            db	"KAMEN",255
+                            db	"K",strings.a_acute,"MEN",255
 stairs
                             db	"SCHODY",255
 redcard
-                            db	"CERVENA KARTA",255
+                            db	strings.c_caron,"ERVEN",strings.a_acute," KARTA",255
 key
-                            db	"KLIC",255
+                            db	"KL",strings.i_acute,strings.c_caron,255
 screwdriver
-                            db	"SROUBOVAK",255
+                            db	strings.s_caron,"ROUBOV",strings.a_acute,"K",255
 dynamite
                             db	"DYNAMIT",255
 handle
-                            db	"KLIKA DVERI",255
+                            db	"KLIKA DVE",strings.r_caron,strings.i_acute,255
 seeds
                             db	"SEMENA",255
 bottle
-                            db	"LAHEV",255
+                            db	"L",strings.a_acute,"HEV",255
 poison_bottle
-                            db	"LAHEV S JEDEM",255
+                            db	"L",strings.a_acute,"HEV S JEDEM",255
 bug_jar
                             db	"SKLENICE HMYZU",255
 cube
@@ -38,13 +38,13 @@ energy_module
 menu_start
                             db	"1. SPUSTIT HRU",255
 menu_keyboard
-                            db	"2. KLAVESNICE",255
+                            db	"2. KL",strings.a_acute,"VESNICE",255
 menu_kempston
                             db	"3. KEMPSTON",255
 menu_cursor
                             db	"4. KURZOR",255
 menu_assign
-                            db	"5. NASTAVIT KLAVESY",255
+                            db	"5. NASTAVIT KL",strings.a_acute,"VESY",255
 menu_sound
                             db	"6. ZVUK:",255
 sound_ay
@@ -66,9 +66,9 @@ menu_key_right
 menu_key_jump
                             db	"SKOK",255
 menu_key_dive
-                            db	"DOLU",255
+                            db	"DOL",strings.u_ring,255
 menu_key_use
-                            db	"POUZIT",255
+                            db	"POU",strings.z_caron,strings.i_acute,"T",255
 menu_key_pause
                             db	"PAUZA",255
 menu_confirmation
@@ -80,4 +80,4 @@ game_pause_clear
 game_over
                             db	"KONEC HRY",255
 game_success
-                            db	"USPECH",255
+                            db	strings.u_acute,"SP",strings.e_caron,"CH",255

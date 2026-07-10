@@ -42,7 +42,7 @@ print_char
                             ret
 font_address
                 ; Uppercase A-Z glyphs used by the key-assignment prompts.
-                            incbin	"./font/1942_RUS.SpecCHR"
+                            incbin	"./font/font.CHR"
 font_address_end
                             assert	font_address_end-font_address=768
                         endmodule
