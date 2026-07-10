@@ -8,6 +8,8 @@ const GS_SAMPLE_MEMORY_LIMIT = 466 * 1024;
 const SFX_PRIORITY_LOW = 0x40;
 const SFX_PRIORITY_MEDIUM = 0x80;
 const SFX_PRIORITY_HIGH = 0xc0;
+const SFX_SEEK_FIRST = 0x05;
+const SFX_SEEK_LAST = 0x0a;
 
 $projectRoot = dirname(__DIR__);
 $outputDirectory = $projectRoot . '/build/gs';
@@ -20,8 +22,8 @@ $samples = [
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_HIGH,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 2,
@@ -30,8 +32,8 @@ $samples = [
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 3,
@@ -40,8 +42,8 @@ $samples = [
         'note' => 65,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 4,
@@ -50,8 +52,8 @@ $samples = [
         'note' => 65,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 5,
@@ -60,8 +62,8 @@ $samples = [
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_HIGH,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 6,
@@ -70,8 +72,8 @@ $samples = [
         'note' => 57,
         'volume' => 0x20,
         'priority' => SFX_PRIORITY_LOW,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 7,
@@ -80,8 +82,8 @@ $samples = [
         'note' => 65,
         'volume' => 0x30,
         'priority' => SFX_PRIORITY_MEDIUM,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
     [
         'handle' => 8,
@@ -90,8 +92,8 @@ $samples = [
         'note' => 61,
         'volume' => 0x30,
         'priority' => SFX_PRIORITY_MEDIUM,
-        'seek_first' => 0x0f,
-        'seek_last' => 0x0f,
+        'seek_first' => SFX_SEEK_FIRST,
+        'seek_last' => SFX_SEEK_LAST,
     ],
 ];
 

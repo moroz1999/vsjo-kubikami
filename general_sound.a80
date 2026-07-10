@@ -23,9 +23,7 @@ play_sample
                             or	a
                             ret	z
 
-                            ld	a,b
-                            out	(data_port),a
-                            ld	a,play_sample_command
+                            jp	play_selected_sample_twice
 
 send_command
                 ; Serialize runtime commands through the GS command-ready bit.
@@ -52,6 +50,12 @@ play_sample_with_note
                             ld	a,c
                             out	(data_port),a
                             ld	a,set_sample_note_command
+                            call	send_command
+
+play_selected_sample_twice
+                            ld	a,b
+                            out	(data_port),a
+                            ld	a,play_sample_command
                             call	send_command
 
                             ld	a,b

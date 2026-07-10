@@ -84,14 +84,14 @@ The current upload order and gameplay mapping are:
 
 | Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
 |---|---:|---:|---:|---|---|
-| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#0F/#0F` |
-| Enemy attack | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `sfx/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
-| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#0F/#0F` |
-| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#0F/#0F` |
-| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
-| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
+| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Enemy attack | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `sfx/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
+| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
 
 The landing event is emitted only on the transition from `hero.state_void` to `hero.state_ground`; entering water plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
 
@@ -121,7 +121,7 @@ Known-rate samples follow that table: `wood.raw`, `glass.raw`, `itemdrop.raw`, a
 
 The loader reads a packed block into `#8000`, decompresses it with `dzx0_turbo` to `#C000`, reverses the delta encoding in place, and streams the exact unpacked byte count to GS. Resetting the delta accumulator for every block must match the encoder.
 
-The current RAW total is `93454` of `477184` bytes. The packed output is `63232` bytes: `247` sectors, or fifteen tracks plus seven sectors. Generated files live under ignored `build/gs/`; the raw source samples are tracked under `gs/sounds/` and `sfx/`.
+The current RAW total is `93454` of `477184` bytes. The packed output is `63744` bytes: `249` sectors, or fifteen tracks plus nine sectors. Generated files live under ignored `build/gs/`; the raw source samples are tracked under `gs/sounds/` and `sfx/`.
 
 ## Runtime Playback
 
@@ -129,7 +129,9 @@ Runtime gameplay code loads a backend-neutral `sounds.event_*` ID into `A` and c
 
 The AY backend never calls `AFXPLAY` directly from gameplay code. It stores one pending AYFX ID, and the IM 2 `sounds.frame` handler consumes it with `AFXPLAY` before advancing `AFXFRAME`. The GS backend sends commands immediately from gameplay code; it does not use the AY pending slot or the IM 2 SFX frame path.
 
-To play a fixed-pitch GS effect, the game writes its sample number to `#B3`, sends command `#39`, and waits for command-ready status. The repeated hero landing, splash, and water-drop effects first select the sample with `#2E`, set its randomized note with `#40`, and then play it with `#39`. This keeps GS automatic channel selection and the sample's priority and `SeekFirst/SeekLast` rules active; direct commands `#88..#8B` are not used because each targets one specific channel. All samples use `SeekFirst/SeekLast` masks `#0F/#0F`, allowing all four FX channels both for the initial free-channel search and the fallback search. `general_sound.play_sample_random_note` adds `R & 3` to the event's base note, producing notes `65..68` for landing and splash and `57..60` for water drops.
+To play a fixed-pitch GS effect, the game writes its sample number to `#B3` and sends command `#39` twice, waiting for command-ready status after each send. The repeated hero landing, splash, and water-drop effects first select the sample with `#2E`, set its randomized note with `#40`, and then use the same double `#39` path. Both copies therefore keep automatic channel allocation and the sample's priority and `SeekFirst/SeekLast` rules active; direct commands `#88..#8B` are not used because each targets one specific channel.
+
+GS channels `0` and `1` feed the left side, while channels `2` and `3` feed the right. Every sample uses `SeekFirst = #05`, selecting channels `0` and `2`, and `SeekLast = #0A`, selecting the remaining channels `1` and `3`. The two consecutive starts therefore prefer one channel on each side. `general_sound.play_sample_random_note` adds `R & 3` to the event's base note, producing notes `65..68` for landing and splash and `57..60` for water drops.
 
 Main-menu item `6` cycles these modes:
 
