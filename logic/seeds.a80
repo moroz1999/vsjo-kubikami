@@ -25,7 +25,7 @@ action
                             sub	15
                             jr	nc,action_false
 
-                            ld	d,18
+                            ld	d,16
                             ld	e,8
                             ld	hl,item_animation
                             call	animate.start
@@ -49,7 +49,7 @@ item_animation
                             0       ;screen_address
                             0       ;room_x
                             0       ;room_y
-                            8       ;width
+                            10      ;width
                             5       ;height
                             }
 black                       equ	rooms.room_bg_color
@@ -59,27 +59,27 @@ yel_color                   equ	%01110110
 orange                      equ	%00010110
 
 animation_frame0
-                            db	orange,black,black,black,black,black,black,black
-                            db	black,black,black,black,black,black,black,black
-                            db	black,black,black,black,black,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,orange,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
 animation_frame1
-                            db	orange,black,black,black,black,black,black,black
-                            db	black,black,black,black,black,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
-                            db	green,green,green,green,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,orange,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,black,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
+                            db	green,green,green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
 animation_frame2
-                            db	orange,black,black,black,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,green,green,green
-                            db	green,green,green,green,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,orange,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,green,green,green
+                            db	green,green,green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
 animation_frame3
-                            db	orange,green,green,green,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,green,green,green
-                            db	green,green,green,green,gra_color,black,black,black
-                            db	black,black,black,black,gra_color,black,black,black
+                            db	black,black,orange,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,green,green,green
+                            db	green,green,green,green,green,green,gra_color,black,black,black
+                            db	black,black,black,black,black,black,gra_color,black,black,black
                         endmodule

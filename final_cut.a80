@@ -1,0 +1,317 @@
+                        module	final_cut
+hero_start_offset           equ	13*screen_utils.screen_w
+hero_step_time              equ	9
+ship_step_time              equ	3
+one_second                  equ	50
+half_second                 equ	25
+final_pause_time            equ	150
+sky_color                   equ	%01000001
+cube_color                  equ	%01000110
+ship_x                      equ	7
+ship_part_x                 equ	0
+ship_part_y                 equ	1
+ship_part_w                 equ	2
+ship_part_h                 equ	3
+ship_part_size              equ	4
+ship_part_amount            equ	3
+ship_up_steps               equ	16
+hero_visible_up_steps       equ	12
+
+start
+                            ld	hl,ship_parts_initial
+                            ld	de,ship_parts
+                            ld	bc,ship_part_size*ship_part_amount
+                            ldir
+                            call	draw.draw_fullscreen_pattern
+                            xor	a
+                            call	draw.border
+
+                            ld	hl,image
+                            ld	de,screen_buffer.attrs_buf
+                            call	dzx0_turbo
+
+                            ld	b,1
+                            call	game_process.wait
+
+                            ld	hl,hero_start_offset
+                            ld	(hero_offset),hl
+                            call	save_and_draw_hero
+                            ld	b,hero_step_time
+                            call	wait_with_hero
+                            call	play_hero_route
+
+                            ld	b,one_second
+                            call	wait_with_hero
+
+                            ld	a,cube_color
+                            ld	(screen_buffer.attrs_buf+11*screen_utils.screen_w+13),a
+                            ld	b,half_second
+                            call	wait_with_hero
+
+                            ld	a,cube_color
+                            ld	(screen_buffer.attrs_buf+12*screen_utils.screen_w+13),a
+                            ld	b,one_second
+                            call	wait_with_hero
+
+                            call	move_ship_left
+                            ld	hl,(hero_offset)
+                            dec	hl
+                            ld	(hero_offset),hl
+                            ld	b,one_second
+                            call	wait_with_hero
+
+                            ld	a,hero_visible_up_steps
+                            ld	(hero_up_steps),a
+                            ld	b,ship_up_steps
+move_ship_up_loop
+                            push	bc
+                            call	move_ship_up
+
+                            ld	a,(hero_up_steps)
+                            or	a
+                            jr	z,move_ship_up_without_hero
+
+                            dec	a
+                            ld	(hero_up_steps),a
+                            ld	hl,(hero_offset)
+                            ld	de,-screen_utils.screen_w
+                            add	hl,de
+                            ld	(hero_offset),hl
+
+                            ld	b,ship_step_time
+                            call	wait_with_hero
+                            jr	move_ship_up_step_done
+
+move_ship_up_without_hero
+                            ld	b,ship_step_time
+                            call	game_process.wait
+
+move_ship_up_step_done
+                            pop	bc
+                            djnz	move_ship_up_loop
+
+                            call	music.fade_out
+                            ld	b,final_pause_time
+                            call	game_process.wait
+                            jp	game_process.game_over
+
+play_hero_route
+                            ld	hl,hero_route
+play_hero_route_segment
+                            ld	e,(hl)
+                            inc	hl
+                            ld	d,(hl)
+                            inc	hl
+                            ld	(route_delta+1),de
+                            ld	b,(hl)
+                            inc	hl
+                            ld	a,b
+                            or	a
+                            ret	z
+
+play_hero_route_step
+                            push	bc
+                            push	hl
+                            call	restore_hero
+                            ld	hl,(hero_offset)
+route_delta
+                            ld	de,0
+                            add	hl,de
+                            ld	(hero_offset),hl
+                            call	save_and_draw_hero
+                            ld	b,hero_step_time
+                            call	wait_with_hero
+                            pop	hl
+                            pop	bc
+                            djnz	play_hero_route_step
+                            jr	play_hero_route_segment
+
+wait_with_hero
+                            push	bc
+                            call	draw.switch_colors
+                            call	draw_hero
+                            ld	b,1
+                            call	game_process.wait
+                            pop	bc
+                            djnz	wait_with_hero
+                            ret
+
+save_and_draw_hero
+                            call	get_hero_address
+                            ld	a,(hl)
+                            ld	(hero_under_color),a
+                            jr	draw_hero_at_hl
+
+draw_hero
+                            call	get_hero_address
+draw_hero_at_hl
+                            push	hl
+                            ld	hl,hero.hero_color
+                            call	draw.select_color
+                            pop	hl
+                            ld	(hl),a
+                            ret
+
+restore_hero
+                            call	get_hero_address
+                            ld	a,(hero_under_color)
+                            ld	(hl),a
+                            ret
+
+get_hero_address
+                            ld	hl,(hero_offset)
+                            ld	de,screen_buffer.attrs_buf
+                            add	hl,de
+                            ret
+
+move_ship_left
+                            ld	ix,ship_parts
+                            ld	b,ship_part_amount
+move_ship_left_part
+                            push	bc
+                            call	move_ship_part_left
+                            ld	de,ship_part_size
+                            add	ix,de
+                            pop	bc
+                            djnz	move_ship_left_part
+                            ret
+
+move_ship_part_left
+                            ld	d,(ix+ship_part_x)
+                            ld	e,(ix+ship_part_y)
+                            call	screen_utils.get_attrs_address
+                            push	hl
+                            ld	de,-1
+                            add	hl,de
+                            ex	de,hl
+                            pop	hl
+                            ld	a,(ix+ship_part_h)
+move_ship_part_left_row
+                            push	af
+                            ld	c,(ix+ship_part_w)
+                            ld	b,0
+                            ldir
+                            ld	a,sky_color
+                            ld	(de),a
+                            ld	a,screen_utils.screen_w
+                            sub	(ix+ship_part_w)
+                            ld	c,a
+                            ld	b,0
+                            add	hl,bc
+                            ex	de,hl
+                            add	hl,bc
+                            ex	de,hl
+                            pop	af
+                            dec	a
+                            jr	nz,move_ship_part_left_row
+                            dec	(ix+ship_part_x)
+                            ret
+
+move_ship_up
+                            ld	ix,ship_parts
+                            ld	b,ship_part_amount
+move_ship_up_part
+                            push	bc
+                            call	move_ship_part_up
+                            ld	de,ship_part_size
+                            add	ix,de
+                            pop	bc
+                            djnz	move_ship_up_part
+                            ret
+
+move_ship_part_up
+                            ld	a,(ix+ship_part_h)
+                            or	a
+                            ret	z
+
+                            ld	a,(ix+ship_part_y)
+                            or	a
+                            jr	z,move_ship_part_up_clipped
+
+                            ld	e,a
+                            dec	(ix+ship_part_y)
+                            ld	a,(ix+ship_part_h)
+                            jr	move_ship_part_up_copy
+
+move_ship_part_up_clipped
+                            dec	(ix+ship_part_h)
+                            jr	z,clear_ship_part_bottom
+                            ld	a,(ix+ship_part_h)
+                            ld	e,1
+
+move_ship_part_up_copy
+                            push	af
+                            ld	d,(ix+ship_part_x)
+                            call	screen_utils.get_attrs_address
+                            push	hl
+                            ld	de,-screen_utils.screen_w
+                            add	hl,de
+                            ex	de,hl
+                            pop	hl
+                            pop	af
+
+move_ship_part_up_row
+                            push	af
+                            ld	c,(ix+ship_part_w)
+                            ld	b,0
+                            ldir
+                            ld	a,screen_utils.screen_w
+                            sub	(ix+ship_part_w)
+                            ld	c,a
+                            ld	b,0
+                            add	hl,bc
+                            ex	de,hl
+                            add	hl,bc
+                            ex	de,hl
+                            pop	af
+                            dec	a
+                            jr	nz,move_ship_part_up_row
+
+clear_ship_part_bottom
+                            ld	a,(ix+ship_part_y)
+                            ld	e,a
+                            ld	a,(ix+ship_part_h)
+                            add	a,e
+                            ld	e,a
+                            ld	d,(ix+ship_part_x)
+                            call	screen_utils.get_attrs_address
+                            ld	b,(ix+ship_part_w)
+                            ld	a,sky_color
+clear_ship_part_bottom_point
+                            ld	(hl),a
+                            inc	hl
+                            djnz	clear_ship_part_bottom_point
+                            ret
+
+hero_route
+                            dw	1
+                            db	1
+                            dw	screen_utils.screen_w
+                            db	10
+                            dw	1
+                            db	27
+                            dw	-screen_utils.screen_w
+                            db	5
+                            dw	1
+                            db	3
+                            dw	-screen_utils.screen_w
+                            db	6
+                            dw	-1
+                            db	21
+                            dw	0
+                            db	0
+
+hero_offset                 dw	hero_start_offset
+hero_under_color            db	0
+hero_up_steps               db	hero_visible_up_steps
+
+ship_parts_initial
+                            db	ship_x,2,20,8
+                            db	ship_x,10,7,6
+                            db	14,14,1,1
+ship_parts
+                            ds	ship_part_size*ship_part_amount
+
+image
+                            incbin	"finalcut/background.zx0"
+                        endmodule

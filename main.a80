@@ -62,6 +62,7 @@ reset_game_state
                             include	"screen_utils.a80"
                             include	"bresenham.a80"
                             include	"animate.a80"
+                            include	"final_cut.a80"
                             include	"logic.a80"
                             include	"items.a80"
                             include	"print.a80"
@@ -115,18 +116,24 @@ room_3_3                    incbin	"rooms/room3,3.zx0"
 room_4_3                    incbin	"rooms/room4,3.zx0"
 room_5_3                    incbin	"rooms/room5,3.zx0"
 room_6_3                    incbin	"rooms/room6,3.zx0"
-room_7_3                    incbin	"rooms/room7,3.zx0"
 rooms_data_end
-                            module	screen_buffer
-                            align	256
-attrs_buf                   ds	screen_utils.attrs_size
-                            endmodule
 end
+
+                            module	runtime_buffers
+start                       equ	#f000
+screen_attrs_buf            equ	start
+current_room_buf            equ	screen_attrs_buf+screen_utils.attrs_size
+end_address                 equ	current_room_buf+rooms.room_size
+                            assert	end_address<=interrupts.reserved_start
+                            endmodule
+
+                            module	screen_buffer
+attrs_buf                   equ	runtime_buffers.screen_attrs_buf
+                            endmodule
                             assert	end<=interrupts.reserved_start
                             display	'program length ',end-start
                             display	'resident modules ',rooms_data-start
                             display	'packed rooms ',rooms_data_end-rooms_data
-                            display	'screen buffer alignment ',screen_buffer.attrs_buf-rooms_data_end
-                            display	'screen buffer ',end-screen_buffer.attrs_buf
-                            display	'remaining room ',interrupts.reserved_start-end
+                            display	'runtime buffers ',runtime_buffers.end_address-runtime_buffers.start
+                            display	'runtime buffer room ',interrupts.reserved_start-runtime_buffers.end_address
                             include	"release.a80"

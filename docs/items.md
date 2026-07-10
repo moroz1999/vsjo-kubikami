@@ -70,7 +70,7 @@
 - The seeds lie at `(21,11)` directly above the center of the flower in room `5,3`.
 - The seeds are used in room `5,0` when the hero stands at `y=14` and `x=18..24`.
 - Using them grows a flower above the pot at `(18,8)` with a four-frame screen animation and sets `logic.room_5_0.seeds_grown`.
-- The final flower is `8x5`: its gray stem column is passable and reaches each leaf row, while its fewer wide green leaves are solid climb steps.
+- The final flower is `10x5` at `(16,8)`: its gray stem column is passable and reaches each leaf row, while its fewer wide green leaves are solid climb steps. The lower-left leaf extends through `x=16..21`; widening the four rectangular frames by two cells costs 40 bytes and avoids separate overlay code.
 
 ## Bug Jar
 
@@ -96,7 +96,7 @@
 ## Poison Bottle
 
 - The poison bottle is used in boss room `1,3`; for now, the whole screen is an active use zone.
-- Using the poison bottle removes it from the pocket, sets `logic.room_1_3.boss_poisoned`, restores the last boss footprint, and stops the boss from updating or drawing.
+- Using the poison bottle removes it from the pocket, sets `logic.room_1_3.boss_poisoned`, restores the last boss footprint, stops the boss from updating or drawing, and changes the white door at `(4,18)` to black in the mutable room and screen buffers.
 
 ## Cube
 

@@ -5,7 +5,8 @@ const ROOM_HEIGHT = 22;
 const ROOM_SIZE = ROOM_WIDTH * ROOM_HEIGHT;
 const ROOM_AMOUNT_X = 8;
 const ROOM_AMOUNT_Y = 4;
-const ROOM_ROW_WIDTHS = [8, 8, 8, 8];
+const ROOM_ROW_WIDTHS = [8, 8, 8, 7];
+const FINAL_CUT_BACKGROUND_SIZE = 768;
 
 $sourceDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms_unpacked';
 $targetDir = __DIR__ . DIRECTORY_SEPARATOR . 'rooms';
@@ -73,6 +74,24 @@ for ($y = 0; $y < ROOM_AMOUNT_Y; $y++) {
 }
 
 printf("Total: %d -> %d bytes\n", $totalSource, $totalPacked);
+
+$finalCutDir = __DIR__ . DIRECTORY_SEPARATOR . 'finalcut';
+$finalCutSourcePath = $finalCutDir . DIRECTORY_SEPARATOR . 'background.atr';
+$finalCutTargetPath = $finalCutDir . DIRECTORY_SEPARATOR . 'background.zx0';
+$finalCutBackground = file_get_contents($finalCutSourcePath);
+
+if ($finalCutBackground === false || strlen($finalCutBackground) !== FINAL_CUT_BACKGROUND_SIZE) {
+    fwrite(STDERR, "Final-cut background must be exactly " . FINAL_CUT_BACKGROUND_SIZE . " bytes: {$finalCutSourcePath}\n");
+    exit(1);
+}
+
+$finalCutPacked = pack_room($finalCutBackground, $zx0Path, $finalCutDir, $finalCutTargetPath);
+if (unpack_zx0($finalCutPacked, FINAL_CUT_BACKGROUND_SIZE) !== $finalCutBackground) {
+    fwrite(STDERR, "Packed final-cut background verification failed: {$finalCutSourcePath}\n");
+    exit(1);
+}
+
+printf("background.atr -> background.zx0: %d -> %d bytes\n", FINAL_CUT_BACKGROUND_SIZE, strlen($finalCutPacked));
 
 function pack_room(string $room, string $zx0Path, string $targetDir, string $targetPath): string
 {

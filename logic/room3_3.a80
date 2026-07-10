@@ -35,8 +35,9 @@ boss_wave_mask              equ	31
 boss_end_x_delay            equ	4
 boss_end_y_delay            equ	3
 boss_wave_delay             equ	1
-boss_hunt_move_delay        equ	3
-boss_bite_damage            equ	(hero.max_health+hero.max_armor)/3
+boss_idle_move_delay        equ	3
+boss_hunt_move_delay        equ	1
+boss_bite_damage            equ	hero.max_health
 
 ; Shape offsets: segment samples are lifted slightly; inner controls arch the body upward.
 boss_curve_lift_sample      equ	1
@@ -106,7 +107,6 @@ logic_update
                             call	update_mode_and_head
                             call	check_head_bite
                             call	update_control_points
-                            call	build_path_points
                             ret
 
 start_dissolve
@@ -188,40 +188,50 @@ draw_current
                             ld	hl,boss_prev_path_attrs_buf
                             ld	(store_previous_attr_address_pointer),hl
 
-; Draw all logical path points. C is the logical point index used to detect thick segments.
-                            ld	hl,boss_path_points_buf
-                            ld	b,boss_path_point_amount
+; Draw the wall anchor, then calculate and draw all five segments directly from their controls.
                             ld	c,0
-draw_current_loop
-; Draw the logical point and keep its coordinates for possible vertical duplication.
-                            ld	d,(hl)
-                            inc	hl
-                            ld	e,(hl)
-                            inc	hl
+                            ld	d,boss_anchor_x
+                            ld	e,boss_anchor_y
+                            call	draw_current_path_point
+
+                            ld	hl,boss_control_x_buf
+                            ld	de,boss_control_y_buf
+                            ld	b,boss_segment_amount
+                            ld	c,1
+draw_current_segment_loop
                             push	bc
                             push	hl
                             push	de
-                            call	draw_budgeted_path_point
+                            call	draw_path_segment
                             pop	de
                             pop	hl
                             pop	bc
+                            inc	hl
+                            inc	de
+                            ld	a,c
+                            add	a,boss_segment_point_amount
+                            ld	c,a
+                            djnz	draw_current_segment_loop
+                            ret
+
+draw_current_path_point
+; Draw the logical point and keep its coordinates for possible vertical duplication.
+                            push	bc
+                            push	de
+                            call	draw_budgeted_path_point
+                            pop	de
+                            pop	bc
                             ld	a,c
                             cp	boss_double_point_start
-                            jr	c,draw_current_single_point
+                            ret	c
                             cp	boss_double_point_end
-                            jr	nc,draw_current_single_point
+                            ret	nc
 
 ; Middle segments get one extra dot directly below the logical point.
                             inc	e
                             push	bc
-                            push	hl
                             call	draw_budgeted_path_point
-                            pop	hl
                             pop	bc
-
-draw_current_single_point
-                            inc	c
-                            djnz	draw_current_loop
                             ret
 
 is_current_room
@@ -255,7 +265,7 @@ reset_pose
                             ld	(boss_end_y_timer),a
                             ld	a,boss_wave_delay
                             ld	(boss_wave_timer),a
-                            ld	a,boss_hunt_move_delay
+                            ld	a,boss_idle_move_delay
                             ld	(boss_hunt_move_timer),a
 
 ; Place the moving head at the idle center and target the same cell.
@@ -269,11 +279,9 @@ reset_pose
                             xor	a
                             ld	(boss_mode),a
 
-; Build an initial path and matching restore addresses before the first draw hook runs.
+; Build the initial controls; the first draw has no previous boss frame to erase.
                             call	update_control_points
-                            call	build_path_points
-                            call	copy_path_addresses_to_previous
-                            ld	a,(boss_visible_point_amount)
+                            xor	a
                             ld	(boss_prev_draw_point_amount),a
                             ret
 
@@ -382,7 +390,12 @@ update_head_to_target
 
 update_head_to_target_step
 ; One movement tick can update both X and Y, giving diagonal approach when needed.
+                            ld	(hl),boss_idle_move_delay
+                            ld	a,(boss_mode)
+                            or	a
+                            jr	z,update_head_to_target_move
                             ld	(hl),boss_hunt_move_delay
+update_head_to_target_move
                             call	move_head_x_to_target
                             call	move_head_y_to_target
                             ret
@@ -418,7 +431,7 @@ move_head_y_up
                             ret
 
 check_head_bite
-; A live hunting boss deals the same delayed combined-pool bite as the left boss on contact.
+; A live hunting boss removes one full health bar from the combined armor-health pool.
                             ld	a,(boss_state)
                             or	a
                             ret	nz
@@ -572,170 +585,69 @@ apply_control_wave_max
                             ld	a,boss_head_y_max
                             ret
 
-build_path_points
-                ; Each Bezier segment stores four inner samples and the next control point.
+draw_path_segment
+                ; Each chain segment draws four inner samples and the next control point.
 ; The logical path starts with the wall anchor, then appends five dots per segment.
-; The buffer contains x,y byte pairs and is rebuilt every gameplay frame.
-                            ld	hl,boss_path_points_buf
-                            ld	(boss_path_write_pointer),hl
-                            ld	d,boss_anchor_x
-                            ld	e,boss_anchor_y
-                            call	store_path_point
-
-                            ld	hl,boss_control_x_buf
-                            ld	de,boss_control_y_buf
-                            ld	b,boss_segment_amount
-
-build_path_points_loop
-; Walk neighboring control point pairs: 0-1, 1-2, 2-3, 3-4, 4-5.
+; Points are calculated and drawn directly instead of being stored in a path buffer.
+; Cache 5*start and the signed end-start delta for both axes.
                             push	bc
-                            push	hl
-                            push	de
-                            call	build_path_segment
-                            pop	de
-                            pop	hl
+                            ld	a,(hl)
+                            ld	c,a
+                            add	a,a
+                            add	a,a
+                            add	a,c
+                            ld	(boss_segment_x_numerator),a
                             inc	hl
+                            ld	a,(hl)
+                            sub	c
+                            ld	(boss_segment_x_delta),a
+
+                            ld	a,(de)
+                            ld	c,a
+                            add	a,a
+                            add	a,a
+                            add	a,c
+                            ld	(boss_segment_y_numerator),a
                             inc	de
+                            ld	a,(de)
+                            sub	c
+                            ld	(boss_segment_y_delta),a
                             pop	bc
-                            djnz	build_path_points_loop
-                            ret
 
-build_path_segment
-; Cache one segment's endpoints, calculate four interpolated samples, then store the end.
-; This keeps the path dotted but still tied to the control-point chain.
-                            ld	a,(hl)
-                            ld	(boss_segment_start_x),a
-                            inc	hl
-                            ld	a,(hl)
-                            ld	(boss_segment_end_x),a
-
-                            ld	a,(de)
-                            ld	(boss_segment_start_y),a
-                            inc	de
-                            ld	a,(de)
-                            ld	(boss_segment_end_y),a
-
-                            call	calc_segment_first_sample
-                            call	store_path_point
-                            call	calc_segment_second_sample
-                            call	store_path_point
-                            call	calc_segment_third_sample
-                            call	store_path_point
-                            call	calc_segment_fourth_sample
-                            call	store_path_point
-
-                            ld	a,(boss_segment_end_x)
-                            ld	d,a
-                            ld	a,(boss_segment_end_y)
-                            ld	e,a
-                            call	store_path_point
-                            ret
-
-calc_segment_first_sample
 ; Segment sample at 1/5 from start to end: (4*start + end) / 5.
-; Y samples are lifted by one row to keep the dotted curve slightly arched.
-                            ld	a,(boss_segment_start_x)
-                            add	a,a
-                            add	a,a
-                            ld	c,a
-                            ld	a,(boss_segment_end_x)
-                            add	a,c
-                            call	read_div5
-                            ld	d,a
-
-                            ld	a,(boss_segment_start_y)
-                            add	a,a
-                            add	a,a
-                            ld	c,a
-                            ld	a,(boss_segment_end_y)
-                            add	a,c
-                            call	read_div5
-                            sub	boss_curve_lift_sample
-                            ld	e,a
-                            ret
-
-calc_segment_second_sample
 ; Segment sample at 2/5 from start to end: (3*start + 2*end) / 5.
-                            ld	a,(boss_segment_start_x)
-                            ld	c,a
-                            add	a,a
-                            add	a,c
-                            ld	c,a
-                            ld	a,(boss_segment_end_x)
-                            add	a,a
-                            add	a,c
-                            call	read_div5
-                            ld	d,a
-
-                            ld	a,(boss_segment_start_y)
-                            ld	c,a
-                            add	a,a
-                            add	a,c
-                            ld	c,a
-                            ld	a,(boss_segment_end_y)
-                            add	a,a
-                            add	a,c
-                            call	read_div5
-                            sub	boss_curve_lift_sample
-                            ld	e,a
-                            ret
-
-calc_segment_third_sample
 ; Segment sample at 3/5 from start to end: (2*start + 3*end) / 5.
-                            ld	a,(boss_segment_start_x)
-                            add	a,a
-                            ld	c,a
-                            ld	a,(boss_segment_end_x)
-                            ld	b,a
-                            add	a,a
-                            add	a,b
-                            add	a,c
-                            call	read_div5
-                            ld	d,a
-
-                            ld	a,(boss_segment_start_y)
-                            add	a,a
-                            ld	c,a
-                            ld	a,(boss_segment_end_y)
-                            ld	b,a
-                            add	a,a
-                            add	a,b
-                            add	a,c
-                            call	read_div5
-                            sub	boss_curve_lift_sample
-                            ld	e,a
-                            ret
-
-calc_segment_fourth_sample
 ; Segment sample at 4/5 from start to end: (start + 4*end) / 5.
-                            ld	a,(boss_segment_end_x)
-                            add	a,a
-                            add	a,a
+; The fifth iteration reaches the exact segment endpoint.
+                            ld	b,boss_segment_point_amount
+draw_path_segment_sample_loop
+                            push	bc
+                            ld	a,(boss_segment_x_delta)
                             ld	c,a
-                            ld	a,(boss_segment_start_x)
+                            ld	a,(boss_segment_x_numerator)
                             add	a,c
+                            ld	(boss_segment_x_numerator),a
                             call	read_div5
                             ld	d,a
 
-                            ld	a,(boss_segment_end_y)
-                            add	a,a
-                            add	a,a
+                            ld	a,(boss_segment_y_delta)
                             ld	c,a
-                            ld	a,(boss_segment_start_y)
+                            ld	a,(boss_segment_y_numerator)
                             add	a,c
+                            ld	(boss_segment_y_numerator),a
                             call	read_div5
-                            sub	boss_curve_lift_sample
                             ld	e,a
-                            ret
+                            pop	bc
 
-store_path_point
-; Append the D,E point to the logical path buffer and advance the write pointer.
-                            ld	hl,(boss_path_write_pointer)
-                            ld	(hl),d
-                            inc	hl
-                            ld	(hl),e
-                            inc	hl
-                            ld	(boss_path_write_pointer),hl
+; Y samples are lifted by one row to keep the dotted curve slightly arched.
+                            ld	a,b
+                            cp	1
+                            jr	z,draw_path_segment_endpoint
+                            dec	e
+draw_path_segment_endpoint
+                            call	draw_current_path_point
+                            inc	c
+                            djnz	draw_path_segment_sample_loop
                             ret
 
 draw_budgeted_path_point
@@ -782,50 +694,6 @@ prepare_boss_draw_color
 ; This avoids re-running color selection for every dot.
                             call	load_boss_color
                             ld	(draw_path_point_color),a
-                            ret
-
-copy_path_addresses_to_previous
-; Room-enter seeding mirrors draw_current without painting.
-; It prevents the first restore pass from reading empty restore addresses.
-                            ld	hl,boss_prev_path_attrs_buf
-                            ld	(store_previous_attr_address_pointer),hl
-
-                            ld	hl,boss_path_points_buf
-                            ld	b,boss_path_point_amount
-                            ld	c,0
-
-copy_path_addresses_to_previous_loop
-; Convert each logical point into a restore address, including doubled middle-segment dots.
-                            ld	d,(hl)
-                            inc	hl
-                            ld	e,(hl)
-                            inc	hl
-                            push	bc
-                            push	hl
-                            push	de
-                            call	screen_utils.get_attrs_address
-                            call	store_previous_attr_address
-                            pop	de
-                            pop	hl
-                            pop	bc
-                            ld	a,c
-                            cp	boss_double_point_start
-                            jr	c,copy_path_addresses_single_point
-                            cp	boss_double_point_end
-                            jr	nc,copy_path_addresses_single_point
-
-; The extra central-segment dot is one row lower than the logical path point.
-                            inc	e
-                            push	bc
-                            push	hl
-                            call	screen_utils.get_attrs_address
-                            call	store_previous_attr_address
-                            pop	hl
-                            pop	bc
-
-copy_path_addresses_single_point
-                            inc	c
-                            djnz	copy_path_addresses_to_previous_loop
                             ret
 
 read_div5
@@ -877,7 +745,7 @@ boss_wave_phase             db	0
 boss_end_x_timer            db	boss_end_x_delay
 boss_end_y_timer            db	boss_end_y_delay
 boss_wave_timer             db	boss_wave_delay
-boss_hunt_move_timer        db	boss_hunt_move_delay
+boss_hunt_move_timer        db	boss_idle_move_delay
 boss_mode                   db	boss_mode_idle
 boss_state                  db	boss_state_alive
 boss_visible_point_amount   db	boss_draw_point_amount
@@ -889,11 +757,9 @@ boss_control_x_buf          ds	boss_control_amount
 boss_control_y_buf          ds	boss_control_amount
 boss_head_x                 equ	boss_control_x_buf+boss_control_amount-1
 boss_head_y                 equ	boss_control_y_buf+boss_control_amount-1
-boss_path_points_buf        ds	boss_path_point_amount*2
 boss_prev_path_attrs_buf    ds	boss_draw_point_amount*2
-boss_path_write_pointer     dw	boss_path_points_buf
-boss_segment_start_x        db	0
-boss_segment_start_y        db	0
-boss_segment_end_x          db	0
-boss_segment_end_y          db	0
+boss_segment_x_numerator    db	0
+boss_segment_y_numerator    db	0
+boss_segment_x_delta        db	0
+boss_segment_y_delta        db	0
                         endmodule

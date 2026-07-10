@@ -278,7 +278,7 @@ get_room_row_width
                             ret
 
 room_row_widths
-                            db	8,8,8,8
+                            db	8,8,8,7
 room_row_widths_end
                             assert	room_row_widths_end-room_row_widths=room_amount_y
 rooms_table
@@ -316,9 +316,8 @@ rooms_table
 							dw	room_4_3_info
 							dw	room_5_3_info
 							dw	room_6_3_info
-                            dw	room_7_3_info
 rooms_table_end
-                            assert	rooms_table_end-rooms_table=room_amount_x*room_amount_y*2
+                            assert	rooms_table_end-rooms_table=(room_amount_x*room_amount_y-1)*2
 
 room_0_0_info
 							room	{
@@ -540,13 +539,6 @@ room_6_3_info
 							logic.room_6_3.on_enter,  ; on_enter_pointer
 							0                         ; onend_pointer
 							}
-room_7_3_info
-							room	{
-							room_7_3,                 ; data_address
-							logic.empty_room_logic,   ; logic_pointer
-							logic.empty_room_on_enter, ; on_enter_pointer
-							0                         ; onend_pointer
-							}
 							include	"rooms_elevators.a80"
 							include	"rooms_animations.a80"
 							include	"rooms_medkits.a80"
@@ -577,6 +569,6 @@ calculate_room_bottom_y
 							ret
 room_top_y					db	0
 room_bottom_y				db	0
-current_room_buf			ds	room_size
+current_room_buf            equ	runtime_buffers.current_room_buf
 
 						endmodule

@@ -1,6 +1,10 @@
                         module	room_1_3        ; Room 1,3 boss logic module.
 boss_room_x                 equ	1   ; Boss room column.
 boss_room_y                 equ	3   ; Boss room row.
+final_cut_x                 equ	3   ; Final teleport column.
+final_cut_y                 equ	18  ; Final teleport row.
+white_door_x                equ	4   ; White door column next to the final teleport.
+white_door_y                equ	18  ; White door row.
 boss_color1                 equ	%01011001    ; Boss attribute with the main ink/paper order.
 boss_color2                 equ	%01010011    ; Boss attribute with ink and paper swapped.
 boss_point_size             equ	2   ; Width and height of each joint marker.
@@ -42,24 +46,43 @@ boss_c_start_y              equ	15  ; Start row for head joint C.
 on_enter                  ; Room enter hook.
                             ld	a,(boss_poisoned) ; Keep the boss hidden after poison.
                             or	a
-                            ret	nz
+                            jp	nz,remove_white_door
 
                             call	reset_points ; Reset boss state for the room.
                             ret     ; Return to room enter dispatcher.
 
 logic                      ; Per-frame room logic.
+                            ld	a,(hero.hero_x) ; Check the final teleport column before generic teleport handling.
+                            cp	final_cut_x
+                            jr	nz,logic_boss
+
+                            ld	a,(hero.hero_y) ; Check the final teleport row.
+                            cp	final_cut_y
+                            jp	z,final_cut.start ; The final sequence does not return to gameplay.
+
+logic_boss
                             ld	a,(boss_poisoned) ; Poisoned boss no longer moves or bites.
                             or	a
-                            ret	nz ; Poisoned boss stays hidden; final cut now lives in room 7,3.
+                            ret	nz ; Poisoned boss stays hidden.
 
                             call	update_points ; Advance boss joints and jaws.
-                            ret     ; Final cut moved to room 7,3.
+                            ret
 
 poison_boss                ; Hide the boss and stop its room logic.
                             call	restore_previous
                             ld	a,1
                             ld	(boss_poisoned),a
-                            ret
+                            jp	remove_white_door
+
+remove_white_door
+                ; Open the final passage in both room geometry and the buffered frame.
+                            ld	de,white_door_x*256+white_door_y
+                            push	de
+                            call	rooms.get_current_room_pixel_address
+                            xor	a
+                            ld	(hl),a
+                            pop	de
+                            jp	draw.restore_pixel
 
 restore_previous           ; Erase the old boss drawing area.
                             call	is_current_room ; Check whether room 1,3 is active.

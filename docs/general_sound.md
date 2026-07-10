@@ -63,7 +63,7 @@ The argument is written to `#B3` before its command is sent to `#BB`.
 
 ## Generated Sample Table
 
-Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..8` for the crowbar, enemy hit, hero landing, air-to-water splash, glass break, falling water drop, item pickup, and item drop. Runtime sound calls use backend-neutral `sounds.event_*` IDs; the AY backend maps only events with authored AYFX data, while the GS backend maps events directly to these fixed sample numbers.
+Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..8` for the crowbar, enemy hit, hero landing, air-to-water splash, glass break, water-drop landing, item pickup, and item drop. Runtime sound calls use backend-neutral `sounds.event_*` IDs; the AY backend maps only events with authored AYFX data, while the GS backend maps events directly to these fixed sample numbers.
 
 `build/gs/samples.a80` uses this format:
 
@@ -89,7 +89,7 @@ The current upload order and gameplay mapping are:
 | Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
 | Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#0F/#0F` |
 | Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#0F/#0F` |
-| Water drop starts falling | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#0F/#0F` |
+| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#0F/#0F` |
 | Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
 | Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#0F/#0F` |
 

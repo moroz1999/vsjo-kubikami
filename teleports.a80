@@ -210,16 +210,16 @@ teleport_5_2
                             29, //dest_room_pos_x
                             9  //dest_room_pos_y
                             }
-                ; One-way teleport to the center of room 7,3 (final cut placeholder)
+                ; Room logic consumes this teleport before the generic handler.
 teleport_1_3
                             teleport	{
                             1,  //room_x
                             3,  //room_y
                             3,  //room_pos_x
                             18, //room_pos_y
-                            7,  //dest_room_x
+                            1,  //dest_room_x
                             3,  //dest_room_y
-                            16, //dest_room_pos_x
-                            11  //dest_room_pos_y
+                            3,  //dest_room_pos_x
+                            18  //dest_room_pos_y
                             }
                         endmodule

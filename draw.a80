@@ -28,8 +28,12 @@ draw_panel
                             ldir
                             ret
 draw_pattern
-                            ld	hl,screen_utils.screen
                             ld	b,rooms.room_h*8/2
+                            jr	draw_pattern_start
+draw_fullscreen_pattern
+                            ld	b,screen_utils.screen_h*8/2
+draw_pattern_start
+                            ld	hl,screen_utils.screen
 draw_pattern_2rows
                             push	bc
                             push	hl

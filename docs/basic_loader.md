@@ -62,7 +62,7 @@ These values form one contract:
 - The final `USR` must use `trd_loader_address`.
 - The `LOADER.C` directory load address must equal `trd_loader_address`.
 - The BASIC runtime program must end below the loader.
-- The game image and loader scratch buffers must also end below the loader.
+- The saved game image and loader scratch buffers must end below the loader. Runtime-only buffers may reuse loader memory after the final `JP` transfers control to the game.
 
 `release.a80` asserts the BASIC-program and loader boundary. The TR-DOS loader document defines the remaining memory boundaries.
 
