@@ -13,7 +13,7 @@ health_bar_color            equ	%01010010
 armor_bar_color             equ	%01101101
 draw_stats
         ;   Draw current hero stats in the bottom ui row
-                            ld	hl,health_label
+                            ld	hl,strings.health_label
                             ld	b,health_label_x
                             ld	c,stats_y
                             call	print.print_string
@@ -23,7 +23,7 @@ draw_stats
                             ld	c,health_bar_color
                             call	draw_stat_bar
 
-                            ld	hl,armor_label
+                            ld	hl,strings.armor_label
                             ld	b,armor_label_x
                             ld	c,stats_y
                             call	print.print_string
@@ -89,10 +89,6 @@ erase_item_name
                             ld	c,item_name_y
                             call	print.print_string
                             ret
-health_label
-                            db	"h",255
-armor_label
-                            db	"a",255
 empty_item_name
                             db	"              ",255
                         endmodule

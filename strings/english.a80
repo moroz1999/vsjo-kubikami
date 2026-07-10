@@ -1,4 +1,12 @@
 confirmation_yes_key        equ	keyboard.key_y
+game_title_x                equ	11
+
+game_title
+                            db	"ALL SQUARE",255
+health_label
+                            db	"H",255
+armor_label
+                            db	"A",255
 
 crowbar
                             db	"CROWBAR",255

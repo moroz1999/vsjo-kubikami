@@ -19,15 +19,15 @@ loading_screen_end
 
                             ifdef	release_tap
                             if localization.current = localization.id_en
-                            savetap	"kubikami-en.tap",start
+                            savetap	"vsjo-kubikami-en.tap",start
                             elseif localization.current = localization.id_cs
-                            savetap	"kubikami-cs.tap",start
+                            savetap	"vsjo-kubikami-cs.tap",start
                             elseif localization.current = localization.id_pl
-                            savetap	"kubikami-pl.tap",start
+                            savetap	"vsjo-kubikami-pl.tap",start
                             elseif localization.current = localization.id_es
-                            savetap	"kubikami-es.tap",start
+                            savetap	"vsjo-kubikami-es.tap",start
                             else
-                            savetap	"kubikami-ru.tap",start
+                            savetap	"vsjo-kubikami-ru.tap",start
                             endif
                             else
                             ifdef	release_disk
@@ -114,27 +114,27 @@ gs_disk_data_offset         =	gs_disk_data_offset+gs_disk_data_chunk_size
 
                             ifdef	release_gs_trd
                             if localization.current = localization.id_en
-                            build_trd	"kubikami-en-gs.trd"
+                            build_trd	"vsjo-kubikami-en-gs.trd"
                             elseif localization.current = localization.id_cs
-                            build_trd	"kubikami-cs-gs.trd"
+                            build_trd	"vsjo-kubikami-cs-gs.trd"
                             elseif localization.current = localization.id_pl
-                            build_trd	"kubikami-pl-gs.trd"
+                            build_trd	"vsjo-kubikami-pl-gs.trd"
                             elseif localization.current = localization.id_es
-                            build_trd	"kubikami-es-gs.trd"
+                            build_trd	"vsjo-kubikami-es-gs.trd"
                             else
-                            build_trd	"kubikami-ru-gs.trd"
+                            build_trd	"vsjo-kubikami-ru-gs.trd"
                             endif
                             else
                             if localization.current = localization.id_en
-                            build_trd	"kubikami-en.trd"
+                            build_trd	"vsjo-kubikami-en.trd"
                             elseif localization.current = localization.id_cs
-                            build_trd	"kubikami-cs.trd"
+                            build_trd	"vsjo-kubikami-cs.trd"
                             elseif localization.current = localization.id_pl
-                            build_trd	"kubikami-pl.trd"
+                            build_trd	"vsjo-kubikami-pl.trd"
                             elseif localization.current = localization.id_es
-                            build_trd	"kubikami-es.trd"
+                            build_trd	"vsjo-kubikami-es.trd"
                             else
-                            build_trd	"kubikami-ru.trd"
+                            build_trd	"vsjo-kubikami-ru.trd"
                             endif
                             endif
                             else

@@ -2,7 +2,7 @@
 
 - The target platform is `ZX Spectrum 128`.
 - The project is built with `sjasmplus`: `compile.bat` runs `php tools/map-viewer/generate_asm.php --project` to regenerate `routes/enemies.route*.a80` and `tools/map-viewer/routes-data.js` from split route JSON data under `routes/`, then runs `php pack_rooms.php` before assembling the final images, regenerating packed `rooms/*.zx0` from editable `rooms_unpacked/*.atr`.
-- The program entry point is in `main.a80`. `compile.bat` creates fifteen final files under `release/`: Russian, English, Czech, Polish, and Spanish TAP images, five regular TRD images, and five `-gs.trd` images with General Sound sample data.
+- The program entry point is in `main.a80`. `compile.bat` creates fifteen final files under `release/` using the Latin base name `vsjo-kubikami`: Russian, English, Czech, Polish, and Spanish TAP images, five regular TRD images, and five `-gs.trd` images with General Sound sample data.
 - TAP images use the `sjasmplus` snapshot loader and include `loading.scr` at `#4000`; the build patches each generated tape BASIC so `BORDER 0` is its first command.
 - IM 2 uses only the normal 48K address space and does not switch RAM banks. The `JP` dispatch occupies `#FDFD..#FDFF`, and the 257-byte vector table occupies `#FE00..#FF00`. The saved game image ends below `#F000`; after loader handoff, runtime-only screen and room buffers reuse `#F000..#F5BF`. `main.a80` asserts that the runtime workspace ends before the IM 2 dispatch.
 - The PT3 player and `music/compiled.C` module are resident in the same 48K address space. When enabled by the selected sound mode, music is initialized while interrupts are disabled and advanced once per IM 2 interrupt without memory paging.

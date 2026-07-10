@@ -1,4 +1,12 @@
 confirmation_yes_key        equ	keyboard.key_t
+game_title_x                equ	11
+
+game_title
+                            db	"KWADRATOWO",255
+health_label
+                            db	"Z",255
+armor_label
+                            db	"P",255
 
 crowbar
                             db	strings.l_stroke,"OM",255

@@ -1,4 +1,12 @@
 confirmation_yes_key        equ	keyboard.key_a
+game_title_x                equ	8
+
+game_title
+                            db	"V",strings.s_caron,"ECHNO V KOSTCE",255
+health_label
+                            db	"Z",255
+armor_label
+                            db	"B",255
 
 crowbar
                             db	"P",strings.a_acute,strings.c_caron,"IDLO",255

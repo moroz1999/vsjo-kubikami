@@ -146,6 +146,6 @@ Main-menu item `6` cycles these modes:
 
 The initial mode is `AY+GS` after successful GS detection and `AY` otherwise. `AY+GS` means AY music with GS effects; it does not play AY and GS copies of the same effect simultaneously. When GS is unavailable, menu cycling skips `AY+GS` and `GS SFX`.
 
-PT3 music uses its signed master offset only for fade-out, so playback starts at the authored AY amplitude: maximum level `15` remains `15`. AYFX remains at its authored volume because AY effects are disabled in `AY+GS` and therefore cannot mask simultaneous GS playback. The fade uses all fifteen PT3 volume steps.
+PT3 music applies `music.volume_reduction` to software-controlled AY amplitudes during normal playback but keeps hardware envelopes enabled. Hardware envelope channels therefore retain their authored envelope level instead of being disabled merely because the steady reduction is non-zero. Starting `music.fade_out` makes `fade_step_count` non-zero; the player then disables hardware envelopes for the duration of the fade and continues lowering the software amplitudes. AYFX remains at its authored volume because AY effects are disabled in `AY+GS` and therefore cannot mask simultaneous GS playback.
 
 See [TR-DOS Disk Loading](trdos.md) for disk placement, scratch memory, and the no-GS sector skip.

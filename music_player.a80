@@ -773,7 +773,7 @@ CH_ENV  BIT 0,C
 	JR NZ,CH_NOEN
  IF VOLMOD==0
 	ld h,a
-	ld a,l
+	ld a,(music.fade_step_count)
 	and a
 	ld a,h
 	jr nz,CH_NOEN

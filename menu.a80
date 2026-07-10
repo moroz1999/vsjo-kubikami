@@ -1,5 +1,4 @@
                             module	menu
-title_x                     equ	10
 title_y                     equ	3
 version_x                   equ	14
 version_y                   equ	23
@@ -119,8 +118,8 @@ draw_sound_mode
                             jp	print.print_latin_string
 
 draw_header
-                            ld	hl,game_title
-                            ld	b,title_x
+                            ld	hl,strings.game_title
+                            ld	b,strings.game_title_x
                             ld	c,title_y
                             call	print.print_latin_string
 
@@ -254,9 +253,6 @@ sound_mode_text_table
                             dw	strings.sound_ay,strings.sound_ay_gs,strings.sound_music
                             dw	strings.sound_ay_sfx,strings.sound_gs_sfx,strings.sound_none
 
-game_title
-                ; Russian font uses Latin key positions; Ё has a dedicated code.
-                            db	"ws",print.cyrillic_yo_code," kubikami",255
 game_version
                             db	"0.5",255
                             endmodule
