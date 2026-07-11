@@ -1,7 +1,7 @@
 # Items Domain
 
-- Picking up any room item queues `sounds.event_take`; GS maps it to the medium-priority `sfx/take.raw` at note `65` and 75% volume `#30`, while AY modes ignore the event.
-- Dropping any carried room item queues `sounds.event_itemdrop`; GS maps it to the medium-priority `sfx/itemdrop.raw` at note `61` and 75% volume `#30`, while AY modes ignore the event.
+- Picking up any room item queues `sounds.event_take`; GS maps it to the medium-priority `sfx/gs/take.raw` at note `65` and 75% volume `#30`, while AY modes ignore the event.
+- Dropping any carried room item queues `sounds.event_itemdrop`; GS maps it to the medium-priority `sfx/gs/itemdrop.raw` at note `61` and 75% volume `#30`, while AY modes ignore the event.
 
 ## Crowbar
 
@@ -25,7 +25,7 @@
 - Each falling step queues the previous stone cell for background restoration before the item is drawn at its new position.
 - The stone is used anywhere in room `1,1` from the right edge of the glass to the screen edge (`x=20..31`, any `y`).
 - Using it starts the glass break animation, removes the item from the pocket, and calls `logic.room_1_1.activate_glass_route`.
-- A successful use also queues `sounds.event_glass_break`, mapped in GS modes to high-priority sample `5` from `sfx/glass.raw`.
+- A successful use also queues `sounds.event_glass_break`, mapped in GS modes to high-priority sample `5` from `sfx/gs/glass.raw`.
 - The enemy route effect enables the two glass-edge jump points, so enemies can cross the room `1,1` glass only after it has been broken.
 - Room `1,1` stores the persistent result in `logic.room_1_1.glass_broken`; `on_enter` applies the final broken-glass frame when this flag is set.
 

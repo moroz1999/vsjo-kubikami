@@ -84,14 +84,14 @@ The current upload order and gameplay mapping are:
 
 | Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
 |---|---:|---:|---:|---|---|
-| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
-| Enemy attack | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `sfx/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
-| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
-| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
-| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/gs/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Enemy attack | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `sfx/gs/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/gs/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/gs/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/gs/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/gs/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
+| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/gs/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/gs/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
 
 The landing event is emitted only on the transition from `hero.state_void` to `hero.state_ground`; entering water plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
 
@@ -121,7 +121,7 @@ Known-rate samples follow that table: `wood.raw`, `glass.raw`, `itemdrop.raw`, a
 
 The loader reads a packed block into `#8000`, decompresses it with `dzx0_turbo` to `#C000`, reverses the delta encoding in place, and streams the exact unpacked byte count to GS. Resetting the delta accumulator for every block must match the encoder.
 
-The current RAW total is `93454` of `477184` bytes. The packed output is `63744` bytes: `249` sectors, or fifteen tracks plus nine sectors. Generated files live under ignored `build/gs/`; the raw source samples are tracked under `gs/sounds/` and `sfx/`.
+The current RAW total is `93454` of `477184` bytes. The packed output is `63744` bytes: `249` sectors, or fifteen tracks plus nine sectors. Generated files live under ignored `build/gs/`; GS source samples are tracked under `sfx/gs/`, and the AYFX bank under `sfx/ay/`.
 
 ## Runtime Playback
 

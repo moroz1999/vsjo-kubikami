@@ -18,7 +18,7 @@ $samples = [
     [
         'handle' => 1,
         'name' => 'crowbar',
-        'source' => $projectRoot . '/sfx/wood.raw',
+        'source' => $projectRoot . '/sfx/gs/wood.raw',
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_HIGH,
@@ -28,7 +28,7 @@ $samples = [
     [
         'handle' => 2,
         'name' => 'enemy_hit',
-        'source' => $projectRoot . '/sfx/attack.raw',
+        'source' => $projectRoot . '/sfx/gs/attack.raw',
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
@@ -38,7 +38,7 @@ $samples = [
     [
         'handle' => 3,
         'name' => 'jump_end',
-        'source' => $projectRoot . '/sfx/jumpend.raw',
+        'source' => $projectRoot . '/sfx/gs/jumpend.raw',
         'note' => 65,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
@@ -48,7 +48,7 @@ $samples = [
     [
         'handle' => 4,
         'name' => 'splash',
-        'source' => $projectRoot . '/sfx/splash.raw',
+        'source' => $projectRoot . '/sfx/gs/splash.raw',
         'note' => 65,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_MEDIUM,
@@ -58,7 +58,7 @@ $samples = [
     [
         'handle' => 5,
         'name' => 'glass_break',
-        'source' => $projectRoot . '/sfx/glass.raw',
+        'source' => $projectRoot . '/sfx/gs/glass.raw',
         'note' => 61,
         'volume' => 0x40,
         'priority' => SFX_PRIORITY_HIGH,
@@ -68,7 +68,7 @@ $samples = [
     [
         'handle' => 6,
         'name' => 'waterdrop',
-        'source' => $projectRoot . '/sfx/waterdrop.raw',
+        'source' => $projectRoot . '/sfx/gs/waterdrop.raw',
         'note' => 57,
         'volume' => 0x20,
         'priority' => SFX_PRIORITY_LOW,
@@ -78,7 +78,7 @@ $samples = [
     [
         'handle' => 7,
         'name' => 'take',
-        'source' => $projectRoot . '/sfx/take.raw',
+        'source' => $projectRoot . '/sfx/gs/take.raw',
         'note' => 65,
         'volume' => 0x30,
         'priority' => SFX_PRIORITY_MEDIUM,
@@ -88,7 +88,7 @@ $samples = [
     [
         'handle' => 8,
         'name' => 'itemdrop',
-        'source' => $projectRoot . '/sfx/itemdrop.raw',
+        'source' => $projectRoot . '/sfx/gs/itemdrop.raw',
         'note' => 61,
         'volume' => 0x30,
         'priority' => SFX_PRIORITY_MEDIUM,

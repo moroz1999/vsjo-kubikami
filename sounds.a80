@@ -170,6 +170,6 @@ play_gs_itemdrop
 ay_pending_effect           db	no_pending_effect
 
 bank
-                            incbin	"music/sounds.afb"
+                            incbin	"sfx/ay/sounds.afb"
 bank_end
                             endmodule

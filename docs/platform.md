@@ -6,7 +6,7 @@
 - TAP images use the `sjasmplus` snapshot loader and include `loading.scr` at `#4000`; the build patches each generated tape BASIC so `BORDER 0` is its first command.
 - IM 2 uses only the normal 48K address space and does not switch RAM banks. The `JP` dispatch occupies `#FDFD..#FDFF`, and the 257-byte vector table occupies `#FE00..#FF00`. The saved game image ends below `#F000`; after loader handoff, runtime-only screen and room buffers reuse `#F000..#F5BF`. `main.a80` asserts that the runtime workspace ends before the IM 2 dispatch.
 - The PT3 player and `music/compiled.C` module are resident in the same 48K address space. When enabled by the selected sound mode, music is initialized while interrupts are disabled and advanced once per IM 2 interrupt without memory paging.
-- AYFX effects use the resident `music/sounds.afb` bank and always replace PT3 channel C while active. PT3 channels A and B continue playing; the shared AY noise period can still affect music that uses noise.
+- AYFX effects use the resident `sfx/ay/sounds.afb` bank and always replace PT3 channel C while active. PT3 channels A and B continue playing; the shared AY noise period can still affect music that uses noise.
 - All changes must remain compatible with the current screen, room, and rendering modules: `screen_utils`, `draw`, and `rooms`.
 - Kempston input reads active-high `000FUDLR` from port `#1f`. Cursor input maps `5/8/7/6/0` to `Left/Right/Jump/Dive/Use`.
 
