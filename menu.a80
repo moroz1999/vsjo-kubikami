@@ -35,12 +35,13 @@ menu_loop
                             cp	keyboard.key_4
                             jr	z,select_cursor
                             cp	keyboard.key_5
-                            jp	z,assign_keys
+                            jr	z,select_assign
                             cp	keyboard.key_6
                             jr	z,select_sound
                             jr	menu_loop
 
 start_game
+                            call	play_selection_sound
                             call	wait_key_release
                             ret
 
@@ -55,14 +56,24 @@ select_cursor
 
 select_input_mode
                             ld	(controls.input_mode),a
+                            call	play_selection_sound
                             call	draw_highlights
                             jr	menu_loop
 
 select_sound
+                            call	play_selection_sound
                             call	audio.select_next
                 ; Redraw the complete row so localized mode names cannot overlap.
                             call	draw_menu
                             jr	menu_loop
+
+select_assign
+                            call	play_selection_sound
+                            jp	assign_keys
+
+play_selection_sound
+                            ld	a,sounds.event_menu
+                            jp	sounds.play
 
 draw_menu
                             call	draw.clear_screen

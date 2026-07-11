@@ -84,14 +84,14 @@ The current upload order and gameplay mapping are:
 
 | Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
 |---|---:|---:|---:|---|---|
-| Crowbar | `sounds.event_crowbar` (`0`) | `1` | `1` | `sfx/gs/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
-| Enemy attack | `sounds.event_enemy_hit` (`1`) | `4` | `2` | `sfx/gs/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Hero lands after a jump or fall | `sounds.event_jump_end` (`2`) | none | `3` | `sfx/gs/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Hero enters water from air | `sounds.event_splash` (`3`) | none | `4` | `sfx/gs/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
-| Stone breaks glass | `sounds.event_glass_break` (`4`) | none | `5` | `sfx/gs/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
-| Water drop lands | `sounds.event_waterdrop` (`5`) | none | `6` | `sfx/gs/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
-| Item pickup | `sounds.event_take` (`6`) | none | `7` | `sfx/gs/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
-| Item drop | `sounds.event_itemdrop` (`7`) | none | `8` | `sfx/gs/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Crowbar | `sounds.event_crowbar` (`2`) | `2` | `1` | `sfx/gs/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Enemy attack | `sounds.event_enemy_hit` (`0`) | `0` | `2` | `sfx/gs/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero lands after a jump or fall | `sounds.event_jump_end` (`13`) | `13` | `3` | `sfx/gs/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Hero enters water from air | `sounds.event_splash` (`21`) | `21` | `4` | `sfx/gs/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Stone breaks glass | `sounds.event_glass_break` (`12`) | `12` | `5` | `sfx/gs/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Water drop lands | `sounds.event_waterdrop` (`23`) | `23` | `6` | `sfx/gs/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
+| Item pickup | `sounds.event_take` (`22`) | `22` | `7` | `sfx/gs/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Item drop | `sounds.event_itemdrop` (`5`) | `5` | `8` | `sfx/gs/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
 
 The landing event is emitted only on the transition from `hero.state_void` to `hero.state_ground`; entering water plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
 
@@ -125,7 +125,9 @@ The current RAW total is `93454` of `477184` bytes. The packed output is `63744`
 
 ## Runtime Playback
 
-Runtime gameplay code loads a backend-neutral `sounds.event_*` ID into `A` and calls `sounds.play`. `sounds.play` is a patched trampoline: AY modes route to the AY request handler, GS modes route to the direct GS handler, and muted modes return immediately. `sounds.configure` patches the play and frame trampolines when the sound mode changes.
+Runtime gameplay code loads a backend-neutral `sounds.event_*` ID into `A` and calls `sounds.play`. `sounds.play` is a patched trampoline: AY modes route to the AY request handler, GS modes route to the direct GS handler, and muted modes return immediately. `sounds.configure` patches the play and frame trampolines when the sound mode changes. Event IDs follow the alphabetical order of the `.afx` files in the AYFX bank and are therefore also the zero-based indices expected by `AFXPLAY`; the editor displays the same effects as `1..25`.
+
+GS keeps dedicated handlers for the original eight events. Every newer event temporarily falls through to `play_gs_itemdrop` and plays GS sample `8` from `itemdrop.raw` until a dedicated GS sample is assigned.
 
 The AY backend never calls `AFXPLAY` directly from gameplay code. It stores one pending AYFX ID, and the IM 2 `sounds.frame` handler consumes it with `AFXPLAY` before advancing `AFXFRAME`. The GS backend sends commands immediately from gameplay code; it does not use the AY pending slot or the IM 2 SFX frame path.
 

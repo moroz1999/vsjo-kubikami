@@ -28,6 +28,8 @@ action
                             ld	a,items.poison_bottle
                             ld	(hero.current_item),a
                             call	items.print_item_name
+                            ld	a,sounds.event_fill_bottle
+                            call	sounds.play
 
                             ld	a,255
                             ret

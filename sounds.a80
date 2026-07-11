@@ -4,17 +4,31 @@
 
                             module	sounds
 no_pending_effect           equ	#ff
-event_crowbar               equ	0
-event_enemy_hit             equ	1
-event_jump_end              equ	2
-event_splash                equ	3
-event_glass_break           equ	4
-event_waterdrop             equ	5
-event_take                  equ	6
-event_itemdrop              equ	7
-
-ay_crowbar_effect           equ	1
-ay_enemy_hit_effect         equ	4
+event_enemy_hit             equ	0  ; attack.afx
+event_bug_jar               equ	1  ; bugs.afx
+event_crowbar               equ	2  ; crowbar.afx
+event_death                 equ	3  ; death.afx
+event_door                  equ	4  ; door.afx
+event_itemdrop              equ	5  ; dropitem.afx
+event_dynamite              equ	6  ; dynamite.afx
+event_elevator              equ	7  ; elevator.afx
+event_elevator_stop         equ	8  ; elevatorstop.afx
+event_energy_module         equ	9  ; energy.afx
+event_fill_bottle           equ	10 ; fillbottle.afx
+event_generator             equ	11 ; generator.afx
+event_glass_break           equ	12 ; glass.afx
+event_jump_end              equ	13 ; jumpend.afx
+event_key                   equ	14 ; key.afx
+event_ladder                equ	15 ; ladder.afx
+event_medkit                equ	16 ; medkit.afx
+event_menu                  equ	17 ; menu.afx
+event_poison                equ	18 ; poison.afx
+event_redcard               equ	19 ; redcard.afx
+event_seeds                 equ	20 ; seeds.afx
+event_splash                equ	21 ; splash.afx
+event_take                  equ	22 ; takeitem.afx
+event_waterdrop             equ	23 ; waterdrop.afx
+event_water_valve           equ	24 ; watervalve.afx
 
 init
                             ld	hl,bank
@@ -83,19 +97,6 @@ frame_none
                             ret
 
 play_ay
-                            cp	event_crowbar
-                            jr	z,play_ay_crowbar
-                            cp	event_enemy_hit
-                            jr	z,play_ay_enemy_hit
-                            ret
-
-play_ay_crowbar
-                            ld	a,ay_crowbar_effect
-                            jr	request_ay
-
-play_ay_enemy_hit
-                            ld	a,ay_enemy_hit_effect
-
 request_ay
                             ld	(ay_pending_effect),a
                             ret
@@ -130,7 +131,8 @@ play_gs
                             jr	z,play_gs_take
                             cp	event_itemdrop
                             jr	z,play_gs_itemdrop
-                            ret
+                ; New AY-authored events use item drop as their temporary GS sound.
+                            jr	play_gs_itemdrop
 
 play_gs_crowbar
                             ld	a,gs_config.crowbar_sample

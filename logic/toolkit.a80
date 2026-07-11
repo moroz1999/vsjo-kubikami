@@ -24,6 +24,8 @@ action
                             call	apply_effect
 
                             call	hero.delete_item_in_pocket
+                            ld	a,sounds.event_elevator
+                            call	sounds.play
 
                             ld	a,255
                             ret

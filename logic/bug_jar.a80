@@ -9,6 +9,8 @@ action
 
                             call	logic.room_3_3.start_dissolve
                             call	hero.delete_item_in_pocket
+                            ld	a,sounds.event_bug_jar
+                            call	sounds.play
 
                             ld	a,255
                             ret

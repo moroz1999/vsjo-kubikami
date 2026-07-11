@@ -5,6 +5,7 @@
 - If `timer > 0`, it is decremented and the elevator does nothing this frame.
 - If `timer = 0`, the code first stores the regular `delay` into `timer`, then processes movement.
 - If the elevator is already at an edge, or reaches an edge by this step, it flips `state` and overwrites `timer` with `edge_delay`.
+- Reaching either edge queues `sounds.event_elevator_stop` while the elevator is in the current-room update buffer.
 
 This preserves the old frame order that already worked with room transitions.
 

@@ -66,6 +66,8 @@ elevator_move_up
 elevator_switch_down
 elevator_pause_down
                 ; Reverse to downward motion and arm the shared edge pause
+                            ld	a,sounds.event_elevator_stop
+                            call	sounds.play
                             ld	a,elevators.state_down
                             ld	(ix+elevators.elevator.state),a
                             ld	a,(ix+elevators.elevator.edge_delay)
@@ -93,6 +95,8 @@ elevator_move_down
 elevator_switch_up
 elevator_pause_up
                 ; Reverse to upward motion and arm the shared edge pause
+                            ld	a,sounds.event_elevator_stop
+                            call	sounds.play
                             ld	a,elevators.state_up
                             ld	(ix+elevators.elevator.state),a
                             ld	a,(ix+elevators.elevator.edge_delay)

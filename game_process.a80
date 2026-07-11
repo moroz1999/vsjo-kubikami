@@ -109,6 +109,8 @@ begin_game_over
                             xor	a
                             call	draw.border
 
+                            ld	a,sounds.event_death
+                            call	sounds.play
                             call	music.fade_out
 
                             ld	b,1

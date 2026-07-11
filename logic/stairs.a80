@@ -27,6 +27,8 @@ action
                             call	animate.start
                             call	apply_effect
                             call	hero.delete_item_in_pocket
+                            ld	a,sounds.event_ladder
+                            call	sounds.play
 
                             ld	a,255
                             ret

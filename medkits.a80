@@ -164,6 +164,8 @@ collect
 
 collect_heal_amount_ready
                             call	hero.heal
+                            ld	a,sounds.event_medkit
+                            call	sounds.play
 
                             ld	d,(ix+medkit.x)
                             ld	e,(ix+medkit.y)

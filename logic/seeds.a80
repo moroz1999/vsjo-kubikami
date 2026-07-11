@@ -33,6 +33,8 @@ action
                             ld	(logic.room_5_0.seeds_grown),a
 
                             call	hero.delete_item_in_pocket
+                            ld	a,sounds.event_seeds
+                            call	sounds.play
 
                             ld	a,255
                             ret
