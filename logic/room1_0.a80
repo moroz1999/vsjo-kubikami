@@ -290,13 +290,13 @@ draw_rain
 draw_rain_clear_next
                             ld	l,(ix+rain_drop_address)
                             ld	h,(ix+rain_drop_address+1)
-                            inc	h
-                            inc	h
-                            inc	h
+
+                            push	hl
+                            ld	a,h
+                            add	a,high rooms.current_room_buf-high screen_buffer.attrs_buf
+                            ld	h,a
                             ld	a,(hl)
-                            dec	h
-                            dec	h
-                            dec	h
+                            pop	hl
                             ld	(hl),a
 
                             add	ix,de
@@ -326,13 +326,12 @@ draw_rain_next
                             ld	h,(ix+rain_drop_address+1)
 
                 ; Restore the old point directly from the contiguous room buffer.
-                            inc	h
-                            inc	h
-                            inc	h
+                            push	hl
+                            ld	a,h
+                            add	a,high rooms.current_room_buf-high screen_buffer.attrs_buf
+                            ld	h,a
                             ld	a,(hl)
-                            dec	h
-                            dec	h
-                            dec	h
+                            pop	hl
                             ld	(hl),a
 
                             dec	(ix+rain_drop_timer)
