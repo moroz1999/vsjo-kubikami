@@ -17,7 +17,7 @@
 ## Collection
 
 - Collected armor switches to `state_off`.
-- Collecting armor queues `sounds.event_armor`, which currently shares the `medkit.afx` AY effect and temporary GS sample `8` with medkits.
+- Collecting armor queues `sounds.event_armor`, which shares AYFX `medkit.afx` and GS sample `20` from the 22050 Hz `medkit.raw` at note `65` with medkits.
 - After collection, the armor rectangle is restored from the current room data.
 - Game restart changes only every armor record's `state` back to `state_on`.
 

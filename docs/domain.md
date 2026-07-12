@@ -38,7 +38,7 @@
 - The key-assignment confirmation prompt uses the localized affirmative key: `D` for Russian, `Y` for English, `A` for Czech, `T` for Polish, and `S` for Spanish. `N` rejects the assignment in every language.
 - `controls.input_mode` selects Keyboard, Kempston, or Cursor; `controls.read` abstracts the selected source into one `Right/Left/Dive/Jump/Use/Pause` action bitfield consumed by the game loop and `hero.process_controls`. Pause always comes from its assigned keyboard key, including Kempston and Cursor modes.
 - Keyboard assignment reads six scan codes in `controls.assigned_keys`; defaults are `O/P/Q/A/Space/H` for `Left/Right/Jump/Dive/Use/Pause`, and redefining keys changes gameplay input immediately. Use acts once per press, while direction combinations remain simultaneous. Pause freezes the simulation, displays its message in the unused right side of the item panel, and resumes only after the pause key has been released and pressed again.
-- Zero hero health queues `sounds.event_death`; zero health and completion of the room `1,3` final sequence open a cleared screen with `Конец Игры`, wait for any key, and return to the main menu.
+- Zero hero health queues `sounds.event_death`, mapped to `death.afx` on AY and GS sample `10` from the 11025 Hz `death.raw` at note `53`; zero health and completion of the room `1,3` final sequence open a cleared screen with `Конец Игры`, wait for any key, and return to the main menu.
 - On zero health, the final simulated frame is drawn without the hero and held for 100 frames before the game-over screen.
 - PT3 music is silent in the menu, restarts from the module beginning when gameplay starts, and fades to silence during the game-over hold.
 

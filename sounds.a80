@@ -116,31 +116,18 @@ frame_update
                             jp	sound_player.AFXFRAME
 
 play_gs
-                            cp	event_crowbar
-                            jr	z,play_gs_crowbar
-                            cp	event_enemy_hit
-                            jr	z,play_gs_enemy_hit
                             cp	event_jump_end
                             jr	z,play_gs_jump_end
                             cp	event_splash
                             jr	z,play_gs_splash
-                            cp	event_glass_break
-                            jr	z,play_gs_glass_break
                             cp	event_waterdrop
                             jr	z,play_gs_waterdrop
-                            cp	event_take
-                            jr	z,play_gs_take
-                            cp	event_itemdrop
-                            jr	z,play_gs_itemdrop
-                ; New AY-authored events use item drop as their temporary GS sound.
-                            jr	play_gs_itemdrop
 
-play_gs_crowbar
-                            ld	a,gs_config.crowbar_sample
-                            jp	general_sound.play_sample
-
-play_gs_enemy_hit
-                            ld	a,gs_config.enemy_hit_sample
+                            ld	e,a
+                            ld	d,0
+                            ld	hl,gs_sample_table
+                            add	hl,de
+                            ld	a,(hl)
                             jp	general_sound.play_sample
 
 play_gs_jump_end
@@ -153,22 +140,25 @@ play_gs_splash
                             ld	b,gs_config.splash_note_base
                             jp	general_sound.play_sample_random_note
 
-play_gs_glass_break
-                            ld	a,gs_config.glass_break_sample
-                            jp	general_sound.play_sample
-
 play_gs_waterdrop
                             ld	a,gs_config.waterdrop_sample
                             ld	b,gs_config.waterdrop_note_base
                             jp	general_sound.play_sample_random_note
 
-play_gs_take
-                            ld	a,gs_config.take_sample
-                            jp	general_sound.play_sample
-
-play_gs_itemdrop
-                            ld	a,gs_config.itemdrop_sample
-                            jp	general_sound.play_sample
+gs_sample_table
+                            db	gs_config.enemy_hit_sample,gs_config.bugs_sample
+                            db	gs_config.crowbar_sample,gs_config.death_sample
+                            db	gs_config.door_sample,gs_config.itemdrop_sample
+                            db	gs_config.dynamite_sample,gs_config.elevator_sample
+                            db	gs_config.elevator_stop_sample,gs_config.energy_sample
+                            db	gs_config.fill_bottle_sample,gs_config.generator_sample
+                            db	gs_config.glass_break_sample,gs_config.jump_end_sample
+                            db	gs_config.key_sample,gs_config.ladder_sample
+                            db	gs_config.medkit_sample,gs_config.menu_sample
+                            db	gs_config.poison_sample,gs_config.redcard_sample
+                            db	gs_config.seeds_sample,gs_config.splash_sample
+                            db	gs_config.take_sample,gs_config.waterdrop_sample
+                            db	gs_config.water_valve_sample
 
 ay_pending_effect           db	no_pending_effect
 

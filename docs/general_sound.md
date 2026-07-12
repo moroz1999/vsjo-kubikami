@@ -4,7 +4,7 @@
 
 General Sound support exists only in the five `*-gs.trd` releases. Music always remains on AY; GS stores and plays sound effects only. No GS module-music upload code is included.
 
-A GS image remains bootable without the device. The loader detects GS before touching `GSDATA.C`; if detection fails, it advances the TR-DOS cursor over that file and loads the game with AY as the default sound mode.
+A GS image remains bootable without the device. The loader detects GS before touching the consecutive `GSDAT00.C`… data files; if detection fails, it advances the TR-DOS cursor over the complete physical stream and loads the game with AY as the default sound mode.
 
 ## Ports and Readiness Bits
 
@@ -63,7 +63,7 @@ The argument is written to `#B3` before its command is sent to `#BB`.
 
 ## Generated Sample Table
 
-Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..8` for the crowbar, enemy hit, hero landing, air-to-water splash, glass break, water-drop landing, item pickup, and item drop. Runtime sound calls use backend-neutral `sounds.event_*` IDs; the AY backend maps only events with authored AYFX data, while the GS backend maps events directly to these fixed sample numbers.
+Sample numbers are explicit, not returned by command `#38`. The generated table selects samples `1..25` for the crowbar, enemy hit, hero landing, air-to-water splash, glass break, water-drop landing, item pickup, item drop, boss bugs, hero death, the balcony door, dynamite, elevator start, elevator stop, the energy module, bottle filling, generator repair, the hatch key, the ladder, health/armor pickup, menu selection, boss poisoning, the red card, seeds, and the water valve. Runtime sound calls use backend-neutral `sounds.event_*` IDs; the AY backend maps events by their bank index, while the GS backend maps authored events directly to fixed sample numbers.
 
 `build/gs/samples.a80` uses this format:
 
@@ -84,14 +84,31 @@ The current upload order and gameplay mapping are:
 
 | Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
 |---|---:|---:|---:|---|---|
-| Crowbar | `sounds.event_crowbar` (`2`) | `2` | `1` | `sfx/gs/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Crowbar | `sounds.event_crowbar` (`2`) | `2` | `1` | `sfx/gs/crowbar.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
 | Enemy attack | `sounds.event_enemy_hit` (`0`) | `0` | `2` | `sfx/gs/attack.raw` | note `65`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Hero lands after a jump or fall | `sounds.event_jump_end` (`13`) | `13` | `3` | `sfx/gs/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Hero enters water from air | `sounds.event_splash` (`21`) | `21` | `4` | `sfx/gs/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Stone breaks glass | `sounds.event_glass_break` (`12`) | `12` | `5` | `sfx/gs/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
 | Water drop lands | `sounds.event_waterdrop` (`23`) | `23` | `6` | `sfx/gs/waterdrop.raw` | default note `57`; runtime note `57..60`, volume `#20`, low priority `#40`, seeks `#05/#0A` |
-| Item pickup | `sounds.event_take` (`22`) | `22` | `7` | `sfx/gs/take.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
-| Item drop | `sounds.event_itemdrop` (`5`) | `5` | `8` | `sfx/gs/itemdrop.raw` | note `61`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Item pickup | `sounds.event_take` (`22`) | `22` | `7` | `sfx/gs/itemtake.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Item drop | `sounds.event_itemdrop` (`5`) | `5` | `8` | `sfx/gs/itemdrop.raw` | note `65`, volume `#30`, priority `#80`, seeks `#05/#0A` |
+| Boss bugs | `sounds.event_bug_jar` (`1`) | `1` | `9` | `sfx/gs/bugs.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Hero death | `sounds.event_death` (`3`) | `3` | `10` | `sfx/gs/death.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Balcony door | `sounds.event_door` (`4`) | `4` | `11` | `sfx/gs/door.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Dynamite | `sounds.event_dynamite` (`6`) | `6` | `12` | `sfx/gs/dynamite.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Elevator start | `sounds.event_elevator` (`7`) | `7` | `13` | `sfx/gs/elevator.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Elevator stop | `sounds.event_elevator_stop` (`8`) | `8` | `14` | `sfx/gs/elevatorstop.raw` | note `65`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Energy module | `sounds.event_energy_module` (`9`) | `9` | `15` | `sfx/gs/energy.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Fill bottle | `sounds.event_fill_bottle` (`10`) | `10` | `16` | `sfx/gs/fillbottle.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Generator repair | `sounds.event_generator` (`11`) | `11` | `17` | `sfx/gs/generator.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Hatch key | `sounds.event_key` (`14`) | `14` | `18` | `sfx/gs/key.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Ladder | `sounds.event_ladder` (`15`) | `15` | `19` | `sfx/gs/ladder.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Medkit or armor pickup | `sounds.event_medkit` / `sounds.event_armor` (`16`) | `16` | `20` | `sfx/gs/medkit.raw` | note `65`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Menu selection | `sounds.event_menu` (`17`) | `17` | `21` | `sfx/gs/menu.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Poison boss | `sounds.event_poison` (`18`) | `18` | `22` | `sfx/gs/poison.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Red card | `sounds.event_redcard` (`19`) | `19` | `23` | `sfx/gs/redcard.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Seeds | `sounds.event_seeds` (`20`) | `20` | `24` | `sfx/gs/seeds.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
+| Water valve | `sounds.event_water_valve` (`24`) | `24` | `25` | `sfx/gs/watervalve.raw` | note `53`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
 
 The landing event is emitted only on the transition from `hero.state_void` to `hero.state_ground`; entering water plays only the splash. Splash is queued only when the previous hero state was not swimming. A glass-break event is queued only after the stone action has passed its room and hero-position checks.
 
@@ -104,8 +121,9 @@ The GS sample note rule is fixed by source rate, not recalculated at build time:
 | `22050 Hz` | `65` |
 | `18000 Hz` | `61` |
 | `14000 Hz` | `57` |
+| `11025 Hz` | `53` |
 
-Known-rate samples follow that table: `wood.raw`, `glass.raw`, and `itemdrop.raw` use note `61`; `attack.raw`, `jumpend.raw`, `splash.raw`, and `take.raw` use note `65`; `waterdrop.raw` uses note `57`. Runtime randomization plays `65..68` for landing and splash, and `57..60` for water drops. Crowbar, enemy attack, landing, splash, and glass use full GS sample volume `#40`; water drops use half volume `#20`; item pickup and item drop use 75% volume `#30`.
+Known-rate samples follow that table: `crowbar.raw`, `bugs.raw`, and `glass.raw` use note `61`; `attack.raw`, `itemdrop.raw`, `itemtake.raw`, `jumpend.raw`, and `splash.raw` use note `65`; `waterdrop.raw` uses note `57`. Runtime randomization plays `65..68` for landing and splash, and `57..60` for water drops. Crowbar, enemy attack, landing, splash, bugs, and glass use full GS sample volume `#40`; water drops use half volume `#20`; item pickup and item drop use 75% volume `#30`.
 
 ## Sample Preparation
 
@@ -121,13 +139,13 @@ Known-rate samples follow that table: `wood.raw`, `glass.raw`, and `itemdrop.raw
 
 The loader reads a packed block into `#8000`, decompresses it with `dzx0_turbo` to `#C000`, reverses the delta encoding in place, and streams the exact unpacked byte count to GS. Resetting the delta accumulator for every block must match the encoder.
 
-The current RAW total is `93454` of `477184` bytes. The packed output is `63744` bytes: `249` sectors, or fifteen tracks plus nine sectors. Generated files live under ignored `build/gs/`; GS source samples are tracked under `sfx/gs/`, and the AYFX bank under `sfx/ay/`.
+The current RAW total is `389153` of `477184` bytes. The packed output is `292608` bytes: `1143` sectors, or 71 tracks plus seven sectors. Generated files live under ignored `build/gs/`; GS source samples are tracked under `sfx/gs/`, and the AYFX bank under `sfx/ay/`.
 
 ## Runtime Playback
 
 Runtime gameplay code loads a backend-neutral `sounds.event_*` ID into `A` and calls `sounds.play`. `sounds.play` is a patched trampoline: AY modes route to the AY request handler, GS modes route to the direct GS handler, and muted modes return immediately. `sounds.configure` patches the play and frame trampolines when the sound mode changes. Event IDs follow the alphabetical order of the `.afx` files in the AYFX bank and are therefore also the zero-based indices expected by `AFXPLAY`; the editor displays the same effects as `1..25`.
 
-GS keeps dedicated handlers for the original eight events. Every newer event temporarily falls through to `play_gs_itemdrop` and plays GS sample `8` from `itemdrop.raw` until a dedicated GS sample is assigned.
+GS uses a 25-byte event-to-sample table for fixed-note effects. Landing, splash, and water drops keep dedicated handlers because they randomize their note before playback.
 
 The AY backend never calls `AFXPLAY` directly from gameplay code. It stores one pending AYFX ID, and the IM 2 `sounds.frame` handler consumes it with `AFXPLAY` before advancing `AFXFRAME`. The GS backend sends commands immediately from gameplay code; it does not use the AY pending slot or the IM 2 SFX frame path.
 

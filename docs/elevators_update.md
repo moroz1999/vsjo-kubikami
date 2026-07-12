@@ -5,7 +5,7 @@
 - If `timer > 0`, it is decremented and the elevator does nothing this frame.
 - If `timer = 0`, the code first stores the regular `delay` into `timer`, then processes movement.
 - If the elevator is already at an edge, or reaches an edge by this step, it flips `state` and overwrites `timer` with `edge_delay`.
-- Reaching either edge queues `sounds.event_elevator_stop` only when the elevator's current global Y lies inside the visible room bounds. Elevators gathered from the rooms above or below remain silent while they are off-screen.
+- Reaching either edge queues `sounds.event_elevator_stop` only when the elevator's current global Y lies inside the visible room bounds. Elevators gathered from the rooms above or below remain silent while they are off-screen. The event maps to AYFX `elevatorstop.afx` and GS sample `14` from the 22050 Hz `elevatorstop.raw` at note `65`.
 
 This preserves the old frame order that already worked with room transitions.
 
