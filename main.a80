@@ -9,7 +9,7 @@ start                       equ	#6000
 
 startup
                             di
-                            ld	sp,start-1
+                            ld	sp,runtime_buffers.stack_top
                 ; Consume the loader handoff before opening the first menu.
                             call	audio.init
                             call	menu.wait_key_press
@@ -17,7 +17,7 @@ startup
 
 main_menu
                             di
-                            ld	sp,start-1
+                            ld	sp,runtime_buffers.stack_top
                             call	interrupts.init
                             call	music.stop
                             call	sounds.init
@@ -120,20 +120,26 @@ rooms_data_end
 end
 
                             module	runtime_buffers
-start                       equ	#f000
-screen_attrs_buf            equ	start
-current_room_buf            equ	screen_attrs_buf+screen_utils.attrs_size
+low_memory_start            equ	#5b00
+low_memory_end              equ	start
+screen_attrs_buf            equ	low_memory_start
+screen_attrs_buf_end        equ	screen_attrs_buf+screen_utils.attrs_size
+current_room_buf            equ	#f300
 end_address                 equ	current_room_buf+rooms.room_size
-                            assert	end_address<=interrupts.reserved_start
+trd_loader_address          equ	#f600
+stack_top                   equ	interrupts.reserved_start
+                            assert	screen_attrs_buf_end<=low_memory_end
+                            assert	end_address<=trd_loader_address
                             endmodule
 
                             module	screen_buffer
 attrs_buf                   equ	runtime_buffers.screen_attrs_buf
                             endmodule
-                            assert	end<=interrupts.reserved_start
+                            assert	end<=runtime_buffers.current_room_buf
                             display	'program length ',end-start
                             display	'resident modules ',rooms_data-start
                             display	'packed rooms ',rooms_data_end-rooms_data
-                            display	'runtime buffers ',runtime_buffers.end_address-runtime_buffers.start
-                            display	'runtime buffer room ',interrupts.reserved_start-runtime_buffers.end_address
+                            display	'main game room ',runtime_buffers.current_room_buf-end
+                            display	'low memory free ',runtime_buffers.low_memory_end-runtime_buffers.screen_attrs_buf_end
+                            display	'stack room ',interrupts.reserved_start-runtime_buffers.end_address
                             include	"release.a80"

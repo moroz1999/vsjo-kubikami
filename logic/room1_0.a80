@@ -11,12 +11,31 @@ rain_wait_start_seconds     equ	5
 rain_wait_step_seconds      equ	3
 rain_wait_full_seconds      equ	10
 rain_wait_finish_seconds    equ	3
+rain_drop_amount            equ	30
+rain_drop_size              equ	4
+rain_drop_address           equ	0
+rain_drop_timer             equ	2
+rain_drop_visible_timer     equ	3
+rain_cycle_frames           equ	14
+rain_quarter_1_amount       equ	8
+rain_quarter_2_amount       equ	15
+rain_quarter_3_amount       equ	23
+rain_half_amount            equ	15
+rain_color_1                equ	%01001001
+rain_color_2                equ	%01111000
+rain_area_left_end_x        equ	7
+rain_area_left_end_y        equ	6
+rain_area_upper_end_x       equ	13
+rain_area_upper_end_y       equ	4
+rain_area_center_end_x      equ	20
+rain_area_center_end_y      equ	14
+rain_area_right_end_y       equ	4
 cube_x                      equ	19
 cube_y                      equ	17
 
 logic
                             call	update_rain_state
-                            call	apply_rain_mask
+                            call	apply_rain_damage
                             ret
 
 on_enter
@@ -29,9 +48,18 @@ on_enter
                             ld	a,frames_per_second
                             ld	(rain_frames),a
 
-                            call	reset_room_waterdrops
+                            xor	a
+                            ld	(rain_amount),a
+                            ld	(rain_previous_amount),a
+
                             call	patch_stairs_if_unfolded
                             call	patch_cube_if_escaped
+                            ret
+
+on_leave
+                            xor	a
+                            ld	(rain_amount),a
+                            ld	(rain_previous_amount),a
                             ret
 
 patch_stairs_if_unfolded
@@ -71,32 +99,6 @@ activate_stairs_route
                             ld	(hl),e
                             inc	hl
                             ld	(hl),d
-                            ret
-
-                ; Restore every buffered room drop to its source state
-reset_room_waterdrops
-                            ld	a,(rooms.room_waterdrops_count)
-                            or	a
-                            ret	z
-
-                ; Reset all current-room drops to their dormant source state
-                            ld	b,a
-                            ld	hl,rooms.room_waterdrops_buf
-reset_room_waterdrops_next
-                            ld	e,(hl)
-                            inc	hl
-                            ld	d,(hl)
-                            inc	hl
-                            push	bc
-                            push	hl
-
-                            ld	h,d
-                            ld	l,e
-                            call	waterdrops.reset_drop_after_restore
-
-                            pop	hl
-                            pop	bc
-                            djnz	reset_room_waterdrops_next
                             ret
 
 update_rain_state
@@ -144,6 +146,9 @@ update_rain_state_quarter_1
                             ld	a,rain_mode_quarter_1
                             ld	(rain_mode),a
 
+                            ld	a,rain_quarter_1_amount
+                            ld	(rain_amount),a
+
                             ld	a,rain_wait_step_seconds
                             ld	(rain_seconds),a
 
@@ -154,6 +159,9 @@ update_rain_state_quarter_1
 update_rain_state_quarter_2
                             ld	a,rain_mode_quarter_2
                             ld	(rain_mode),a
+
+                            ld	a,rain_quarter_2_amount
+                            ld	(rain_amount),a
 
                             ld	a,rain_wait_step_seconds
                             ld	(rain_seconds),a
@@ -166,6 +174,9 @@ update_rain_state_quarter_3
                             ld	a,rain_mode_quarter_3
                             ld	(rain_mode),a
 
+                            ld	a,rain_quarter_3_amount
+                            ld	(rain_amount),a
+
                             ld	a,rain_wait_step_seconds
                             ld	(rain_seconds),a
 
@@ -177,6 +188,9 @@ update_rain_state_full
                             ld	a,rain_mode_full
                             ld	(rain_mode),a
 
+                            ld	a,rain_drop_amount
+                            ld	(rain_amount),a
+
                             ld	a,rain_wait_full_seconds
                             ld	(rain_seconds),a
 
@@ -187,6 +201,9 @@ update_rain_state_full
 update_rain_state_half
                             ld	a,rain_mode_half
                             ld	(rain_mode),a
+
+                            ld	a,rain_half_amount
+                            ld	(rain_amount),a
 
                             ld	a,rain_wait_finish_seconds
                             ld	(rain_seconds),a
@@ -202,87 +219,230 @@ update_rain_state_done
                             xor	a
                             ld	(rain_seconds),a
                             ld	(rain_frames),a
+                            ld	(rain_amount),a
                             ret
 
-apply_rain_mask
-                            ld	a,(rain_mode)
-                            cp	rain_mode_wait_start
-                            jr	z,apply_rain_mask_reset_all
-
-                            cp	rain_mode_done
-                            jr	z,apply_rain_mask_reset_all
-
-                            cp	rain_mode_full
-                            ret	z
-
-                            ld	a,(rooms.room_waterdrops_count)
+apply_rain_damage
+                            ld	a,(rain_amount)
                             or	a
                             ret	z
 
-                // keep disabled drops parked at their source position
-                            ld	b,a
-                            ld	c,0
-                            ld	hl,rooms.room_waterdrops_buf
-apply_rain_mask_next
-                            ld	e,(hl)
-                            inc	hl
-                            ld	d,(hl)
-                            inc	hl
-                            push	bc
-                            push	hl
+                ; Four exposed rectangles follow the room's main roof sections.
+                            ld	a,(hero.hero_x)
+                            cp	rain_area_left_end_x
+                            jr	c,apply_rain_damage_left
 
-                            call	is_drop_enabled
-                            or	a
-                            jr	nz,apply_rain_mask_restore
+                            cp	rain_area_upper_end_x
+                            jr	c,apply_rain_damage_upper
 
-                            ld	h,d
-                            ld	l,e
-                            call	waterdrops.reset_drop_after_restore
+                            cp	rain_area_center_end_x
+                            jr	c,apply_rain_damage_center
 
-apply_rain_mask_restore
-                            pop	hl
-                            pop	bc
-                            inc	c
-                            djnz	apply_rain_mask_next
-                            ret
+                            ld	b,rain_area_right_end_y
+                            jr	apply_rain_damage_check_y
 
-apply_rain_mask_reset_all
-                            call	reset_room_waterdrops
-                            ret
+apply_rain_damage_left
+                            ld	b,rain_area_left_end_y
+                            jr	apply_rain_damage_check_y
 
-is_drop_enabled
-                ; input:
-                ; c - zero-based drop index in current room buffer
-                ;
-                ; output:
-                ; a - 0 if rain phase disables the drop
-                            ld	a,(rain_mode)
-                            cp	rain_mode_half
-                            jr	z,is_drop_enabled_half
+apply_rain_damage_upper
+                            ld	b,rain_area_upper_end_y
+                            jr	apply_rain_damage_check_y
 
-                            ld	b,a
-                            ld	a,c
-                            and	3
+apply_rain_damage_center
+                            ld	b,rain_area_center_end_y
+
+apply_rain_damage_check_y
+                            ld	a,(hero.hero_y)
                             cp	b
-                            jr	c,is_drop_enabled_yes
+                            ret	nc
 
-                            xor	a
+                            ld	a,16
+                            ld	b,hero.health_damage_delayed
+                            call	hero.decrease_health
                             ret
 
-is_drop_enabled_half
-                            bit	0,c
-                            jr	z,is_drop_enabled_yes
+extra_draw
+                            or	a
+                            ret	nz
+                            jp	draw_rain
 
-                            xor	a
-                            ret
+draw_rain
+                            ld	a,(rain_previous_amount)
+                            ld	b,a
+                            ld	a,(rain_amount)
+                            or	b
+                            ret	z
 
-is_drop_enabled_yes
-                            ld	a,1
+                            ld	a,(rain_previous_amount)
+                            ld	b,a
+                            ld	a,(rain_amount)
+                            cp	b
+                            jr	z,draw_rain_current
+
+                            ld	a,b
+                            or	a
+                            jr	z,draw_rain_store_amount
+
+                ; An intensity change clears drops that may no longer be active.
+                            ld	ix,rain_drops_table
+                            ld	de,rain_drop_size
+draw_rain_clear_next
+                            ld	l,(ix+rain_drop_address)
+                            ld	h,(ix+rain_drop_address+1)
+                            inc	h
+                            inc	h
+                            inc	h
+                            ld	a,(hl)
+                            dec	h
+                            dec	h
+                            dec	h
+                            ld	(hl),a
+
+                            add	ix,de
+                            djnz	draw_rain_clear_next
+
+draw_rain_store_amount
+                            ld	a,(rain_amount)
+                            ld	(rain_previous_amount),a
+
+draw_rain_current
+                            ld	a,(rain_amount)
+                            or	a
+                            jr	z,draw_rain_done
+
+                            ld	b,a
+                            ld	ix,rain_drops_table
+                            ld	de,rain_drop_size
+
+                            ld	a,(draw.color_shift)
+                            or	a
+                            ld	c,rain_color_1
+                            jr	z,draw_rain_next
+
+                            ld	c,rain_color_2
+draw_rain_next
+                            ld	l,(ix+rain_drop_address)
+                            ld	h,(ix+rain_drop_address+1)
+
+                ; Restore the old point directly from the contiguous room buffer.
+                            inc	h
+                            inc	h
+                            inc	h
+                            ld	a,(hl)
+                            dec	h
+                            dec	h
+                            dec	h
+                            ld	(hl),a
+
+                            dec	(ix+rain_drop_timer)
+                            jr	z,draw_rain_restart_drop
+
+                            ld	a,(ix+rain_drop_timer)
+                            cp	(ix+rain_drop_visible_timer)
+                            jr	c,draw_rain_next_drop
+
+draw_rain_move_drop
+                            ld	a,l
+                            add	a,rooms.room_w
+                            ld	l,a
+                            jr	nc,draw_rain_store_drop
+
+                            inc	h
+                            jr	draw_rain_store_drop
+
+                ; Every trajectory restarts after the same full-cycle timer.
+draw_rain_restart_drop
+                            ld	a,rain_cycle_frames
+                            ld	(ix+rain_drop_timer),a
+                            ld	a,l
+                            and	rooms.room_w-1
+                            ld	l,a
+                            ld	h,high screen_buffer.attrs_buf
+                            jr	draw_rain_store_drop
+
+draw_rain_store_drop
+                            ld	(ix+rain_drop_address),l
+                            ld	(ix+rain_drop_address+1),h
+                            ld	(hl),c
+
+draw_rain_next_drop
+                            add	ix,de
+                            djnz	draw_rain_next
+
+draw_rain_done
                             ret
 
 rain_mode                   db	rain_mode_wait_start
 rain_seconds                db	0
 rain_frames                 db	0
+rain_amount                 db	0
+rain_previous_amount        db	0
 stairs_unfolded             db	0
 cube_escaped                db	0
+
+                ; Entries are current address, common-cycle timer, and lowest visible timer.
+rain_drops_table
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+1
+                            db	11,9
+                            dw	screen_buffer.attrs_buf+8*rooms.room_w+16
+                            db	6,1
+                            dw	screen_buffer.attrs_buf+4*rooms.room_w+30
+                            db	10,6
+                            dw	screen_buffer.attrs_buf+2*rooms.room_w+8
+                            db	12,11
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+23
+                            db	11,11
+                            dw	screen_buffer.attrs_buf+4*rooms.room_w+4
+                            db	10,9
+                            dw	screen_buffer.attrs_buf+1*rooms.room_w+12
+                            db	13,7
+                            dw	screen_buffer.attrs_buf+2*rooms.room_w+20
+                            db	12,11
+                            dw	screen_buffer.attrs_buf+7*rooms.room_w+27
+                            db	7,3
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+6
+                            db	11,10
+                            dw	screen_buffer.attrs_buf+11*rooms.room_w+14
+                            db	3,1
+                            dw	screen_buffer.attrs_buf+2*rooms.room_w+25
+                            db	12,11
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+2
+                            db	11,9
+                            dw	screen_buffer.attrs_buf+0*rooms.room_w+10
+                            db	14,11
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+18
+                            db	11,1
+                            dw	screen_buffer.attrs_buf+8*rooms.room_w+29
+                            db	6,5
+                            dw	screen_buffer.attrs_buf+5*rooms.room_w+5
+                            db	9,9
+                            dw	screen_buffer.attrs_buf+4*rooms.room_w+13
+                            db	10,1
+                            dw	screen_buffer.attrs_buf+1*rooms.room_w+21
+                            db	13,11
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+26
+                            db	11,10
+                            dw	screen_buffer.attrs_buf+1*rooms.room_w+3
+                            db	13,9
+                            dw	screen_buffer.attrs_buf+0*rooms.room_w+9
+                            db	14,11
+                            dw	screen_buffer.attrs_buf+1*rooms.room_w+17
+                            db	13,1
+                            dw	screen_buffer.attrs_buf+2*rooms.room_w+24
+                            db	12,11
+                            dw	screen_buffer.attrs_buf+2*rooms.room_w+28
+                            db	12,4
+                            dw	screen_buffer.attrs_buf+0*rooms.room_w+7
+                            db	14,11
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+11
+                            db	11,10
+                            dw	screen_buffer.attrs_buf+12*rooms.room_w+15
+                            db	2,1
+                            dw	screen_buffer.attrs_buf+3*rooms.room_w+19
+                            db	11,1
+                            dw	screen_buffer.attrs_buf+0*rooms.room_w+22
+                            db	14,11
+rain_drops_table_end
+                            assert	rain_drops_table_end-rain_drops_table=rain_drop_amount*rain_drop_size
                         endmodule

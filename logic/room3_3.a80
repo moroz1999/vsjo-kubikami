@@ -134,11 +134,13 @@ update_dissolve_done
                             call	logic.room_1_0.release_cube
                             ret
 
+extra_draw
+                            or	a
+                            jp	z,restore_previous
+                            jp	draw_current
+
 restore_previous
-; Global restore hook.
-; Only acts in room 3,3 and clears cells painted by the previous draw pass to black.
-                            call	is_current_room
-                            ret	nz
+; Room-specific restore hook clears cells painted by the previous draw pass to black.
 
 ; Restore uses stored screen addresses, avoiding x/y to attribute conversion on erase.
                             ld	a,(boss_prev_draw_point_amount)
@@ -164,10 +166,7 @@ restore_previous_loop
                             ret
 
 draw_current
-; Global draw hook.
-; Paints the current dotted chain and writes every painted attribute address for next erase.
-                            call	is_current_room
-                            ret	nz
+; Room-specific draw hook paints the chain and stores addresses for the next erase.
 
                             ld	a,(boss_state)
                             cp	boss_state_gone
@@ -232,16 +231,6 @@ draw_current_path_point
                             push	bc
                             call	draw_budgeted_path_point
                             pop	bc
-                            ret
-
-is_current_room
-; Draw and restore are called globally; this guard keeps the boss local to room 3,3.
-                            ld	a,(rooms.room_number_x)
-                            cp	boss_room_x
-                            ret	nz
-
-                            ld	a,(rooms.room_number_y)
-                            cp	boss_room_y
                             ret
 
 reset_alive

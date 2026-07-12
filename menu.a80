@@ -265,5 +265,5 @@ sound_mode_text_table
                             dw	strings.sound_ay_sfx,strings.sound_gs_sfx,strings.sound_none
 
 game_version
-                            db	"0.5",255
+                            db	"0.9",255
                             endmodule

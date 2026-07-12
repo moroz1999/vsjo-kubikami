@@ -74,6 +74,11 @@ poison_boss                ; Hide the boss and stop its room logic.
                             ld	(boss_poisoned),a
                             jp	remove_white_door
 
+extra_draw                 ; Dispatch the shared room-specific draw phases.
+                            or	a
+                            jp	z,restore_previous
+                            jp	draw_current
+
 remove_white_door
                 ; Open the final passage in both room geometry and the buffered frame.
                             ld	de,white_door_x*256+white_door_y
@@ -85,9 +90,6 @@ remove_white_door
                             jp	draw.restore_pixel
 
 restore_previous           ; Erase the old boss drawing area.
-                            call	is_current_room ; Check whether room 1,3 is active.
-                            ret	nz ; Skip when another room is active.
-
                             call	erase_previous_lines ; Erase the old segment lines in black.
                             call	erase_previous_points ; Erase the old moving joint markers in black.
                             call	erase_previous_jaws ; Erase the old jaw area in black.
@@ -208,9 +210,6 @@ restore_floor_under_previous_jaws ; Restore the red floor when the old jaw erase
                             ret     ; Finish previous floor restore.
 
 draw_current               ; Draw the current boss frame.
-                            call	is_current_room ; Check whether room 1,3 is active.
-                            ret	nz ; Skip when another room is active.
-
                             ld	a,(boss_poisoned) ; Keep the boss hidden after poison.
                             or	a
                             ret	nz
@@ -222,15 +221,6 @@ draw_current               ; Draw the current boss frame.
                             call	draw_jaws ; Draw the head jaw pixels.
                             call	copy_current_to_previous ; Remember the frame for restoration.
                             ret     ; Finish current-frame draw.
-
-is_current_room            ; Compare the active room with the boss room.
-                            ld	a,(rooms.room_number_x) ; Read current room column.
-                            cp	boss_room_x ; Compare with boss room column.
-                            ret	nz ; Return NZ when the column differs.
-
-                            ld	a,(rooms.room_number_y) ; Read current room row.
-                            cp	boss_room_y ; Compare with boss room row.
-                            ret     ; Return with comparison flags.
 
 update_points              ; Update head, derived joints, and offsets.
                 ; Head moves with delay, inner joints inherit half of the child offset.

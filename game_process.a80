@@ -36,12 +36,13 @@ room_logic_pointer          equ	$+1
 
                             call	draw.switch_colors
                             call	draw.draw_state
+
                             call	game_ui.draw_stats
+
+                            call	enemies.move_offline
 
                             xor	a
                             call	draw.border
-
-                            call	enemies.move_offline
 
                             jr	loop
 

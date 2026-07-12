@@ -96,14 +96,21 @@ switch_colors
                             xor	1
                             ld	(color_shift),a
                             ret
+change_extra_draw_pointer
+                            call	rooms.get_current_room_struct_pointer
+                            ld	de,rooms.room.extra_draw_pointer
+                            call	rooms.get_room_field_pointer
+                            ld	(extra_draw_restore_pointer),hl
+                            ld	(extra_draw_current_pointer),hl
+                            ret
 draw_state
                             call	restore_pixels
 
-                            call	logic.room_1_3.restore_previous
-                            call	logic.room_3_3.restore_previous
+                            xor	a
+extra_draw_restore_pointer  equ	$+1
+                            call	empty_room_extra_draw
                             
                             //todo: remove after debug
-
                             call	animate.draw_room
                             call	animate.check
 
@@ -119,12 +126,16 @@ draw_state
 
                             call	teleports.draw_current
                             call	enemies.draw_enemies
-                            call	logic.room_1_3.draw_current
-                            call	logic.room_3_3.draw_current
+
+                            ld	a,1
+extra_draw_current_pointer  equ	$+1
+                            call	empty_room_extra_draw
 
                             call	hero.draw_hero
 
 
+                            ret
+empty_room_extra_draw
                             ret
 restore_rectangle
                 ; input:

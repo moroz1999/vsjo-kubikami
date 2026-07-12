@@ -10,6 +10,7 @@ When an algorithm needs multiplication or division by `2^n`, use bit operations 
 
 Room-specific gameplay logic lives in `logic/roomX_Y.a80` modules and is connected through callback pointers in each `rooms.room` entry.
 - `logic_pointer` stores the per-frame callback. The game loop calls it automatically each frame after hero movement and before water drops are updated.
+- `extra_draw_pointer` stores the room-specific renderer. Room initialization copies it into the early and late draw call sites: phase `a=0` restores or draws background-layer effects, and phase `a=1` draws foreground room effects. Rooms without custom drawing use `draw.empty_room_extra_draw`.
 - `on_enter_pointer` stores the room-enter callback. `rooms.init_current_room` calls it after current-room entity buffers are gathered, room bounds are calculated, and source room data is copied into `rooms.current_room_buf`, but before the room is redrawn.
 - `onend_pointer` stores an optional room-leave callback. `rooms.goto_*_room` calls it before the room coordinates are changed.
 

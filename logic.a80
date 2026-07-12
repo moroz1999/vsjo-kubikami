@@ -10,6 +10,8 @@ reset_quests
                             ld	(room_2_1.stone_fall_timer),a
                             ld	(room_1_0.stairs_unfolded),a
                             ld	(room_1_0.cube_escaped),a
+                            ld	(room_1_0.rain_amount),a
+                            ld	(room_1_0.rain_previous_amount),a
                             ld	(room_2_3.dynamite_exploded),a
                             ld	(room_4_0.handle_used),a
                             ld	(room_4_1.hatch_opened),a

@@ -227,39 +227,6 @@ check_hero_collision
                             ret
 
 waterdrops_table
-                            dw	waterdrop_1_0_1
-                            dw	waterdrop_1_0_2
-                            dw	waterdrop_1_0_3
-                            dw	waterdrop_1_0_4
-                            dw	waterdrop_1_0_5
-                            dw	waterdrop_1_0_6
-                            dw	waterdrop_1_0_7
-                            dw	waterdrop_1_0_8
-                            dw	waterdrop_1_0_9
-                            dw	waterdrop_1_0_10
-                            dw	waterdrop_1_0_11
-                            dw	waterdrop_1_0_12
-                            dw	waterdrop_1_0_13
-                            dw	waterdrop_1_0_14
-                            dw	waterdrop_1_0_15
-                            dw	waterdrop_1_0_16
-                            dw	waterdrop_1_0_17
-                            dw	waterdrop_1_0_18
-                            dw	waterdrop_1_0_19
-                            dw	waterdrop_1_0_20
-                            dw	waterdrop_1_0_21
-                            dw	waterdrop_1_0_22
-                            dw	waterdrop_1_0_23
-                            dw	waterdrop_1_0_24
-                            dw	waterdrop_1_0_25
-                            dw	waterdrop_1_0_26
-                            dw	waterdrop_1_0_27
-                            dw	waterdrop_1_0_28
-                            dw	waterdrop_1_0_29
-                            dw	waterdrop_1_0_30
-                            dw	waterdrop_1_0_31
-                            dw	waterdrop_1_0_32
-
                             dw	waterdrop_7_0_1
                             dw	waterdrop_7_0_2
                             dw	waterdrop_7_0_3
@@ -276,6 +243,8 @@ waterdrops_table
                             dw	waterdrop_2_1_3
 waterdrops_table_end
 
+                        if	0
+                ; Room 1,0 rain now uses the cheaper room-specific pattern renderer.
 waterdrop_1_0_1
                             waterdrop	{
                             1,  //room_x
@@ -691,6 +660,7 @@ waterdrop_1_0_32
                             0   //state_delay
                             type_falling //type
                             }
+                        endif
 
 waterdrop_7_0_1
                             waterdrop	{

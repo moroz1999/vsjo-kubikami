@@ -9,12 +9,12 @@ The current program is equivalent to:
 ```basic
 1 BORDER 0
 10 PAPER 0: CLS
-20 CLEAR 61439
+20 CLEAR 62975
 30 RANDOMIZE USR 15619: REM: LOAD "LOADER" CODE
-40 RANDOMIZE USR 61440
+40 RANDOMIZE USR 62976
 ```
 
-`RANDOMIZE USR 15619` enters the TR-DOS interceptor at `#3D03`. The `REM: LOAD ...` tail supplies the command consumed by TR-DOS. `LOADER.C` carries load address `#F000`, and line `40` starts it there.
+`RANDOMIZE USR 15619` enters the TR-DOS interceptor at `#3D03`. The `REM: LOAD ...` tail supplies the command consumed by TR-DOS. `LOADER.C` carries load address `#F600`, and line `40` starts it there.
 
 ## Tokenized Line Format
 
@@ -45,8 +45,8 @@ Numeric literals contain both their ASCII representation and the ZX BASIC numeri
 |---:|---:|---|
 | `0` | `#0000` | `#0E,0,0,0,0,0` |
 | `15619` | `#3D03` | `#0E,0,0,#03,#3D,0` |
-| `61439` | `#EFFF` | `#0E,0,0,#FF,#EF,0` |
-| `61440` | `#F000` | `#0E,0,0,0,#F0,0` |
+| `62975` | `#F5FF` | `#0E,0,0,#FF,#F5,0` |
+| `62976` | `#F600` | `#0E,0,0,0,#F6,0` |
 
 The ASCII and binary forms must agree. Editing only the printed digits produces an invalid or misleading loader.
 
@@ -54,7 +54,7 @@ The ASCII and binary forms must agree. Editing only the printed digits produces 
 
 The BASIC program is relocated by the ROM to its normal runtime area beginning at `#5CCB`; the `org #5B00` used while assembling `boot.B` is only a temporary source buffer for `savetrd`.
 
-Placing `LOADER.C` near `#5DC0` required `CLEAR 23999` and left too little BASIC workspace, causing `RAMTOP no good`. The loader now resides at `#F000`, so `CLEAR 61439` sets RAMTOP to `#EFFF` and leaves the normal BASIC area available.
+Placing `LOADER.C` near `#5DC0` required `CLEAR 23999` and left too little BASIC workspace, causing `RAMTOP no good`. The loader now resides at `#F600`, so `CLEAR 62975` sets RAMTOP to `#F5FF` and leaves the normal BASIC area available. This keeps it above the main game image and the runtime room buffer.
 
 These values form one contract:
 
