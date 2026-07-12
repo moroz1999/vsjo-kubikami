@@ -180,6 +180,8 @@ collect
 
 collect_armor_amount_ready
                             call	hero.restore_armor
+                            ld	a,sounds.event_armor
+                            call	sounds.play
                             call	resolve_size
 
                             ld	d,(ix+armor.x)

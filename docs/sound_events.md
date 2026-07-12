@@ -27,3 +27,4 @@
 | Применить вентиль — спустить воду | `itemdrop.raw` | 8 | `watervalve.afx` | 25 |
 | Применить энергетический модуль — включить установку | `itemdrop.raw` | 8 | `energy.afx` | 10 |
 | Взять аптечку | `itemdrop.raw` | 8 | `medkit.afx` | 17 |
+| Взять броню | `itemdrop.raw` | 8 | `medkit.afx` | 17 |

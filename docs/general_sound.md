@@ -85,7 +85,7 @@ The current upload order and gameplay mapping are:
 | Gameplay event | Event ID | AYFX ID | GS sample | GS source | Parameters |
 |---|---:|---:|---:|---|---|
 | Crowbar | `sounds.event_crowbar` (`2`) | `2` | `1` | `sfx/gs/wood.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
-| Enemy attack | `sounds.event_enemy_hit` (`0`) | `0` | `2` | `sfx/gs/attack.raw` | note `61`, volume `#40`, priority `#80`, seeks `#05/#0A` |
+| Enemy attack | `sounds.event_enemy_hit` (`0`) | `0` | `2` | `sfx/gs/attack.raw` | note `65`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Hero lands after a jump or fall | `sounds.event_jump_end` (`13`) | `13` | `3` | `sfx/gs/jumpend.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Hero enters water from air | `sounds.event_splash` (`21`) | `21` | `4` | `sfx/gs/splash.raw` | default note `65`; runtime note `65..68`, volume `#40`, priority `#80`, seeks `#05/#0A` |
 | Stone breaks glass | `sounds.event_glass_break` (`12`) | `12` | `5` | `sfx/gs/glass.raw` | note `61`, volume `#40`, high priority `#C0`, seeks `#05/#0A` |
@@ -105,7 +105,7 @@ The GS sample note rule is fixed by source rate, not recalculated at build time:
 | `18000 Hz` | `61` |
 | `14000 Hz` | `57` |
 
-Known-rate samples follow that table: `wood.raw`, `glass.raw`, `itemdrop.raw`, and `attack.raw` use note `61`; `jumpend.raw`, `splash.raw`, and `take.raw` use note `65`; `waterdrop.raw` uses note `57`. Runtime randomization plays `65..68` for landing and splash, and `57..60` for water drops. Crowbar, enemy attack, landing, splash, and glass use full GS sample volume `#40`; water drops use half volume `#20`; item pickup and item drop use 75% volume `#30`.
+Known-rate samples follow that table: `wood.raw`, `glass.raw`, and `itemdrop.raw` use note `61`; `attack.raw`, `jumpend.raw`, `splash.raw`, and `take.raw` use note `65`; `waterdrop.raw` uses note `57`. Runtime randomization plays `65..68` for landing and splash, and `57..60` for water drops. Crowbar, enemy attack, landing, splash, and glass use full GS sample volume `#40`; water drops use half volume `#20`; item pickup and item drop use 75% volume `#30`.
 
 ## Sample Preparation
 

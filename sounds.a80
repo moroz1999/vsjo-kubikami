@@ -21,6 +21,7 @@ event_jump_end              equ	13 ; jumpend.afx
 event_key                   equ	14 ; key.afx
 event_ladder                equ	15 ; ladder.afx
 event_medkit                equ	16 ; medkit.afx
+event_armor                 equ	event_medkit
 event_menu                  equ	17 ; menu.afx
 event_poison                equ	18 ; poison.afx
 event_redcard               equ	19 ; redcard.afx
