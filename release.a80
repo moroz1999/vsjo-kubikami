@@ -50,7 +50,7 @@ basic_line_10_end
                             db	0,20
                             dw	basic_line_20_end-basic_line_20
 basic_line_20
-                            db	#fd,"62975",#0e,0,0,#ff,#f5,0,13
+                            db	#fd,"63935",#0e,0,0,#bf,#f9,0,13
 basic_line_20_end
 
                             db	0,30
@@ -63,18 +63,13 @@ basic_line_30_end
                             db	0,40
                             dw	basic_line_40_end-basic_line_40
 basic_line_40
-                            db	#f9,#c0,"62976",#0e,0,0,0,#f6,0,13
+                            db	#f9,#c0,"63936",#0e,0,0,#c0,#f9,0,13
 basic_line_40_end
 basic_loader_end
                             assert	basic_runtime_address+(basic_loader_end-basic_loader)<trd_loader_address
 
                             org	trd_loader_address
                             include	"trd_loader.a80"
-                            if	@end>trd_loader
-                            display	'main game exceeds TRD loader by ',@end-trd_loader
-                            else
-                            display	'main game free before TRD loader ',trd_loader-@end
-                            endif
                             display	'TRD loader length ',trd_loader_end-trd_loader
                             display	'TRD loader IM2 room ',interrupts.reserved_start-trd_loader_end
 

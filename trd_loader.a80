@@ -7,6 +7,7 @@ trd_loader_data_end         equ	#fe
 trd_loader_table_end        equ	#ff
 trd_loader_max_volume       equ	#40
 trd_loader_game_sectors     equ	(@end-@start+255)/256
+trd_loader_game_read_end    equ	@start+trd_loader_game_sectors*256
 
                             assert	loading_screen_size/256<=255
                             assert	trd_loader_game_sectors<=255
@@ -270,4 +271,5 @@ trd_loader_skip_sample_sectors
 
 trd_loader_end
                             assert	@end<=trd_loader
+                            assert	trd_loader_game_read_end<=trd_loader
                             assert	trd_loader_end<=interrupts.reserved_start

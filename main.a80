@@ -124,9 +124,9 @@ low_memory_start            equ	#5b00
 low_memory_end              equ	start
 screen_attrs_buf            equ	low_memory_start
 screen_attrs_buf_end        equ	screen_attrs_buf+screen_utils.attrs_size
-current_room_buf            equ	#f300
+current_room_buf            equ	#f700
 end_address                 equ	current_room_buf+rooms.room_size
-trd_loader_address          equ	#f600
+trd_loader_address          equ	#f9c0
 stack_top                   equ	interrupts.reserved_start
                             assert	screen_attrs_buf_end<=low_memory_end
                             assert	end_address<=trd_loader_address
@@ -139,7 +139,7 @@ attrs_buf                   equ	runtime_buffers.screen_attrs_buf
                             display	'program length ',end-start
                             display	'resident modules ',rooms_data-start
                             display	'packed rooms ',rooms_data_end-rooms_data
-                            display	'main game room ',runtime_buffers.current_room_buf-end
+                            display	'main game free ',runtime_buffers.current_room_buf-end
                             display	'low memory free ',runtime_buffers.low_memory_end-runtime_buffers.screen_attrs_buf_end
-                            display	'stack room ',interrupts.reserved_start-runtime_buffers.end_address
+                            display	'runtime stack room ',interrupts.reserved_start-runtime_buffers.end_address
                             include	"release.a80"
